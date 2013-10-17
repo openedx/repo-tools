@@ -16,8 +16,15 @@ file.
     ./author_check.py
     audits all repos in repos.yaml
 
-You'll need to run this in a virtual environment with the `requirements.txt`
-installed.
+# Installation
+
+You'll need to have [virtualenv](http://www.virtualenv.org) installed already.
+Then run:
+
+    git clone https://github.com/edx/author-check.git
+    virtualenv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
 
 You'll also need to grab a personal access token from Github (go to
 <https://github.com/settings/applications> to create one) and create an
@@ -29,5 +36,7 @@ You'll also need to grab a personal access token from Github (go to
 `mapping.yaml` contains the mapping between Github username and the canonical
 entry for AUTHORS files. It also has information about whether the person has
 signed a contributor agreement or is covered by the institution they work for.
+
+# Feedback
 
 Please send any feedback to <jtauber@edx.org>.
