@@ -16,7 +16,7 @@ file.
     ./author_check.py
     audits all repos in repos.yaml
 
-# Installation
+## Installation
 
 You'll need to have [virtualenv](http://www.virtualenv.org) installed already.
 Then run:
@@ -37,6 +37,6 @@ You'll also need to grab a personal access token from Github (go to
 entry for AUTHORS files. It also has information about whether the person has
 signed a contributor agreement or is covered by the institution they work for.
 
-# Feedback
+## Feedback
 
 Please send any feedback to <jtauber@edx.org>.
