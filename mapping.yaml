@@ -1,7 +1,7 @@
 # mapping from github username to info about the person
 # authors_entry is how they should appear in AUTHORS file
 # agreement is 'individual' if they've signed the individual CA and
-# 'insitution' if they are convered
+# 'institution' if they are convered
 
 pmitros:
     authors_entry: Piotr Mitros <pmitros@edx.org>
@@ -341,3 +341,6 @@ oliviermarquez:
 szczork:
     authors_entry: Nicolas Chevalier <nicolas.chevalier@epitech.eu>
     agreement: individual
+chrisrossi:
+    authors_entry: Chris Rossi <chris@archimedeanco.com>
+    agreement: institution
