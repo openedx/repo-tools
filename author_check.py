@@ -26,6 +26,22 @@ from github3 import login
 import requests
 import yaml
 
+# get a function that formats strings with console color codes
+try:
+    # first try pygments
+    from pygments.console import colorize
+    from functools import partial
+    red = partial(colorize, "red")
+    yellow = partial(colorize, "yellow")
+    green = partial(colorize, "green")
+except ImportError:
+    try:
+        # then try the "colors" module
+        from colors import red, yellow, green
+    except ImportError:
+        # if all else fails, don't bother with colors
+        red = yellow = green = lambda x: x
+
 with open("auth.yaml") as auth_file:
     auth_info = yaml.load(auth_file)
 
