@@ -17,7 +17,6 @@ requires an auth.yaml containing ``user`` and ``token`` to
 use to access Github.
 """
 
-
 from collections import defaultdict
 import sys
 
@@ -43,13 +42,14 @@ AUTHORS_URL = "https://raw.github.com/{owner}/{repo}/{branch}/{filename}"
 
 gh = login(GITHUB_USER, password=PERSONAL_ACCESS_TOKEN)
 
+
 def contributors(owner, repo):
     """
     returns a set of github usernames who have contributed to the given repo.
     """
     contributors_url = CONTRIBUTORS_URL.format(owner=owner, repo=repo)
     entries = requests.get(contributors_url, auth=(GITHUB_USER, PERSONAL_ACCESS_TOKEN)).json()
-    
+
     return set(entry["login"] for entry in entries)
 
 
@@ -74,22 +74,22 @@ entry_to_github = {mapping[contributor]["authors_entry"]: contributor for contri
 
 
 def check_repo(owner, repo):
-    
+
     all_clear = True
-    
+
     print
     print
     print "{}/{}".format(owner, repo)
     print
-    
+
     c = contributors(owner, repo)
     a = authors_file(owner, repo)
-    
+
     if a == set():
         print red("AUTHORS FILE RETURNED EMPTY")
-    
+
     if a is not None:
-    
+
         # who has contributed but isn't in the AUTHORS file or hasn't signed a CA
 
         for contributor in c:
@@ -103,9 +103,9 @@ def check_repo(owner, repo):
                 if mapping[contributor].get("agreement") not in ["individual", "institution"]:
                     print red(u"{} has contributed but not signed agreement".format(contributor))
                     all_clear = False
-        
+
         # who is in the AUTHORS file but hasn't contributed
-        
+
         for author in a:
             if author not in entry_to_github:
                 print red(u"{} is not in mapping file".format(author))
@@ -113,32 +113,32 @@ def check_repo(owner, repo):
             elif entry_to_github[author] not in c:
                 print yellow(u"{} is in AUTHORS file but doesn't seem to have made a commit".format(author))
                 all_clear = False
-    
+
     else:
         print yellow("No AUTHORS file")
         all_clear = False
-    
+
     # who has a pull-request that we have't received a CA from
-    
+
     not_in_mapping = defaultdict(set)
     no_agreement = defaultdict(set)
-    
+
     for pull in pull_requests(owner, repo):
         if pull.user.login not in mapping:
             not_in_mapping[pull.user.login].add(str(pull.number))
         else:
             if mapping[pull.user.login].get("agreement") not in ["individual", "institution"]:
                 no_agreement[pull.user.login].add(str(pull.number))
-    
+
     print
-    
+
     for user, numbers in not_in_mapping.items():
         print red(u"{} is not in mapping file [PR {}]".format(user, ", ".join(numbers)))
         all_clear = False
     for user, numbers in no_agreement.items():
         print red(u"{} has not signed agreement [PR {}]".format(user, ", ".join(numbers)))
         all_clear = False
-    
+
     if all_clear:
         print green("ALL GOOD")
 
@@ -184,7 +184,3 @@ elif len(sys.argv) == 2:
 else:
     for repo in REPO_LIST:
         check_repo(*repo.split("/"))
-
-
-print
-print
