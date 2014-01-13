@@ -411,11 +411,13 @@ pdehaye:
     agreement: individual
     authors_entry: Paul-Olivier Dehaye <pdehaye@gmail.com>
 hwjworld:
-    agreement: entity (DianDiYun Inc)
+    agreement: individual
     authors_entry: Jerome Huang <canni3269@gmail.com>
+    comment: part of DianDiYun Inc
 chenshuchuan:
-    agreement: entity (DianDiYun Inc)
+    agreement: individual
     authors_entry: ShuChuan Chen <am15501@163.com>
+    comment: part of DianDiYun Inc
 TheBritKnight:
     agreement: individual
     authors_entry: Charles Dawson <charles.dwsn@gmail.com>
