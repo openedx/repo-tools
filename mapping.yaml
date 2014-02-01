@@ -324,6 +324,9 @@ pchiu33:
 carsongee:
     authors_entry: Carson Gee <x@carsongee.com>
     agreement: individual
+# cgee:
+#    agreement: institution
+#    authors_entry: Carson Gee <cgee@mit.edu>
 kewubenduben:
     authors_entry: ???
     agreement: individual
@@ -424,3 +427,27 @@ TheBritKnight:
 glowe:
     agreement: individual
     authors_entry: Graham Lowe <graham.lowe@gmail.com>
+mattdrayer:
+    agreement: institution
+    authors_entry: Matt Drayer <mattdrayer@edx.org>
+lamagnifica:
+    agreement: institution
+    authors_entry: Alison Hodges <ahodges@edx.org>
+andy-armstrong:
+    agreement: institution
+    authors_entry: Andy Armstrong <andya@edx.org>
+stephensanchez:
+    agreement: institution
+    authors_entry: Stephen Sanchez <steve@edx.org>
+mhoeber:
+    agreement: institution
+    authors_entry: Mark Hoeber <hoeber@edx.org>
+srpearce:
+    agreement: institution
+    authors_entry: Sylvia Pearce <spearce@edx.org>
+stroilova:
+    agreement: institution
+    authors_entry: Olga Stroilova <olga@edx.org>
+davestgermain:
+    agreement: institution
+    authors_entry: Dave St.Germain <dstgermain@edx.org>
