@@ -45,12 +45,15 @@ gh = login(GITHUB_USER, password=PERSONAL_ACCESS_TOKEN)
 
 def contributors(owner, repo):
     """
-    returns a set of github usernames who have contributed to the given repo.
+    Returns a set of Github usernames who have contributed to the given repo.
+
+    Usernames are lower-cased, since Github usernames are case-insensitive.
+
     """
     contributors_url = CONTRIBUTORS_URL.format(owner=owner, repo=repo)
     entries = requests.get(contributors_url, auth=(GITHUB_USER, PERSONAL_ACCESS_TOKEN)).json()
 
-    return set(entry["login"] for entry in entries)
+    return set(entry["login"].lower() for entry in entries)
 
 
 def authors_file(owner, repo, branch="master", filename="AUTHORS"):
@@ -69,6 +72,7 @@ def pull_requests(owner, repo):
 
 with open("mapping.yaml") as mapping_file:
     mapping = yaml.load(mapping_file)
+    mapping = {k.lower():v for k,v in mapping.items()}
 
 entry_to_github = {mapping[contributor]["authors_entry"]: contributor for contributor in mapping}
 
@@ -124,10 +128,11 @@ def check_repo(owner, repo):
     no_agreement = defaultdict(set)
 
     for pull in pull_requests(owner, repo):
-        if pull.user.login not in mapping:
+        user_login = pull.user.login.lower()
+        if user_login not in mapping:
             not_in_mapping[pull.user.login].add(str(pull.number))
         else:
-            if mapping[pull.user.login].get("agreement") not in ["individual", "institution"]:
+            if mapping[user_login].get("agreement") not in ["individual", "institution"]:
                 no_agreement[pull.user.login].add(str(pull.number))
 
     print
@@ -146,9 +151,10 @@ def check_repo(owner, repo):
 def check_pr(owner, repo, number):
     pull = gh.repository(owner, repo).pull_request(number)
     print "[{}] {}".format(pull.state, pull.title)
-    if pull.user.login not in mapping:
+    user_login = pull.user.login.lower()
+    if user_login not in mapping:
         print red(u"{} is not in mapping file".format(pull.user.login))
-    elif mapping[pull.user.login].get("agreement") not in ["individual", "institution"]:
+    elif mapping[user_login].get("agreement") not in ["individual", "institution"]:
         print u"{} has not signed agreement".format(pull.user.login)
     if pull.merged_by:
         print u"merged by {}".format(pull.merged_by)
