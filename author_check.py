@@ -18,12 +18,26 @@ use to access Github.
 """
 
 from collections import defaultdict
+import functools
 import sys
 
-from colors import red, yellow, green
+import colors
 from github3 import login
 import requests
 import yaml
+
+
+def in_color(color, msg):
+    """Msg should be in color, do the right thing for the output, and for Unicode."""
+    msg = msg.encode('utf8')
+    if sys.stdout.isatty():
+        msg = color(msg)
+    return msg
+
+red = functools.partial(in_color, colors.red)
+yellow = functools.partial(in_color, colors.yellow)
+green = functools.partial(in_color, colors.green)
+
 
 with open("auth.yaml") as auth_file:
     auth_info = yaml.load(auth_file)
