@@ -6,6 +6,7 @@
 pmitros:
     authors_entry: Piotr Mitros <pmitros@edx.org>
     agreement: institution
+    institution: edX
 kylefiedler:
     authors_entry: Kyle Fiedler <kyle@kylefiedler.com>
     agreement: institution
@@ -15,12 +16,15 @@ eipark:
 bridger:
     authors_entry: Bridger Maxwell <bridger@mit.edu>
     agreement: institution
+    institution: edX
 Lyla-Fischer:
     authors_entry: Lyla Fischer <lyla@edx.org>
     agreement: institution
+    institution: edX
 ormsbee:
     authors_entry: David Ormsbee <dave@edx.org>
     agreement: institution
+    institution: edX
 terman:
     authors_entry: Chris Terman <cjt@edx.org>
     agreement: institution
@@ -32,12 +36,15 @@ kaishin:
 jmclaus:
     authors_entry: Jean-Michel Claus <jmc@edx.org>
     agreement: institution
+    institution: edX
 cpennington:
     authors_entry: Calen Pennington <calen.pennington@gmail.com>
     agreement: institution
+    institution: edX
 jmvt:
     authors_entry: JM Van Thong <jm@edx.org>
     agreement: institution
+    institution: edX
 sikachu:
     authors_entry: Prem Sichanugrist <psichanugrist@thoughtbot.com>
     agreement: institution
@@ -56,30 +63,36 @@ mjankowski:
 jarv:
     authors_entry: John Jarvis <jarv@edx.org>
     agreement: institution
+    institution: edX
 Aviendha:
     authors_entry: <aviendhasl@gmail.com>
     agreement: institution
 shnayder:
     authors_entry: Victor Shnayder <victor@edx.org>
     agreement: institution
+    institution: edX
 halogenandtoast:
     authors_entry: Matthew Mongeau <halogenandtoast@gmail.com>
     agreement: institution
 kimtonyhyun:
     authors_entry: Tony Kim <kimth@edx.org>
     agreement: institution
+    institution: edX
 kimth:
     authors_entry: Tony Kim <kimth@edx.org>
     agreement: institution
+    institution: edX
 arjun810:
     authors_entry: Arjun Singh <arjun810@gmail.com>
     agreement: individual
 johnhess:
     authors_entry: John Hess <mgojohn@gmail.com>
     agreement: institution
+    institution: edX
 rocha:
     authors_entry: Carlos Andrés Rocha <rocha@edx.org>
     agreement: institution
+    institution: edX
 ccp0101:
     authors_entry: Mike Chen <ccp0101@gmail.com>
     agreement: individual
@@ -98,15 +111,18 @@ bcheng42:
 thomasxiii:
     authors_entry: Tom Giannattasio <tom@mitx.mit.edu>
     agreement: institution
+    institution: edX
 ibrahima:
     authors_entry: Ibrahim Awwal <ibrahim.awwal@gmail.com>
     agreement: individual
 sarina:
     authors_entry: Sarina Canelake <sarina@edx.org>
     agreement: institution
+    institution: edX
 markchang:
     authors_entry: Mark L. Chang <mark.chang@gmail.com>
     agreement: institution
+    institution: edX
 deanxorr: # ?
     authors_entry: Dean Dieker <ddieker@gmail.com>
     agreement: institution
@@ -116,147 +132,192 @@ tmacwill:
 natehardison:
     authors_entry: Nate Hardison <natehardison@gmail.com>
     agreement: institution
+    institution: Stanford
 chrisndodge:
     authors_entry: Chris Dodge <cdodge@edx.org>
     agreement: institution
+    institution: edX
 kevinchugh:
     authors_entry: Kevin Chugh <kevinchugh@edx.org>
     agreement: institution
+    institution: edX
 nedbat:
     authors_entry: Ned Batchelder <ned@nedbatchelder.com>
     agreement: institution
+    institution: edX
 auraz:
     authors_entry: Alexander Kryklia <kryklia@gmail.com>
     agreement: institution
+    institution: edX
 VikParuchuri:
     authors_entry: Vik Paruchuri <vik@edx.org>
     agreement: institution
+    institution: edX
 # ???:
 #     authors_entry: Louis Sobel <sobel@edx.org>
 #     agreement: institution
 brianhw:
     authors_entry: Brian Wilson <brian@edx.org>
     agreement: institution
+    institution: edX
 apenney:
     authors_entry: Ashley Penney <apenney@edx.org>
     agreement: institution
+    institution: edX
 dmitchell:
     authors_entry: Don Mitchell <dmitchell@edx.org>
     agreement: institution
+    institution: edX
 aculich:
     authors_entry: Aaron Culich <aculich@edx.org>
     agreement: institution
+    institution: Stanford
 talbs:
     authors_entry: Brian Talbot <btalbot@edx.org>
     agreement: institution
+    institution: edX
 jzoldak:
     authors_entry: Jay Zoldak <jzoldak@edx.org>
     agreement: institution
+    institution: edX
 valera-rozuvan:
     authors_entry: Valera Rozuvan <valera.rozuvan@gmail.com>
     agreement: institution
+    institution: edX
 dianakhuang:
     authors_entry: Diana Huang <dkh@edx.org>
     agreement: institution
+    institution: edX
 marcotuts:
     authors_entry: Marco Morales <marcotuts@gmail.com>
     agreement: institution
+    institution: edX
 cahrens:
     authors_entry: Christina Roberts <christina@edx.org>
     agreement: institution
+    institution: edX
 rcchirwa:
     authors_entry: Robert Chirwa <robert@edx.org>
     agreement: institution
+    institution: edX
 e0d:
     authors_entry: Ed Zarecor <ed@edx.org>
     agreement: institution
+    institution: edX
 # ???:
 #     authors_entry: Deena Wang <thedeenawang@gmail.com>
 #     agreement: institution
 jnater:
     authors_entry: Jean Manuel Náter <jnater@edx.org>
     agreement: institution
+    institution: edX
 # ???:
 #     authors_entry: Emily Zhang <1800.ehz.hang@gmail.com>
 #     agreement: institution
 JAAkana:
     authors_entry: Jennifer Akana <jaakana@gmail.com>
     agreement: institution
+    institution: edX
 pbaratta:
     authors_entry: Peter Baratta <peter.baratta@gmail.com>
     agreement: institution
+    institution: edX
 jkarni:
     authors_entry: Julian Arni <julian@edx.org>
     agreement: institution
+    institution: edX
 arthurian: # ?
     authors_entry: Arthur Barrett <abarrett@edx.org>
     agreement: institution
+    institution: edX
 vaxXxa:
     authors_entry: Vasyl Nakvasiuk <vaxxxa@gmail.com>
     agreement: institution
+    institution: edX
 wedaly:
     authors_entry: Will Daly <will@edx.org>
     agreement: institution
+    institution: edX
 jtauber:
     authors_entry: James Tauber <jtauber@jtauber.com>
     agreement: institution
+    institution: edX
 gwprice:
     authors_entry: Greg Price <gprice@edx.org>
     agreement: institution
+    institution: edX
 jrbl:
     authors_entry: Joe Blaylock <jrbl@stanford.edu>
     agreement: institution
+    institution: Stanford
 sefk:
     authors_entry: Sef Kloninger <sef@kloninger.com>
     agreement: institution
+    institution: Stanford
 polesye:
     authors_entry: Anton Stupak <s2pak.anton@gmail.com>
     agreement: institution
+    institution: edX
 dcadams:
     authors_entry: David Adams <dcadams@stanford.edu>
     agreement: institution
+    institution: Stanford
 straz:
     authors_entry: Steve Strassmann <straz@edx.org>
     agreement: institution
+    institution: edX
 caesar2164:
     authors_entry: Giulio Gratta <giulio@giuliogratta.com>
     agreement: institution
+    institution: Stanford
 singingwolfboy:
     authors_entry: David Baumgold <david@davidbaumgold.com>
     agreement: institution
+    institution: edX
 jbau:
     authors_entry: Jason Bau <jbau@stanford.edu>
     agreement: institution
+    institution: Stanford
 frrrances:
     authors_entry: Frances Botsford <frances@edx.org>
     agreement: institution
+    institution: edX
 JonahStanley:
     authors_entry: Jonah Stanley <Jonah_Stanley@brown.edu>
     agreement: institution
+    institution: edX
 Slater-Victoroff:
     authors_entry: Slater Victoroff <slater.r.victoroff@gmail.com>
     agreement: institution
+    institution: edX
 peter-fogg:
     authors_entry: Peter Fogg <peter.p.fogg@gmail.com>
     agreement: institution
+    institution: edX
 lapentab:
     authors_entry: Bethany LaPenta <lapentab@mit.edu>
     agreement: institution
+    institution: edX
 rlucioni:
     authors_entry: Renzo Lucioni <renzolucioni@gmail.com>
     agreement: institution
+    institution: edX
 fephsun:
     authors_entry: Felix Sun <felixsun@mit.edu>
     agreement: institution
+    institution: edX
 adampalay:
     authors_entry: Adam Palay <adam@edx.org>
     agreement: institution
+    institution: edX
 ihoover:
     authors_entry: Ian Hoover <ihoover@edx.org>
     agreement: institution
+    institution: edX
 mikigoyal:
     authors_entry: Mukul Goyal <miki@edx.org>
     agreement: institution
+    institution: edX
 robertjmarks:
     authors_entry: Robert Marks <rmarks@edx.org>
     agreement: individual
@@ -266,14 +327,17 @@ yarko:
 mlsteele:
     authors_entry: Miles Steele <miles@milessteele.com>
     agreement: institution
+    institution: edX
 kluo:
     authors_entry: Kevin Luo <kevluo@edx.org>
     agreement: institution
+    institution: edX
 akjags:
     authors_entry: Akshay Jagadeesh <akjags@gmail.com>
 nparlante:
     authors_entry: Nick Parlante <nick.parlante@cs.stanford.edu>
     agreement: institution
+    institution: Stanford
 hikari-boulders:
     authors_entry: Marko Seric <marko.seric@math.uzh.ch>
     agreement: individual
@@ -283,9 +347,11 @@ felipemontoya:
 flowerhack:
     authors_entry: Julia Hansbrough <julia@edx.org>
     agreement: institution
+    institution: edX
 natea:
     authors_entry: Nate Aune <naune@edx.org>
     agreement: institution
+    institution: edX
 antoviaque:
     authors_entry: Xavier Antoviaque <xavier@antoviaque.org>
     agreement: individual
@@ -295,29 +361,35 @@ kern3020:
 feanil:
     authors_entry: Feanil Patel <feanil@edx.org>
     agreement: institution
+    institution: edX
 ammubhave:
     authors_entry: Amol Bhave <ammubhave@gmail.com>
 mcpanic:
     authors_entry: Juho Kim <juhokim@edx.org>
     agreement: institution
+    institution: edX
 stkomarov:
     authors_entry: ???
     agreement: institution
 jimabramson:
     authors_entry: Jim Abramson <jsa@edx.org>
     agreement: institution
+    institution: edX
 mulby:
     authors_entry: Gabe Mulley <gabe@edx.org>
     agreement: institution
+    institution: edX
 Julian:
     authors_entry: Julian Berman <Julian+edX@GrayVines.com>
     agreement: individual
 tnorum:
     authors_entry: Toddi Norum <toddi@edx.org>
     agreement: institution
+    institution: edX
 jinpa:
     authors_entry: Jane Manning <jmanning@gmail.com>
     agreement: institution
+    institution: Stanford
 pchiu33:
     authors_entry: Philippe Chiu <philippe.chiu@gmail.com>
     agreement: individual
@@ -335,9 +407,11 @@ kewubenduben:
 jorr-at-google:
     authors_entry: John Orr <jorr@google.com>
     agreement: institution
+    institution: Google
 symbolist:
     authors_entry: Usman Khalid <symbolist@users.noreply.github.com>
     agreement: institution
+    institution: edX
 oliviermarquez:
     authors_entry: Olivier Marquez <oliviermarquez@gmail.com>
     agreement: individual
@@ -430,27 +504,36 @@ glowe:
 mattdrayer:
     authors_entry: Matt Drayer <mattdrayer@edx.org>
     agreement: institution
+    institution: edX
 lamagnifica:
     authors_entry: Alison Hodges <ahodges@edx.org>
     agreement: institution
+    institution: edX
 andy-armstrong:
     authors_entry: Andy Armstrong <andya@edx.org>
     agreement: institution
+    institution: edX
 stephensanchez:
     authors_entry: Stephen Sanchez <steve@edx.org>
     agreement: institution
+    institution: edX
 mhoeber:
     authors_entry: Mark Hoeber <hoeber@edx.org>
     agreement: institution
+    institution: edX
 srpearce:
     authors_entry: Sylvia Pearce <spearce@edx.org>
     agreement: institution
+    institution: edX
 stroilova:
     authors_entry: Olga Stroilova <olga@edx.org>
     agreement: institution
+    institution: edX
 davestgermain:
     authors_entry: Dave St.Germain <dstgermain@edx.org>
     agreement: institution
+    institution: edX
 hkim823:
     authors_entry: Han Su Kim <hkim823@gmail.com>
     agreement: institution
+    institution: edX
