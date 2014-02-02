@@ -17,6 +17,8 @@ requires an auth.yaml containing ``user`` and ``token`` to
 use to access Github.
 """
 
+from __future__ import print_function
+
 from collections import defaultdict
 import functools
 import sys
@@ -35,16 +37,27 @@ entry_to_github = None
 mapping = None
 
 
-def in_color(color, msg):
-    """Msg should be in color, do the right thing for the output, and for Unicode."""
-    msg = msg.encode('utf8')
+# Make convenient print functions.
+
+builtin_print = print
+
+def print(msg=None):
+    """Print in utf8, as God intended."""
+    if msg is not None:
+        builtin_print(msg.encode('utf8'))
+    else:
+        builtin_print()
+
+
+def print_in_color(color, msg):
+    """Msg should be in color if going to a terminal."""
     if sys.stdout.isatty():
         msg = color(msg)
-    return msg
+    print(msg)
 
-red = functools.partial(in_color, colors.red)
-yellow = functools.partial(in_color, colors.yellow)
-green = functools.partial(in_color, colors.green)
+print_red = functools.partial(print_in_color, colors.red)
+print_yellow = functools.partial(print_in_color, colors.yellow)
+print_green = functools.partial(print_in_color, colors.green)
 
 
 # URL patterns
@@ -85,16 +98,16 @@ def check_repo(owner, repo):
 
     all_clear = True
 
-    print
-    print
-    print "{}/{}".format(owner, repo)
-    print
+    print()
+    print()
+    print("{}/{}".format(owner, repo))
+    print()
 
     c = contributors(owner, repo)
     a = authors_file(owner, repo)
 
     if a == set():
-        print red("AUTHORS FILE RETURNED EMPTY")
+        print_red("AUTHORS FILE RETURNED EMPTY")
 
     if a is not None:
 
@@ -102,28 +115,28 @@ def check_repo(owner, repo):
 
         for contributor in c:
             if contributor not in mapping:
-                print red("{} is not in mapping file".format(contributor))
+                print_red("{} is not in mapping file".format(contributor))
                 all_clear = False
             else:
                 if mapping[contributor]["authors_entry"] not in a:
-                    print yellow(u"{} {} is not in AUTHORS file".format(mapping[contributor]["authors_entry"], contributor))
+                    print_yellow(u"{} {} is not in AUTHORS file".format(mapping[contributor]["authors_entry"], contributor))
                     all_clear = False
                 if mapping[contributor].get("agreement") not in ["individual", "institution"]:
-                    print red(u"{} has contributed but not signed agreement".format(contributor))
+                    print_red(u"{} has contributed but not signed agreement".format(contributor))
                     all_clear = False
 
         # who is in the AUTHORS file but hasn't contributed
 
         for author in a:
             if author not in entry_to_github:
-                print red(u"{} is not in mapping file".format(author))
+                print_red(u"{} is not in mapping file".format(author))
                 all_clear = False
             elif entry_to_github[author] not in c:
-                print yellow(u"{} is in AUTHORS file but doesn't seem to have made a commit".format(author))
+                print_yellow(u"{} is in AUTHORS file but doesn't seem to have made a commit".format(author))
                 all_clear = False
 
     else:
-        print yellow("No AUTHORS file")
+        print_yellow("No AUTHORS file")
         all_clear = False
 
     # who has a pull-request that we have't received a CA from
@@ -139,43 +152,43 @@ def check_repo(owner, repo):
             if mapping[user_login].get("agreement") not in ["individual", "institution"]:
                 no_agreement[pull.user.login].add(str(pull.number))
 
-    print
+    print()
 
     for user, numbers in not_in_mapping.items():
-        print red(u"{} is not in mapping file [PR {}]".format(user, ", ".join(numbers)))
+        print_red(u"{} is not in mapping file [PR {}]".format(user, ", ".join(numbers)))
         all_clear = False
     for user, numbers in no_agreement.items():
-        print red(u"{} has not signed agreement [PR {}]".format(user, ", ".join(numbers)))
+        print_red(u"{} has not signed agreement [PR {}]".format(user, ", ".join(numbers)))
         all_clear = False
 
     if all_clear:
-        print green("ALL GOOD")
+        print_green("ALL GOOD")
 
 
 def check_pr(owner, repo, number):
     pull = github.repository(owner, repo).pull_request(number)
-    print "[{}] {}".format(pull.state, pull.title)
+    print("[{}] {}".format(pull.state, pull.title))
     user_login = pull.user.login.lower()
     if user_login not in mapping:
-        print red(u"{} is not in mapping file".format(pull.user.login))
+        print_red(u"{} is not in mapping file".format(pull.user.login))
     elif mapping[user_login].get("agreement") not in ["individual", "institution"]:
-        print u"{} has not signed agreement".format(pull.user.login)
+        print(u"{} has not signed agreement".format(pull.user.login))
     if pull.merged_by:
-        print u"merged by {}".format(pull.merged_by)
+        print(u"merged by {}".format(pull.merged_by))
 
 
 def check_user(username):
     if username not in mapping:
-        print red(u"{} is not in mapping file".format(username))
+        print_red(u"{} is not in mapping file".format(username))
     else:
         agreement = mapping[username]["agreement"]
-        print mapping[username].get("authors_entry", "")
+        print(mapping[username].get("authors_entry", ""))
         if agreement == "individual":
-            print green(u"{} has signed an individual agreement".format(username))
+            print_green(u"{} has signed an individual agreement".format(username))
         elif agreement == "institution":
-            print green(u"{} is covered by an institutional agreement".format(username))
+            print_green(u"{} is covered by an institutional agreement".format(username))
         else:
-            print red(u"{} has not signed agreement".format(username))
+            print_red(u"{} has not signed agreement".format(username))
 
 
 def main(argv):
@@ -201,7 +214,7 @@ def main(argv):
 
     if len(argv) == 3:
         if "/" not in argv[1]:
-            print red("first arg must be of form owner/repo")
+            print_red("first arg must be of form owner/repo")
             return 1
         owner, repo = argv[1].split("/")
         number = argv[2]
