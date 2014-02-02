@@ -316,7 +316,7 @@ tnorum:
     authors_entry: Toddi Norum <toddi@edx.org>
     agreement: institution
 jinpa:
-    authors_entry: Jane Manning <???>
+    authors_entry: Jane Manning <jmanning@gmail.com>
     agreement: institution
 pchiu33:
     authors_entry: Philippe Chiu <philippe.chiu@gmail.com>
@@ -333,10 +333,10 @@ kewubenduben:
 # Neal McBurnett <nealmcb@gmail.com>
 # agreement: individual
 jorr-at-google:
-    authors_entry: ???
+    authors_entry: John Orr <jorr@google.com>
     agreement: institution
 symbolist:
-    authors_entry: Usman Khalid <???>
+    authors_entry: Usman Khalid <symbolist@users.noreply.github.com>
     agreement: institution
 oliviermarquez:
     authors_entry: Olivier Marquez <oliviermarquez@gmail.com>
