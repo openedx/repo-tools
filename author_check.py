@@ -22,9 +22,17 @@ import functools
 import sys
 
 import colors
-from github3 import login
+import github3
 import requests
 import yaml
+
+
+# Global data.
+
+GITHUB_USER = None
+PERSONAL_ACCESS_TOKEN = None
+entry_to_github = None
+mapping = None
 
 
 def in_color(color, msg):
@@ -39,22 +47,10 @@ yellow = functools.partial(in_color, colors.yellow)
 green = functools.partial(in_color, colors.green)
 
 
-with open("auth.yaml") as auth_file:
-    auth_info = yaml.load(auth_file)
-
-    GITHUB_USER = auth_info["user"]
-    PERSONAL_ACCESS_TOKEN = auth_info["token"]
-
-with open("repos.yaml") as repos_file:
-    REPO_LIST = yaml.load(repos_file)
-
-
 # URL patterns
 
 CONTRIBUTORS_URL = "https://api.github.com/repos/{owner}/{repo}/contributors"
 AUTHORS_URL = "https://raw.github.com/{owner}/{repo}/{branch}/{filename}"
-
-gh = login(GITHUB_USER, password=PERSONAL_ACCESS_TOKEN)
 
 
 def contributors(owner, repo):
@@ -77,18 +73,12 @@ def authors_file(owner, repo, branch="master", filename="AUTHORS"):
     r = requests.get(authors_url, auth=(GITHUB_USER, PERSONAL_ACCESS_TOKEN))
     if r.status_code == 404:
         return None
-    return set(line for line in r.text.split("\n") if "@" in line)
+    return set(line for line in r.text.splitlines() if "@" in line)
 
 
 def pull_requests(owner, repo):
-    return gh.repository(owner, repo).iter_pulls()
+    return github.repository(owner, repo).iter_pulls()
 
-
-with open("mapping.yaml") as mapping_file:
-    mapping = yaml.load(mapping_file)
-    mapping = {k.lower():v for k,v in mapping.items()}
-
-entry_to_github = {mapping[contributor]["authors_entry"]: contributor for contributor in mapping}
 
 
 def check_repo(owner, repo):
@@ -163,7 +153,7 @@ def check_repo(owner, repo):
 
 
 def check_pr(owner, repo, number):
-    pull = gh.repository(owner, repo).pull_request(number)
+    pull = github.repository(owner, repo).pull_request(number)
     print "[{}] {}".format(pull.state, pull.title)
     user_login = pull.user.login.lower()
     if user_login not in mapping:
@@ -188,19 +178,46 @@ def check_user(username):
             print red(u"{} has not signed agreement".format(username))
 
 
-if len(sys.argv) == 3:
-    if "/" not in sys.argv[1]:
-        print red("first arg must be of form owner/repo")
-        sys.exit(1)
-    owner, repo = sys.argv[1].split("/")
-    number = sys.argv[2]
-    check_pr(owner, repo, number)
-elif len(sys.argv) == 2:
-    if "/" in sys.argv[1]:
-        owner, repo = sys.argv[1].split("/")
-        check_repo(owner, repo)
+def main(argv):
+    global GITHUB_USER, PERSONAL_ACCESS_TOKEN
+    global github, mapping, entry_to_github
+
+    with open("auth.yaml") as auth_file:
+        auth_info = yaml.load(auth_file)
+
+        GITHUB_USER = auth_info["user"]
+        PERSONAL_ACCESS_TOKEN = auth_info["token"]
+
+    with open("repos.yaml") as repos_file:
+        REPO_LIST = yaml.load(repos_file)
+
+    with open("mapping.yaml") as mapping_file:
+        mapping = yaml.load(mapping_file)
+        mapping = {k.lower():v for k,v in mapping.items()}
+
+    entry_to_github = {mapping[contributor]["authors_entry"]: contributor for contributor in mapping}
+
+    github = github3.login(GITHUB_USER, password=PERSONAL_ACCESS_TOKEN)
+
+    if len(argv) == 3:
+        if "/" not in argv[1]:
+            print red("first arg must be of form owner/repo")
+            return 1
+        owner, repo = argv[1].split("/")
+        number = argv[2]
+        check_pr(owner, repo, number)
+    elif len(argv) == 2:
+        if "/" in argv[1]:
+            owner, repo = argv[1].split("/")
+            check_repo(owner, repo)
+        else:
+            check_user(argv[1])
     else:
-        check_user(sys.argv[1])
-else:
-    for repo in REPO_LIST:
-        check_repo(*repo.split("/"))
+        for repo in REPO_LIST:
+            check_repo(*repo.split("/"))
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))
