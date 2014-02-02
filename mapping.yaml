@@ -369,7 +369,7 @@ mcpanic:
     agreement: institution
     institution: edX
 stkomarov:
-    authors_entry: ???
+    authors_entry: Steve Komarov <skomarov@edx.org>
     agreement: institution
 jimabramson:
     authors_entry: Jim Abramson <jsa@edx.org>

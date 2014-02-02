@@ -9,6 +9,7 @@
 - edx/codejail
 - edx/xqueue
 - edx/js-test-tool
+- edx/edx-e2e-tests
 - edx/notifier
 - edx/event-tracking
 - edx/XBlock
@@ -16,5 +17,6 @@
 - edx/cs_comments_service
 - edx/diff-cover
 - edx/edx-ora
+- edx/edx-tim
 - edx/edx-platform
 - edx/configuration
