@@ -328,7 +328,7 @@ carsongee:
 #    agreement: institution
 #    authors_entry: Carson Gee <cgee@mit.edu>
 kewubenduben:
-    authors_entry: ???
+    authors_entry: Ker Ruben Ramos <xdiscent@gmail.com>
     agreement: individual
 # Neal McBurnett <nealmcb@gmail.com>
 # agreement: individual
@@ -450,4 +450,7 @@ stroilova:
     agreement: institution
 davestgermain:
     authors_entry: Dave St.Germain <dstgermain@edx.org>
+    agreement: institution
+hkim823:
+    authors_entry: Han Su Kim <hkim823@gmail.com>
     agreement: institution
