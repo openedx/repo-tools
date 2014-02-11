@@ -20,4 +20,6 @@ edx/diff-cover:
 edx/edx-ora:
 edx/edx-tim:
 edx/edx-platform:
+    hidden-contributors:
+        - anant*
 edx/configuration:

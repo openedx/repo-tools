@@ -77,7 +77,9 @@ def contributors(owner_repo):
     contributors_url = CONTRIBUTORS_URL.format(owner_repo=owner_repo)
     entries = requests.get(contributors_url, auth=(GITHUB_USER, PERSONAL_ACCESS_TOKEN)).json()
 
-    return set(entry["login"].lower() for entry in entries)
+    actual_contributors = set(entry["login"].lower() for entry in entries)
+    hidden_contributors = set((REPO_INFO.get(owner_repo) or {}).get("hidden-contributors", []))
+    return actual_contributors | hidden_contributors
 
 
 def authors_file(owner_repo, branch="master", filename="AUTHORS"):
