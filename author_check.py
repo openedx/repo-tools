@@ -33,6 +33,7 @@ import yaml
 
 GITHUB_USER = None
 PERSONAL_ACCESS_TOKEN = None
+REPO_INFO = {}
 entry_to_github = None
 mapping = None
 
@@ -192,7 +193,7 @@ def check_user(username):
 
 
 def main(argv):
-    global GITHUB_USER, PERSONAL_ACCESS_TOKEN
+    global GITHUB_USER, PERSONAL_ACCESS_TOKEN, REPO_INFO
     global github, mapping, entry_to_github
 
     with open("auth.yaml") as auth_file:
@@ -202,7 +203,7 @@ def main(argv):
         PERSONAL_ACCESS_TOKEN = auth_info["token"]
 
     with open("repos.yaml") as repos_file:
-        REPO_LIST = yaml.load(repos_file)
+        REPO_INFO = yaml.load(repos_file)
 
     with open("mapping.yaml") as mapping_file:
         mapping = yaml.load(mapping_file)
@@ -226,7 +227,7 @@ def main(argv):
         else:
             check_user(argv[1])
     else:
-        for repo in REPO_LIST:
+        for repo in sorted(REPO_INFO):
             check_repo(*repo.split("/"))
 
     return 0

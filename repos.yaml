@@ -1,22 +1,23 @@
-- edx/loghandlersplus
-- edx/ease
-- edx/arch-prototype
-- edx/djeventstream
-- edx/xserver
-- edx/discern
-- edx/edxanalytics
-- edx/insights
-- edx/codejail
-- edx/xqueue
-- edx/js-test-tool
-- edx/edx-e2e-tests
-- edx/notifier
-- edx/event-tracking
-- edx/XBlock
-- edx/edx-demo-course
-- edx/cs_comments_service
-- edx/diff-cover
-- edx/edx-ora
-- edx/edx-tim
-- edx/edx-platform
-- edx/configuration
+# The repos checked by author-check
+edx/loghandlersplus:
+edx/ease:
+edx/arch-prototype:
+edx/djeventstream:
+edx/xserver:
+edx/discern:
+edx/edxanalytics:
+edx/insights:
+edx/codejail:
+edx/xqueue:
+edx/js-test-tool:
+edx/edx-e2e-tests:
+edx/notifier:
+edx/event-tracking:
+edx/XBlock:
+edx/edx-demo-course:
+edx/cs_comments_service:
+edx/diff-cover:
+edx/edx-ora:
+edx/edx-tim:
+edx/edx-platform:
+edx/configuration:
