@@ -63,26 +63,26 @@ print_green = functools.partial(print_in_color, colors.green)
 
 # URL patterns
 
-CONTRIBUTORS_URL = "https://api.github.com/repos/{owner}/{repo}/contributors"
-AUTHORS_URL = "https://raw.github.com/{owner}/{repo}/{branch}/{filename}"
+CONTRIBUTORS_URL = "https://api.github.com/repos/{owner_repo}/contributors"
+AUTHORS_URL = "https://raw.github.com/{owner_repo}/{branch}/{filename}"
 
 
-def contributors(owner, repo):
+def contributors(owner_repo):
     """
     Returns a set of Github usernames who have contributed to the given repo.
 
     Usernames are lower-cased, since Github usernames are case-insensitive.
 
     """
-    contributors_url = CONTRIBUTORS_URL.format(owner=owner, repo=repo)
+    contributors_url = CONTRIBUTORS_URL.format(owner_repo=owner_repo)
     entries = requests.get(contributors_url, auth=(GITHUB_USER, PERSONAL_ACCESS_TOKEN)).json()
 
     return set(entry["login"].lower() for entry in entries)
 
 
-def authors_file(owner, repo, branch="master", filename="AUTHORS"):
+def authors_file(owner_repo, branch="master", filename="AUTHORS"):
     authors_url = AUTHORS_URL.format(
-        owner=owner, repo=repo, branch=branch, filename=filename
+        owner_repo=owner_repo, branch=branch, filename=filename
     )
     r = requests.get(authors_url, auth=(GITHUB_USER, PERSONAL_ACCESS_TOKEN))
     if r.status_code == 404:
@@ -90,22 +90,23 @@ def authors_file(owner, repo, branch="master", filename="AUTHORS"):
     return set(line for line in r.text.splitlines() if "@" in line)
 
 
-def pull_requests(owner, repo):
+def pull_requests(owner_repo):
+    owner, repo = owner_repo.split("/")
     return github.repository(owner, repo).iter_pulls()
 
 
 
-def check_repo(owner, repo):
+def check_repo(owner_repo):
 
     all_clear = True
 
     print()
     print()
-    print("{}/{}".format(owner, repo))
+    print(owner_repo)
     print()
 
-    c = contributors(owner, repo)
-    a = authors_file(owner, repo)
+    c = contributors(owner_repo)
+    a = authors_file(owner_repo)
 
     if a == set():
         print_red("AUTHORS FILE RETURNED EMPTY")
@@ -145,7 +146,7 @@ def check_repo(owner, repo):
     not_in_mapping = defaultdict(set)
     no_agreement = defaultdict(set)
 
-    for pull in pull_requests(owner, repo):
+    for pull in pull_requests(owner_repo):
         user_login = pull.user.login.lower()
         if user_login not in mapping:
             not_in_mapping[pull.user.login].add(str(pull.number))
@@ -166,7 +167,8 @@ def check_repo(owner, repo):
         print_green("ALL GOOD")
 
 
-def check_pr(owner, repo, number):
+def check_pr(owner_repo, number):
+    owner, repo = owner_repo.split("/")
     pull = github.repository(owner, repo).pull_request(number)
     print("[{}] {}".format(pull.state, pull.title))
     user_login = pull.user.login.lower()
@@ -217,18 +219,18 @@ def main(argv):
         if "/" not in argv[1]:
             print_red("first arg must be of form owner/repo")
             return 1
-        owner, repo = argv[1].split("/")
+        owner_repo = argv[1]
         number = argv[2]
-        check_pr(owner, repo, number)
+        check_pr(owner_repo, number)
     elif len(argv) == 2:
         if "/" in argv[1]:
-            owner, repo = argv[1].split("/")
-            check_repo(owner, repo)
+            owner_repo = argv[1]
+            check_repo(owner_repo)
         else:
             check_user(argv[1])
     else:
-        for repo in sorted(REPO_INFO):
-            check_repo(*repo.split("/"))
+        for owner_repo in sorted(REPO_INFO):
+            check_repo(owner_repo)
 
     return 0
 
