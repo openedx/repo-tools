@@ -21,5 +21,9 @@ edx/edx-ora:
 edx/edx-tim:
 edx/edx-platform:
     hidden-contributors:
+        - aculich
         - anant*
+        - kimtonyhyun
+        - rcchirwa
+        - terman
 edx/configuration:
