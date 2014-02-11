@@ -45,7 +45,7 @@ builtin_print = print
 def print(msg=None):
     """Print in utf8, as God intended."""
     if msg is not None:
-        builtin_print(msg.encode('utf8'))
+        builtin_print(unicode(msg).encode('utf8'))
     else:
         builtin_print()
 
