@@ -53,6 +53,7 @@ sikachu:
 ichuang:
     authors_entry: Isaac Chuang <ichuang@mit.edu>
     agreement: individual
+    institution: MIT
 frechg:
     authors_entry: Galen Frechette <galen@thoughtbot.com>
     agreement: institution
@@ -398,6 +399,7 @@ pchiu33:
 carsongee:
     authors_entry: Carson Gee <x@carsongee.com>
     agreement: individual
+    institution: MIT
 # cgee:
 #    agreement: institution
 #    authors_entry: Carson Gee <cgee@mit.edu>
@@ -435,9 +437,11 @@ IainNZ:
 abdoosh00:
     authors_entry: Abdallah Nassif <abdoosh00@gmail.com>
     agreement: individual
+    institution: QRF
 olmar:
     authors_entry: Oleg Marshev <oleh.marshev@gmail.com>
-    agreement: individual
+    agreement: institution
+    institution: edX
 neurolit:
     authors_entry: Florian Dufour <neurolit@gmail.com>
     agreement: individual
@@ -447,6 +451,7 @@ manuel-freire:
 danielcebrian:
     authors_entry: Daniel Cebrián Robles <danielcebrianr@gmail.com>
     agreement: individual
+    institution: Harvard
 dglance:
     authors_entry: David Glance <david.glance@gmail.com>
     agreement: individual
@@ -471,12 +476,15 @@ danghuyhoa:
 waheedahmed:
     authors_entry: Waheed Ahmed <waheed.ahmed@arbisoft.com>
     agreement: institution
+    institution: edX
 zubair-arbi:
     authors_entry: Zubair Afzal <zubair.afzal@arbisoft.com>
     agreement: institution
+    institution: edX
 tusbar:
     authors_entry: Bertrand Marron <bertrand.marron@ionis-group.com>
     agreement: individual
+    institution: IONIS
 brainstorm:
     authors_entry: Roman Valls Guimera <roman@incf.org>
     agreement: individual
@@ -492,10 +500,12 @@ pdehaye:
 hwjworld:
     authors_entry: Jerome Huang <canni3269@gmail.com>
     agreement: individual
+    institution: DianDiYun
     comment: part of DianDiYun Inc
 chenshuchuan:
     authors_entry: ShuChuan Chen <am15501@163.com>
     agreement: individual
+    institution: DianDiYun
     comment: part of DianDiYun Inc
 TheBritKnight:
     authors_entry: Charles Dawson <charles.dwsn@gmail.com>
