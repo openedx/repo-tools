@@ -14,9 +14,11 @@ edx/edx-e2e-tests:
 edx/notifier:
 edx/event-tracking:
 edx/XBlock:
+edx/acid-block:
 edx/edx-demo-course:
 edx/cs_comments_service:
 edx/diff-cover:
+edx/bok-choy:
 edx/edx-ora:
 edx/edx-tim:
 edx/edx-platform:
