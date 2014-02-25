@@ -555,3 +555,17 @@ Bachmann1234:
 avinassh:
     authors_entry: Avinash Sajjanshetty <avinashsajjan@gmail.com>
     agreement: individual
+robertlight:
+    authors_entry: Robert Light <robert_light@verizon.net>
+    agreement: individual
+martynjames:
+    authors_entry: Martyn James <mjames@edx.org>
+    agreement: institution
+    institution: edX
+johncox-google:
+    authors_entry: John Cox <johncox@google.com>
+    agreement: institution
+    institution: Google
+vicjwang:
+    authors_entry: Victor Wang <vjwang45@gmail.com>
+    agreement: individual
