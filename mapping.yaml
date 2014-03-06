@@ -577,8 +577,16 @@ nasthagiri:
     agreement: institution
     institution: edX
 yrchen:
-    authors_entry: yrchen@atcity.org
+    authors_entry: Xaver Y.R. Chen <yrchen@atcity.org>
     agreement: individual
 gremat??:
-    authors_entry: gremat@gmail.com
+    authors_entry: Matjaz Gregoric <gremat@gmail.com>
     agreement: individual
+raeeschachar:
+    authors_entry: Raees Chachar <raees.chachar@arbisoft.com>
+    agreement: institution
+    institution: edX
+muhammad-ammar:
+    authors_entry: Muhammad Ammar <mammar@edx.org>
+    agreement: institution
+    institution: edX
