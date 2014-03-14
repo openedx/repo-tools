@@ -357,7 +357,8 @@ natea:
     institution: edX
 antoviaque:
     authors_entry: Xavier Antoviaque <xavier@antoviaque.org>
-    agreement: individual
+    agreement: institution
+    institution: Flouzo SARL
 kern3020:
     authors_entry: John Kern <kern3020@gmail.com>
     agreement: individual
@@ -593,3 +594,19 @@ muhammad-ammar:
 dangtrinh:
     authors_entry: Trinh Nguyen <dangtrinhnt@gmail.com>
     agreement: individual
+mtyaka:
+    authors_entry: Matjaz Gregoric <gremat@gmail.com>
+    agreement: institution
+    institution: Flouzo SARL
+aboudreault:
+    authors_entry: Alan Boudreault <boudreault.alan@gmail.com>
+    agreement: institution
+    institution: Flouzo SARL
+FiloSottile:
+    authors_entry: Filippo Valsorda <fv@filippo.io>
+    agreement: institution
+    institution: Flouzo SARL
+racech:
+    authors_entry: Krzysztof Bujniewicz <k@2g.pl>
+    agreement: institution
+    institution: Flouzo SARL
