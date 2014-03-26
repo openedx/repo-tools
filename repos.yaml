@@ -14,13 +14,14 @@ edx/edx-e2e-tests:
 edx/notifier:
 edx/event-tracking:
 edx/XBlock:
+edx/xblock-sdk:
 edx/acid-block:
 edx/edx-demo-course:
 edx/cs_comments_service:
 edx/diff-cover:
 edx/bok-choy:
 edx/edx-ora:
-edx/edx-tim:
+edx/edx-ora2:
 edx/edx-platform:
     hidden-contributors:
         - aculich

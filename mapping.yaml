@@ -617,3 +617,7 @@ shedna:
     authors_entry: William Desloge <william.desloge@ionis-group.com>
     agreement: individual
     institution: IONIS
+fredsmith:
+    authors_entry: Fred Smith <derf@edx.org>
+    agreement: institution
+    institution: edX
