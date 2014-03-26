@@ -77,6 +77,8 @@ def contributors(owner_repo):
     contributors_url = CONTRIBUTORS_URL.format(owner_repo=owner_repo)
     entries = requests.get(contributors_url, auth=(GITHUB_USER, PERSONAL_ACCESS_TOKEN)).json()
 
+    if isinstance(entries, dict):
+        raise Exception("Problem with repo {}: {}".format(owner_repo, entries.get('message', '???')))
     actual_contributors = set(entry["login"].lower() for entry in entries)
     hidden_contributors = set((REPO_INFO.get(owner_repo) or {}).get("hidden-contributors", []))
     return actual_contributors | hidden_contributors
@@ -232,7 +234,10 @@ def main(argv):
             check_user(argv[1])
     else:
         for owner_repo in sorted(REPO_INFO):
-            check_repo(owner_repo)
+            try:
+                check_repo(owner_repo)
+            except Exception as e:
+                print_red("Couldn't check repo {}: {}".format(owner_repo, e))
 
     return 0
 
