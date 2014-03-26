@@ -30,3 +30,4 @@ edx/edx-platform:
         - rcchirwa
         - terman
 edx/configuration:
+edx/edx-tools:
