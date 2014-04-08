@@ -26,8 +26,9 @@ ormsbee:
     agreement: institution
     institution: edX
 terman:
-    authors_entry: Chris Terman <cjt@edx.org>
+    authors_entry: Chris Terman <cjt@mit.edu>
     agreement: institution
+    institution: MIT
 kaishin:
     authors_entry: Reda Lemeden <reda@thoughtbot.com>
     agreement: institution
