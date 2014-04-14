@@ -640,3 +640,7 @@ marcore:
 rayhooker:
     authors_entry: Raymond Hooker <ray.hooker@gmail.com>
     agreement: individual
+trbm:
+    authors_entry: Thomas Brennan-Marquez <trbm@stanford.edu>
+    agreement: individual
+    institution: Stanford
