@@ -21,6 +21,7 @@ from __future__ import print_function
 
 from collections import defaultdict
 import functools
+import re
 import sys
 
 import colors
@@ -61,6 +62,29 @@ print_yellow = functools.partial(print_in_color, colors.yellow)
 print_green = functools.partial(print_in_color, colors.green)
 
 
+
+def paginated_get(url, debug=False, **kwargs):
+    """
+    Returns a generator that will retrieve all objects from a paginated API.
+    Assumes that the pagination is specified in the "link" header, like
+    Github's v3 API.
+    """
+    while url:
+        resp = requests.get(url, **kwargs)
+        result = resp.json()
+        if not resp.ok:
+            raise requests.exceptions.RequestException(result["message"])
+        if debug:
+            pprint.pprint(result, stream=sys.stderr)
+        for item in result:
+            yield item
+        url = None
+        if "link" in resp.headers:
+            match = re.search(r'<(?P<url>[^>]+)>; rel="next"', resp.headers["link"])
+            if match:
+                url = match.group('url')
+
+
 # URL patterns
 
 CONTRIBUTORS_URL = "https://api.github.com/repos/{owner_repo}/contributors"
@@ -75,10 +99,8 @@ def contributors(owner_repo):
 
     """
     contributors_url = CONTRIBUTORS_URL.format(owner_repo=owner_repo)
-    entries = requests.get(contributors_url, auth=(GITHUB_USER, PERSONAL_ACCESS_TOKEN)).json()
+    entries = paginated_get(contributors_url, auth=(GITHUB_USER, PERSONAL_ACCESS_TOKEN))
 
-    if isinstance(entries, dict):
-        raise Exception("Problem with repo {}: {}".format(owner_repo, entries.get('message', '???')))
     actual_contributors = set(entry["login"].lower() for entry in entries)
     hidden_contributors = set((REPO_INFO.get(owner_repo) or {}).get("hidden-contributors", []))
     return actual_contributors | hidden_contributors
