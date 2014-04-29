@@ -143,7 +143,7 @@ def check_repo(owner_repo):
 
         for contributor in c:
             if contributor not in mapping:
-                print_red("{} is not in mapping file".format(contributor))
+                print_red("{} is a contributor but not in mapping file".format(contributor))
                 all_clear = False
             else:
                 if mapping[contributor]["authors_entry"] not in a:
@@ -157,7 +157,7 @@ def check_repo(owner_repo):
 
         for author in a:
             if author not in entry_to_github:
-                print_red(u"{} is not in mapping file".format(author))
+                print_red(u"{} is in AUTHORS but not in mapping file".format(author))
                 all_clear = False
             elif entry_to_github[author] not in c:
                 print_yellow(u"{} is in AUTHORS file but doesn't seem to have made a commit".format(author))
