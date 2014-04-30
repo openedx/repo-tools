@@ -670,3 +670,7 @@ mlkwaqas:
 msabramo:
     authors_entry: Marc Abramowitz <marca@surveymonkey.com>
     agreement: individual
+itsbenweeks:
+    authors_entry: Ben Weeks <benweeks@mit.edu>
+    agreement: institution
+    institution: MIT
