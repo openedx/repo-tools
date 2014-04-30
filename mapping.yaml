@@ -369,6 +369,8 @@ feanil:
     institution: edX
 ammubhave:
     authors_entry: Amol Bhave <ammubhave@gmail.com>
+    agreement: institution
+    institution: edX
 mcpanic:
     authors_entry: Juho Kim <juhokim@edx.org>
     agreement: institution
