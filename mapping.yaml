@@ -676,3 +676,7 @@ itsbenweeks:
     authors_entry: Ben Weeks <benweeks@mit.edu>
     agreement: institution
     institution: MIT
+mslotkeEDX:
+    authors_entry: Michele Slotke <mslotke@edx.org>
+    agreement: institution
+    institution: edX
