@@ -1,2 +1,3 @@
 auth.yaml
 venv
+*.pyc
