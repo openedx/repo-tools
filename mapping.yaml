@@ -700,3 +700,7 @@ gradyward:
     authors_entry: Grady Ward <gward@edx.org>
     agreement: institution
     institution: edX
+stvstnfrd:
+    authors_entry: Steve Unknown <stv@stanford.edu>
+    agreement: institution
+    institution: Stanford
