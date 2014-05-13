@@ -692,3 +692,11 @@ imiric:
 drhodes:
     authors_entry: Derek Rhodes <physci@gmail.com>
     agreement: individual
+lduarte1991:
+    authors_entry: Luis Duarte <lduarte1991@gmail.com>
+    agreement: institution
+    institution: Harvard
+gradyward:
+    authors_entry: Grady Ward <gward@edx.org>
+    agreement: institution
+    institution: edX
