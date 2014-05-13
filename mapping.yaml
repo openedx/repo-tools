@@ -704,3 +704,7 @@ stvstnfrd:
     authors_entry: Steve Unknown <stv@stanford.edu>
     agreement: institution
     institution: Stanford
+ksteph:
+    authors_entry: Kristin Stephens <ksteph@cs.berkeley.edu>
+    agreement: institution
+    institution: Stanford
