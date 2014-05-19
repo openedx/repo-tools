@@ -701,10 +701,18 @@ gradyward:
     agreement: institution
     institution: edX
 stvstnfrd:
-    authors_entry: Steve Unknown <stv@stanford.edu>
+    authors_entry: Steve Burch <stv@stanford.edu>
     agreement: institution
     institution: Stanford
 ksteph:
     authors_entry: Kristin Stephens <ksteph@cs.berkeley.edu>
     agreement: institution
     institution: Stanford
+benpatterson:
+    authors_entry: Ben Patterson <xyzzy@edx.org>
+    agreement: institution
+    institution: edX
+deaspoon:
+    authors_entry: Derrick Pyle <dpyle@edx.org>
+    agreement: institution
+    institution: edX
