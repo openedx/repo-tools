@@ -15,7 +15,7 @@ from urlobject import URLObject
 import yaml
 
 import jreport
-from jreport.util import paginated_get
+from helpers import paginated_get
 
 ISSUE_FMT = (
     "{number:5d:white:bold} {user.login:>17s:cyan} {comments:3d:red}"
@@ -82,15 +82,15 @@ def get_pulls(labels=None, state="open", since=None, org=False):
     org_fn = None
     if org:
         try:
-            with open("mapping.yaml") as fmapping:
-                user_mapping = yaml.load(fmapping)
+            with open("people.yaml") as fpeople:
+                people = yaml.load(fpeople)
             def_org = "other"
         except IOError:
-            user_mapping = {}
+            people = {}
             def_org = "---"
 
         def org_fn(issue):
-            return user_mapping.get(issue["user.login"], {}).get("institution", def_org)
+            return people.get(issue["user.login"], {}).get("institution", def_org)
 
     issues = JPullRequest.from_json(paginated_get(url), org_fn)
     if org:
