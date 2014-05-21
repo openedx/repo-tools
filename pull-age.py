@@ -12,7 +12,7 @@ from backports import statistics
 import iso8601
 from urlobject import URLObject
 
-from jreport.util import paginated_get
+from helpers import paginated_get
 
 DEBUG = False
 
@@ -27,19 +27,19 @@ def get_internal_usernames():
     """
     Returns a set of the Github usernames that are associated with edX.
     """
-    with open("mapping.yaml") as mapping_yaml:
-        mapping = yaml.load(mapping_yaml)
+    with open("people.yaml") as people_yaml:
+        people = yaml.load(people_yaml)
 
     internal_usernames = set()
-    for github_name, info in mapping.iteritems():
+    for github_name, info in people.iteritems():
         if info.get("institution", "unknown") == "edX":
             internal_usernames.add(github_name)
     return internal_usernames
 
 
 def get_user_org_mapping():
-    with open("mapping.yaml") as mapping_yaml:
-        mapping = yaml.load(mapping_yaml)
+    with open("people.yaml") as people_yaml:
+        mapping = yaml.load(people_yaml)
 
     return { user:data.get('institution', 'other') for user, data in mapping.items() }
 
