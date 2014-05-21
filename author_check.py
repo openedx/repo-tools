@@ -38,7 +38,7 @@ GITHUB_USER = None
 PERSONAL_ACCESS_TOKEN = None
 REPO_INFO = {}
 entry_to_github = None
-mapping = None
+people = None
 
 
 # Make convenient print functions.
@@ -122,14 +122,14 @@ def check_repo(owner_repo):
         # who has contributed but isn't in the AUTHORS file or hasn't signed a CA
 
         for contributor in c:
-            if contributor not in mapping:
-                print_red("{} is a contributor but not in mapping file".format(contributor))
+            if contributor not in people:
+                print_red("{} is a contributor but not in people file".format(contributor))
                 all_clear = False
             else:
-                if mapping[contributor]["authors_entry"] not in a:
-                    print_yellow(u"{} {} is not in AUTHORS file".format(mapping[contributor]["authors_entry"], contributor))
+                if people[contributor]["authors_entry"] not in a:
+                    print_yellow(u"{} {} is not in AUTHORS file".format(people[contributor]["authors_entry"], contributor))
                     all_clear = False
-                if mapping[contributor].get("agreement") not in ["individual", "institution"]:
+                if people[contributor].get("agreement") not in ["individual", "institution"]:
                     print_red(u"{} has contributed but not signed agreement".format(contributor))
                     all_clear = False
 
@@ -137,7 +137,7 @@ def check_repo(owner_repo):
 
         for author in a:
             if author not in entry_to_github:
-                print_red(u"{} is in AUTHORS but not in mapping file".format(author))
+                print_red(u"{} is in AUTHORS but not in people file".format(author))
                 all_clear = False
             elif entry_to_github[author] not in c:
                 print_yellow(u"{} is in AUTHORS file but doesn't seem to have made a commit".format(author))
@@ -149,21 +149,21 @@ def check_repo(owner_repo):
 
     # who has a pull-request that we have't received a CA from
 
-    not_in_mapping = defaultdict(set)
+    not_in_people = defaultdict(set)
     no_agreement = defaultdict(set)
 
     for pull in pull_requests(owner_repo):
         user_login = pull.user.login.lower()
-        if user_login not in mapping:
-            not_in_mapping[pull.user.login].add(str(pull.number))
+        if user_login not in people:
+            not_in_people[pull.user.login].add(str(pull.number))
         else:
-            if mapping[user_login].get("agreement") not in ["individual", "institution"]:
+            if people[user_login].get("agreement") not in ["individual", "institution"]:
                 no_agreement[pull.user.login].add(str(pull.number))
 
     print()
 
-    for user, numbers in not_in_mapping.items():
-        print_red(u"{} is not in mapping file [PR {}]".format(user, ", ".join(numbers)))
+    for user, numbers in not_in_people.items():
+        print_red(u"{} is not in people file [PR {}]".format(user, ", ".join(numbers)))
         all_clear = False
     for user, numbers in no_agreement.items():
         print_red(u"{} has not signed agreement [PR {}]".format(user, ", ".join(numbers)))
@@ -178,20 +178,20 @@ def check_pr(owner_repo, number):
     pull = github.repository(owner, repo).pull_request(number)
     print("[{}] {}".format(pull.state, pull.title))
     user_login = pull.user.login.lower()
-    if user_login not in mapping:
-        print_red(u"{} is not in mapping file".format(pull.user.login))
-    elif mapping[user_login].get("agreement") not in ["individual", "institution"]:
+    if user_login not in people:
+        print_red(u"{} is not in people file".format(pull.user.login))
+    elif people[user_login].get("agreement") not in ["individual", "institution"]:
         print(u"{} has not signed agreement".format(pull.user.login))
     if pull.merged_by:
         print(u"merged by {}".format(pull.merged_by))
 
 
 def check_user(username):
-    if username not in mapping:
-        print_red(u"{} is not in mapping file".format(username))
+    if username not in people:
+        print_red(u"{} is not in people file".format(username))
     else:
-        agreement = mapping[username]["agreement"]
-        print(mapping[username].get("authors_entry", ""))
+        agreement = people[username]["agreement"]
+        print(people[username].get("authors_entry", ""))
         if agreement == "individual":
             print_green(u"{} has signed an individual agreement".format(username))
         elif agreement == "institution":
@@ -202,7 +202,7 @@ def check_user(username):
 
 def main(argv):
     global GITHUB_USER, PERSONAL_ACCESS_TOKEN, REPO_INFO
-    global github, mapping, entry_to_github
+    global github, people, entry_to_github
 
     with open("auth.yaml") as auth_file:
         auth_info = yaml.load(auth_file)
@@ -213,11 +213,11 @@ def main(argv):
     with open("repos.yaml") as repos_file:
         REPO_INFO = yaml.load(repos_file)
 
-    with open("mapping.yaml") as mapping_file:
-        mapping = yaml.load(mapping_file)
-        mapping = {k.lower():v for k,v in mapping.items()}
+    with open("people.yaml") as people_file:
+        people = yaml.load(people_file)
+        people = {k.lower():v for k,v in people.items()}
 
-    entry_to_github = {mapping[contributor]["authors_entry"]: contributor for contributor in mapping}
+    entry_to_github = {people[contributor]["authors_entry"]: contributor for contributor in people}
 
     github = github3.login(GITHUB_USER, password=PERSONAL_ACCESS_TOKEN)
 
