@@ -716,3 +716,6 @@ deaspoon:
     authors_entry: Derrick Pyle <dpyle@edx.org>
     agreement: institution
     institution: edX
+ADubus:
+    authors_entry: Alexandre Dubus <alexandre.dubus@inria.fr>
+    agreement: individual
