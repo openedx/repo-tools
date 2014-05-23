@@ -8,7 +8,7 @@ import dateutil.parser
 import requests
 from urlobject import URLObject
 import yaml
-from .util import paginated_get
+from helpers import paginated_get
 
 
 class JObj(object):
