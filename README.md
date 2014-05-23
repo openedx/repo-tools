@@ -1,3 +1,7 @@
+This repo contains a number of tools for working with GitHub repositories.
+One of them is author-check.
+
+
 # author-check
 
 A commandline utility for checking for consistency between committers,
@@ -33,7 +37,7 @@ You'll also need to grab a personal access token from Github (go to
     user: "<your github username>"
     token: "<your personal access token>"
 
-`mapping.yaml` contains the mapping between Github username and the canonical
+`people.yaml` contains the mapping between Github username and the canonical
 entry for AUTHORS files. It also has information about whether the person has
 signed a contributor agreement or is covered by the institution they work for.
 
