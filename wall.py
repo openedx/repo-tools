@@ -1,10 +1,9 @@
 import collections
 
-import jreport
 from pulls import get_pulls
 
 
-def show_wall(jrep):
+def show_wall():
     issues = get_pulls(state="open")
     blocked_by = collections.defaultdict(list)
     for issue in issues:
@@ -29,5 +28,4 @@ def show_wall(jrep):
 
 
 if __name__ == "__main__":
-    jrep = jreport.JReport()
-    show_wall(jrep)
+    show_wall()

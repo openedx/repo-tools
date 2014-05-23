@@ -11,7 +11,6 @@ import sys
 import dateutil.parser
 from pymongo import MongoClient
 
-import jreport
 from helpers import paginated_get
 from pulls import get_pulls
 
@@ -27,7 +26,7 @@ ISSUE_FMT = (
 COMMENT_FMT = "{:31}{user.login:cyan} {created_at:%b %d:yellow}  \t{body:oneline:.100s:white}"
 
 
-def show_pulls(jrep, labels=None, show_comments=False, state="open", since=None, org=False):
+def show_pulls(labels=None, show_comments=False, state="open", since=None, org=False):
     issues = get_pulls(labels, state, since, org)
 
     category = None
@@ -78,7 +77,7 @@ if 0:
     def yearmonth(d):
         return dateutil.parser.parse(d).strftime("%Y%m")
 
-    def show_pulls(jrep, labels=None, show_comments=False, state="open", since=None, org=False):
+    def show_pulls(labels=None, show_comments=False, state="open", since=None, org=False):
         months = collections.defaultdict(lambda: {'opened': 0, 'merged': 0})
         issues = get_pulls(labels, state, since, org)
         for issue in issues:
@@ -128,9 +127,7 @@ def main(argv):
     if args.since:
         since = datetime.datetime.now() - datetime.timedelta(days=args.since)
 
-    jrep = jreport.JReport(debug=args.debug)
     show_pulls(
-        jrep,
         labels=labels,
         show_comments=args.show_comments,
         state=state,
