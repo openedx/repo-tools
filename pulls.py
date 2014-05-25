@@ -45,8 +45,8 @@ class JPullRequest(jreport.JObj):
             yield issue
 
 
-def get_pulls(labels=None, state="open", since=None, org=False):
-    url = URLObject("https://api.github.com/repos/edx/edx-platform/issues")
+def get_pulls(owner_repo, labels=None, state="open", since=None, org=False):
+    url = URLObject("https://api.github.com/repos/{}/issues".format(owner_repo))
     if labels:
         url = url.set_query_param('labels', ",".join(labels))
     if since:

@@ -4,7 +4,7 @@ from pulls import get_pulls
 
 
 def show_wall():
-    issues = get_pulls(state="open")
+    issues = get_pulls("edx/edx-platform", state="open")
     blocked_by = collections.defaultdict(list)
     for issue in issues:
         issue.finish_loading()

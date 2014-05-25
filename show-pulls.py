@@ -27,7 +27,7 @@ COMMENT_FMT = "{:31}{user.login:cyan} {created_at:%b %d:yellow}  \t{body:oneline
 
 
 def show_pulls(labels=None, show_comments=False, state="open", since=None, org=False):
-    issues = get_pulls(labels, state, since, org)
+    issues = get_pulls("edx/edx-platform", labels, state, since, org)
 
     category = None
     for index, issue in enumerate(issues):
@@ -68,7 +68,7 @@ if 0:
         mongo_client = MongoClient()
         mongo_collection = mongo_client.prs.prs
 
-        issues = get_pulls(labels, state, since, org)
+        issues = get_pulls("edx/edx-platform", labels, state, since, org)
         for issue in issues:
             mongo_collection.insert(issue)
 
@@ -79,7 +79,7 @@ if 0:
 
     def show_pulls(labels=None, show_comments=False, state="open", since=None, org=False):
         months = collections.defaultdict(lambda: {'opened': 0, 'merged': 0})
-        issues = get_pulls(labels, state, since, org)
+        issues = get_pulls("edx/edx-platform", labels, state, since, org)
         for issue in issues:
             issue.finish_loading()
             months[yearmonth(issue['created_at'])]['opened'] += 1
