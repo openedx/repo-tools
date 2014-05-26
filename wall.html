@@ -62,7 +62,7 @@ d3.json("wall.json", function(data) {
         var total = 0;
         data.buckets.forEach(function (bucket, j) {
             var width = intext(team, j);
-            team_bucket[j] = { x: total, width: width };
+            team_bucket[j] = { x: total, width: width, external: team.external[j].length };
             total += width;
         });
     });
@@ -79,6 +79,12 @@ d3.json("wall.json", function(data) {
         .attr("x", 0).attr("y", 0)
         .attr("width", function (d) { return x_scale(d.width); })
         .attr("height", bar_height - 3);
+
+    bucket.append("rect")
+        .attr("class", "external")
+        .attr("x", 0).attr("y", bar_height-3-10)
+        .attr("width", function (d) { return x_scale(d.external); })
+        .attr("height", 10)
 
     bucket.append("text")
         .attr("class", function (d, i) { return "count bucket"+i; })

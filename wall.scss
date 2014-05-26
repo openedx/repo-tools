@@ -2,10 +2,27 @@ body {
     font-family: "Open Sans", sans-serif;
 }
 
-$b0: #D33; $t0: white;
-$b1: #FD3; $t1: black;
-$b2: #9D3; $t2: black;
-$b3: #390; $t3: white;
+$sat: 90%;
+$light: 60%;
+
+$b0: hsl(hue(red), $sat, $light);
+$b1: hsl(hue(orange), $sat, $light);
+$b2: hsl(hue(yellow), $sat, $light - 10%);
+$b3: hsl(hue(green), $sat, $light - 15%);
+
+@function text-on($color) {
+    @if (0.21*red($color) + 0.72*green($color) + 0.07*blue($color) > 128) {
+      @return #000000;
+    }
+    @else {
+      @return #FFFFFF;
+    }
+}
+
+$t0: text-on($b0);
+$t1: text-on($b1);
+$t2: text-on($b2);
+$t3: text-on($b3);
 
 svg {
     .team {
@@ -18,6 +35,10 @@ svg {
     .count {
         text-anchor: end;
         font-size: 75%;
+    }
+    .external {
+        opacity: .33;
+        fill: black;
     }
     .bucket0 {
         fill: $b0;
