@@ -46,27 +46,19 @@ svg {
     }
     .bucket0 {
         fill: $b0;
-        &.count {
-            fill: $t0;
-        }
+        &.count { fill: $t0; }
     }
     .bucket1 {
         fill: $b1;
-        &.count {
-            fill: $t1;
-        }
+        &.count { fill: $t1; }
     }
     .bucket2 {
         fill: $b2;
-        &.count {
-            fill: $t2;
-        }
+        &.count { fill: $t2; }
     }
     .bucket3 {
         fill: $b3;
-        &.count {
-            fill: $t3;
-        }
+        &.count { fill: $t3; }
     }
 }
 
@@ -77,20 +69,12 @@ svg {
     span {
         padding: .1em .5em;
     }
-
-    .bucket0 {
-        background: $b0; color: $t0;
-    }
-    .bucket1 {
-        background: $b1; color: $t1;
-    }
-    .bucket2 {
-        background: $b2; color: $t2;
-    }
-    .bucket3 {
-        background: $b3; color: $t3;
-    }
 }
+
+.bucket0 { background: $b0; color: $t0; }
+.bucket1 { background: $b1; color: $t1; }
+.bucket2 { background: $b2; color: $t2; }
+.bucket3 { background: $b3; color: $t3; }
 
 div.pulls {
     position: absolute;
@@ -99,14 +83,25 @@ div.pulls {
     table {
         border-collapse: collapse;
 
+        td {
+            border-width: 0 1px;
+            padding: 0 .5em;
+        }
         td.number {
             text-align: right;
             font-weight: bold;
-            padding: 0 .5em;
         }
         td.user {
             text-align: right;
             width: 150px;
+        }
+        td.created, td.updated {
+            padding: 0 .25em;
+            text-align: center;
+            div {
+                padding: 0 .25em;
+                border-radius: 4px;
+            }
         }
     }
 

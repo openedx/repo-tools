@@ -17,6 +17,8 @@ age_buckets = [
     (datetime.timedelta(days=7),    '<1 week'),
 ]
 
+NOW = datetime.datetime.now()
+
 def blank_sheet():
     return {
         "total": 0,
@@ -24,10 +26,12 @@ def blank_sheet():
         "external": [[] for ab in age_buckets],
     }
 
-def find_bucket(age):
+def find_bucket(when):
+    """Return the number of the age bucket for `when`."""
+    age = NOW - when
     for i, (delta, bucket) in enumerate(reversed(age_buckets)):
         if age < delta:
-            return len(age_buckets)-i-1, bucket
+            return len(age_buckets)-i-1
     assert False, "Should have found a bucket!"
 
 LABELS_URL = "https://api.github.com/repos/{owner_repo}/labels"
@@ -49,6 +53,8 @@ def pull_summary(issue):
         "user.login",
         "user.html_url",
         "pull.created_at", "pull.updated_at",
+        "created_bucket", "updated_bucket",
+        "created_nice", "updated_nice",
         "pull.comments", "pull.comments_url",
         "pull.commits", "pull.commits_url",
         "pull.additions", "pull.deletions",
@@ -58,7 +64,6 @@ def pull_summary(issue):
     return summary
 
 def show_wall():
-    now = datetime.datetime.now()
     issues = get_pulls("edx/edx-platform", state="open")
 
     blocked_by = { team: blank_sheet() for team in get_teams("edx/edx-platform") }
@@ -67,7 +72,11 @@ def show_wall():
     for issue in issues:
         issue.finish_loading()
         created_at = iso8601.parse_date(issue["created_at"]).replace(tzinfo=None)
-        bucket, issue["age_bucket"] = find_bucket(now - created_at)
+        updated_at = iso8601.parse_date(issue["updated_at"]).replace(tzinfo=None)
+        issue["created_bucket"] = bucket = find_bucket(created_at)
+        issue["updated_bucket"] = find_bucket(updated_at)
+        issue["created_nice"] = created_at.strftime("%b %d")
+        issue["updated_nice"] = updated_at.strftime("%b %d")
         issue["intext"] = intext = "external" if "osc" in issue['labels'] else "internal"
         for label in issue['labels']:
             if label == "osc":
