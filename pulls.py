@@ -1,8 +1,11 @@
+import operator
+
 from helpers import paginated_get
 import jreport
 
 import requests
 from urlobject import URLObject
+import yaml
 
 
 class JPullRequest(jreport.JObj):

@@ -48,7 +48,7 @@ def get_teams(owner_repo):
 def pull_summary(issue):
     """Create a jsonable summary of a pull request."""
     keys = [
-        "number", "intext", "title", "labels",
+        "number", "intext", "title", "labels", "org",
         "pull.html_url",
         "user.login",
         "user.html_url",
@@ -64,7 +64,7 @@ def pull_summary(issue):
     return summary
 
 def show_wall():
-    issues = get_pulls("edx/edx-platform", state="open")
+    issues = get_pulls("edx/edx-platform", state="open", org=True)
 
     blocked_by = { team: blank_sheet() for team in get_teams("edx/edx-platform") }
     pulls = {}
@@ -88,7 +88,12 @@ def show_wall():
     for team, data in blocked_by.iteritems():
         data["team"] = team
 
-    teams = sorted(blocked_by.values(), key=lambda d: d["total"], reverse=True)
+    teams = sorted(
+        blocked_by.values(),
+        # waiting on author should be last.
+        key=lambda d: (d["team"] != "author", d["total"]),
+        reverse=True
+    )
 
     all_data = {
         "buckets": [ab[1] for ab in age_buckets],

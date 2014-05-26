@@ -95,6 +95,17 @@ div.pulls {
             text-align: right;
             width: 150px;
         }
+        td.org {
+            text-align: center;
+            width: 1em;
+            span.external {
+                font-size: 90%;
+                border-radius: 9px;
+                background: #888;
+                color: white;
+                padding: 0 .5em;
+            }
+        }
         td.created, td.updated {
             padding: 0 .25em;
             text-align: center;

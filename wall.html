@@ -2,12 +2,12 @@
 <head>
 <title>Wall of Shame</title>
 <link rel="stylesheet" type="text/css" href="wall.css">
-<link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700&amp;subset=latin" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,700&amp;subset=latin" rel="stylesheet" type="text/css">
 <body>
 
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-<script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
 
 <script>
 /* Fixed scale so people can see the change over time. */
@@ -79,7 +79,7 @@ function click(team) {
             .addClass("pulls")
             .css("left", (window.pageXOffset + matrix.e) + "px")
             .css("top", (window.pageYOffset + matrix.f + 30) + "px")
-            .css("width", "100%").css("height", team.showing.length*pull_height + "px")
+            .css("width", "95%").css("height", team.showing.length*pull_height + "px")
             .html(pulls_template({pulls:pulls}))
             .appendTo("body").hide();
         pull_div.slideDown(duration);
@@ -196,6 +196,17 @@ $(function () {
     <% _.each(pulls, function (pull) { %>
         <tr>
             <td class="user"><a href="<%= pull.user_html_url %>"><%= pull.user_login %></a></td>
+            <td class="org">
+                <% if (pull.org != "edX") { %>
+                    <span class="external">
+                        <% if (pull.org != "other") { %>
+                            <%= pull.org.substring(0,1) %>
+                        <% } else { %>
+                            &nbsp;&nbsp;
+                        <% } %>
+                    </span>
+                <% } %>
+            </td>
             <td class="number">
                 <a href="<%= pull.html_url %>"><%= pull.number %></a>
             </td>
