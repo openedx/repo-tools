@@ -1,0 +1,69 @@
+body {
+    font-family: "Open Sans", sans-serif;
+}
+
+#chart {
+    border-collapse: separate;
+    border-spacing: 4px;
+    border: 0;
+
+    td {
+        xbackground: pink;
+        padding: 0;
+        vertical-align: middle;
+        height: 30px;
+
+        &.team {
+            text-align: right;
+        }
+
+        &.total {
+            text-align: right;
+            font-weight: bold;
+            padding: 0 .25em 0 .5em;
+        }
+    }
+
+    div.bar {
+        height: 30px;
+        font: 10px;
+        padding: 0;
+        margin: 0;
+
+        span.bucket {
+            display: inline-block;
+            height: 30px;
+            text-align: right;
+
+            span.count {
+                font-size: 80%;
+                padding-right: .35em;
+            }
+        }
+
+    }
+
+}
+
+#legend {
+    margin-top: 1em;
+    font-size: .8em;
+
+    span {
+        padding: .1em .5em;
+    }
+}
+.bucket3 {
+    background: #390;
+    color: white;
+}
+.bucket2 {
+    background: #9D3;
+}
+.bucket1 {
+    background: #FD3;
+}
+.bucket0 {
+    background: #D33;
+    color: white;
+}

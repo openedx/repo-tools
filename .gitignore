@@ -1,3 +1,6 @@
 auth.yaml
 venv
 *.pyc
+
+wall.css
+wall.json
