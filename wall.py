@@ -9,52 +9,26 @@ import iso8601
 from helpers import paginated_get
 from pulls import get_pulls
 
-"""
-# pull ages
-[
-    {
-        "team": "LMS",
-        "total": 47,
-        "internal": {
-            "2+": [1234, 3434, 2232, 5345],
-            "1-2": 12,
-            "-week": 12,
-            "-day": 6
-        },
-        "external": {
-            ...
-        }
-    },
-    {
-        "team": "Studio",
-        "total": 37,
-        "internal": {...},
-        "external": {...}
-    },
-    ...
-}
-"""
 
 age_buckets = [
-    (datetime.timedelta(days=1),    '<1 day'),
-    (datetime.timedelta(days=7),    '<1 week'),
+    (datetime.timedelta.max,        '3+ weeks'),
+    (datetime.timedelta(days=21),   '2-3 weeks'),
     (datetime.timedelta(days=14),   '1-2 weeks'),
-    (datetime.timedelta.max,        '2+ weeks'),
+    (datetime.timedelta(days=7),    '<1 week'),
 ]
 
 def blank_sheet():
-    { ab[1]:[] for ab in age_buckets }
     return {
         "total": 0,
-        "internal": { ab[1]:[] for ab in age_buckets },
-        "external": { ab[1]:[] for ab in age_buckets },
+        "internal": [[] for ab in age_buckets],
+        "external": [[] for ab in age_buckets],
     }
 
 def find_bucket(age):
-    for delta, bucket in age_buckets:
+    for i, (delta, bucket) in enumerate(reversed(age_buckets)):
         if age < delta:
-            return bucket
-    return "???"
+            return len(age_buckets)-i-1, bucket
+    assert False, "Should have found a bucket!"
 
 LABELS_URL = "https://api.github.com/repos/{owner_repo}/labels"
 
@@ -76,7 +50,7 @@ def show_wall():
     for issue in issues:
         issue.finish_loading()
         created_at = iso8601.parse_date(issue["created_at"]).replace(tzinfo=None)
-        issue["age_bucket"] = bucket = find_bucket(now - created_at)
+        bucket, issue["age_bucket"] = find_bucket(now - created_at)
         issue["intext"] = intext = "external" if "osc" in issue['labels'] else "internal"
         for label in issue['labels']:
             if label == "osc":
@@ -90,7 +64,7 @@ def show_wall():
     teams = sorted(blocked_by.values(), key=lambda d: d["total"], reverse=True)
 
     all_data = {
-        "buckets": [ab[1] for ab in reversed(age_buckets)],
+        "buckets": [ab[1] for ab in age_buckets],
         "teams": teams,
     }
     print(json.dumps(all_data, indent=4))

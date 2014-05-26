@@ -2,47 +2,47 @@ body {
     font-family: "Open Sans", sans-serif;
 }
 
-#chart {
-    border-collapse: separate;
-    border-spacing: 4px;
-    border: 0;
+$b0: #D33; $t0: white;
+$b1: #FD3; $t1: black;
+$b2: #9D3; $t2: black;
+$b3: #390; $t3: white;
 
-    td {
-        xbackground: pink;
-        padding: 0;
-        vertical-align: middle;
-        height: 30px;
-
-        &.team {
-            text-align: right;
-        }
-
-        &.total {
-            text-align: right;
-            font-weight: bold;
-            padding: 0 .25em 0 .5em;
+svg {
+    .team {
+        text-anchor: end;
+    }
+    .total {
+        text-anchor: end;
+        font-weight: bold;
+    }
+    .count {
+        text-anchor: end;
+        font-size: 75%;
+    }
+    .bucket0 {
+        fill: $b0;
+        &.count {
+            fill: $t0;
         }
     }
-
-    div.bar {
-        height: 30px;
-        font: 10px;
-        padding: 0;
-        margin: 0;
-
-        span.bucket {
-            display: inline-block;
-            height: 30px;
-            text-align: right;
-
-            span.count {
-                font-size: 80%;
-                padding-right: .35em;
-            }
+    .bucket1 {
+        fill: $b1;
+        &.count {
+            fill: $t1;
         }
-
     }
-
+    .bucket2 {
+        fill: $b2;
+        &.count {
+            fill: $t2;
+        }
+    }
+    .bucket3 {
+        fill: $b3;
+        &.count {
+            fill: $t3;
+        }
+    }
 }
 
 #legend {
@@ -52,18 +52,17 @@ body {
     span {
         padding: .1em .5em;
     }
-}
-.bucket3 {
-    background: #390;
-    color: white;
-}
-.bucket2 {
-    background: #9D3;
-}
-.bucket1 {
-    background: #FD3;
-}
-.bucket0 {
-    background: #D33;
-    color: white;
+
+    .bucket0 {
+        background: $b0; color: $t0;
+    }
+    .bucket1 {
+        background: $b1; color: $t1;
+    }
+    .bucket2 {
+        background: $b2; color: $t2;
+    }
+    .bucket3 {
+        background: $b3; color: $t3;
+    }
 }

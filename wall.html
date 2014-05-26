@@ -9,7 +9,7 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 <script>
 /* Fixed scale so people can see the change over time. */
-var x = d3.scale.linear()
+var x_scale = d3.scale.linear()
     .domain([0, 20])
     .range([0, 420]);
 
@@ -25,31 +25,71 @@ function dteam(d) {
 }
 
 d3.json("wall.json", function(data) {
-    var tr = d3.select("#chart")
-        .selectAll("tr")
-            .data(data.teams)
-        .enter().append("tr");
-        
-    tr.append("td").attr("class", "team").text(dteam);
-    tr.append("td").attr("class", "total").text(function (d) { return d.total; });
-    var bars = tr.append("td").append("div").attr("class", "bar")
-    
     function intext(d, bucket) {
         return d.internal[bucket].length + d.external[bucket].length;
     }
 
-    data.buckets.forEach(function (bucket, i) {
-        bars.append("span").attr("class", "bucket bucket"+i)
-            .style("width", function (d) {
-                return x(intext(d, bucket)) + "px";
-            })
-            .append("span").attr("class", "count")
-            .text(function (d) { 
-                var count = intext(d, bucket);
-                return count > 3 ? count : "";
-            });
+    /* SVG chart */
+    var margin = { top: 10, right: 10, bottom: 10, left: 10 };
+    var width = { chart: 600, team: 80, total: 30 };
+    var bar_height = 30;
+
+    var team_right = width.team;
+    var total_right = team_right + width.total;
+    var bar_left = total_right + 10;
+
+    var svg = d3.select("#svgchart").append("svg")
+                .attr("width", width.chart + margin.right + margin.left)
+                .attr("height", bar_height * data.teams.length + margin.top + margin.bottom)
+                .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var team = svg.selectAll(".team_row")
+        .data(data.teams)
+        .enter().append("g").attr("class", "team_row")
+        .attr("transform", function (t, i) { return "translate(0, "+ (i*bar_height) + ")"; });
+
+    team.append("text").attr("class", "team")
+        .attr("x", team_right).attr("y", bar_height/2).attr("dy", "0.3em")
+        .text(dteam);
+    team.append("text").attr("class", "total")
+        .attr("x", total_right).attr("y", bar_height/2).attr("dy", "0.3em")
+        .text(function (d) { return d.total; });
+
+    var team_buckets = [];
+    data.teams.forEach(function (team, i) {
+        var team_bucket = team_buckets[i] = [];
+        var total = 0;
+        data.buckets.forEach(function (bucket, j) {
+            var width = intext(team, j);
+            team_bucket[j] = { x: total, width: width };
+            total += width;
+        });
     });
 
+    var bucket = team.selectAll(".bucket")
+        .data(function (d, i) { return team_buckets[i]; })
+        .enter().append("g")
+            .attr("transform", function (d) {
+                    return "translate(" + (bar_left + x_scale(d.x)) + ", 0)";
+                });
+
+    bucket.append("rect")
+        .attr("class", function (d, i) { return "bucket bucket"+i; })
+        .attr("x", 0).attr("y", 0)
+        .attr("width", function (d) { return x_scale(d.width); })
+        .attr("height", bar_height - 3);
+
+    bucket.append("text")
+        .attr("class", function (d, i) { return "count bucket"+i; })
+        .attr("x", function (d) { return x_scale(d.width)-3; })
+        .attr("y", 12)
+        .text(function (d) { 
+            var count = d.width;
+            return count > 3 ? count : "";
+        });
+
+    /* Legend */
     d3.select("#legend").selectAll("span")
         .data(data.buckets)
         .enter().append("span")
@@ -59,5 +99,5 @@ d3.json("wall.json", function(data) {
 });
 </script>
 
-<table id="chart"></table>
+<div id="svgchart"></div>
 <div id="legend"></div>
