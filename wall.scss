@@ -37,8 +37,12 @@ svg {
         font-size: 75%;
     }
     .external {
-        opacity: .33;
+        opacity: .25;
         fill: black;
+    }
+    .bucket {
+        stroke: #888;
+        stroke-width: .25px;
     }
     .bucket0 {
         fill: $b0;
@@ -85,5 +89,31 @@ svg {
     }
     .bucket3 {
         background: $b3; color: $t3;
+    }
+}
+
+div.pulls {
+    position: absolute;
+    font-size: 80%;
+
+    table {
+        border-collapse: collapse;
+
+        td.number {
+            text-align: right;
+            font-weight: bold;
+            padding: 0 .5em;
+        }
+        td.user {
+            text-align: right;
+            width: 150px;
+        }
+    }
+
+    a {
+        text-decoration: none;
+        &:hover {
+            text-decoration: underline;
+        }
     }
 }

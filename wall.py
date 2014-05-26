@@ -41,11 +41,28 @@ def get_teams(owner_repo):
         if label["name"].startswith("waiting on "):
             yield label["name"][len("waiting on "):]
 
+def pull_summary(issue):
+    """Create a jsonable summary of a pull request."""
+    keys = [
+        "number", "intext", "title", "labels",
+        "pull.html_url",
+        "user.login",
+        "user.html_url",
+        "pull.created_at", "pull.updated_at",
+        "pull.comments", "pull.comments_url",
+        "pull.commits", "pull.commits_url",
+        "pull.additions", "pull.deletions",
+        "pull.changed_files",
+    ]
+    summary = { k.replace("pull.", "").replace(".","_"):issue[k] for k in keys }
+    return summary
+
 def show_wall():
     now = datetime.datetime.now()
     issues = get_pulls("edx/edx-platform", state="open")
 
     blocked_by = { team: blank_sheet() for team in get_teams("edx/edx-platform") }
+    pulls = {}
 
     for issue in issues:
         issue.finish_loading()
@@ -57,6 +74,7 @@ def show_wall():
                 continue
             blocked_by[label][intext][bucket].append(issue["number"])
             blocked_by[label]["total"] += 1
+        pulls[issue["number"]] = pull_summary(issue)
 
     for team, data in blocked_by.iteritems():
         data["team"] = team
@@ -66,6 +84,7 @@ def show_wall():
     all_data = {
         "buckets": [ab[1] for ab in age_buckets],
         "teams": teams,
+        "pulls": pulls,
     }
     print(json.dumps(all_data, indent=4))
 

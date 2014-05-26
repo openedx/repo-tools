@@ -7,6 +7,8 @@
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+
 <script>
 /* Fixed scale so people can see the change over time. */
 var x_scale = d3.scale.linear()
@@ -24,35 +26,90 @@ function dteam(d) {
     return team;
 }
 
-d3.json("wall.json", function(data) {
+function translate(x, y) {
+    return "translate(" + x + "," + y + ")";
+}
+
+var margin = { top: 10, right: 10, bottom: 10, left: 10 },
+    width = { chart: 600, team: 80, total: 30 },
+    bar_height = 30,
+    pull_height = 20;
+
+var team_right = width.team,
+    total_right = team_right + width.total,
+    bar_left = total_right + 10;
+
+var duration = 400;
+
+var svg = null;
+var the_data = null;
+
+function click(team) {
+    if (team.showing && team.showing.length) {
+        team.showing = [];
+        team.pull_div.slideUp(duration, function() {
+            team.pull_div.remove();
+            team.pull_div = null;
+        });
+    }
+    else {
+        team.showing = [];
+        $.each(["internal", "external"], function (i, intext) {
+            $.each(team[intext], function (i, pulls) {
+                team.showing = team.showing.concat(pulls);
+            });
+        });
+
+        var pulls = team.showing.map(function (id) {
+            return the_data.pulls[id];
+        });
+
+        var matrix = this.getScreenCTM()
+                .translate(+this.getAttribute("cx"), +this.getAttribute("cy"));
+
+        var pull_div = $("<div/>")
+            .addClass("pulls")
+            .css("left", (window.pageXOffset + matrix.e) + "px")
+            .css("top", (window.pageYOffset + matrix.f + 30) + "px")
+            .css("width", "100%").css("height", team.showing.length*pull_height + "px")
+            .html(pulls_template({pulls:pulls}))
+            .appendTo("body").hide();
+        pull_div.slideDown(duration);
+        team.pull_div = pull_div;
+    }
+    update(the_data);
+}
+
+function update(data) {
     function intext(d, bucket) {
         return d.internal[bucket].length + d.external[bucket].length;
     }
 
     /* SVG chart */
-    var margin = { top: 10, right: 10, bottom: 10, left: 10 };
-    var width = { chart: 600, team: 80, total: 30 };
-    var bar_height = 30;
-
-    var team_right = width.team;
-    var total_right = team_right + width.total;
-    var bar_left = total_right + 10;
-
-    var svg = d3.select("#svgchart").append("svg")
-                .attr("width", width.chart + margin.right + margin.left)
-                .attr("height", bar_height * data.teams.length + margin.top + margin.bottom)
-                .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
     var team = svg.selectAll(".team_row")
-        .data(data.teams)
-        .enter().append("g").attr("class", "team_row")
-        .attr("transform", function (t, i) { return "translate(0, "+ (i*bar_height) + ")"; });
+        .data(data.teams);
 
-    team.append("text").attr("class", "team")
+    var teamEnter = team.enter()
+        .append("g").attr("class", "team_row")
+        .on("click", click);
+
+    var next_y = 0;
+    team.transition().duration(duration)
+        .attr("transform", function (t) {
+            var y_pos = next_y;
+            var num_showing = t.showing && t.showing.length || 0;
+            next_y += bar_height + pull_height * num_showing;
+            return translate(0, y_pos);
+        });
+
+    d3.select("#svgchart svg")
+        .transition().duration(duration)
+        .attr("height", next_y + margin.top + margin.bottom);
+
+    teamEnter.append("text").attr("class", "team")
         .attr("x", team_right).attr("y", bar_height/2).attr("dy", "0.3em")
         .text(dteam);
-    team.append("text").attr("class", "total")
+    teamEnter.append("text").attr("class", "total")
         .attr("x", total_right).attr("y", bar_height/2).attr("dy", "0.3em")
         .text(function (d) { return d.total; });
 
@@ -67,11 +124,11 @@ d3.json("wall.json", function(data) {
         });
     });
 
-    var bucket = team.selectAll(".bucket")
+    var bucket = teamEnter.selectAll(".bucket")
         .data(function (d, i) { return team_buckets[i]; })
         .enter().append("g")
             .attr("transform", function (d) {
-                    return "translate(" + (bar_left + x_scale(d.x)) + ", 0)";
+                    return translate(bar_left + x_scale(d.x), 0);
                 });
 
     bucket.append("rect")
@@ -102,7 +159,41 @@ d3.json("wall.json", function(data) {
             .attr("class", function (d, i) { return "bucket bucket"+i; })
             .text(function (d) { return d; });
 
+}
+
+var pulls_template;
+
+$(function () {
+
+    pulls_template = _.template($("script#pulls").html());
+ 
+    svg = d3.select("#svgchart").append("svg")
+        .attr("width", "100%")
+        .append("g")
+            .attr("transform", translate(margin.left, margin.top));
+
+    d3.json("wall.json", function(data) {
+        the_data = data;
+        update(data);
+    });
+
 });
+</script>
+
+<script type="text/template" id="pulls">
+    <table class="pulls">
+    <% _.each(pulls, function (pull) { %>
+        <tr>
+            <td class="user"><a href="<%= pull.user_html_url %>"><%= pull.user_login %></a></td>
+            <td class="number">
+                <a href="<%= pull.html_url %>"><%= pull.number %></a>
+            <td>
+            <td class="title">
+                <a href="<%= pull.html_url %>"><%= pull.title %></a>
+            </td>
+        </tr>
+    <% }); %>
+    </table>
 </script>
 
 <div id="svgchart"></div>
