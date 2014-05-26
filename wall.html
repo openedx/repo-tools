@@ -24,12 +24,10 @@ function dteam(d) {
     return team;
 }
 
-var buckets = ["2+ weeks", "1-2 weeks", "<1 week", "<1 day"];
-
 d3.json("wall.json", function(data) {
     var tr = d3.select("#chart")
         .selectAll("tr")
-            .data(data)
+            .data(data.teams)
         .enter().append("tr");
         
     tr.append("td").attr("class", "team").text(dteam);
@@ -40,7 +38,7 @@ d3.json("wall.json", function(data) {
         return d.internal[bucket].length + d.external[bucket].length;
     }
 
-    buckets.forEach(function (bucket, i) {
+    data.buckets.forEach(function (bucket, i) {
         bars.append("span").attr("class", "bucket bucket"+i)
             .style("width", function (d) {
                 return x(intext(d, bucket)) + "px";
@@ -53,7 +51,7 @@ d3.json("wall.json", function(data) {
     });
 
     d3.select("#legend").selectAll("span")
-        .data(buckets)
+        .data(data.buckets)
         .enter().append("span")
             .attr("class", function (d, i) { return "bucket bucket"+i; })
             .text(function (d) { return d; });
