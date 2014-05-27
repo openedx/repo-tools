@@ -401,12 +401,9 @@ pchiu33:
     authors_entry: Philippe Chiu <philippe.chiu@gmail.com>
     agreement: individual
 carsongee:
-    authors_entry: Carson Gee <x@carsongee.com>
+    authors_entry: Carson Gee <cgee@mit.edu>
     agreement: individual
     institution: MIT
-# cgee:
-#    agreement: institution
-#    authors_entry: Carson Gee <cgee@mit.edu>
 kewubenduben:
     authors_entry: Ker Ruben Ramos <xdiscent@gmail.com>
     agreement: individual
@@ -701,7 +698,7 @@ gradyward:
     agreement: institution
     institution: edX
 stvstnfrd:
-    authors_entry: Steve Burch <stv@stanford.edu>
+    authors_entry: Steven Burch <stv@stanford.edu>
     agreement: institution
     institution: Stanford
 ksteph:
@@ -719,3 +716,7 @@ deaspoon:
 ADubus:
     authors_entry: Alexandre Dubus <alexandre.dubus@inria.fr>
     agreement: individual
+ali123:
+    authors_entry: Ali Reza Sharafat <ali.sharafat@gmail.com>
+    agreement: institution
+    institution: Stanford
