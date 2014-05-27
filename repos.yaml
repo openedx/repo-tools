@@ -31,3 +31,6 @@ edx/edx-platform:
         - terman
 edx/configuration:
 edx/edx-tools:
+edx/edx.github.io:
+edx/edx-certificates:
+edx/opaque-keys:
