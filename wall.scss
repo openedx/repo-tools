@@ -44,21 +44,37 @@ svg {
         stroke: #888;
         stroke-width: .25px;
     }
-    .bucket0 {
-        fill: $b0;
-        &.count { fill: $t0; }
+    .bucket0 { fill: $b0; }
+    .bucket1 { fill: $b1; }
+    .bucket2 { fill: $b2; }
+    .bucket3 { fill: $b3; }
+    text.bucket0 { fill: $t0; }
+    text.bucket1 { fill: $t1; }
+    text.bucket2 { fill: $t2; }
+    text.bucket3 { fill: $t3; }
+
+    .pull-detail {
+        font-size: 85%;
+        .user {
+            text-anchor: end;
+        }
+        .number {
+            font-weight: bold;
+        }
+        .title {
+        }
+        circle.external {
+            fill: #888;
+            opacity: 1;
+        }
+        text.external {
+            fill: white;
+            xxfont-size: 60%;
+            opacity: 1;
+        }
     }
-    .bucket1 {
-        fill: $b1;
-        &.count { fill: $t1; }
-    }
-    .bucket2 {
-        fill: $b2;
-        &.count { fill: $t2; }
-    }
-    .bucket3 {
-        fill: $b3;
-        &.count { fill: $t3; }
+    a text:hover {
+        text-decoration: underline;
     }
 }
 

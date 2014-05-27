@@ -33,7 +33,7 @@ function translate(x, y) {
 var margin = { top: 10, right: 10, bottom: 10, left: 10 },
     width = { chart: 600, team: 80, total: 30 },
     bar_height = 30,
-    pull_height = 18;
+    pull_height = 17;
 
 var team_right = width.team,
     total_right = team_right + width.total,
@@ -47,10 +47,12 @@ var the_data = null;
 function click(team) {
     if (team.showing && team.showing.length) {
         team.showing = [];
+        /*
         team.pull_div.slideUp(duration, function() {
             team.pull_div.remove();
             team.pull_div = null;
         });
+        */
     }
     else {
         team.showing = [];
@@ -80,9 +82,9 @@ function click(team) {
             .css("left", (window.pageXOffset + matrix.e) + "px")
             .css("top", (window.pageYOffset + matrix.f + 30) + "px")
             .css("width", "95%").css("height", team.showing.length*pull_height + "px")
-            .html(pulls_template({pulls:pulls}))
+            .html("")/* pulls_template({pulls:pulls})) */
             .appendTo("body").hide();
-        pull_div.slideDown(duration);
+        /*pull_div.slideDown(duration);*/
         team.pull_div = pull_div;
     }
     update(the_data);
@@ -150,7 +152,7 @@ function update(data) {
 
     bucket.append("rect")
         .attr("class", "external")
-        .attr("x", 0).attr("y", bar_height-3-10)
+        .attr("x", 0).attr("y", bar_height - 3 - 10)
         .attr("width", function (d) { return x_scale(d.external); })
         .attr("height", 10)
 
@@ -162,6 +164,114 @@ function update(data) {
             var count = d.width;
             return count > 3 ? count : "";
         });
+
+    var pull_detail = team.selectAll(".pull-detail")
+        .data(function (d, i) {
+            if (d.showing) {
+                var pulls = d.showing.map(function (id) { return the_data.pulls[id]; });
+                pulls.sort(function (a, b) {
+                    if (a.created_at < b.created_at) {
+                        return -1;
+                    }
+                    else {
+                        return 1;
+                    }
+                });
+                return pulls;
+            }
+            else {
+                return [];
+            }
+        });
+
+    var pull_detail_enter = pull_detail.enter()
+        .append("g")
+        .attr("class", "pull-detail")
+        .attr("transform", translate(0, bar_height))
+        .style("opacity", 1e-6);
+
+    pull_detail_enter.transition().duration(duration)
+        .attr("transform", function (d, i) {
+            return translate(0, bar_height + 12 + pull_height * i);
+        })
+        .style("opacity", 1);
+
+    var columns = [10, 1, 1, 3, 2, 2.5, 2, 3, 2, 3];
+    function upto(i) {
+        var x = 0;
+        for (ii = 0; ii < i; ii++) {
+            x += columns[ii];
+        }
+        return x + "em";
+    }
+
+    pull_detail_enter.append("a")
+        .attr("xlink:href", function (p) { return p.user_html_url; })
+        .append("text").attr("class", "user")
+        .attr("x", upto(1))
+        .text(function (p) { return p.user_login; });
+
+    pull_detail_enter.append("circle").attr("class", "external")
+        .attr("cx", upto(2)).attr("cy", -pull_height*.25)
+        .attr("r", function (p) {
+            if (p.org != "edX") {
+                return pull_height*.4;
+            }
+            else {
+                return 0;
+            }
+        });
+
+    pull_detail_enter.append("text").attr("class", "external")
+        .attr("x", upto(2)).attr("y", -pull_height*.25)
+        .attr("text-anchor", "middle").attr("dy", "0.3em")
+        .text(function (p) {
+            if (p.org != "edX" && p.org != "other") {
+                return p.org.substring(0,1);
+            }
+            else {
+                return "";
+            }
+        });
+
+    pull_detail_enter.append("a")
+        .attr("xlink:href", function (p) { return p.html_url; })
+        .append("text").attr("class", "number")
+        .attr("x", upto(3))
+        .text(function (p) { return p.number; });
+
+    pull_detail_enter.append("rect")
+        .attr("class", function (p) { return "bucket" + p.created_bucket; })
+        .attr("x", upto(4)).attr("y", "-1em")
+        .attr("rx", 4).attr("ry", 4)
+        .attr("width", "4em").attr("height", "1.3em");
+
+    pull_detail_enter.append("text")
+        .attr("class", function (p) { return "date bucket" + p.created_bucket; })
+        .attr("x", upto(5)).attr("text-anchor", "middle")
+        .text(function (p) { return p.created_nice; });
+
+    pull_detail_enter.append("rect")
+        .attr("class", function (p) { return "bucket" + p.updated_bucket; })
+        .attr("x", upto(6)).attr("y", "-1em")
+        .attr("rx", 4).attr("ry", 4)
+        .attr("width", "4em").attr("height", "1.3em");
+
+    pull_detail_enter.append("text")
+        .attr("class", function (p) { return "date bucket" + p.updated_bucket; })
+        .attr("x", upto(7)).attr("text-anchor", "middle")
+        .text(function (p) { return p.updated_nice; });
+
+    pull_detail_enter.append("a")
+        .attr("xlink:href", function (p) { return p.html_url; })
+        .append("text").attr("class", "title")
+        .attr("x", upto(8))
+        .text(function (p) { return p.title; });
+
+    pull_detail.exit().transition().duration(duration)
+        .attr("transform", translate(0, bar_height))
+        .style("opacity", 1e-6)
+        .remove();
 
     /* Legend */
     d3.select("#legend").selectAll("span")
@@ -177,6 +287,7 @@ var pulls_template;
 $(function () {
 
     pulls_template = _.template($("script#pulls").html());
+    pulls_template = _.template($("script#pulls_svg").html());
  
     svg = d3.select("#svgchart").append("svg")
         .attr("width", "100%")
@@ -218,6 +329,10 @@ $(function () {
         </tr>
     <% }); %>
     </table>
+</script>
+
+<script type="text/template" id="pulls_svg">
+    <text>XYZ <%= user_login %></text>
 </script>
 
 <div id="svgchart"></div>
