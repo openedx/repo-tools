@@ -25,9 +25,14 @@ def set_labels(owner_repo, labels):
     for label in labels:
         url = LABELS_URL.format(owner_repo=owner_repo)
         r = requests.post(url, data=json.dumps(label))
-        if r.status_code != 200:
-            print(r.status_code)
-            print(r.text)
+        if r.status_code == 201:
+            print("Copied {}".format(label['name']))
+            continue
+        if r.status_code == 422 and r.json()['errors'][0]['code'] == 'already_exists':
+            continue
+
+        print(r.status_code)
+        print(r.text)
 
 def copy_labels(source_owner_repo):
 
