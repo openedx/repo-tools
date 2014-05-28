@@ -77,7 +77,13 @@ def show_wall():
         issue["updated_bucket"] = find_bucket(updated_at)
         issue["created_nice"] = created_at.strftime("%b %d")
         issue["updated_nice"] = updated_at.strftime("%b %d")
-        issue["intext"] = intext = "external" if "osc" in issue['labels'] else "internal"
+        if "osc" in issue['labels']:
+            intext = "external"
+        elif issue['org'] == 'edX':
+            intext = "internal"
+        else:
+            intext = "external"
+        issue["intext"] = intext
         for label in issue['labels']:
             if label == "osc":
                 continue

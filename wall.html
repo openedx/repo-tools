@@ -191,6 +191,7 @@ function update(data) {
         .style("opacity", 1e-6);
 
     pull_detail_enter.transition().duration(duration)
+        .delay(function (d, i) { return i * 20; })
         .attr("transform", function (d, i) {
             return translate(0, bar_height + 12 + pull_height * i);
         })
