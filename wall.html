@@ -47,12 +47,6 @@ var the_data = null;
 function click(team) {
     if (team.showing && team.showing.length) {
         team.showing = [];
-        /*
-        team.pull_div.slideUp(duration, function() {
-            team.pull_div.remove();
-            team.pull_div = null;
-        });
-        */
     }
     else {
         team.showing = [];
@@ -62,30 +56,10 @@ function click(team) {
             });
         });
 
-        var pulls = team.showing.map(function (id) {
-            return the_data.pulls[id];
-        });
-        pulls.sort(function (a, b) {
-            if (a.created_at < b.created_at) {
-                return -1;
-            }
-            else {
-                return 1;
-            }
-        });
-
         var matrix = this.getScreenCTM()
                 .translate(+this.getAttribute("cx"), +this.getAttribute("cy"));
 
-        var pull_div = $("<div/>")
-            .addClass("pulls")
-            .css("left", (window.pageXOffset + matrix.e) + "px")
-            .css("top", (window.pageYOffset + matrix.f + 30) + "px")
-            .css("width", "95%").css("height", team.showing.length*pull_height + "px")
-            .html("")/* pulls_template({pulls:pulls})) */
-            .appendTo("body").hide();
-        /*pull_div.slideDown(duration);*/
-        team.pull_div = pull_div;
+        team.table_at = [window.pageXOffset + matrix.e, window.pageYOffset + matrix.f + 30];
     }
     update(the_data);
 }
@@ -165,7 +139,7 @@ function update(data) {
             return count > 3 ? count : "";
         });
 
-    var pull_detail = team.selectAll(".pull-detail")
+    var pull_detail = team.selectAll("foreignObject.pull-detail")
         .data(function (d, i) {
             if (d.showing) {
                 var pulls = d.showing.map(function (id) { return the_data.pulls[id]; });
@@ -185,89 +159,20 @@ function update(data) {
         });
 
     var pull_detail_enter = pull_detail.enter()
-        .append("g")
-        .attr("class", "pull-detail")
-        .attr("transform", translate(0, bar_height))
+        .append("foreignObject").attr("class", "pull-detail")
+        .attr("width", 600).attr("height", pull_height)
+        .attr("transform", translate(400, bar_height))
         .style("opacity", 1e-6);
+
+    pull_detail_enter.append("xhtml:body").attr("class", "pull-detail")
+        .html(function(p) { return pull_detail_template({pull:p}); });
 
     pull_detail_enter.transition().duration(duration)
         .delay(function (d, i) { return i * 20; })
         .attr("transform", function (d, i) {
-            return translate(0, bar_height + 12 + pull_height * i);
+            return translate(0, bar_height + pull_height * i);
         })
         .style("opacity", 1);
-
-    var columns = [10, 1, 1, 3, 2, 2.5, 2, 3, 2, 3];
-    function upto(i) {
-        var x = 0;
-        for (ii = 0; ii < i; ii++) {
-            x += columns[ii];
-        }
-        return x + "em";
-    }
-
-    pull_detail_enter.append("a")
-        .attr("xlink:href", function (p) { return p.user_html_url; })
-        .append("text").attr("class", "user")
-        .attr("x", upto(1))
-        .text(function (p) { return p.user_login; });
-
-    pull_detail_enter.append("circle").attr("class", "external")
-        .attr("cx", upto(2)).attr("cy", -pull_height*.25)
-        .attr("r", function (p) {
-            if (p.org != "edX") {
-                return pull_height*.4;
-            }
-            else {
-                return 0;
-            }
-        });
-
-    pull_detail_enter.append("text").attr("class", "external")
-        .attr("x", upto(2)).attr("y", -pull_height*.25)
-        .attr("text-anchor", "middle").attr("dy", "0.3em")
-        .text(function (p) {
-            if (p.org != "edX" && p.org != "other") {
-                return p.org.substring(0,1);
-            }
-            else {
-                return "";
-            }
-        });
-
-    pull_detail_enter.append("a")
-        .attr("xlink:href", function (p) { return p.html_url; })
-        .append("text").attr("class", "number")
-        .attr("x", upto(3))
-        .text(function (p) { return p.number; });
-
-    pull_detail_enter.append("rect")
-        .attr("class", function (p) { return "bucket" + p.created_bucket; })
-        .attr("x", upto(4)).attr("y", "-1em")
-        .attr("rx", 4).attr("ry", 4)
-        .attr("width", "4em").attr("height", "1.3em");
-
-    pull_detail_enter.append("text")
-        .attr("class", function (p) { return "date bucket" + p.created_bucket; })
-        .attr("x", upto(5)).attr("text-anchor", "middle")
-        .text(function (p) { return p.created_nice; });
-
-    pull_detail_enter.append("rect")
-        .attr("class", function (p) { return "bucket" + p.updated_bucket; })
-        .attr("x", upto(6)).attr("y", "-1em")
-        .attr("rx", 4).attr("ry", 4)
-        .attr("width", "4em").attr("height", "1.3em");
-
-    pull_detail_enter.append("text")
-        .attr("class", function (p) { return "date bucket" + p.updated_bucket; })
-        .attr("x", upto(7)).attr("text-anchor", "middle")
-        .text(function (p) { return p.updated_nice; });
-
-    pull_detail_enter.append("a")
-        .attr("xlink:href", function (p) { return p.html_url; })
-        .append("text").attr("class", "title")
-        .attr("x", upto(8))
-        .text(function (p) { return p.title; });
 
     pull_detail.exit().transition().duration(duration)
         .attr("transform", translate(0, bar_height))
@@ -283,12 +188,11 @@ function update(data) {
 
 }
 
-var pulls_template;
+var pull_detail_template;
 
 $(function () {
 
-    pulls_template = _.template($("script#pulls").html());
-    pulls_template = _.template($("script#pulls_svg").html());
+    pull_detail_template = _.template($("script#pull-detail-template").html());
  
     svg = d3.select("#svgchart").append("svg")
         .attr("width", "100%")
@@ -303,37 +207,29 @@ $(function () {
 });
 </script>
 
-<script type="text/template" id="pulls">
-    <table class="pulls">
-    <% _.each(pulls, function (pull) { %>
-        <tr>
-            <td class="user"><a href="<%= pull.user_html_url %>"><%= pull.user_login %></a></td>
-            <td class="org">
-                <% if (pull.org != "edX") { %>
-                    <span class="external">
-                        <% if (pull.org != "other") { %>
-                            <%= pull.org.substring(0,1) %>
-                        <% } else { %>
-                            &nbsp;&nbsp;
-                        <% } %>
-                    </span>
+<script type="text/template" id="pull-detail-template">
+    <div>
+        <div class="user">
+            <a href="<%= pull.user_html_url %>"><%= pull.user_login %></a>
+        </div>
+        <div class="org">
+            <% if (pull.org != "edX") { %>
+                <% if (pull.org != "other") { %>
+                    <%= pull.org.substring(0,1) %>
+                <% } else { %>
+                    &nbsp;&nbsp;
                 <% } %>
-            </td>
-            <td class="number">
-                <a href="<%= pull.html_url %>"><%= pull.number %></a>
-            </td>
-            <td class="created"><div class="bucket<%= pull.created_bucket %>"><%= pull.created_nice %></div></td>
-            <td class="updated"><div class="bucket<%= pull.updated_bucket %>"><%= pull.updated_nice %></div></td>
-            <td class="title">
-                <a href="<%= pull.html_url %>"><%= pull.title %></a>
-            </td>
-        </tr>
-    <% }); %>
-    </table>
-</script>
-
-<script type="text/template" id="pulls_svg">
-    <text>XYZ <%= user_login %></text>
+            <% } %>
+        </div>
+        <div class="created bucket<%= pull.created_bucket %>"><%= pull.created_nice %></div>
+        <div class="updated bucket<%= pull.updated_bucket %>"><%= pull.updated_nice %></div>
+        <div class="number">
+            <a href="<%= pull.html_url %>"><%= pull.number %></a>
+        </div>
+        <div class="title">
+            <a href="<%= pull.html_url %>"><%= pull.title %></a>
+        </div>
+    </div>
 </script>
 
 <div id="svgchart"></div>

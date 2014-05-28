@@ -11,7 +11,7 @@ $b2: hsl(hue(yellow), $sat, $light - 10%);
 $b3: hsl(hue(green), $sat, $light - 15%);
 
 @function text-on($color) {
-    @if (0.21*red($color) + 0.72*green($color) + 0.07*blue($color) > 128) {
+    @if (0.2*red($color) + 0.7*green($color) + 0.1*blue($color) > 128) {
       @return #000000;
     }
     @else {
@@ -55,24 +55,8 @@ svg {
 
     .pull-detail {
         font-size: 85%;
-        .user {
-            text-anchor: end;
-        }
-        .number {
-            font-weight: bold;
-        }
-        .title {
-        }
-        circle.external {
-            fill: #888;
-            opacity: 1;
-        }
-        text.external {
-            fill: white;
-            xxfont-size: 60%;
-            opacity: 1;
-        }
     }
+
     a text:hover {
         text-decoration: underline;
     }
@@ -92,50 +76,52 @@ svg {
 .bucket2 { background: $b2; color: $t2; }
 .bucket3 { background: $b3; color: $t3; }
 
-div.pulls {
-    position: absolute;
-    font-size: 80%;
+body.pull-detail {
+    margin: 0;
+    padding: 0;
 
-    table {
-        border-collapse: collapse;
+    div {
+        margin: 0;
+        padding: 0;
 
-        td {
-            border-width: 0 1px;
-            padding: 0 .5em;
-        }
-        td.number {
-            text-align: right;
-            font-weight: bold;
-        }
-        td.user {
-            text-align: right;
-            width: 150px;
-        }
-        td.org {
-            text-align: center;
-            width: 1em;
-            span.external {
-                font-size: 90%;
-                border-radius: 9px;
+        div {
+            display: inline-block;
+            margin: 0 .1em;
+
+            & a {
+                text-decoration: none;
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            &.user {
+                width: 10em;
+                text-align: right;
+            }
+            &.org {
+                width: 1.5em;
+                padding: 0;
+                text-align: center;
                 background: #888;
                 color: white;
-                padding: 0 .5em;
+                opacity: 1;
+                font-size: 90%;
+                border-radius: .75em;
             }
-        }
-        td.created, td.updated {
-            padding: 0 .25em;
-            text-align: center;
-            div {
-                padding: 0 .25em;
+            &.number {
+                width: 2.5em;
+                padding-left: 0.5em;
+                text-align: right;
+                font-weight: bold;
+            }
+            &.created, &.updated {
+                width: 4em;
+                text-align: center;
                 border-radius: 4px;
             }
-        }
-    }
-
-    a {
-        text-decoration: none;
-        &:hover {
-            text-decoration: underline;
+            &.title {
+            }
         }
     }
 }
