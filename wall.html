@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <head>
-<title>Wall of Shame</title>
+<title>Pull Request Aging</title>
 <link rel="stylesheet" type="text/css" href="wall.css">
 <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,700&amp;subset=latin" rel="stylesheet" type="text/css">
 <body>
 
-<script src="//d3js.org/d3.v3.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js"></script>
 
 <script>
 /* Fixed scale so people can see the change over time. */
@@ -28,6 +29,10 @@ function dteam(d) {
 
 function translate(x, y) {
     return "translate(" + x + "," + y + ")";
+}
+
+function short_date(d) {
+    return moment(d).format("MMM D");
 }
 
 var margin = { top: 10, right: 10, bottom: 10, left: 10 },
@@ -74,8 +79,7 @@ function update(data) {
         .data(data.teams);
 
     var teamEnter = team.enter()
-        .append("g").attr("class", "team_row")
-        .on("click", click);
+        .append("g").attr("class", "team_row");
 
     var next_y = 0;
     team.transition().duration(duration)
@@ -93,10 +97,13 @@ function update(data) {
         .transition().duration(duration)
         .attr("height", next_y + margin.top + margin.bottom);
 
-    teamEnter.append("text").attr("class", "team")
+    var teamBar = teamEnter.append("g")
+        .on("click", click);
+
+    teamBar.append("text").attr("class", "team")
         .attr("x", team_right).attr("y", bar_height/2).attr("dy", "0.3em")
         .text(dteam);
-    teamEnter.append("text").attr("class", "total")
+    teamBar.append("text").attr("class", "total")
         .attr("x", total_right).attr("y", bar_height/2).attr("dy", "0.3em")
         .text(function (d) { return d.total; });
 
@@ -111,7 +118,7 @@ function update(data) {
         });
     });
 
-    var bucket = teamEnter.selectAll(".bucket")
+    var bucket = teamBar.selectAll(".bucket")
         .data(function (d, i) { return team_buckets[i]; })
         .enter().append("g")
             .attr("transform", function (d) {
@@ -201,6 +208,7 @@ $(function () {
 
     d3.json("wall.json", function(data) {
         the_data = data;
+        $("#timestamp").text(moment(data.updated).format("MMM D, h:mm a"));
         update(data);
     });
 
@@ -221,8 +229,12 @@ $(function () {
                 <% } %>
             <% } %>
         </div>
-        <div class="created bucket<%= pull.created_bucket %>"><%= pull.created_nice %></div>
-        <div class="updated bucket<%= pull.updated_bucket %>"><%= pull.updated_nice %></div>
+        <div class="created bucket<%= pull.created_bucket %>">
+            <%= short_date(pull.created_at) %>
+        </div>
+        <div class="updated bucket<%= pull.updated_bucket %>">
+            <%= short_date(pull.updated_at) %>
+        </div>
         <div class="number">
             <a href="<%= pull.html_url %>"><%= pull.number %></a>
         </div>
@@ -232,5 +244,8 @@ $(function () {
     </div>
 </script>
 
+<h1>Pull Request Aging</h1>
+
 <div id="svgchart"></div>
 <div id="legend"></div>
+<div id="timestamp"></div>

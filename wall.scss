@@ -2,6 +2,12 @@ body {
     font-family: "Open Sans", sans-serif;
 }
 
+h1 {
+    color: #1d9dd9;
+    font-weight: 400;
+    font-size: 150%;
+}
+
 $sat: 90%;
 $light: 60%;
 
@@ -63,13 +69,22 @@ svg {
 }
 
 #legend {
+    float: left;
     margin-top: 1em;
+    margin-right: 2em;
     font-size: .8em;
 
     span {
         padding: .1em .5em;
     }
 }
+
+#timestamp {
+    margin-top: 1em;
+    font-size: 75%;
+    font-style: italic;
+}
+
 
 .bucket0 { background: $b0; color: $t0; }
 .bucket1 { background: $b1; color: $t1; }

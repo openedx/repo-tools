@@ -54,7 +54,6 @@ def pull_summary(issue):
         "user.html_url",
         "pull.created_at", "pull.updated_at",
         "created_bucket", "updated_bucket",
-        "created_nice", "updated_nice",
         "pull.comments", "pull.comments_url",
         "pull.commits", "pull.commits_url",
         "pull.additions", "pull.deletions",
@@ -75,8 +74,6 @@ def show_wall():
         updated_at = iso8601.parse_date(issue["updated_at"]).replace(tzinfo=None)
         issue["created_bucket"] = bucket = find_bucket(created_at)
         issue["updated_bucket"] = find_bucket(updated_at)
-        issue["created_nice"] = created_at.strftime("%b %d")
-        issue["updated_nice"] = updated_at.strftime("%b %d")
         if "osc" in issue['labels']:
             intext = "external"
         elif issue['org'] == 'edX':
@@ -105,6 +102,7 @@ def show_wall():
         "buckets": [ab[1] for ab in age_buckets],
         "teams": teams,
         "pulls": pulls,
+        "updated": NOW.isoformat(),
     }
     print(json.dumps(all_data, indent=4))
 
