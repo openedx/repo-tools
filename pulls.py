@@ -14,8 +14,9 @@ class JPullRequest(jreport.JObj):
         if org_fn:
             self['org'] = org_fn(self)
 
-    def finish_loading(self):
-        self['pull'] = requests.get(self._pr_url).json()
+    def finish_loading(self, pull_details=True):
+        if pull_details:
+            self['pull'] = requests.get(self._pr_url).json()
 
         if self['state'] == 'open':
             self['combinedstate'] = 'open'

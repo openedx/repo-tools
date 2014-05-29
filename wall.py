@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-import collections
+
+from __future__ import print_function
+
 import datetime
 import json
-from pprint import pprint
 
 import iso8601
 
@@ -49,15 +50,15 @@ def pull_summary(issue):
     """Create a jsonable summary of a pull request."""
     keys = [
         "number", "intext", "title", "labels", "org",
-        "pull.html_url",
+        "pull_request.html_url",
         "user.login",
         "user.html_url",
-        "pull.created_at", "pull.updated_at",
+        "created_at", "updated_at",
         "created_bucket", "updated_bucket",
-        "pull.comments", "pull.comments_url",
-        "pull.commits", "pull.commits_url",
-        "pull.additions", "pull.deletions",
-        "pull.changed_files",
+        #"pull.comments", "pull.comments_url",
+        #"pull.commits", "pull.commits_url",
+        #"pull.additions", "pull.deletions",
+        #"pull.changed_files",
     ]
     summary = { k.replace("pull.", "").replace(".","_"):issue[k] for k in keys }
     return summary
@@ -69,7 +70,7 @@ def show_wall():
     pulls = {}
 
     for issue in issues:
-        issue.finish_loading()
+        issue.finish_loading(pull_details=False)
         created_at = iso8601.parse_date(issue["created_at"]).replace(tzinfo=None)
         updated_at = iso8601.parse_date(issue["updated_at"]).replace(tzinfo=None)
         issue["created_bucket"] = bucket = find_bucket(created_at)

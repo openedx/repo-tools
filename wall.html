@@ -236,10 +236,10 @@ $(function () {
             <%= short_date(pull.updated_at) %>
         </div>
         <div class="number">
-            <a href="<%= pull.html_url %>"><%= pull.number %></a>
+            <a href="<%= pull.pull_request_html_url %>"><%= pull.number %></a>
         </div>
         <div class="title">
-            <a href="<%= pull.html_url %>"><%= pull.title %></a>
+            <a href="<%= pull.pull_request_html_url %>"><%= pull.title %></a>
         </div>
     </div>
 </script>

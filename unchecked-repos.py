@@ -5,7 +5,6 @@ from __future__ import print_function
 
 import json
 
-import requests
 import yaml
 
 from helpers import paginated_get
