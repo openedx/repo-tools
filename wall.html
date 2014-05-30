@@ -168,7 +168,9 @@ function update(data) {
     var pull_detail_enter = pull_detail.enter()
         .append("foreignObject").attr("class", "pull-detail")
         .attr("width", "100%").attr("height", pull_height)
-        .attr("transform", translate(400, bar_height))
+        .attr("transform", function (d, i) {
+            return translate(500, bar_height + (pull_height * i)/3);
+        })
         .style("opacity", 1e-6);
 
     pull_detail_enter.append("xhtml:body").attr("class", "pull-detail")
@@ -234,6 +236,11 @@ $(function () {
         </div>
         <div class="updated bucket<%= pull.updated_bucket %>">
             <%= short_date(pull.updated_at) %>
+        </div>
+        <div class="repo">
+            <% if (pull.repo != "edx") { %>
+                <%= pull.repo %>
+            <% } %>
         </div>
         <div class="number">
             <a href="<%= pull.pull_request_html_url %>"><%= pull.number %></a>
