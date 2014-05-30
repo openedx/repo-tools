@@ -97,6 +97,7 @@ class WallMaker(object):
     def one_repo(self, repo):
         if self.blocked_by is None:
             self.blocked_by = { team: blank_sheet() for team in get_teams(repo) }
+            self.blocked_by['unlabelled'] = blank_sheet()
 
         issues = get_pulls(repo.name, state="open", org=True)
         for issue in issues:
@@ -114,6 +115,7 @@ class WallMaker(object):
             issue["intext"] = intext
             issue["id"] = issue_id = "{}.{}".format(repo.name, issue["number"])
             issue["repo"] = repo.nick
+            blocked = False
             for label in issue['labels']:
                 if label == "osc":
                     continue
@@ -121,6 +123,11 @@ class WallMaker(object):
                     continue
                 self.blocked_by[label][intext][bucket].append(issue_id)
                 self.blocked_by[label]["total"] += 1
+                blocked = True
+            if not blocked and intext == "external":
+                self.blocked_by['unlabelled'][intext][bucket].append(issue_id)
+                self.blocked_by['unlabelled']['total'] += 1
+
             self.pulls[issue_id] = pull_summary(issue)
 
 

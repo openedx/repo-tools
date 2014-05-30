@@ -57,7 +57,7 @@ edx/edx-certificates:
     nick: crt
     track-pulls: true
 edx/opaque-keys:
-    nick: edx
+    nick: oky
     track-pulls: true
 edx/repo-tools:
     nick: rt
