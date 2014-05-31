@@ -8,6 +8,5 @@ more_itertools
 iso8601
 python-dateutil
 urlobject
-pymongo
 # not in pypi, required by pull-age.py
 # backport.statistics

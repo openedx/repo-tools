@@ -9,7 +9,6 @@ import operator
 import sys
 
 import dateutil.parser
-from pymongo import MongoClient
 
 from helpers import paginated_get
 from pulls import get_pulls
@@ -64,6 +63,7 @@ if 0:
     db.prs.find({ "pull.merged": true, "pull.merged_at": {   $gte: "2014-01-01T00:00:00.000Z",   $lt: "2014-04-01T00:00:00.000Z"  } }).count()
     """
 
+    from pymongo import MongoClient
     def insert_pulls(labels=None, state="open", since=None, org=False):
         mongo_client = MongoClient()
         mongo_collection = mongo_client.prs.prs
