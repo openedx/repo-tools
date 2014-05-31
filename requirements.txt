@@ -8,5 +8,4 @@ more_itertools
 iso8601
 python-dateutil
 urlobject
-# not in pypi, required by pull-age.py
-# backport.statistics
+-e hg+https://bitbucket.org/tiran/backports.statistics#egg=backports.statistics
