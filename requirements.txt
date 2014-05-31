@@ -9,3 +9,5 @@ iso8601
 python-dateutil
 urlobject
 -e hg+https://bitbucket.org/tiran/backports.statistics#egg=backports.statistics
+Flask==0.10.1
+gunicorn==18.0
