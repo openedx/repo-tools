@@ -4,3 +4,10 @@ github3.py==0.7.1
 requests==2.0.0
 uritemplate.py==0.2.0
 wsgiref==0.1.2
+more_itertools
+iso8601
+python-dateutil
+urlobject
+pymongo
+# not in pypi, required by pull-age.py
+# backport.statistics
