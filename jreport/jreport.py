@@ -5,10 +5,6 @@ import string
 
 import colors
 import dateutil.parser
-import requests
-from urlobject import URLObject
-import yaml
-from helpers import paginated_get
 
 
 class JObj(object):
@@ -132,45 +128,3 @@ def ago(v, detail=2, brief=True):
     if seconds:
         chunks.append(english_units(seconds, "second", brief))
     return " ".join(chunks[:detail])
-
-
-class JReport(object):
-    def __init__(self, debug=""):
-        # If there's an auth.yaml, use it!
-        self.auth = {}
-        try:
-            auth_file = open("auth.yaml")
-        except IOError:
-            pass
-        else:
-            with auth_file:
-                self.auth = yaml.load(auth_file)
-
-        self.debug = debug or ""
-        if "http" in self.debug:
-            # Yuck, but this is what requests says to do.
-            import httplib
-            httplib.HTTPConnection.debuglevel = 1
-
-    def __repr__(self):
-        return u"jreport.{cls}({debug!r})".format(
-            cls=self.__class__.__name__, debug=self.debug,
-        )
-
-    def _prep(self, url, auth, params):
-        url = URLObject(url).set_query_params(params or {})
-        if not auth:
-            auth = tuple(self.auth.get(url.hostname, {}).get("auth", ()))
-        return url, auth
-
-    def get_json_array(self, url, auth=None, params=None):
-        url, auth = self._prep(url, auth, params)
-        debug = ("json" in self.debug)
-        return [JObj(item) for item in paginated_get(url, debug=debug, auth=auth)]
-
-    def get_json_object(self, url, auth=None, params=None):
-        url, auth = self._prep(url, auth, params)
-        result = requests.get(url, auth=auth).json()
-        if "json" in self.debug:
-            pprint.pprint(result)
-        return JObj(result)

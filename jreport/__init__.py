@@ -1,1 +1,1 @@
-from .jreport import JObj, JReport
+from .jreport import JObj
