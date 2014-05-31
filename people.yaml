@@ -727,3 +727,6 @@ theJohnnyBrown:
     authors_entry: Johnny Brown <johnnybrown7@gmail.com>
     agreement: institution
     institution: Flouzo SARL
+rodo:
+    authors_entry: Rodolphe Quiédeville <rodolphe@quiedeville.org>
+    agreement: individual
