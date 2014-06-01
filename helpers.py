@@ -1,9 +1,38 @@
 """Helpers for various things."""
 
+import os
 import pprint
 import re
 
-import requests
+import requests as real_requests
+
+
+class WrappedRequests(object):
+    """A helper wrapper around requests.
+
+    Provides uniform authentication and logging.
+    """
+
+    def _kwargs(self, url, kwargs):
+        """Adjust the kwargs for a request."""
+        if "auth" not in kwargs:
+            # For Heroku, get github credentials from environment vars.
+            if url.startswith("https://api.github.com"):
+                user_name = os.environ.get("GITHUB_API_USER")
+                token = os.environ.get("GITHUB_API_TOKEN")
+                if user_name and token:
+                    kwargs["auth"] = (user_name, token)
+        return kwargs
+
+    def get(self, url, *args, **kwargs):
+        return real_requests.get(url, *args, **self._kwargs(url, kwargs))
+
+    def post(self, url, *args, **kwargs):
+        return real_requests.post(url, *args, **self._kwargs(url, kwargs))
+
+
+# Now we can use requests as usual, or even import it from this module.
+requests = WrappedRequests()
 
 
 def paginated_get(url, debug=False, **kwargs):
@@ -16,7 +45,7 @@ def paginated_get(url, debug=False, **kwargs):
         resp = requests.get(url, **kwargs)
         result = resp.json()
         if not resp.ok:
-            raise requests.exceptions.RequestException(result["message"])
+            raise real_requests.exceptions.RequestException(result["message"])
         if debug:
             pprint.pprint(result, stream=sys.stderr)
         for item in result:

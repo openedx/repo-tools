@@ -1,9 +1,8 @@
 import operator
 
-from helpers import paginated_get
+from helpers import paginated_get, requests
 import jreport
 
-import requests
 from urlobject import URLObject
 import yaml
 
