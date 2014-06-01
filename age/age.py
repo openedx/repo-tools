@@ -90,7 +90,7 @@ class WallMaker(object):
             "buckets": [ab[1] for ab in age_buckets],
             "teams": teams,
             "pulls": self.pulls,
-            "updated": NOW.isoformat(),
+            "updated": datetime.datetime.utcnow().isoformat(),
         }
         return wall_data
 

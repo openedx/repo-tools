@@ -212,7 +212,7 @@ $(function () {
 
     d3.json("age.json", function(data) {
         the_data = data;
-        $("#timestamp").text(moment(data.updated).format("MMM D, h:mm a"));
+        $("#timestamp").text(moment(moment.utc(data.updated).toDate()).format("MMM D, h:mm a"));
         update(data);
     });
 
