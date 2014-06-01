@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 <title>Pull Request Aging</title>
-<link rel="stylesheet" type="text/css" href="wall.css">
+<link rel="stylesheet" type="text/css" href="age.css">
 <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,700&amp;subset=latin" rel="stylesheet" type="text/css">
 <body>
 
@@ -210,7 +210,7 @@ $(function () {
         .append("g")
             .attr("transform", translate(margin.left, margin.top));
 
-    d3.json("wall.json", function(data) {
+    d3.json("age.json", function(data) {
         the_data = data;
         $("#timestamp").text(moment(data.updated).format("MMM D, h:mm a"));
         update(data);

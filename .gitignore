@@ -2,7 +2,6 @@ auth.yaml
 venv
 *.pyc
 
-wall.css
-wall.json
+age/age.json
 
 .sass-cache
