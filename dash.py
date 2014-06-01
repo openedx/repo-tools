@@ -16,7 +16,7 @@ def hello():
 def boom():
     1/0
 
-@app.route('/age/write')
+@app.route('/age/write', methods=['GET', 'POST'])
 def write_age():
     start = time.time()
     age_json = get_wall_data()
