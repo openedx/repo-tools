@@ -14,9 +14,10 @@ class JPullRequest(jreport.JObj):
         if org_fn:
             self['org'] = org_fn(self)
 
-    def finish_loading(self, pull_details=True):
-        if pull_details:
-            self['pull'] = requests.get(self._pr_url).json()
+        self['labels'] = [self.short_label(l['name']) for l in self['labels']]
+
+    def load_pull_details(self):
+        self['pull'] = requests.get(self._pr_url).json()
 
         if self['state'] == 'open':
             self['combinedstate'] = 'open'
@@ -27,8 +28,6 @@ class JPullRequest(jreport.JObj):
         else:
             self['combinedstate'] = 'closed'
             self['combinedstatecolor'] = 'red'
-
-        self['labels'] = [self.short_label(l['name']) for l in self['labels']]
 
     def short_label(self, lname):
         if lname == "open-source-contribution":

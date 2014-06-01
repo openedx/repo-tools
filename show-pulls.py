@@ -30,7 +30,7 @@ def show_pulls(labels=None, show_comments=False, state="open", since=None, org=F
 
     category = None
     for index, issue in enumerate(issues):
-        issue.finish_loading()
+        issue.load_pull_details()
         if issue.get("org") != category:
             # new category! print category header
             category = issue["org"]
@@ -81,7 +81,7 @@ if 0:
         months = collections.defaultdict(lambda: {'opened': 0, 'merged': 0})
         issues = get_pulls("edx/edx-platform", labels, state, since, org)
         for issue in issues:
-            issue.finish_loading()
+            issue.load_pull_details()
             months[yearmonth(issue['created_at'])]['opened'] += 1
             if issue['pull.merged']:
                 months[yearmonth(issue['pull.merged_at'])]['merged'] += 1

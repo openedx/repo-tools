@@ -101,7 +101,6 @@ class WallMaker(object):
 
         issues = get_pulls(repo.name, state="open", org=True)
         for issue in issues:
-            issue.finish_loading(pull_details=False)
             created_at = iso8601.parse_date(issue["created_at"]).replace(tzinfo=None)
             updated_at = iso8601.parse_date(issue["updated_at"]).replace(tzinfo=None)
             issue["created_bucket"] = bucket = find_bucket(created_at)
