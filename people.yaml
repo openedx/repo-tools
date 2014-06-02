@@ -733,3 +733,7 @@ rodo:
 trungpham:
     authors_entry: Trung Pham <tpham@course-master.com>
     agreement: individual
+benmcmorran:
+    authors_entry: Ben McMorran <bmcmorran@edx.org>
+    agreement: institution
+    institution: edX
