@@ -75,11 +75,11 @@ function update(data) {
     }
 
     /* SVG chart */
-    var team = svg.selectAll(".team_row")
+    var team = svg.selectAll(".team-row")
         .data(data.teams);
 
     var teamEnter = team.enter()
-        .append("g").attr("class", "team_row");
+        .append("g").attr("class", "team-row");
 
     var next_y = 0;
     team.transition().duration(duration)
@@ -97,7 +97,7 @@ function update(data) {
         .transition().duration(duration)
         .attr("height", next_y + margin.top + margin.bottom);
 
-    var teamBar = teamEnter.append("g")
+    var teamBar = teamEnter.append("g").attr("class", "team-bar")
         .on("click", click);
 
     teamBar.append("text").attr("class", "team")
@@ -148,8 +148,9 @@ function update(data) {
 
     var pull_detail = team.selectAll("g.pull-detail")
         .data(function (d, i) {
+            var pulls = [];
             if (d.showing) {
-                var pulls = d.showing.map(function (id) { return the_data.pulls[id]; });
+                pulls = d.showing.map(function (id) { return the_data.pulls[id]; });
                 pulls.sort(function (a, b) {
                     if (a.created_at < b.created_at) {
                         return -1;
@@ -158,11 +159,8 @@ function update(data) {
                         return 1;
                     }
                 });
-                return pulls;
             }
-            else {
-                return [];
-            }
+            return pulls;
         });
 
     var pull_detail_enter = pull_detail.enter()
@@ -176,7 +174,11 @@ function update(data) {
         .attr("width", "100%").attr("height", pull_height);
 
     fo.append("xhtml:body").attr("class", "pull-detail")
-        .html(function(p) { return pull_detail_template({pull:p}); });
+        .html(function(p) {
+            /* Hmm, this seems fragile, but .closest() didn't work? */
+            var in_label = $(this).parent().parent().parent()[0].__data__.team;
+            return pull_detail_template({ pull: p, in_label: in_label }); 
+        });
 
     pull_detail_enter.transition().duration(duration)
         .delay(function (d, i) { return i * 20; })
@@ -247,8 +249,15 @@ $(function () {
         <div class="number">
             <a href="<%= pull.pull_request_html_url %>"><%= pull.number %></a>
         </div>
-        <div class="title">
-            <a href="<%= pull.pull_request_html_url %>"><%= pull.title %></a>
+        <div class="rest">
+            <div class="title">
+                <a href="<%= pull.pull_request_html_url %>"><%= pull.title %></a>
+            </div>
+            <% $.each(pull.labels, function (i, label) { %>
+                <% if (label !== in_label && label !== "osc") { %>
+                    <div class="other-label"><%= label %></div>
+                <% } %>
+            <% }); %>
         </div>
     </div>
 </script>
