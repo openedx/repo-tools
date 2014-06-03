@@ -224,6 +224,12 @@ $(function () {
         update(data);
     });
 
+    $(".actions .collapse-all").click(function () {
+        $.each(the_data.teams, function (i, team) {
+            team.showing = [];
+        });
+        update(the_data);
+    });
 });
 </script>
 
@@ -273,3 +279,6 @@ $(function () {
 <div id="svgchart"></div>
 <div id="legend"></div>
 <div id="timestamp"></div>
+<div class="actions">
+    <div class="collapse-all">Collapse All</div>
+</div>
