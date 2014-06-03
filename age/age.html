@@ -82,14 +82,20 @@ function update(data) {
         .append("g").attr("class", "team-row");
 
     var next_y = 0;
+    var last_opened = false;
     team.transition().duration(duration)
         .attr("transform", function (t) {
             var y_pos = next_y;
             var num_showing = t.showing && t.showing.length || 0;
-            next_y += bar_height;
-            if (num_showing > 0) {
-                next_y += pull_height * num_showing + 5;
+            var this_opened = (num_showing > 0);
+            if (next_y != 0 && this_opened && !last_opened) {
+                y_pos += 15;
             }
+            next_y = y_pos + bar_height;
+            if (this_opened) {
+                next_y += pull_height * num_showing + 35;
+            }
+            last_opened = this_opened;
             return translate(0, y_pos);
         });
 
