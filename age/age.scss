@@ -16,6 +16,8 @@ $b1: hsl(hue(orange), $sat, $light);
 $b2: hsl(hue(yellow), $sat, $light - 10%);
 $b3: hsl(hue(green), $sat, $light - 15%);
 
+$bucket-border: #aaa;
+
 @function text-on($color) {
     @if (0.2*red($color) + 0.7*green($color) + 0.1*blue($color) > 128) {
       @return #000000;
@@ -47,7 +49,7 @@ svg {
         fill: black;
     }
     .bucket {
-        stroke: #888;
+        stroke: $bucket-border;
         stroke-width: .25px;
     }
     .bucket0 { fill: $b0; }
@@ -139,21 +141,29 @@ body.pull-detail {
                 width: 4em;
                 text-align: center;
                 border-radius: 4px;
+                border: .25px solid $bucket-border;
+                &.bucket3 {
+                    background: white;
+                    border: none;
+                }
             }
             &.repo {
                 width: 1.25em;
                 text-align: center;
                 color: #666;
             }
-            &.rest .title {
-                margin-right: .5em;
+            &.rest {
+                white-space: nowrap;
+                .title {
+                    margin-right: .5em;
+                }
             }
 
             & .other-label {
                 font-size: 85%;
                 color: #666;
                 padding: 0 .5em;
-                background: #ffc;
+                background: #ffd;
                 border: 1px solid #bbb;
                 border-radius: 2px;
             }
