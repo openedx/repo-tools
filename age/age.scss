@@ -139,21 +139,29 @@ body.pull-detail {
                 width: 4em;
                 text-align: center;
                 border-radius: 4px;
+                border: .25px solid #888;
+                &.bucket3 {
+                    background: white;
+                    border: none;
+                }
             }
             &.repo {
                 width: 1.25em;
                 text-align: center;
                 color: #666;
             }
-            &.rest .title {
-                margin-right: .5em;
+            &.rest {
+                white-space: nowrap;
+                .title {
+                    margin-right: .5em;
+                }
             }
 
             & .other-label {
                 font-size: 85%;
                 color: #666;
                 padding: 0 .5em;
-                background: #ffc;
+                background: #ffd;
                 border: 1px solid #bbb;
                 border-radius: 2px;
             }
