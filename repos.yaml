@@ -62,3 +62,12 @@ edx/opaque-keys:
 edx/repo-tools:
     nick: rt
     track-pulls: true
+edx/i18n-tools:
+    nick: i18n
+    track-pulls: true
+    hidden-contributors:
+        - sarina
+        - wedaly
+        - straz
+        - adampalay
+        - cpennington
