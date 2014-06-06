@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-<title>Pull Request Aging</title>
+<title>Pull Request Age</title>
 <link rel="stylesheet" type="text/css" href="age.css">
 <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,700&amp;subset=latin" rel="stylesheet" type="text/css">
 <body>
@@ -70,6 +70,8 @@ function click(team) {
 }
 
 function update(data) {
+    $("h1 .total-count").text(""+Object.keys(the_data.pulls).length);
+
     function intext(d, bucket) {
         return d.internal[bucket].length + d.external[bucket].length;
     }
@@ -221,6 +223,9 @@ $(function () {
     d3.json("age.json", function(data) {
         the_data = data;
         $("#timestamp").text(moment(moment.utc(data.updated).toDate()).format("MMM D, h:mm a"));
+        /*
+        $("#timestamp").text("Now: " + moment.utc().subtract("days", 7).format());
+        */
         update(data);
     });
 
@@ -230,6 +235,7 @@ $(function () {
         });
         update(the_data);
     });
+
 });
 </script>
 
@@ -274,7 +280,7 @@ $(function () {
     </div>
 </script>
 
-<h1>Pull Request Aging</h1>
+<h1><span class='total-count'></span> Pull Requests</h1>
 
 <div id="svgchart"></div>
 <div id="legend"></div>
