@@ -35,8 +35,7 @@ function short_date(d) {
     return moment(d).format("MMM D");
 }
 
-var margin = { top: 10, right: 10, bottom: 10, left: 10 },
-    width = { chart: 600, team: 80, total: 30 },
+var width = { chart: 600, team: 80, total: 30 },
     bar_height = 30,
     pull_height = 18;
 
@@ -103,7 +102,7 @@ function update(data) {
 
     d3.select("#svgchart svg")
         .transition().duration(duration)
-        .attr("height", next_y + margin.top + margin.bottom);
+        .attr("height", next_y);
 
     var teamBar = teamEnter.append("g").attr("class", "team-bar")
         .on("click", click);
@@ -216,9 +215,7 @@ $(function () {
     pull_detail_template = _.template($("script#pull-detail-template").html());
  
     svg = d3.select("#svgchart").append("svg")
-        .attr("width", "100%")
-        .append("g")
-            .attr("transform", translate(margin.left, margin.top));
+        .attr("width", "100%");
 
     d3.json("age.json", function(data) {
         the_data = data;

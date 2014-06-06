@@ -12,7 +12,6 @@ h1 {
     .total-count {
         display: inline-block;
         width: 5.16em;
-        xcolor: darken($header, 10%);
         text-align: right;
         font-weight: bold;
     }
@@ -41,6 +40,10 @@ $t0: text-on($b0);
 $t1: text-on($b1);
 $t2: text-on($b2);
 $t3: text-on($b3);
+
+#svgchart {
+    margin-left: 10px;
+};
 
 svg {
     .team {
@@ -164,6 +167,8 @@ body.pull-detail {
             }
             &.rest {
                 white-space: nowrap;
+                /* max-width needs to be here, but the value doesn't matter? */
+                max-width: 1em;
                 .title {
                     margin-right: .5em;
                 }
