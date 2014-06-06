@@ -95,6 +95,11 @@ class WallMaker(object):
         }
         return wall_data
 
+    def add_pull(self, label, intext, bucket, issue):
+        self.blocked_by[label][intext][bucket].append(issue['id'])
+        self.blocked_by[label]['total'] += 1
+        self.pulls[issue['id']] = pull_summary(issue)
+
     def one_repo(self, repo):
         if self.blocked_by is None:
             self.blocked_by = { team: blank_sheet() for team in get_teams(repo) }
@@ -121,14 +126,10 @@ class WallMaker(object):
                     continue
                 if label not in self.blocked_by:
                     continue
-                self.blocked_by[label][intext][bucket].append(issue_id)
-                self.blocked_by[label]["total"] += 1
+                self.add_pull(label, intext, bucket, issue)
                 blocked = True
             if not blocked and intext == "external":
-                self.blocked_by['unlabelled'][intext][bucket].append(issue_id)
-                self.blocked_by['unlabelled']['total'] += 1
-
-            self.pulls[issue_id] = pull_summary(issue)
+                self.add_pull('unlabelled', intext, bucket, issue)
 
 
 class Repo(object):
