@@ -87,21 +87,26 @@ svg {
     }
 }
 
-#legend {
-    float: left;
-    margin-top: 1em;
+#footer {
+    margin-top: 2em;
     margin-right: 2em;
+}
+
+.legend {
+    float: left;
     font-size: .8em;
 
     span {
         padding: .1em .5em;
+        border: .25px solid $bucket-border;
     }
 }
 
-#timestamp {
-    margin-top: 1em;
+.timestamp {
     font-size: 75%;
     font-style: italic;
+    float: left;
+    margin-left: 2em;
 }
 
 
@@ -189,14 +194,20 @@ body.pull-detail {
 .actions {
 
     clear: both;
-    margin-top: .5em;
+    padding-top: 1em;
 
     div {
         display: inline-block;
-        background: gray;
+        background: #f8f8f8;
         color: white;
         font-size: 66%;
         padding: 0 .75em;
         cursor: pointer;
+    }
+}
+
+#footer:hover .actions {
+    div {
+        background: #aaa;
     }
 }

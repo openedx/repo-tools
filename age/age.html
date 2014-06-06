@@ -159,7 +159,7 @@ function update(data) {
             if (d.showing) {
                 pulls = d.showing.map(function (id) { return the_data.pulls[id]; });
                 pulls.sort(function (a, b) {
-                    if (a.created_at < b.created_at) {
+                    if (a[date_attr] < b[date_attr]) {
                         return -1;
                     }
                     else {
@@ -200,7 +200,7 @@ function update(data) {
         .remove();
 
     /* Legend */
-    d3.select("#legend").selectAll("span")
+    d3.select("#footer .legend").selectAll("span")
         .data(data.buckets)
         .enter().append("span")
             .attr("class", function (d, i) { return "bucket bucket"+i; })
@@ -210,7 +210,29 @@ function update(data) {
 
 var pull_detail_template;
 
+var bucket_dates = [ null, null, null ];
+
+function week_buckets() {
+    var now = moment.utc();
+    bucket_dates[0] = now.subtract("days", 7).format();
+    bucket_dates[1] = now.subtract("days", 14).format();
+    bucket_dates[2] = now.subtract("days", 21).format();
+}
+
+function date_bucket(date) {
+    for (var i = 0; i < 3; i++) {
+        if (date < bucket_dates[i]) {
+            break;
+        }
+    }
+    return i;
+}
+
+var date_attr = "updated_at";
+
 $(function () {
+
+    week_buckets();
 
     pull_detail_template = _.template($("script#pull-detail-template").html());
  
@@ -219,10 +241,7 @@ $(function () {
 
     d3.json("age.json", function(data) {
         the_data = data;
-        $("#timestamp").text(moment(moment.utc(data.updated).toDate()).format("MMM D, h:mm a"));
-        /*
-        $("#timestamp").text("Now: " + moment.utc().subtract("days", 7).format());
-        */
+        $("#footer .timestamp").text(moment(moment.utc(data.updated).toDate()).format("MMM D, h:mm a"));
         update(data);
     });
 
@@ -230,6 +249,16 @@ $(function () {
         $.each(the_data.teams, function (i, team) {
             team.showing = [];
         });
+        update(the_data);
+    });
+
+    $(".actions .by-created").click(function () {
+        date_attr = "created_at";
+        update(the_data);
+    });
+
+    $(".actions .by-updated").click(function () {
+        date_attr = "updated_at";
         update(the_data);
     });
 
@@ -280,8 +309,13 @@ $(function () {
 <h1><span class='total-count'></span> Pull Requests</h1>
 
 <div id="svgchart"></div>
-<div id="legend"></div>
-<div id="timestamp"></div>
-<div class="actions">
-    <div class="collapse-all">Collapse All</div>
-</div>
+
+<section id="footer">
+    <div class="legend"></div>
+    <div class="timestamp"></div>
+    <div class="actions">
+        <div class="collapse-all">Collapse All</div>
+        <div class="by-created">By Created</div>
+        <div class="by-updated">By Updated</div>
+    </div>
+</section>
