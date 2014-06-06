@@ -19,6 +19,8 @@ class JObj(object):
     def __getitem__(self, key):
         val = self.obj
         for k in key.split("."):
+            if val is None:
+                break
             val = val[k]
         return val
 

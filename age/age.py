@@ -57,6 +57,7 @@ def pull_summary(issue):
         "user.html_url",
         "created_at", "updated_at",
         "created_bucket", "updated_bucket",
+        "assignee.login",
         #"pull.comments", "pull.comments_url",
         #"pull.commits", "pull.commits_url",
         #"pull.additions", "pull.deletions",

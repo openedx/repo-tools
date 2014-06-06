@@ -302,6 +302,9 @@ $(function () {
                     <div class="other-label"><%= label %></div>
                 <% } %>
             <% }); %>
+            <% if (pull.assignee_login) { %>
+                <div class="assignee"><%= pull.assignee_login %></div>
+            <% } %>
         </div>
     </div>
 </script>
@@ -313,6 +316,7 @@ $(function () {
 <section id="footer">
     <div class="legend"></div>
     <div class="timestamp"></div>
+    <div class="exhortation">BTW: click on the bars!</div>
     <div class="actions">
         <div class="collapse-all">Collapse All</div>
         <div class="by-created">By Created</div>
