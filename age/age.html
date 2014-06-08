@@ -144,15 +144,15 @@ function update(data) {
     var team = svg.selectAll(".team-row")
         .data(sorted_teams);
 
-    var teamEnter = team.enter()
-        .append("g").attr("class", "team-row");
+    var team_enter = team.enter()
+        .append("g").attr("class", "team-row").on("click", click_bar);
 
     var next_y = 0;
     var last_opened = false;
     team.transition().duration(duration)
         .attr("transform", function (t) {
             var y_pos = next_y;
-            var num_showing = expanded[t.team] && t.pulls.length || 0;
+            var num_showing = expanded[t.team] ? t.pulls.length : 0;
             var this_opened = (num_showing > 0);
             if (next_y != 0 && this_opened && !last_opened) {
                 y_pos += 15;
@@ -169,13 +169,10 @@ function update(data) {
         .transition().duration(duration)
         .attr("height", next_y);
 
-    var teamBar = teamEnter.append("g").attr("class", "team-bar")
-        .on("click", click_bar);
-
-    teamBar.append("text").attr("class", "team")
+    team_enter.append("text").attr("class", "team")
         .attr("x", team_right).attr("y", bar_height/2).attr("dy", "0.3em")
         .text(displayed_team_name);
-    teamBar.append("text").attr("class", "total")
+    team_enter.append("text").attr("class", "total")
         .attr("x", total_right).attr("y", bar_height/2).attr("dy", "0.3em")
         .text(function (d) { return d.pulls.length; });
 
@@ -194,26 +191,36 @@ function update(data) {
         });
     });
 
-    var bucket = teamBar.selectAll(".bucket")
-        .data(function (d, i) { return team_buckets[i]; })
-        .enter().append("g")
-            .attr("transform", function (d) {
-                    return translate(bar_left + x_scale(d.x), 0);
-                });
+    var bucket = team.selectAll(".buckets")
+        .data(
+            function (d, i) { return team_buckets[i]; }, 
+            function (d, i) { return ""+i; }
+        );
 
-    bucket.append("rect")
+    var bucket_enter = bucket.enter().append("g").attr("class", "buckets");
+    bucket.transition().duration(duration).attr("transform", function (d) {
+        return translate(bar_left + x_scale(d.x), 0);
+    });
+
+    var bucket_rect = bucket_enter.append("rect")
         .attr("class", function (d, i) { return "bucket bucket"+i; })
         .attr("x", 0).attr("y", 0)
-        .attr("width", function (d) { return x_scale(d.width); })
-        .attr("height", bar_height - 3);
+        .attr("width", 0).attr("height", bar_height - 3);
 
-    bucket.append("rect")
+    bucket_rect.transition().duration(duration/2)
+        .attr("width", function (d) {
+            return x_scale(d.width);
+        });
+
+    var bucket_external_rect = bucket_enter.append("rect")
         .attr("class", "external")
         .attr("x", 0).attr("y", bar_height - 3 - 10)
-        .attr("width", function (d) { return x_scale(d.external); })
-        .attr("height", 10)
+        .attr("width", 0).attr("height", 10);
 
-    bucket.append("text")
+    bucket_external_rect.transition().duration(duration*2)
+        .attr("width", function (d) { return x_scale(d.external); });
+
+    bucket_enter.append("text")
         .attr("class", function (d, i) { return "count bucket"+i; })
         .attr("x", function (d) { return x_scale(d.width)-3; })
         .attr("y", 12)
