@@ -16,7 +16,7 @@ var x_scale = d3.scale.linear()
     .domain([0, 20])
     .range([0, 420]);
 
-function dteam(d) {
+function displayed_team_name(d) {
     var team = d.team;
     if (team === "community managers") {
         return "ComMgrs";
@@ -31,8 +31,55 @@ function translate(x, y) {
     return "translate(" + x + "," + y + ")";
 }
 
+function svg_position(that) {
+    var matrix = that.getScreenCTM()
+            .translate(+that.getAttribute("cx"), +that.getAttribute("cy"));
+    return [window.pageXOffset + matrix.e, window.pageYOffset + matrix.f];
+}
+
 function short_date(d) {
     return moment(d).format("MMM D");
+}
+
+function categorize_pulls(all_pulls, team_names) {
+    var teams = { unlabelled: [] };
+
+    $.each(team_names, function (i, team_name) {
+        teams[team_name] = [];
+    });
+
+    for (pid in all_pulls) {
+        var pull = all_pulls[pid];
+        var categorized = false;
+        $.each(pull.labels, function (i, label) {
+            if (teams[label]) {
+                teams[label].push(pull);
+                categorized = true;
+            }
+        });
+        if (!categorized) {
+            teams["unlabelled"].push(pull);
+        }
+
+        pull.bucket = date_bucket(pull[date_attr]);
+    }
+    return teams;
+}
+
+function score_pulls(pulls) {
+    return pulls.length;
+}
+
+function number_in_bucket(pulls, bucket, intext) {
+    var number = 0;
+    $.each(pulls, function (i, pull) {
+        if (pull.bucket === bucket) {
+            if (typeof intext === "undefined" || intext == pull.intext) {
+                number++;
+            }
+        }
+    });
+    return number;
 }
 
 var width = { chart: 600, team: 80, total: 30 },
@@ -47,37 +94,58 @@ var duration = 400;
 
 var svg = null;
 var the_data = null;
+var expanded = {};      // map from team name to expanded boolean
 
-function click(team) {
-    if (team.showing && team.showing.length) {
-        team.showing = [];
+function click_bar(team) {
+    console.log("Clicked team:", team);
+    if (expanded[team.team]) {
+        expanded[team.team] = false;
     }
     else {
-        team.showing = [];
-        $.each(["internal", "external"], function (i, intext) {
-            $.each(team[intext], function (i, pulls) {
-                team.showing = team.showing.concat(pulls);
-            });
-        });
-
-        var matrix = this.getScreenCTM()
-                .translate(+this.getAttribute("cx"), +this.getAttribute("cy"));
-
-        team.table_at = [window.pageXOffset + matrix.e, window.pageYOffset + matrix.f + 30];
+        var svg_pos = svg_position(this);
+        team.table_at = [svg_pos[0], svg_pos[1] + 30];
+        expanded[team.team] = true;
     }
     update(the_data);
 }
 
 function update(data) {
-    $("h1 .total-count").text(""+Object.keys(the_data.pulls).length);
+    $("h1 .total-count").text(""+Object.keys(data.pulls).length);
 
-    function intext(d, bucket) {
-        return d.internal[bucket].length + d.external[bucket].length;
-    }
+    var categorized = categorize_pulls(data.pulls, data.team_names);
+    var sorted_team_names = Object.keys(categorized).sort(function (a, b) {
+        // Reverse ordered by pull scores, "authors" last.
+        if (a === "author") {
+            return 1;
+        }
+        else if (b === "author") {
+            return -1;
+        }
+        var a_score = score_pulls(categorized[a]);
+        var b_score = score_pulls(categorized[b]);
+        if (a_score < b_score) {
+            return 1;
+        }
+        else if (a_score > b_score) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    });
+    var sorted_teams = [];
+    $.each(sorted_team_names, function (i, team_name) {
+        sorted_teams.push({
+            team: team_name, 
+            pulls: categorized[team_name]
+        });
+    });
+
+    console.log(sorted_teams);
 
     /* SVG chart */
     var team = svg.selectAll(".team-row")
-        .data(data.teams);
+        .data(sorted_teams);
 
     var teamEnter = team.enter()
         .append("g").attr("class", "team-row");
@@ -87,7 +155,7 @@ function update(data) {
     team.transition().duration(duration)
         .attr("transform", function (t) {
             var y_pos = next_y;
-            var num_showing = t.showing && t.showing.length || 0;
+            var num_showing = expanded[t.team] && t.pulls.length || 0;
             var this_opened = (num_showing > 0);
             if (next_y != 0 && this_opened && !last_opened) {
                 y_pos += 15;
@@ -105,22 +173,26 @@ function update(data) {
         .attr("height", next_y);
 
     var teamBar = teamEnter.append("g").attr("class", "team-bar")
-        .on("click", click);
+        .on("click", click_bar);
 
     teamBar.append("text").attr("class", "team")
         .attr("x", team_right).attr("y", bar_height/2).attr("dy", "0.3em")
-        .text(dteam);
+        .text(displayed_team_name);
     teamBar.append("text").attr("class", "total")
         .attr("x", total_right).attr("y", bar_height/2).attr("dy", "0.3em")
-        .text(function (d) { return d.total; });
+        .text(function (d) { return d.pulls.length; });
 
     var team_buckets = [];
-    data.teams.forEach(function (team, i) {
+    sorted_teams.forEach(function (team, i) {
         var team_bucket = team_buckets[i] = [];
         var total = 0;
-        data.buckets.forEach(function (bucket, j) {
-            var width = intext(team, j);
-            team_bucket[j] = { x: total, width: width, external: team.external[j].length };
+        bucket_names.forEach(function (_, bucket_num) {
+            var width = number_in_bucket(team.pulls, bucket_num);
+            team_bucket[bucket_num] = { 
+                x: total, 
+                width: width, 
+                external: number_in_bucket(team.pulls, bucket_num, "external")
+            };
             total += width;
         });
     });
@@ -156,8 +228,8 @@ function update(data) {
     var pull_detail = team.selectAll("g.pull-detail")
         .data(function (d, i) {
             var pulls = [];
-            if (d.showing) {
-                pulls = d.showing.map(function (id) { return the_data.pulls[id]; });
+            if (expanded[d.team]) {
+                pulls = d.pulls;
                 pulls.sort(function (a, b) {
                     if (a[date_attr] < b[date_attr]) {
                         return -1;
@@ -201,7 +273,7 @@ function update(data) {
 
     /* Legend */
     d3.select("#footer .legend").selectAll("span")
-        .data(data.buckets)
+        .data(bucket_names)
         .enter().append("span")
             .attr("class", function (d, i) { return "bucket bucket"+i; })
             .text(function (d) { return d; });
@@ -211,21 +283,23 @@ function update(data) {
 var pull_detail_template;
 
 var bucket_dates = [ null, null, null ];
+var bucket_names;
 
 function week_buckets() {
-    var now = moment.utc();
-    bucket_dates[0] = now.subtract("days", 7).format();
-    bucket_dates[1] = now.subtract("days", 14).format();
-    bucket_dates[2] = now.subtract("days", 21).format();
+    bucket_dates[0] = moment.utc().subtract("days", 7).format();
+    bucket_dates[1] = moment.utc().subtract("days", 14).format();
+    bucket_dates[2] = moment.utc().subtract("days", 21).format();
+    bucket_names = ["3+ weeks", "2-3 weeks", "1-2 weeks", "<1 week"];
+    console.log(bucket_dates);
 }
 
 function date_bucket(date) {
-    for (var i = 0; i < 3; i++) {
-        if (date < bucket_dates[i]) {
+    for (var i = 0; i < bucket_dates.length; i++) {
+        if (date > bucket_dates[i]) {
             break;
         }
     }
-    return i;
+    return bucket_dates.length - i;
 }
 
 var date_attr = "created_at";
@@ -246,9 +320,7 @@ $(function () {
     });
 
     $(".actions .collapse-all").click(function () {
-        $.each(the_data.teams, function (i, team) {
-            team.showing = [];
-        });
+        expanded = {};
         update(the_data);
     });
 
@@ -279,10 +351,10 @@ $(function () {
                 <% } %>
             <% } %>
         </div>
-        <div class="created bucket<%= pull.created_bucket %>">
+        <div class="created bucket<%= date_bucket(pull.created_at) %>">
             <%= short_date(pull.created_at) %>
         </div>
-        <div class="updated bucket<%= pull.updated_bucket %>">
+        <div class="updated bucket<%= date_bucket(pull.updated_at) %>">
             <%= short_date(pull.updated_at) %>
         </div>
         <div class="repo">

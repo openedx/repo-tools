@@ -5,36 +5,11 @@ from __future__ import print_function
 import datetime
 import json
 
-import iso8601
 import yaml
 
 from helpers import paginated_get
 from pulls import get_pulls
 
-
-age_buckets = [
-    (datetime.timedelta.max,        '3+ weeks'),
-    (datetime.timedelta(days=21),   '2-3 weeks'),
-    (datetime.timedelta(days=14),   '1-2 weeks'),
-    (datetime.timedelta(days=7),    '<1 week'),
-]
-
-NOW = datetime.datetime.now()
-
-def blank_sheet():
-    return {
-        "total": 0,
-        "internal": [[] for ab in age_buckets],
-        "external": [[] for ab in age_buckets],
-    }
-
-def find_bucket(when):
-    """Return the number of the age bucket for `when`."""
-    age = NOW - when
-    for i, (delta, bucket) in enumerate(reversed(age_buckets)):
-        if age < delta:
-            return len(age_buckets)-i-1
-    assert False, "Should have found a bucket!"
 
 LABELS_URL = "https://api.github.com/repos/{owner_repo}/labels"
 
@@ -56,7 +31,6 @@ def pull_summary(issue):
         "user.login",
         "user.html_url",
         "created_at", "updated_at",
-        "created_bucket", "updated_bucket",
         "assignee.login",
         #"pull.comments", "pull.comments_url",
         #"pull.commits", "pull.commits_url",
@@ -69,48 +43,28 @@ def pull_summary(issue):
 
 class WallMaker(object):
     def __init__(self):
-        self.blocked_by = None
         self.pulls = {}
 
     def show_wall(self, repos):
 
+        self.team_names = set(get_teams(repos[0]))
+
         for repo in repos:
             self.one_repo(repo)
 
-        for team, data in self.blocked_by.iteritems():
-            data["team"] = team
-
-        teams = sorted(
-            self.blocked_by.values(),
-            # waiting on author should be last.
-            key=lambda d: (d["team"] != "author", d["total"]),
-            reverse=True
-        )
-
         wall_data = {
-            "buckets": [ab[1] for ab in age_buckets],
-            "teams": teams,
+            "team_names": list(self.team_names),
             "pulls": self.pulls,
             "updated": datetime.datetime.utcnow().isoformat(),
         }
         return wall_data
 
-    def add_pull(self, label, intext, bucket, issue):
-        self.blocked_by[label][intext][bucket].append(issue['id'])
-        self.blocked_by[label]['total'] += 1
+    def add_pull(self, issue):
         self.pulls[issue['id']] = pull_summary(issue)
 
     def one_repo(self, repo):
-        if self.blocked_by is None:
-            self.blocked_by = { team: blank_sheet() for team in get_teams(repo) }
-            self.blocked_by['unlabelled'] = blank_sheet()
-
         issues = get_pulls(repo.name, state="open", org=True)
         for issue in issues:
-            created_at = iso8601.parse_date(issue["created_at"]).replace(tzinfo=None)
-            updated_at = iso8601.parse_date(issue["updated_at"]).replace(tzinfo=None)
-            issue["created_bucket"] = bucket = find_bucket(created_at)
-            issue["updated_bucket"] = find_bucket(updated_at)
             if "osc" in issue['labels']:
                 intext = "external"
             elif issue['org'] == 'edX':
@@ -124,12 +78,12 @@ class WallMaker(object):
             for label in issue['labels']:
                 if label == "osc":
                     continue
-                if label not in self.blocked_by:
+                if label not in self.team_names:
                     continue
-                self.add_pull(label, intext, bucket, issue)
+                self.add_pull(issue)
                 blocked = True
             if not blocked and intext == "external":
-                self.add_pull('unlabelled', intext, bucket, issue)
+                self.add_pull(issue)
 
 
 class Repo(object):
