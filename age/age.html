@@ -97,7 +97,6 @@ var the_data = null;
 var expanded = {};      // map from team name to expanded boolean
 
 function click_bar(team) {
-    console.log("Clicked team:", team);
     if (expanded[team.team]) {
         expanded[team.team] = false;
     }
@@ -140,8 +139,6 @@ function update(data) {
             pulls: categorized[team_name]
         });
     });
-
-    console.log(sorted_teams);
 
     /* SVG chart */
     var team = svg.selectAll(".team-row")
@@ -290,7 +287,6 @@ function week_buckets() {
     bucket_dates[1] = moment.utc().subtract("days", 14).format();
     bucket_dates[2] = moment.utc().subtract("days", 21).format();
     bucket_names = ["3+ weeks", "2-3 weeks", "1-2 weeks", "<1 week"];
-    console.log(bucket_dates);
 }
 
 function date_bucket(date) {
