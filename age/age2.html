@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<head>
+<title>Pull Request Age</title>
+<link rel="stylesheet" type="text/css" href="age.css">
+<link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,700&amp;subset=latin" rel="stylesheet" type="text/css">
+<body>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js"></script>
+
+<script>
+/* Fixed scale so people can see the change over time. */
+var x_scale = d3.scale.linear()
+    .domain([0, 20])
+    .range([0, 420]);
+
+function displayed_team_name(d) {
+    var team = d.team;
+    if (team === "community managers") {
+        return "ComMgrs";
+    }
+    if (team === "author") {
+        return "(author)";
+    }
+    return team;
+}
+
+function translate(x, y) {
+    return "translate(" + x + "," + y + ")";
+}
+
+function categorize_pulls(all_pulls, team_names) {
+    var teams = { unlabelled: [] };
+
+    $.each(team_names, function (i, team_name) {
+        teams[team_name] = [];
+    });
+
+    for (pid in all_pulls) {
+        var pull = all_pulls[pid];
+        var categorized = false;
+        $.each(pull.labels, function (i, label) {
+            if (teams[label]) {
+                teams[label].push(pull);
+                categorized = true;
+            }
+        });
+        if (!categorized) {
+            teams["unlabelled"].push(pull);
+        }
+
+        pull.bucket = date_bucket(pull[date_attr]);
+    }
+    return teams;
+}
+
+function score_pulls(pulls) {
+    return pulls.length;
+}
+
+function number_in_bucket(pulls, bucket, intext) {
+    var number = 0;
+    $.each(pulls, function (i, pull) {
+        if (pull.bucket === bucket) {
+            if (typeof intext === "undefined" || intext == pull.intext) {
+                number++;
+            }
+        }
+    });
+    return number;
+}
+
+var width = { chart: 600, team: 80, total: 30 },
+    bar_height = 30,
+    pull_height = 18;
+
+var team_right = width.team,
+    total_right = team_right + width.total,
+    bar_left = total_right + 10;
+
+var duration = 400;
+
+var svg = null;
+var the_data = null;
+
+function update(data) {
+    var categorized = categorize_pulls(data.pulls, data.team_names);
+    var sorted_team_names = Object.keys(categorized).sort(function (a, b) {
+        // Reverse ordered by pull scores, "authors" last.
+        if (a === "author") {
+            return 1;
+        }
+        else if (b === "author") {
+            return -1;
+        }
+        var a_score = score_pulls(categorized[a]);
+        var b_score = score_pulls(categorized[b]);
+        if (a_score < b_score) {
+            return 1;
+        }
+        else if (a_score > b_score) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    });
+    var sorted_teams = [];
+    $.each(sorted_team_names, function (i, team_name) {
+        sorted_teams.push({
+            team: team_name, 
+            pulls: categorized[team_name]
+        });
+    });
+
+    /* SVG chart */
+    var team = svg.selectAll(".team-row")
+        .data(sorted_teams);
+
+    var team_enter = team.enter()
+        .append("g").attr("class", "team-row");
+
+    team.transition().duration(duration)
+        .attr("transform", function (t, i) {
+            return translate(0, i * bar_height);
+        });
+
+    d3.select("#svgchart svg")
+        .transition().duration(duration)
+        .attr("height", sorted_teams.length * bar_height);
+
+    team_enter.append("text").attr("class", "team")
+        .attr("x", team_right).attr("y", bar_height/2).attr("dy", "0.3em")
+        .text(displayed_team_name);
+    team_enter.append("text").attr("class", "total")
+        .attr("x", total_right).attr("y", bar_height/2).attr("dy", "0.3em")
+        .text(function (d) { return d.pulls.length; });
+
+    var team_buckets = [];
+    sorted_teams.forEach(function (team, i) {
+        var team_bucket = team_buckets[i] = [];
+        var total = 0;
+        bucket_names.forEach(function (_, bucket_num) {
+            var width = number_in_bucket(team.pulls, bucket_num);
+            team_bucket[bucket_num] = { 
+                x: total, 
+                width: width, 
+                external: number_in_bucket(team.pulls, bucket_num, "external")
+            };
+            total += width;
+        });
+    });
+
+    var bucket = team.selectAll(".buckets")
+        .data(
+            function (d, i) { return team_buckets[i]; }, 
+            function (d, i) { return ""+i; }
+        );
+
+    var bucket_enter = bucket.enter().append("g").attr("class", "buckets");
+    bucket.transition().duration(duration).attr("transform", function (d) {
+        return translate(bar_left + x_scale(d.x), 0);
+    });
+
+    var bucket_rect = bucket_enter.append("rect")
+        .attr("class", function (d, i) { return "bucket bucket"+i; })
+        .attr("x", 0).attr("y", 0)
+        .attr("width", 0).attr("height", bar_height - 3);
+
+    bucket_rect.transition().duration(duration/2)
+        .attr("width", function (d) {
+            return x_scale(d.width);
+        });
+}
+
+var bucket_dates = [ null, null, null ];
+var bucket_names;
+
+function week_buckets() {
+    bucket_dates[0] = moment.utc().subtract("days", 7).format();
+    bucket_dates[1] = moment.utc().subtract("days", 14).format();
+    bucket_dates[2] = moment.utc().subtract("days", 21).format();
+    bucket_names = ["3+ weeks", "2-3 weeks", "1-2 weeks", "<1 week"];
+}
+
+function date_bucket(date) {
+    for (var i = 0; i < bucket_dates.length; i++) {
+        if (date > bucket_dates[i]) {
+            break;
+        }
+    }
+    return bucket_dates.length - i;
+}
+
+var date_attr = "created_at";
+
+$(function () {
+
+    week_buckets();
+
+    svg = d3.select("#svgchart").append("svg")
+        .attr("width", "100%");
+
+    d3.json("age.json", function(data) {
+        the_data = data;
+        update(data);
+    });
+
+    $(".actionsx .by-created").click(function () {
+        date_attr = "created_at";
+        update(the_data);
+    });
+
+    $(".actionsx .by-updated").click(function () {
+        date_attr = "updated_at";
+        update(the_data);
+    });
+
+});
+</script>
+
+<div id="svgchart"></div>
+
+<section id="footer">
+    <div class="actionsx">
+        <div class="by-created">By Created</div>
+        <div class="by-updated">By Updated</div>
+    </div>
+</section>
