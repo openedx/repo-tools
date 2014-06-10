@@ -71,3 +71,6 @@ edx/i18n-tools:
         - straz
         - adampalay
         - cpennington
+edx/xqueue-watcher:
+    nick: xqw
+    track-pulls: true
