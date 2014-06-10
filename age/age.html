@@ -110,6 +110,7 @@ function click_bar(team) {
 
 function update(data) {
     $("h1 .total-count").text(""+Object.keys(data.pulls).length);
+    $("h1 .title").text("Pull Requests");
 
     var categorized = categorize_pulls(data.pulls, data.team_names);
     var sorted_team_names = Object.keys(categorized).sort(function (a, b) {
@@ -314,19 +315,24 @@ function date_bucket(date) {
 
 var date_attr = "created_at";
 
-$(function () {
-
-    week_buckets();
-
-    pull_detail_template = _.template($("script#pull-detail-template").html());
- 
-    svg = d3.select("#svgchart").append("svg")
-        .attr("width", "100%");
-
-    d3.json("age.json", function(data) {
-        the_data = data;
-        $("#footer .timestamp").text(moment(moment.utc(data.updated).toDate()).format("MMM D, h:mm a"));
-        update(data);
+function fetch_data() {
+    d3.json("age.json", function (error, data) {
+        if (error) {
+            $("h1 .title").text("Pulling...");
+            d3.text("write", function (error, data) {
+                if (error) {
+                    $("h1 .title").text("Ugh!");
+                }
+                else {
+                    fetch_data();
+                }
+            });
+        }
+        else {
+            the_data = data;
+            $("#footer .timestamp").text(moment(moment.utc(data.updated).toDate()).format("MMM D, h:mm a"));
+            update(data);
+        }
     });
 
     $(".actions .collapse-all").click(function () {
@@ -343,6 +349,19 @@ $(function () {
         date_attr = "updated_at";
         update(the_data);
     });
+
+}
+
+$(function () {
+
+    week_buckets();
+
+    pull_detail_template = _.template($("script#pull-detail-template").html());
+
+    svg = d3.select("#svgchart").append("svg")
+        .attr("width", "100%");
+
+    fetch_data();
 
 });
 </script>
@@ -391,7 +410,7 @@ $(function () {
     </div>
 </script>
 
-<h1><span class='total-count'></span> Pull Requests</h1>
+<h1><span class='total-count'></span> <span class='title'>Fetching Data...</span></h1>
 
 <div id="svgchart"></div>
 
