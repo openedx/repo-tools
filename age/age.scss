@@ -84,7 +84,7 @@ svg {
         text-decoration: underline;
     }
 
-    .team-row {
+    .team-bar {
         cursor: pointer;
     }
 }
@@ -121,6 +121,10 @@ svg {
 body.pull-detail {
     margin: 0;
     padding: 0;
+
+    &:hover {
+        background: #eee;
+    }
 
     div {
         margin: 0;
@@ -166,7 +170,7 @@ body.pull-detail {
                 border-width: 1px;
                 border-style: solid;
                 &.bucket3 {
-                    background: white;
+                    background: none;
                     border-color: white;
                 }
             }

@@ -145,7 +145,7 @@ function update(data) {
         .data(sorted_teams);
 
     var team_enter = team.enter()
-        .append("g").attr("class", "team-row").on("click", click_bar);
+        .append("g").attr("class", "team-row");
 
     var next_y = 0;
     var last_opened = false;
@@ -169,10 +169,13 @@ function update(data) {
         .transition().duration(duration)
         .attr("height", next_y);
 
-    team_enter.append("text").attr("class", "team")
+    var team_bar = team_enter.append("g").attr("class", "team-bar")
+        .on("click", click_bar);
+
+    team_bar.append("text").attr("class", "team")
         .attr("x", team_right).attr("y", bar_height/2).attr("dy", "0.3em")
         .text(displayed_team_name);
-    team_enter.append("text").attr("class", "total")
+    team_bar.append("text").attr("class", "total")
         .attr("x", total_right).attr("y", bar_height/2).attr("dy", "0.3em")
         .text(function (d) { return d.pulls.length; });
 
@@ -191,7 +194,7 @@ function update(data) {
         });
     });
 
-    var bucket = team.selectAll(".buckets")
+    var bucket = team_bar.selectAll(".buckets")
         .data(
             function (d, i) {
                 return team_buckets[i];
