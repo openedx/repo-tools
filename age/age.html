@@ -313,6 +313,12 @@ function date_bucket(date) {
     return bucket_dates.length - i;
 }
 
+function getParameterByName(name) {
+    var regex = new RegExp("[?&]" + name + "=([^&#]*)");
+    var results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
 var date_attr = "created_at";
 
 function fetch_data() {
@@ -349,7 +355,6 @@ function fetch_data() {
         date_attr = "updated_at";
         update(the_data);
     });
-
 }
 
 $(function () {
@@ -357,6 +362,11 @@ $(function () {
     week_buckets();
 
     pull_detail_template = _.template($("script#pull-detail-template").html());
+
+    // ?expand=DevOps,LMS on the URL will pre-expand the named teams.
+    $.each(getParameterByName("expand").split(","), function (i, arg) {
+        expanded[arg] = true;
+    });
 
     svg = d3.select("#svgchart").append("svg")
         .attr("width", "100%");
