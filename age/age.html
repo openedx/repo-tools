@@ -193,36 +193,40 @@ function update(data) {
 
     var bucket = team.selectAll(".buckets")
         .data(
-            function (d, i) { return team_buckets[i]; }, 
-            function (d, i) { return ""+i; }
+            function (d, i) {
+                return team_buckets[i];
+            }
         );
 
-    var bucket_enter = bucket.enter().append("g").attr("class", "buckets");
-    bucket.transition().duration(duration).attr("transform", function (d) {
-        return translate(bar_left + x_scale(d.x), 0);
-    });
+    var bucket_enter = bucket.enter().append("g").attr("class", "buckets")
+        .attr("transform", translate(bar_left, 0));
 
     var bucket_rect = bucket_enter.append("rect")
         .attr("class", function (d, i) { return "bucket bucket"+i; })
-        .attr("x", 0).attr("y", 0)
+        .attr("x", function(d) { return x_scale(d.x); }).attr("y", 0)
         .attr("width", 0).attr("height", bar_height - 3);
 
-    bucket_rect.transition().duration(duration/2)
+    bucket.transition().selectAll(".buckets .bucket").duration(duration/2)
+        .attr("x", function(d) {
+            return x_scale(d.x);
+        })
         .attr("width", function (d) {
             return x_scale(d.width);
         });
 
     var bucket_external_rect = bucket_enter.append("rect")
         .attr("class", "external")
-        .attr("x", 0).attr("y", bar_height - 3 - 10)
+        .attr("x", function(d) { return x_scale(d.x); })
+        .attr("y", bar_height - 3 - 10)
         .attr("width", 0).attr("height", 10);
 
     bucket_external_rect.transition().duration(duration*2)
+        .attr("x", function(d) { return x_scale(d.x); })
         .attr("width", function (d) { return x_scale(d.external); });
 
     bucket_enter.append("text")
         .attr("class", function (d, i) { return "count bucket"+i; })
-        .attr("x", function (d) { return x_scale(d.width)-3; })
+        .attr("x", function (d) { return x_scale(d.x+d.width)-3; })
         .attr("y", 12)
         .text(function (d) { 
             var count = d.width;
