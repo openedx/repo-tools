@@ -74,3 +74,6 @@ edx/i18n-tools:
 edx/xqueue-watcher:
     nick: xqw
     track-pulls: true
+edx/edx-submissions:
+    nick: sub
+    track-pulls: true
