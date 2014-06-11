@@ -264,7 +264,7 @@ function update(data) {
     var fo = pull_detail_enter.append("foreignObject")
         .attr("width", "100%").attr("height", pull_height);
 
-    fo.append("xhtml:body").attr("class", "pull-detail")
+    fo.append("xhtml:body").attr("class", "pull-detail-row")
         .html(function(p) {
             /* Hmm, this seems fragile, but .closest() didn't work? */
             var in_label = $(this).parent().parent().parent()[0].__data__.team;
@@ -340,6 +340,18 @@ function fetch_data() {
             update(data);
         }
     });
+}
+
+$(function () {
+
+    week_buckets();
+
+    pull_detail_template = _.template($("script#pull-detail-template").html());
+
+    // ?expand=DevOps,LMS on the URL will pre-expand the named teams.
+    $.each(getParameterByName("expand").split(","), function (i, arg) {
+        expanded[arg] = true;
+    });
 
     $(".actions .collapse-all").click(function () {
         expanded = {};
@@ -355,18 +367,19 @@ function fetch_data() {
         date_attr = "updated_at";
         update(the_data);
     });
-}
 
-$(function () {
+    var help_legend = $(".explanation").html();
 
-    week_buckets();
-
-    pull_detail_template = _.template($("script#pull-detail-template").html());
-
-    // ?expand=DevOps,LMS on the URL will pre-expand the named teams.
-    $.each(getParameterByName("expand").split(","), function (i, arg) {
-        expanded[arg] = true;
-    });
+    $(".detail-legend .help-text").parent().hover(
+        function () {
+            $(this).addClass("helping");
+            $(".explanation").html($(".help-text", this).html());
+        },
+        function () {
+            $(this).removeClass("helping");
+            $(".explanation").html(help_legend);
+        }
+    );
 
     svg = d3.select("#svgchart").append("svg")
         .attr("width", "100%");
@@ -428,6 +441,42 @@ $(function () {
     <div class="legend"></div>
     <div class="timestamp"></div>
     <div class="exhortation">Psst! click on the bars!</div>
+
+    <div class="detail-legend pull-detail-row">
+        <div>
+            <div class="user">author
+                <span class="help-text">The author of the pull request, linked to their GitHub profile</span>
+            </div>
+            <div class="org">X
+                <span class="help-text">Dark dot means external contribution, with first letter of organization if known</span>
+            </div>
+            <div class="created bucket0">create
+                <span class="help-text">Created date, colored based on age</span>
+            </div>
+            <div class="updated bucket2">update
+                <span class="help-text">Last-updated date, colored based on age</span>
+            </div>
+            <div class="repo">repo
+                <span class="help-text">Shorthand for the repository, blank for edx-platform</span>
+            </div>
+            <div class="number">1234
+                <span class="help-text">The pull request number</span>
+            </div>
+            <div class="rest">
+                <div class="title">Change this code the way I want please, kthxbye
+                    <span class="help-text">The description of the pull request</span>
+                </div>
+                <div class="other-label">team
+                    <span class="help-text">Other teams labelled on the pull request</span>
+                </div>
+                <div class="assignee">assignee
+                    <span class="help-text">The person assigned to the pull request, if any</span>
+                </div>
+            </div>
+        </div>
+        <div class="explanation">Hover for explanation</div>
+    </div>
+
     <div class="actions">
         <div class="collapse-all">Collapse All</div>
         <div class="by-created">By Created</div>

@@ -77,7 +77,7 @@ svg {
     text.bucket3 { fill: $t3; stroke: none; }
 
     .pull-detail {
-        font-size: 85%;
+        font-size: 75%;
     }
 
     a text:hover {
@@ -92,6 +92,13 @@ svg {
 #footer {
     margin-top: 2em;
     margin-right: 2em;
+
+    &:hover .actions {
+        div {
+            background: #aaa;
+        }
+    }
+
 }
 
 .legend {
@@ -118,12 +125,39 @@ svg {
 .bucket2 { background: $b2; color: $t2; border-color: $bb2; }
 .bucket3 { background: $b3; color: $t3; border-color: $bb3; }
 
-body.pull-detail {
+.detail-legend {
+    clear: both;
+    font-size: 75%;
+
+    opacity: .25;
+    &:hover {
+        opacity: 1;
+    }
+
+    &.pull-detail-row {
+        padding-top: 1em;
+
+        &:hover {
+            background: white;
+        }
+    }
+
+    & .explanation {
+        margin: .5em 0 0 10em;
+        font-style: italic;
+    }
+}
+
+.pull-detail-row {
     margin: 0;
     padding: 0;
 
     &:hover {
         background: #eee;
+    }
+
+    & .help-text {
+        display: none;
     }
 
     div {
@@ -175,7 +209,7 @@ body.pull-detail {
                 }
             }
             &.repo {
-                width: 1.25em;
+                width: 2em;
                 text-align: center;
                 color: #666;
             }
@@ -204,6 +238,10 @@ body.pull-detail {
                 border-radius: 1em;
                 padding: 0 .5em;
             }
+
+            &.helping {
+                outline: 1px dotted black;
+            }
         }
     }
 }
@@ -223,8 +261,3 @@ body.pull-detail {
     }
 }
 
-#footer:hover .actions {
-    div {
-        background: #aaa;
-    }
-}
