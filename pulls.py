@@ -68,7 +68,10 @@ def get_pulls(owner_repo, labels=None, state="open", since=None, org=False):
             def_org = "---"
 
         def org_fn(issue):
-            return people.get(issue["user.login"], {}).get("institution", def_org)
+            user_info = people.get(issue["user.login"])
+            if not user_info:
+                user_info = {"institution": "unsigned"}
+            return user_info.get("institution", def_org)
 
     issues = JPullRequest.from_json(paginated_get(url), org_fn)
     if org:

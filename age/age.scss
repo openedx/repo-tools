@@ -189,6 +189,9 @@ svg {
                 opacity: 1;
                 font-size: 90%;
                 border-radius: .75em;
+                &.unsigned {
+                    background: red;
+                }
             }
             &.number {
                 width: 2.5em;
