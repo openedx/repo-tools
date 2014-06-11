@@ -358,6 +358,14 @@ $(function () {
         update(the_data);
     });
 
+    $(".actions .expand-all").click(function () {
+        $.each(the_data.team_names, function (i, team_name) {
+            expanded[team_name] = true;
+        });
+        expanded["unlabelled"] = true;
+        update(the_data);
+    });
+
     $(".actions .by-created").click(function () {
         date_attr = "created_at";
         update(the_data);
@@ -483,6 +491,7 @@ $(function () {
 
     <div class="actions">
         <div class="collapse-all">Collapse All</div>
+        <div class="expand-all">Expand All</div>
         <div class="by-created">By Created</div>
         <div class="by-updated">By Updated</div>
     </div>
