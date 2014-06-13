@@ -191,6 +191,7 @@ svg {
                 border-radius: .75em;
                 &.unsigned {
                     background: red;
+                    font-weight: bold;
                 }
             }
             &.number {
