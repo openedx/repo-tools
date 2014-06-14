@@ -22,31 +22,28 @@ REPOS = (
 )
 
 
-def get_user_org_mapping():
+def get_all_orgs():
     with open("people.yaml") as people_yaml:
         mapping = yaml.load(people_yaml)
 
-    return { user:data.get('institution', 'other') for user, data in mapping.items() }
+    orgs = set(data.get('institution', 'other') for data in mapping.values())
+    orgs.add('unsigned')
+    return orgs
 
 
-def get_duration_data(
-    durations, owner_repo="edx/edx-platform", since=None,
-    user_org_mapping=None,
-):
+def get_duration_data(durations, owner_repo="edx/edx-platform", since=None):
     """
     Update `durations`, a dict of dict of lists of pull requests.
 
-    `durations` has four lists of data, where each list contains only timedelta objects:
-      age of internal open pull requests (all)
-      age of external open pull requests (all)
-      age of internal closed pull requests (since the `since` value)
-      age of external closed pull requests (since the `since` value)
+    `durations` has four lists of data, where each list contains pull requests:
+      internal open pull requests (all)
+      external open pull requests (all)
+      internal closed pull requests (since the `since` value)
+      external closed pull requests (since the `since` value)
 
     These lists are organized into a dictionary that categorizes the lists
     by position and state.
     """
-    user_org_mapping = user_org_mapping or {}
-
     open_issues_generator = itertools.izip(
         get_pulls(owner_repo, state="open", org=True),
         itertools.repeat("open")
@@ -63,7 +60,6 @@ def get_duration_data(
         else:
             closed_at = iso8601.parse_date(issue["closed_at"]).replace(tzinfo=None)
         issue['duration'] = closed_at - created_at
-        issue['org'] = user_org_mapping.get(issue['user']['login'], "other")
 
         if DEBUG:
             print("{pr[id]}: {pr[intext]} {state}".format(
@@ -97,10 +93,8 @@ def main(argv):
     if args.since:
         since = date.today() - timedelta(days=args.since)
 
-    user_org_mapping = get_user_org_mapping()
-
     if args.org:
-        categories = sorted(set(user_org_mapping.values()))
+        categories = sorted(get_all_orgs())
         def cat_filter(cat, pr):
             return pr['org'] == cat
     else:
@@ -119,7 +113,7 @@ def main(argv):
         }
     }
     for owner_repo in REPOS:
-        get_duration_data(durations, owner_repo, since, user_org_mapping)
+        get_duration_data(durations, owner_repo, since)
 
     for linenum, cat in enumerate(categories):
         ss_friendly = []
