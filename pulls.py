@@ -10,10 +10,18 @@ import yaml
 class JPullRequest(jreport.JObj):
     def __init__(self, issue_data, org_fn=None):
         super(JPullRequest, self).__init__(issue_data)
+        self['labels'] = [self.short_label(l['name']) for l in self['labels']]
         if org_fn:
             self['org'] = org_fn(self)
 
-        self['labels'] = [self.short_label(l['name']) for l in self['labels']]
+            # A pull request is external if marked as such, or if the author's
+            # organization is not edX.
+            if "osc" in self['labels']:
+                self['intext'] = "external"
+            elif self['org'] == "edX":
+                self['intext'] = "internal"
+            else:
+                self['intext'] = "external"
 
     def load_pull_details(self):
         self['pull'] = requests.get(self._pr_url).json()

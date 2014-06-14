@@ -65,25 +65,16 @@ class WallMaker(object):
     def one_repo(self, repo):
         issues = get_pulls(repo.name, state="open", org=True)
         for issue in issues:
-            if "osc" in issue['labels']:
-                intext = "external"
-            elif issue['org'] == 'edX':
-                intext = "internal"
-            else:
-                intext = "external"
-            issue["intext"] = intext
             issue["id"] = issue_id = "{}.{}".format(repo.name, issue["number"])
             issue["repo"] = repo.nick
-            blocked = False
             for label in issue['labels']:
-                if label == "osc":
-                    continue
-                if label not in self.team_names:
-                    continue
-                self.add_pull(issue)
-                blocked = True
-            if not blocked and intext == "external":
-                self.add_pull(issue)
+                if label in self.team_names:
+                    self.add_pull(issue)
+                    break
+            else:
+                # Didn't find a blocking label, include it if external.
+                if issue['intext'] == "external":
+                    self.add_pull(issue)
 
 
 class Repo(object):
