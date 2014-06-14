@@ -9,6 +9,7 @@ import yaml
 
 from helpers import paginated_get
 from pulls import get_pulls
+from repos import Repo
 
 
 LABELS_URL = "https://api.github.com/repos/{owner_repo}/labels"
@@ -74,22 +75,6 @@ class WallMaker(object):
                 # Didn't find a blocking label, include it if external.
                 if issue['intext'] == "external":
                     self.add_pull(issue)
-
-
-class Repo(object):
-    @classmethod
-    def from_yaml(cls, filename="repos.yaml"):
-        with open(filename) as yaml_file:
-            all_repos = yaml.load(yaml_file)
-
-        for name, data in all_repos.iteritems():
-            yield cls(name, data)
-
-    def __init__(self, name, data):
-        self.name = name
-        data = data or {}
-        self.track_pulls = data.get("track-pulls", False)
-        self.nick = data.get("nick", name)
 
 
 def get_wall_data(pretty=False):

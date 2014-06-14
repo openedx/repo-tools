@@ -12,14 +12,9 @@ from backports import statistics
 import iso8601
 
 from pulls import get_pulls
+from repos import Repo
 
 DEBUG = False
-
-REPOS = (
-    # owner, repo, label to indicate external contribution
-    ("edx/edx-platform"),
-    #("edx", "configuration", "open-source-contribution"),
-)
 
 
 def get_all_orgs():
@@ -29,6 +24,12 @@ def get_all_orgs():
     orgs = set(data.get('institution', 'other') for data in mapping.values())
     orgs.add('unsigned')
     return orgs
+
+def get_tracked_repos():
+    with open("repos.yaml") as repos_yaml:
+        repos = yaml.load(repos_yaml)
+
+    return set(repo for repo, data in repos.iteritems() if data.get('track-pulls', False))
 
 
 def get_duration_data(durations, owner_repo="edx/edx-platform", since=None):
@@ -112,8 +113,10 @@ def main(argv):
             "external": [],
         }
     }
-    for owner_repo in REPOS:
-        get_duration_data(durations, owner_repo, since)
+
+    repos = [ r for r in Repo.from_yaml() if r.track_pulls ]
+    for repo in repos:
+        get_duration_data(durations, repo.name, since)
 
     for linenum, cat in enumerate(categories):
         ss_friendly = []
@@ -141,7 +144,7 @@ def main(argv):
             if linenum == 0:
                 print("cat\twhen\trepos\teopen\teopenage\teclosed\teclosedage\tiopen\tiopenage\ticlosed\ticlosedage")
             ss_data = "\t".join(str(x) for x in ss_friendly)
-            print("{}\t{:%m/%d/%Y}\t{}\t{}".format(cat, date.today(), len(REPOS), ss_data))
+            print("{}\t{:%m/%d/%Y}\t{}\t{}".format(cat, date.today(), len(repos), ss_data))
 
 if __name__ == "__main__":
     main(sys.argv)
