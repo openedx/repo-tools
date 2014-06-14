@@ -24,7 +24,7 @@ class JPullRequest(jreport.JObj):
                 self['intext'] = "external"
 
     def load_pull_details(self):
-        self['pull'] = requests.get(self._pr_url).json()
+        self['pull'] = requests.get(self['pull_request.url']).json()
 
         if self['state'] == 'open':
             self['combinedstate'] = 'open'
@@ -50,7 +50,6 @@ class JPullRequest(jreport.JObj):
             pr_url = issue.get('pull_request', {}).get('url')
             if not pr_url:
                 continue
-            issue._pr_url = pr_url
 
             yield issue
 
@@ -85,4 +84,6 @@ def get_pulls(owner_repo, labels=None, state="open", since=None, org=False):
     if org:
         issues = sorted(issues, key=operator.itemgetter("org"))
 
-    return issues
+    for issue in issues:
+        issue['id'] = "{}.{}".format(owner_repo, issue['number'])
+        yield issue

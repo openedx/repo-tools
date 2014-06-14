@@ -65,7 +65,6 @@ class WallMaker(object):
     def one_repo(self, repo):
         issues = get_pulls(repo.name, state="open", org=True)
         for issue in issues:
-            issue["id"] = issue_id = "{}.{}".format(repo.name, issue["number"])
             issue["repo"] = repo.nick
             for label in issue['labels']:
                 if label in self.team_names:

@@ -10,31 +10,16 @@ from datetime import date, datetime, timedelta
 from backports import statistics
 
 import iso8601
-from urlobject import URLObject
 
-from helpers import paginated_get
+from pulls import get_pulls
 
 DEBUG = False
 
 REPOS = (
     # owner, repo, label to indicate external contribution
-    ("edx", "edx-platform", "open-source-contribution"),
+    ("edx/edx-platform"),
     #("edx", "configuration", "open-source-contribution"),
 )
-
-
-def get_internal_usernames():
-    """
-    Returns a set of the Github usernames that are associated with edX.
-    """
-    with open("people.yaml") as people_yaml:
-        people = yaml.load(people_yaml)
-
-    internal_usernames = set()
-    for github_name, info in people.iteritems():
-        if info.get("institution", "unknown") == "edX":
-            internal_usernames.add(github_name)
-    return internal_usernames
 
 
 def get_user_org_mapping():
@@ -45,8 +30,7 @@ def get_user_org_mapping():
 
 
 def get_duration_data(
-    durations, owner="edx", repo="edx-platform", since=None,
-    external_label="open-source-contribution", internal_usernames=None,
+    durations, owner_repo="edx/edx-platform", since=None,
     user_org_mapping=None,
 ):
     """
@@ -61,40 +45,18 @@ def get_duration_data(
     These lists are organized into a dictionary that categorizes the lists
     by position and state.
     """
-    internal_usernames = internal_usernames or set()
     user_org_mapping = user_org_mapping or {}
 
-    url = URLObject("https://api.github.com/repos/{owner}/{repo}/issues".format(
-                    owner=owner, repo=repo))
-    # two separate URLs, one for open PRs, the other for closed PRs
-    open_url = url.set_query_param("state", "open")
-    closed_url = url.set_query_param("state", "closed")
-    if since:
-        closed_url = closed_url.set_query_param('since', since.isoformat())
-
     open_issues_generator = itertools.izip(
-        paginated_get(open_url),
+        get_pulls(owner_repo, state="open", org=True),
         itertools.repeat("open")
     )
     closed_issues_generator = itertools.izip(
-        paginated_get(closed_url),
+        get_pulls(owner_repo, state="closed", since=since, org=True),
         itertools.repeat("closed")
     )
 
     for issue, state in itertools.chain(open_issues_generator, closed_issues_generator):
-        if not issue.get('pull_request', {}).get('url'):
-            continue
-
-        label_names = [label["name"] for label in issue["labels"]]
-
-        if external_label and external_label in label_names:
-            position = "external"
-        else:
-            if issue["user"]["login"] in internal_usernames:
-                position = "internal"
-            else:
-                position = "external"
-
         created_at = iso8601.parse_date(issue["created_at"]).replace(tzinfo=None)
         if state == "open":
             closed_at = datetime.utcnow()
@@ -104,15 +66,16 @@ def get_duration_data(
         issue['org'] = user_org_mapping.get(issue['user']['login'], "other")
 
         if DEBUG:
-            print("{owner}/{repo}#{num}: {position} {state}".format(
-                owner=owner, repo=repo, num=issue["number"],
-                position=position, state=state
+            print("{pr[id]}: {pr[intext]} {state}".format(
+                pr=issue, state=state
             ), file=sys.stderr)
 
-        durations[state][position].append(issue)
+        durations[state][issue['intext']].append(issue)
 
 
 def main(argv):
+    global DEBUG
+
     parser = argparse.ArgumentParser(description="Summarize pull requests.")
     parser.add_argument("--since", metavar="DAYS", type=int, default=14,
         help="For closed issues, only include issues updated in the past DAYS days [%(default)d]"
@@ -123,13 +86,17 @@ def main(argv):
     parser.add_argument("--org", action="store_true",
         help="Break down by organization"
     )
+    parser.add_argument("--debug", action="store_true",
+        help="Break down by organization"
+    )
     args = parser.parse_args(argv[1:])
+
+    DEBUG = args.debug
 
     since = None
     if args.since:
         since = date.today() - timedelta(days=args.since)
 
-    internal_usernames = get_internal_usernames()
     user_org_mapping = get_user_org_mapping()
 
     if args.org:
@@ -151,8 +118,8 @@ def main(argv):
             "external": [],
         }
     }
-    for owner, repo, label in REPOS:
-        get_duration_data(durations, owner, repo, since, label, internal_usernames, user_org_mapping)
+    for owner_repo in REPOS:
+        get_duration_data(durations, owner_repo, since, user_org_mapping)
 
     for linenum, cat in enumerate(categories):
         ss_friendly = []
