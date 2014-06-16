@@ -755,7 +755,7 @@ asadiqbal08:
     authors_entry: Asad Iqbal <aiqbal@edx.org>
     agreement: institution
     institution: edX
-    comment: solutions team helper from Arbisoft
+    comment: Arbisoft solutions developer
 clintonb:
     authors_entry: Clinton Blackburn <cblackburn@edx.org>
     agreement: institution
@@ -765,3 +765,8 @@ jhelbert:
     agreement: institution
     institution: edX
     comment: analytics intern, summer 2014
+minhtuev:
+    authors_entry: Minh-Tue Vo <mvo@edx.org>
+    agreement: institution
+    institution: edX
+    comment: testing intern, summer 2014
