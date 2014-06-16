@@ -325,7 +325,7 @@ function fetch_data() {
     d3.json("age.json", function (error, data) {
         if (error) {
             $("h1 .title").text("Pulling...");
-            d3.text("write", function (error, data) {
+            d3.text("age/write", function (error, data) {
                 if (error) {
                     $("h1 .title").text("Ugh!");
                 }
