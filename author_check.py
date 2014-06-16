@@ -34,6 +34,7 @@ from helpers import paginated_get
 
 # Global data.
 
+SHOW_UNCOMMITTING_AUTHORS = False   # This probably isn't worth mentioning.
 GITHUB_USER = None
 PERSONAL_ACCESS_TOKEN = None
 REPO_INFO = {}
@@ -139,7 +140,7 @@ def check_repo(owner_repo):
             if author not in entry_to_github:
                 print_red(u"{} is in AUTHORS but not in people file".format(author))
                 all_clear = False
-            elif entry_to_github[author] not in c:
+            elif SHOW_UNCOMMITTING_AUTHORS and entry_to_github[author] not in c:
                 print_yellow(u"{} is in AUTHORS file but doesn't seem to have made a commit".format(author))
                 all_clear = False
 
