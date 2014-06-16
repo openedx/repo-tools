@@ -13,6 +13,18 @@ class WrappedRequests(object):
     Provides uniform authentication and logging.
     """
 
+    def __init__(self):
+        self.all_requests = None
+
+    def record_request(self, method, url, args, kwargs):
+        if self.all_requests is None:
+            return
+        self.all_requests.append(
+            "{}: {} {} {}".format(
+                method, url, args if args else "", kwargs if kwargs else ""
+            ).rstrip()
+        )
+
     def _kwargs(self, url, kwargs):
         """Adjust the kwargs for a request."""
         if "auth" not in kwargs:
@@ -25,9 +37,11 @@ class WrappedRequests(object):
         return kwargs
 
     def get(self, url, *args, **kwargs):
+        self.record_request("GET", url, args, kwargs)
         return real_requests.get(url, *args, **self._kwargs(url, kwargs))
 
     def post(self, url, *args, **kwargs):
+        self.record_request("POST", url, args, kwargs)
         return real_requests.post(url, *args, **self._kwargs(url, kwargs))
 
 

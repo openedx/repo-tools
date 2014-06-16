@@ -4,8 +4,9 @@ import os
 import time
 
 from age.age import get_wall_data
+import helpers
 
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, request
 
 
 app = Flask(__name__)
@@ -25,11 +26,22 @@ def boom():
 @app.route('/age/write', methods=['GET', 'POST'])
 def write_age():
     start = time.time()
+    helpers.requests.all_requests = []
     age_json = get_wall_data()
     with replace_file("age/age.json") as age_json_file:
         age_json_file.write(age_json)
     end = time.time()
-    return "Wrote {} bytes in {:.1f}s".format(len(age_json), end - start)
+    html = []
+    html.append("<p>Made {} requests, wrote {} bytes in {:.1f}s</p>".format(
+        len(helpers.requests.all_requests), len(age_json), end - start
+    ))
+    debug = request.args.get('debug', None)
+    if debug:
+        html.append("<pre>")
+        for req in helpers.requests.all_requests:
+            html.append(req)
+        html.append("</pre>")
+    return "\n".join(html)
 
 @app.route('/age/<path:filename>')
 def send_age_static(filename):
