@@ -698,6 +698,7 @@ gradyward:
     authors_entry: Grady Ward <gward@edx.org>
     agreement: institution
     institution: edX
+    comment: ORA intern, summer 2014
 stvstnfrd:
     authors_entry: Steven Burch <stv@stanford.edu>
     agreement: institution
@@ -738,9 +739,15 @@ benmcmorran:
     authors_entry: Ben McMorran <bmcmorran@edx.org>
     agreement: institution
     institution: edX
+    comment: Studio intern, summer 2014
 AnuragRamdasan:
     authors_entry: Anurag Ramdasan <anurag@course-master.com>
     agreement: individual
 dashea:
     authors_entry: David Shea <david@reallylongword.org>
     agreement: individual
+mmprandom:
+    authors_entry: Mat Peterson <mpeterson@edx.org>
+    agreement: institution
+    institution: edX
+    comment: LMS intern, summer 2014
