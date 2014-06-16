@@ -13,7 +13,10 @@ app.debug = True
 
 @app.route('/')
 def hello():
-    return 'Hello World!?'
+    return '''
+        <p>Open edX dashboard.</p>
+        <p>You might like <a href="/age.html">Pull Request ages</a>.</p>
+        '''
 
 @app.route('/boom')
 def boom():
@@ -29,8 +32,13 @@ def write_age():
     return "Wrote {} bytes in {:.1f}s".format(len(age_json), end - start)
 
 @app.route('/age/<path:filename>')
-def send_static(filename):
+def send_age_static(filename):
     return send_from_directory('age', filename)
+
+@app.route('/<path:filename>')
+def send_static(filename):
+    if filename.startswith("age"):
+        return send_from_directory('age', filename)
 
 
 @contextmanager
