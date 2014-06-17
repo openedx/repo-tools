@@ -774,6 +774,7 @@ tymofij:
     authors_entry: Tim Babych <tbabych@edx.org>
     agreement: institution
     institution: edX
+    comment: blades
 papipsycho:
     authors_entry: Julien Romagnoli <julien.romagnoli@gmail.com>
     agreement: individual
