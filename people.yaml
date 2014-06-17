@@ -774,3 +774,9 @@ tymofij:
     authors_entry: Tim Babych <tbabych@edx.org>
     agreement: institution
     institution: edX
+papipsycho:
+    authors_entry: Julien Romagnoli <julien.romagnoli@gmail.com>
+    agreement: individual
+jambonbill:
+    authors_entry: Pierre Boquet <jambonbill@gmail.com>
+    agreement: individual
