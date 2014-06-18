@@ -51,6 +51,8 @@ jmvt:
 sikachu:
     authors_entry: Prem Sichanugrist <psichanugrist@thoughtbot.com>
     agreement: institution
+    institution: edX
+    comment: thoughtbot
 ichuang:
     authors_entry: Isaac Chuang <ichuang@mit.edu>
     agreement: individual
@@ -58,12 +60,18 @@ ichuang:
 frechg:
     authors_entry: Galen Frechette <galen@thoughtbot.com>
     agreement: institution
+    institution: edX
+    comment: thoughtbot
 edwardloveall:
     authors_entry: Edward Loveall <edward@edwardloveall.com>
     agreement: institution
+    institution: edX
+    comment: thoughtbot
 mjankowski:
     authors_entry: Matt Jankowski <mjankowski@thoughtbot.com>
     agreement: institution
+    institution: edX
+    comment: thoughtbot
 jarv:
     authors_entry: John Jarvis <jarv@edx.org>
     agreement: institution
@@ -71,6 +79,8 @@ jarv:
 Aviendha:
     authors_entry: <aviendhasl@gmail.com>
     agreement: institution
+    institution: edX
+    comment: lyla
 shnayder:
     authors_entry: Victor Shnayder <victor@edx.org>
     agreement: institution
@@ -78,6 +88,8 @@ shnayder:
 halogenandtoast:
     authors_entry: Matthew Mongeau <halogenandtoast@gmail.com>
     agreement: institution
+    institution: edX
+    comment: thoughtbot
 kimtonyhyun:
     authors_entry: Tony Kim <kimth@edx.org>
     agreement: institution
@@ -127,9 +139,10 @@ markchang:
     authors_entry: Mark L. Chang <mark.chang@gmail.com>
     agreement: institution
     institution: edX
-deanxorr: # ?
+deanxorr:
     authors_entry: Dean Dieker <ddieker@gmail.com>
     agreement: institution
+    institution: edX
 tmacwill:
     authors_entry: Tommy MacWilliam <tmacwilliam@cs.harvard.edu>
     agreement: institution
@@ -378,6 +391,8 @@ mcpanic:
 stkomarov:
     authors_entry: Steve Komarov <skomarov@edx.org>
     agreement: institution
+    institution: edX
+    comment: worked with Piotr summer 2013
 jimabramson:
     authors_entry: Jim Abramson <jsa@edx.org>
     agreement: institution
