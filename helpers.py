@@ -6,6 +6,8 @@ import re
 
 import requests as real_requests
 
+from urlobject import URLObject
+
 
 class WrappedRequests(object):
     """A helper wrapper around requests.
@@ -49,12 +51,22 @@ class WrappedRequests(object):
 requests = WrappedRequests()
 
 
-def paginated_get(url, debug=False, **kwargs):
+def paginated_get(url, limit=None, debug=False, **kwargs):
     """
-    Returns a generator that will retrieve all objects from a paginated API.
+    Retrieve all objects from a paginated API.
+
     Assumes that the pagination is specified in the "link" header, like
     Github's v3 API.
+
+    The `limit` describes how many results you'd like returned.  You might get
+    more than this, but you won't make more requests to the server once this
+    limit has been exceeded.  For example, paginating by 100, if you set a
+    limit of 250, three requests will be made, and you'll get 300 objects.
+
     """
+    url = URLObject(url).set_query_param('per_page', '100')
+    limit = limit or 999999999
+    returned = 0
     while url:
         resp = requests.get(url, **kwargs)
         result = resp.json()
@@ -64,8 +76,9 @@ def paginated_get(url, debug=False, **kwargs):
             pprint.pprint(result, stream=sys.stderr)
         for item in result:
             yield item
+            returned += 1
         url = None
-        if "link" in resp.headers:
+        if "link" in resp.headers and returned < limit:
             match = re.search(r'<(?P<url>[^>]+)>; rel="next"', resp.headers["link"])
             if match:
                 url = match.group('url')
