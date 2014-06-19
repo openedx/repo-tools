@@ -441,6 +441,9 @@ $(function () {
             <% if (pull.assignee_login) { %>
                 <div class="assignee"><%= pull.assignee_login %></div>
             <% } %>
+            <% if (pull.base_ref !== "master") { %>
+                <div class="base_ref">&rarr;&nbsp;<%= pull.base_ref %></div>
+            <% } %>
         </div>
     </div>
 </script>

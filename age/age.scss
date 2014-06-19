@@ -243,6 +243,11 @@ svg {
                 padding: 0 .5em;
             }
 
+            & .base_ref {
+                padding-left: 1em;
+                color: #666;
+            }
+
             &.helping {
                 outline: 1px dotted black;
             }

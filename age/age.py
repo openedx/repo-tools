@@ -33,6 +33,7 @@ def pull_summary(issue):
         "user.html_url",
         "created_at", "updated_at",
         "assignee.login",
+        "pull.base.ref",
         #"pull.comments", "pull.comments_url",
         #"pull.commits", "pull.commits_url",
         #"pull.additions", "pull.deletions",
@@ -64,7 +65,7 @@ class WallMaker(object):
         self.pulls[issue['id']] = pull_summary(issue)
 
     def one_repo(self, repo):
-        issues = get_pulls(repo.name, state="open", org=True)
+        issues = get_pulls(repo.name, state="open", org=True, pull_details="list")
         for issue in issues:
             issue["repo"] = repo.nick
             for label in issue['labels']:
