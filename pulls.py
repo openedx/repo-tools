@@ -41,7 +41,7 @@ class JPullRequest(jreport.JObj):
         if self['state'] == 'open':
             self['combinedstate'] = 'open'
             self['combinedstatecolor'] = 'green'
-        elif self['pull.merged']:
+        elif self['pull.merged_at']:
             self['combinedstate'] = 'merged'
             self['combinedstatecolor'] = 'blue'
         else:

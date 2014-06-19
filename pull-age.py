@@ -25,12 +25,6 @@ def get_all_orgs():
     orgs.add('unsigned')
     return orgs
 
-def get_tracked_repos():
-    with open("repos.yaml") as repos_yaml:
-        repos = yaml.load(repos_yaml)
-
-    return set(repo for repo, data in repos.iteritems() if data.get('track-pulls', False))
-
 
 def get_duration_data(durations, owner_repo="edx/edx-platform", since=None):
     """
