@@ -442,7 +442,7 @@ $(function () {
                 <div class="assignee"><%= pull.assignee_login %></div>
             <% } %>
             <% if (pull.base_ref !== "master") { %>
-                <div class="base_ref">&rarr;&nbsp;<%= pull.base_ref %></div>
+                <div class="base-ref">&rarr;&nbsp;<%= pull.base_ref %></div>
             <% } %>
         </div>
     </div>
@@ -486,6 +486,9 @@ $(function () {
                 </div>
                 <div class="assignee">assignee
                     <span class="help-text">The person assigned to the pull request, if any</span>
+                </div>
+                <div class="base-ref">&rarr;&nbsp;base-branch
+                    <span class="help-text">The destination branch, if not master</span>
                 </div>
             </div>
         </div>
