@@ -10,7 +10,7 @@ import sys
 
 import dateutil.parser
 
-from helpers import paginated_get
+from helpers import paginated_get, requests
 from pulls import get_pulls
 
 ISSUE_FMT = (
@@ -26,11 +26,10 @@ COMMENT_FMT = "{:31}{user.login:cyan} {created_at:%b %d:yellow}  \t{body:oneline
 
 
 def show_pulls(labels=None, show_comments=False, state="open", since=None, org=False):
-    issues = get_pulls("edx/edx-platform", labels, state, since, org)
+    issues = get_pulls("edx/edx-platform", labels, state, since, org, pull_details="all")
 
     category = None
     for index, issue in enumerate(issues):
-        issue.load_pull_details()
         if issue.get("org") != category:
             # new category! print category header
             category = issue["org"]
@@ -79,9 +78,8 @@ if 0:
 
     def show_pulls(labels=None, show_comments=False, state="open", since=None, org=False):
         months = collections.defaultdict(lambda: {'opened': 0, 'merged': 0})
-        issues = get_pulls("edx/edx-platform", labels, state, since, org)
+        issues = get_pulls("edx/edx-platform", labels, state, since, org, pull_details="all")
         for issue in issues:
-            issue.load_pull_details()
             months[yearmonth(issue['created_at'])]['opened'] += 1
             if issue['pull.merged']:
                 months[yearmonth(issue['pull.merged_at'])]['merged'] += 1
@@ -114,6 +112,9 @@ def main(argv):
 
     args = parser.parse_args(argv[1:])
 
+    if args.debug == "requests":
+        requests.all_requests = []
+
     labels = []
     if not args.all_labels:
         labels.append("open-source-contribution")
@@ -135,6 +136,10 @@ def main(argv):
         org=args.org,
     )
 
+    if args.debug == "requests":
+        print("{} requests:".format(len(requests.all_requests)))
+        for req in requests.all_requests:
+            print(req)
 
 if __name__ == "__main__":
     main(sys.argv)

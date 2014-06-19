@@ -1,4 +1,5 @@
 import operator
+import pprint
 
 from helpers import paginated_get, requests
 import jreport
@@ -23,8 +24,19 @@ class JPullRequest(jreport.JObj):
             else:
                 self['intext'] = "external"
 
-    def load_pull_details(self):
-        self['pull'] = requests.get(self['pull_request.url']).json()
+    def load_pull_details(self, pulls=None):
+        """Get pull request details also.
+
+        `pulls` is a dictionary of pull requests, to perhaps avoid making
+        another request.
+
+        """
+        pull_request = None
+        if pulls:
+            pull_request = pulls.get(self['number'])
+        if not pull_request:
+            pull_request = requests.get(self['pull_request.url']).json()
+        self['pull'] = pull_request
 
         if self['state'] == 'open':
             self['combinedstate'] = 'open'
@@ -54,7 +66,17 @@ class JPullRequest(jreport.JObj):
             yield issue
 
 
-def get_pulls(owner_repo, labels=None, state="open", since=None, org=False):
+def get_pulls(owner_repo, labels=None, state="open", since=None, org=False, pull_details=None):
+    """
+    Get a bunch of pull requests (actually issues).
+
+    `pull_details` indicates how much information you want from the associated
+    pull request document.  None means just issue information is enough. "list"
+    means the information available when listing pull requests is enough. "all"
+    means you need all the details.  See the GitHub API docs for the difference:
+    https://developer.github.com/v3/pulls/
+
+    """
     url = URLObject("https://api.github.com/repos/{}/issues".format(owner_repo))
     if labels:
         url = url.set_query_param('labels', ",".join(labels))
@@ -84,6 +106,20 @@ def get_pulls(owner_repo, labels=None, state="open", since=None, org=False):
     if org:
         issues = sorted(issues, key=operator.itemgetter("org"))
 
+    pulls = None
+    if pull_details == "list":
+        issues = list(issues)
+        if issues:
+            # Request a bunch of pull details up front, for joining to.  We can't
+            # ask for exactly the ones we need, so make a guess.
+            limit = int(len(issues) * 1.5)
+            pull_url = URLObject("https://api.github.com/repos/{}/pulls".format(owner_repo))
+            if state:
+                pull_url = pull_url.set_query_param('state', state)
+            pulls = { pr['number']: pr for pr in paginated_get(pull_url, limit=limit) }
+
     for issue in issues:
+        if pull_details:
+            issue.load_pull_details(pulls=pulls)
         issue['id'] = "{}.{}".format(owner_repo, issue['number'])
         yield issue
