@@ -78,7 +78,7 @@ def main(argv):
         help="Break down by organization"
     )
     parser.add_argument("--debug", action="store_true",
-        help="Break down by organization"
+        help="Show debugging info"
     )
     args = parser.parse_args(argv[1:])
 
