@@ -22,8 +22,20 @@ def get_internal():
     internal = { name: (info.get("institution", "unknown") == "edX") for name, info in mapping.iteritems() }
     return internal
 
+def check_intersection(set1, set2, name):
+    if set1.intersection(set2):
+	print(",{}".format(name), end="")
+    else:
+	print(",", end="")
 
 def get_comment_data(repo, since, internal):
+
+    ora = set(["ormsbee", "wedaly", "stephensanchez"])
+    lms = set(["sarina", "cpennington", "dianakhuang", "davestgermain","flowerhack"])
+    cms = set(["cahrens", "andy-armstrong", "dmitchell","nasthagiri"])
+    analytics = set(["rocha","brianhw", "mulby"])
+    forums = set(["gwprice","jimabramson"])
+
     pull_kwargs = dict(org=True, pull_details="get")
     open_issues = get_pulls(repo, state="open", **pull_kwargs)
     closed_issues = get_pulls(repo, state="closed", since=since, **pull_kwargs)
@@ -40,12 +52,19 @@ def get_comment_data(repo, since, internal):
             commenter = comment["user"]["login"]
             if created_at >= since and internal(commenter):
                 if not users:
-                    print(pull.format("{id} by {user.login}: {pull.changed_files} files, {pull.additions} lines added {pull.deletions} deleted"))
-                    print(pull.format("  {title}"))
-                    print(pull.format("  {url}"))
+                    print(pull.format("{id},{user.login},{pull.changed_files},{pull.additions},{pull.deletions}"), end="")
+                    print(pull.format(',"{title}"'), end="")
+                    print(pull.format(",{url}"), end="")
                 users.add(commenter)
         if users:
-            print("\n".join("    {}".format(user) for user in sorted(users)))
+            check_intersection(users, lms, "LMS")
+            check_intersection(users, ora, "ORA")
+            check_intersection(users, cms, "CMS")
+            check_intersection(users, analytics, "ANALYTICS")
+            check_intersection(users, forums, "FORUMS")
+            print(",", end="")
+            print(":".join("{}".format(user) for user in sorted(users)), end="")
+            print()
 
 
 def main(argv):
