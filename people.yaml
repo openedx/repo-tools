@@ -805,3 +805,8 @@ bdero:
 msegado:
     authors_entry: Martin Segado <msegado@mit.edu>
     agreement: individual
+njdup:
+    authors_entry: Nicholas Dupoux <njdupoux1994@gmail.com>
+    agreement: institution
+    institution: Stanford
+    comment: intern, summer 2014
