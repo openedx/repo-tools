@@ -817,4 +817,7 @@ muhhshoaib:
 iceraj:
     authors_entry: Ivica Ceraj <ceraj@mit.edu>
     agreement: individual
-
+swdanielli:
+    authors_entry: Daniel Li <swli@edx.org>
+    agreement: institution
+    institution: edX
