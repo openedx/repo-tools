@@ -1,5 +1,20 @@
-This repo contains a number of tools for working with GitHub repositories.
-One of them is author-check.
+This repo contains a number of tools for working with GitHub repositories:
+
+ * author-check.py: Check that AUTHORS is correct in our repos.
+ * pull-age.py: Compute the age of pull requests.
+ * wall.py: Run the wall-displayed Pull Request aging chart.
+ * copy-labels.py: Copy labels from one GitHub repo to another.
+
+Most of these make GitHub api calls, and so will need GitHub credentials in
+order to not be severely rate-limited.  Edit (or create) ~/.netrc so that it
+has an entry like this:
+
+    machine api.github.com
+      login nedbat
+      password ddf9079e12042ac022c101c61c0235965851e209
+ 
+The login is your GitHub user name, the password is the personal access token
+you get from <https://github.com/settings/applications>.
 
 
 # author-check
