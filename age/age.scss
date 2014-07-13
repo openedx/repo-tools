@@ -98,7 +98,6 @@ svg {
             background: #aaa;
         }
     }
-
 }
 
 .legend {
@@ -117,6 +116,17 @@ svg {
     font-style: italic;
     float: left;
     margin-left: 2em;
+}
+
+.external-bar {
+    fill: black;
+    opacity: 0.4;
+}
+.external-text {
+    text-anchor: middle;
+    dominant-baseline: middle;
+    fill: white;
+    font-size: 55%;
 }
 
 

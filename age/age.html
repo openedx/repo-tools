@@ -289,7 +289,6 @@ function update(data) {
         .enter().append("span")
             .attr("class", function (d, i) { return "bucket bucket"+i; })
             .text(function (d) { return d; });
-
 }
 
 var pull_detail_template;
@@ -336,7 +335,7 @@ function fetch_data() {
         }
         else {
             the_data = data;
-            $("#footer .timestamp").text(moment(moment.utc(data.updated).toDate()).format("MMM D, h:mm a"));
+            $("#footer .timestamp").text("Updated " + moment(moment.utc(data.updated).toDate()).format("MMM D, h:mm a"));
             update(data);
         }
     });
@@ -456,6 +455,15 @@ $(function () {
     <div class="legend"></div>
     <div class="timestamp"></div>
     <div class="exhortation">Psst! click on the bars!</div>
+
+    <div class="legend-external">
+        <svg width="100%" height="10">
+            <g>
+                <rect class="external-bar" width="160" height="100%"></rect>
+                <text class="external-text" x="80" y="55%">External PRs</text>
+            </g>
+        </svg>
+    </div>
 
     <div class="detail-legend pull-detail-row">
         <div>
