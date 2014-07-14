@@ -13,6 +13,7 @@ kylefiedler:
 eipark:
     authors_entry: Ernie Park <eipark@mit.edu>
     agreement: institution
+    email_ok: no    # bounced
 bridger:
     authors_entry: Bridger Maxwell <bridger@mit.edu>
     agreement: institution
