@@ -758,6 +758,7 @@ benmcmorran:
 AnuragRamdasan:
     authors_entry: Anurag Ramdasan <anurag@course-master.com>
     agreement: individual
+    institution: CourseMaster
 dashea:
     authors_entry: David Shea <david@reallylongword.org>
     agreement: individual
@@ -828,3 +829,11 @@ dan-f:
 juananpe:
     authors_entry: Juanan Pereira <juanan.pereira@ehu.es>
     agreement: individual
+sjang92:
+    authors_entry: Se Won Jang <swjang@stanford.edu>
+    agreement: institution
+    institution: Stanford
+pdpinch:
+    authors_entry: Peter Pinch <pdpinch@mit.edu>
+    agreement: institution
+    institution: MIT
