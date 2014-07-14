@@ -832,3 +832,7 @@ sjang92:
     authors_entry: Se Won Jang <swjang@stanford.edu>
     agreement: institution
     institution: Stanford
+pdpinch:
+    authors_entry: Peter Pinch <pdpinch@mit.edu>
+    agreement: institution
+    institution: MIT
