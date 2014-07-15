@@ -3,38 +3,34 @@
 # nick is a shorthand for displaying repo name in tight places.
 # track-pulls is true if we should include that repo in our pull-request stats.
 #
-edx/loghandlersplus:
-edx/ease:
-edx/arch-prototype:
-edx/djeventstream:
-edx/xserver:
-edx/discern:
-edx/edxanalytics:
-edx/insights:
-edx/codejail:
-    nick: cj
-    track-pulls: true
-edx/xqueue:
-edx/js-test-tool:
-edx/edx-e2e-tests:
-edx/notifier:
-edx/event-tracking:
-edx/XBlock:
-    nick: xb
-    track-pulls: true
-edx/xblock-sdk:
-    nick: xb
-    track-pulls: true
 edx/acid-block:
     nick: xb
     track-pulls: true
-edx/edx-demo-course:
+edx/arch-prototype:
+edx/bok-choy:
+    nick: bok
+    track-pulls: true
+edx/codejail:
+    nick: cj
+    track-pulls: true
+edx/configuration:
+    nick: cfg
+    track-pulls: true
 edx/cs_comments_service:
 edx/diff-cover:
     nick: dfc
     track-pulls: true
-edx/bok-choy:
-    nick: bok
+edx/discern:
+edx/djeventstream:
+edx/ease:
+edx/edxanalytics:
+edx/edx-certificates:
+    nick: crt
+    track-pulls: true
+edx/edx-demo-course:
+edx/edx-e2e-tests:
+edx/edx.github.io:
+    nick: odo
     track-pulls: true
 edx/edx-ora:
 edx/edx-ora2:
@@ -49,22 +45,11 @@ edx/edx-platform:
         - kimtonyhyun
         - rcchirwa
         - terman
-edx/configuration:
-    nick: cfg
+edx/edx-submissions:
+    nick: sub
     track-pulls: true
 edx/edx-tools:
-edx/edx.github.io:
-    nick: odo
-    track-pulls: true
-edx/edx-certificates:
-    nick: crt
-    track-pulls: true
-edx/opaque-keys:
-    nick: oky
-    track-pulls: true
-edx/repo-tools:
-    nick: rt
-    track-pulls: true
+edx/event-tracking:
 edx/i18n-tools:
     nick: i18n
     track-pulls: true
@@ -74,9 +59,24 @@ edx/i18n-tools:
         - straz
         - adampalay
         - cpennington
+edx/insights:
+edx/js-test-tool:
+edx/loghandlersplus:
+edx/notifier:
+edx/opaque-keys:
+    nick: oky
+    track-pulls: true
+edx/repo-tools:
+    nick: rt
+    track-pulls: true
+edx/XBlock:
+    nick: xb
+    track-pulls: true
+edx/xblock-sdk:
+    nick: xb
+    track-pulls: true
+edx/xqueue:
 edx/xqueue-watcher:
     nick: xqw
     track-pulls: true
-edx/edx-submissions:
-    nick: sub
-    track-pulls: true
+edx/xserver:
