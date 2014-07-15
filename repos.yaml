@@ -1,6 +1,7 @@
-# The repos checked by author-check
+# The repos checked by tools in repo-tools.
 #
 # nick is a shorthand for displaying repo name in tight places.
+# track-pulls is true if we should include that repo in our pull-request stats.
 #
 edx/loghandlersplus:
 edx/ease:
@@ -33,6 +34,8 @@ edx/diff-cover:
     nick: dfc
     track-pulls: true
 edx/bok-choy:
+    nick: bok
+    track-pulls: true
 edx/edx-ora:
 edx/edx-ora2:
     nick: ora
