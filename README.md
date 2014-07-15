@@ -10,7 +10,7 @@ order to not be severely rate-limited.  Edit (or create) `~/.netrc` so that it
 has an entry like this:
 
     machine api.github.com
-      login nedbat
+      login your_user_name
       password ddf9079e12042ac022c101c61c0235965851e209
  
 The login is your GitHub user name, the password is the personal access token
@@ -26,22 +26,23 @@ Then run:
     $ source venv/bin/activate
     $ pip install -r requirements.txt
 
-You'll also need to grab a personal access token from Github (go to
-<https://github.com/settings/applications> to create one) and create an
-`auth.yaml` file of the form:
-
-    user: "<your github username>"
-    token: "<your personal access token>"
-
 `people.yaml` contains the mapping between GitHub username and the canonical
 entry for AUTHORS files. It also has information about whether the person has
-signed a contributor agreement or is covered by the institution for which they work.
+signed a contributor agreement or is covered by the institution they work for.
 
 # author-check
 
 A commandline utility for checking for consistency between committers,
 people who have signed a contributor agreement and people in the AUTHORS
 file.
+
+author-check needs a different authentication mechanism than `~/.netrc`.
+Create an `auth.yaml` file of the form:
+
+    user: "<your github username>"
+    token: "<your personal access token>"
+
+Various ways to invoke `author_check.py`:
 
     $ ./author_check.py <owner>/<repo>
     audits the given repo
@@ -62,6 +63,9 @@ Generates the JSON used to build the wall-displayed Pull Request age chart.
     $ python wall.py > age/age.json
     returns a JSON string of aging data
 
+    $ python -m SimpleHTTPServer && python -m webbrowser age/age.html
+    look at the awesome chart
+
 ## Feedback
 
-Please send any feedback to <jtauber@edx.org>.
+Please send any feedback to <oscm@edx.org>.
