@@ -838,3 +838,7 @@ pdpinch:
     authors_entry: Peter Pinch <pdpinch@mit.edu>
     agreement: institution
     institution: MIT
+doctoryes:
+    authors_entry: John Eskew <jeskew@edx.org>
+    agreement: institution
+    institution: edX
