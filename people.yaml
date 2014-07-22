@@ -845,3 +845,7 @@ doctoryes:
 dmin7b5:
     authors_entry: Jeff Owens <dmin7b5@gmail.com>
     agreement: individual
+cptvitamin:
+    authors_entry: Mark Sadecki <msadecki@edx.org>
+    agreement: institution
+    institution: edX
