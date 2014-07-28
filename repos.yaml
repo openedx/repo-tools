@@ -63,6 +63,8 @@ edx/insights:
 edx/js-test-tool:
 edx/loghandlersplus:
 edx/notifier:
+    nick: not
+    track-pulls: true
 edx/opaque-keys:
     nick: oky
     track-pulls: true
