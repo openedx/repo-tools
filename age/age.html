@@ -108,6 +108,13 @@ function click_bar(team) {
     update(the_data);
 }
 
+function expand_all() {
+    $.each(the_data.team_names, function (i, team_name) {
+        expanded[team_name] = true;
+    });
+    expanded["unlabelled"] = true;
+}
+
 function update(data) {
     $("h1 .total-count").text(""+Object.keys(data.pulls).length);
     $("h1 .title").text("Pull Requests");
@@ -335,6 +342,10 @@ function fetch_data() {
         }
         else {
             the_data = data;
+            if (expanded["all"]) {
+                expand_all();
+                expanded["all"] = false;
+            }
             $("#footer .timestamp").text("Updated " + moment(moment.utc(data.updated).toDate()).format("MMM D, h:mm a"));
             update(data);
         }
@@ -358,10 +369,7 @@ $(function () {
     });
 
     $(".actions .expand-all").click(function () {
-        $.each(the_data.team_names, function (i, team_name) {
-            expanded[team_name] = true;
-        });
-        expanded["unlabelled"] = true;
+        expand_all();
         update(the_data);
     });
 
