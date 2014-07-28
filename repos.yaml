@@ -76,6 +76,8 @@ edx/xblock-sdk:
     nick: xb
     track-pulls: true
 edx/xqueue:
+    nick: xq
+    track-pulls: true
 edx/xqueue-watcher:
     nick: xqw
     track-pulls: true
