@@ -856,3 +856,7 @@ dragonfi:
 xiangjf:
     authors_entry: Xiang Junfu <xiangjf.fnst@cn.fujitsu.com>
     agreement: individual
+BenjiLee:
+    authors_entry: christopher lee <clee@edx.org>
+    agreement: institution
+    institution: edX
