@@ -17,6 +17,8 @@ edx/configuration:
     nick: cfg
     track-pulls: true
 edx/cs_comments_service:
+    nick: com
+    track-pulls: true
 edx/diff-cover:
     nick: dfc
     track-pulls: true
@@ -84,3 +86,11 @@ edx/xqueue-watcher:
     nick: xqw
     track-pulls: true
 edx/xserver:
+    nick: xsr
+    track-pulls: true
+edx/edx-analytics-api-client:
+    nick: aap
+    track-pulls: true
+edx/edx-val:
+    nick: val
+    track-pulls: true
