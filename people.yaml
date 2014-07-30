@@ -317,7 +317,7 @@ lapentab:
     agreement: institution
     institution: edX
 rlucioni:
-    authors_entry: Renzo Lucioni <renzolucioni@gmail.com>
+    authors_entry: Renzo Lucioni <renzo@renzolucioni.com>
     agreement: institution
     institution: edX
 fephsun:
@@ -857,6 +857,6 @@ xiangjf:
     authors_entry: Xiang Junfu <xiangjf.fnst@cn.fujitsu.com>
     agreement: individual
 BenjiLee:
-    authors_entry: christopher lee <clee@edx.org>
+    authors_entry: Christopher Lee <clee@edx.org>
     agreement: institution
     institution: edX
