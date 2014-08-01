@@ -94,6 +94,6 @@ edx/edx-analytics-api-client:
 edx/edx-val:
     nick: val
     track-pulls: true
-edx/edx-serverapi
+edx/edx-serverapi:
     nick: sap
     track-pulls: true
