@@ -1,1 +1,1 @@
-web: gunicorn dash:app
+web: gunicorn --debug dash:app
