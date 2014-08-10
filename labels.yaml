@@ -1,0 +1,32 @@
+# Labels that should be in all repos
+
+open-source-contribution:
+    color: bfe5bf
+waiting on UX:
+    color: B72667
+waiting on Analytics:
+    color: 009800
+waiting on DevOps:
+    color: 006b75
+waiting on TestEng:
+    color: 207de5
+waiting on author:
+    color: 0052cc
+waiting on Doc:
+    color: 5319e7
+waiting on community managers:
+    color: 207de5
+waiting on Sustaining:
+    color: 0052cc
+waiting on Solutions:
+    color: 8B4513
+waiting on Product:
+    color: fef2c0
+waiting on Mobile:
+    color: bfdadc
+waiting on T&L:
+    color: e11d21
+waiting on eCommerce:
+    color: eb6420
+waiting on Platform:
+    color: d4c5f9
