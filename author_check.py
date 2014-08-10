@@ -188,6 +188,7 @@ def check_pr(owner_repo, number):
 
 
 def check_user(username):
+    username = username.lower()
     if username not in people:
         print_red(u"{} is not in people file".format(username))
     else:
