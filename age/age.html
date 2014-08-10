@@ -142,10 +142,13 @@ function update(data) {
     });
     var sorted_teams = [];
     $.each(sorted_team_names, function (i, team_name) {
-        sorted_teams.push({
-            team: team_name, 
-            pulls: categorized[team_name]
-        });
+        var pulls = categorized[team_name];
+        if (pulls.length > 0) {
+            sorted_teams.push({
+                team: team_name,
+                pulls: categorized[team_name]
+            });
+        }
     });
 
     /* SVG chart */
