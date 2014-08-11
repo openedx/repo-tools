@@ -41,29 +41,43 @@ function short_date(d) {
     return moment(d).format("MMM D");
 }
 
-function categorize_pulls(all_pulls, team_names) {
-    var teams = { unlabelled: [] };
+function pull_labels(pull) {
+    return pull.labels;
+}
 
-    $.each(team_names, function (i, team_name) {
-        teams[team_name] = [];
-    });
+function pull_org(pull) {
+    var orgs = [];
+    orgs.push(pull.org);
+    return orgs;
+}
+
+var categorize_function = pull_labels;
+var include_uncategorized = true;
+
+function categorize_pulls(all_pulls) {
+    var categorized = {};
 
     for (pid in all_pulls) {
         var pull = all_pulls[pid];
-        var categorized = false;
-        $.each(pull.labels, function (i, label) {
-            if (teams[label]) {
-                teams[label].push(pull);
-                categorized = true;
+        var was_categorized = false;
+        $.each(categorize_function(pull), function (i, label) {
+            if (!(label in categorized)) {
+                categorized[label] = [];
             }
+            categorized[label].push(pull);
+            was_categorized = true;
         });
-        if (!categorized) {
-            teams["unlabelled"].push(pull);
+        if (include_uncategorized && !was_categorized) {
+            if (!("unlabelled" in categorized)) {
+                categorized["unlabelled"] = [];
+            }
+            categorized["unlabelled"].push(pull);
         }
 
         pull.bucket = date_bucket(pull[date_attr]);
     }
-    return teams;
+
+    return categorized;
 }
 
 function score_pulls(pulls) {
@@ -95,6 +109,7 @@ var duration = 400;
 var svg = null;
 var the_data = null;
 var expanded = {};      // map from team name to expanded boolean
+var expand_all_please = false;
 
 function click_bar(team) {
     if (expanded[team.team]) {
@@ -108,18 +123,19 @@ function click_bar(team) {
     update(the_data);
 }
 
-function expand_all() {
-    $.each(the_data.team_names, function (i, team_name) {
-        expanded[team_name] = true;
-    });
-    expanded["unlabelled"] = true;
+function collapse_all() {
+    expanded = {};
 }
 
-function update(data) {
+function expand_all() {
+    expand_all_please = true;
+}
+
+function update(data, clear_all) {
     $("h1 .total-count").text(""+Object.keys(data.pulls).length);
     $("h1 .title").text("Pull Requests");
 
-    var categorized = categorize_pulls(data.pulls, data.team_names);
+    var categorized = categorize_pulls(data.pulls);
     var sorted_team_names = Object.keys(categorized).sort(function (a, b) {
         // Reverse ordered by pull scores, "authors" last.
         if (a === "author") {
@@ -143,15 +159,20 @@ function update(data) {
     var sorted_teams = [];
     $.each(sorted_team_names, function (i, team_name) {
         var pulls = categorized[team_name];
-        if (pulls.length > 0) {
-            sorted_teams.push({
-                team: team_name,
-                pulls: categorized[team_name]
-            });
+        sorted_teams.push({
+            team: team_name,
+            pulls: categorized[team_name]
+        });
+        if (expand_all_please) {
+            expanded[team_name] = true;
         }
     });
+    expand_all_please = false;
 
     /* SVG chart */
+    if (clear_all) {
+        svg.selectAll(".team-row").remove();
+    }
     var team = svg.selectAll(".team-row")
         .data(sorted_teams);
 
@@ -367,13 +388,27 @@ $(function () {
     });
 
     $(".actions .collapse-all").click(function () {
-        expanded = {};
+        collapse_all();
         update(the_data);
     });
 
     $(".actions .expand-all").click(function () {
         expand_all();
         update(the_data);
+    });
+
+    $(".actions .by-team").click(function () {
+        categorize_function = pull_labels;
+        include_uncategorized = true;
+        collapse_all();
+        update(the_data, true);
+    });
+
+    $(".actions .by-org").click(function () {
+        categorize_function = pull_org;
+        include_uncategorized = false;
+        collapse_all();
+        update(the_data, true);
     });
 
     $(".actions .by-created").click(function () {
@@ -517,6 +552,8 @@ $(function () {
     <div class="actions">
         <div class="collapse-all">Collapse All</div>
         <div class="expand-all">Expand All</div>
+        <div class="by-team">By Team</div>
+        <div class="by-org">By Org</div>
         <div class="by-created">By Created</div>
         <div class="by-updated">By Updated</div>
     </div>

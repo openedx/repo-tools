@@ -55,7 +55,6 @@ class WallMaker(object):
             self.one_repo(repo)
 
         wall_data = {
-            "team_names": list(self.team_names),
             "pulls": self.pulls,
             "updated": datetime.datetime.utcnow().isoformat(),
         }
