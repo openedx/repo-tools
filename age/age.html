@@ -51,27 +51,61 @@ function pull_org(pull) {
     return orgs;
 }
 
-var categorize_function = pull_labels;
-var include_uncategorized = true;
+var categorize_function,
+    include_uncategorized,
+    ignore_categories = ["edX", "osc"];
+
+function categorize_by_team() {
+    categorize_function = pull_labels;
+    include_uncategorized = true;
+    $(".actions .categorize-by").removeClass("active");
+    $(".actions .by-team").addClass("active");
+}
+
+function categorize_by_org() {
+    categorize_function = pull_org;
+    include_uncategorized = false;
+    $(".actions .categorize-by").removeClass("active");
+    $(".actions .by-org").addClass("active");
+}
+
+var date_attr;
+
+function color_by_created() {
+    date_attr = "created_at";
+    $(".actions .color-by").removeClass("active");
+    $(".actions .by-created").addClass("active");
+}
+
+function color_by_updated() {
+    date_attr = "updated_at";
+    $(".actions .color-by").removeClass("active");
+    $(".actions .by-updated").addClass("active");
+}
 
 function categorize_pulls(all_pulls) {
     var categorized = {};
+
+    function add_pull(category, pull) {
+        if (!(category in categorized)) {
+            categorized[category] = [];
+        }
+        categorized[category].push(pull);
+    }
 
     for (pid in all_pulls) {
         var pull = all_pulls[pid];
         var was_categorized = false;
         $.each(categorize_function(pull), function (i, label) {
-            if (!(label in categorized)) {
-                categorized[label] = [];
+            if ($.inArray(label, ignore_categories) != -1) {
+                return;
             }
-            categorized[label].push(pull);
+            add_pull(label, pull);
             was_categorized = true;
         });
+
         if (include_uncategorized && !was_categorized) {
-            if (!("unlabelled" in categorized)) {
-                categorized["unlabelled"] = [];
-            }
-            categorized["unlabelled"].push(pull);
+            add_pull("unlabelled", pull);
         }
 
         pull.bucket = date_bucket(pull[date_attr]);
@@ -349,8 +383,6 @@ function getParameterByName(name) {
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-var date_attr = "created_at";
-
 function fetch_data() {
     d3.json("age.json", function (error, data) {
         if (error) {
@@ -379,6 +411,8 @@ function fetch_data() {
 $(function () {
 
     week_buckets();
+    categorize_by_team();
+    color_by_created();
 
     pull_detail_template = _.template($("script#pull-detail-template").html());
 
@@ -398,27 +432,25 @@ $(function () {
     });
 
     $(".actions .by-team").click(function () {
-        categorize_function = pull_labels;
-        include_uncategorized = true;
+        categorize_by_team();
         collapse_all();
         update(the_data, true);
     });
 
     $(".actions .by-org").click(function () {
-        categorize_function = pull_org;
-        include_uncategorized = false;
+        categorize_by_org();
         collapse_all();
         update(the_data, true);
     });
 
     $(".actions .by-created").click(function () {
-        date_attr = "created_at";
-        update(the_data);
+        color_by_created();
+        update(the_data, true);
     });
 
     $(".actions .by-updated").click(function () {
-        date_attr = "updated_at";
-        update(the_data);
+        color_by_updated();
+        update(the_data, true);
     });
 
     var help_legend = $(".explanation").html();
@@ -552,9 +584,9 @@ $(function () {
     <div class="actions">
         <div class="collapse-all">Collapse All</div>
         <div class="expand-all">Expand All</div>
-        <div class="by-team">By Team</div>
-        <div class="by-org">By Org</div>
-        <div class="by-created">By Created</div>
-        <div class="by-updated">By Updated</div>
+        <div class="by-team categorize-by">By Team</div>
+        <div class="by-org categorize-by">By Org</div>
+        <div class="by-created color-by">By Created</div>
+        <div class="by-updated color-by">By Updated</div>
     </div>
 </section>
