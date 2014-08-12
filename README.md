@@ -3,7 +3,7 @@ This repo contains a number of tools for working with GitHub repositories:
  * author-check.py: Check that AUTHORS is correct in our repos.
  * pull-age.py: Compute the age of pull requests.
  * wall.py: Run the wall-displayed Pull Request aging chart.
- * copy-labels.py: Copy labels from one GitHub repo to another.
+ * sync-labels.py: Sync labels across all GitHub repos to another.
 
 Most of these make GitHub API calls, and so will need GitHub credentials in
 order to not be severely rate-limited.  Edit (or create) `~/.netrc` so that it
@@ -65,6 +65,13 @@ Generates the JSON used to build the wall-displayed Pull Request age chart.
 
     $ python -m SimpleHTTPServer && python -m webbrowser age/age.html
     look at the awesome chart
+
+
+# sync-labels
+
+Syncs all github repos in `repos.yaml` to contain all the labels in `labels.yaml`
+
+Deletes any labels that exist in a repo but not in `labels.yaml`
 
 ## Feedback
 
