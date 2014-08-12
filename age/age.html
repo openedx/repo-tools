@@ -58,11 +58,29 @@ var categorize_function,
 function categorize_by_team() {
     categorize_function = pull_labels;
     include_uncategorized = true;
+    $(".actions .categorize-by").removeClass("active");
+    $(".actions .by-team").addClass("active");
 }
 
 function categorize_by_org() {
     categorize_function = pull_org;
     include_uncategorized = false;
+    $(".actions .categorize-by").removeClass("active");
+    $(".actions .by-org").addClass("active");
+}
+
+var date_attr;
+
+function color_by_created() {
+    date_attr = "created_at";
+    $(".actions .color-by").removeClass("active");
+    $(".actions .by-created").addClass("active");
+}
+
+function color_by_updated() {
+    date_attr = "updated_at";
+    $(".actions .color-by").removeClass("active");
+    $(".actions .by-updated").addClass("active");
 }
 
 function categorize_pulls(all_pulls) {
@@ -365,8 +383,6 @@ function getParameterByName(name) {
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-var date_attr = "created_at";
-
 function fetch_data() {
     d3.json("age.json", function (error, data) {
         if (error) {
@@ -396,6 +412,7 @@ $(function () {
 
     week_buckets();
     categorize_by_team();
+    color_by_created();
 
     pull_detail_template = _.template($("script#pull-detail-template").html());
 
@@ -427,12 +444,12 @@ $(function () {
     });
 
     $(".actions .by-created").click(function () {
-        date_attr = "created_at";
+        color_by_created();
         update(the_data, true);
     });
 
     $(".actions .by-updated").click(function () {
-        date_attr = "updated_at";
+        color_by_updated();
         update(the_data, true);
     });
 
@@ -567,9 +584,9 @@ $(function () {
     <div class="actions">
         <div class="collapse-all">Collapse All</div>
         <div class="expand-all">Expand All</div>
-        <div class="by-team">By Team</div>
-        <div class="by-org">By Org</div>
-        <div class="by-created">By Created</div>
-        <div class="by-updated">By Updated</div>
+        <div class="by-team categorize-by">By Team</div>
+        <div class="by-org categorize-by">By Org</div>
+        <div class="by-created color-by">By Created</div>
+        <div class="by-updated color-by">By Updated</div>
     </div>
 </section>
