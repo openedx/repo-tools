@@ -7,9 +7,11 @@ from age.age import get_wall_data
 import helpers
 
 from flask import Flask, send_from_directory, request
+from raven.contrib.flask import Sentry
 
 
 app = Flask(__name__)
+sentry = Sentry(app)
 app.debug = True
 
 @app.route('/')

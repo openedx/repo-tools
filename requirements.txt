@@ -10,4 +10,6 @@ python-dateutil
 urlobject
 -e hg+https://bitbucket.org/tiran/backports.statistics#egg=backports.statistics
 Flask==0.10.1
+raven==5.0.0
+blinker==1.3
 gunicorn==18.0
