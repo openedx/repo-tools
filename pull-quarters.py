@@ -27,6 +27,10 @@ def date_bucket_month(date):
     """Compute the year and month for a date."""
     return "Y{:02d} M{:02d}".format(date.year % 100, date.month)
 
+def date_bucket_week(date):
+    """Compute the year and month for a date."""
+    return "Y{:02d} W{:02d}".format(date.year % 100, date.isocalendar()[1])
+
 
 def get_all_repos(date_bucket_fn):
     repos = [ r for r in Repo.from_yaml() if r.track_pulls ]
@@ -71,10 +75,15 @@ def main(argv):
     parser.add_argument("--monthly", action="store_true",
         help="Report on months instead of quarters"
     )
+    parser.add_argument("--weekly", action="store_true",
+        help="Report on weeks instead of quarters"
+    )
     args = parser.parse_args(argv[1:])
 
     if args.monthly:
         date_bucket_fn = date_bucket_month
+    elif args.weekly:
+        date_bucket_fn = date_bucket_week
     else:
         date_bucket_fn = date_bucket_quarter
 
