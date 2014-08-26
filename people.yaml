@@ -373,7 +373,7 @@ natea:
 antoviaque:
     authors_entry: Xavier Antoviaque <xavier@antoviaque.org>
     agreement: institution
-    institution: Flouzo SARL
+    institution: OpenCraft
 kern3020:
     authors_entry: John Kern <kern3020@gmail.com>
     agreement: individual
@@ -614,19 +614,19 @@ dangtrinh:
 mtyaka:
     authors_entry: Matjaz Gregoric <gremat@gmail.com>
     agreement: institution
-    institution: Flouzo SARL
+    institution: OpenCraft
 aboudreault:
     authors_entry: Alan Boudreault <boudreault.alan@gmail.com>
     agreement: institution
-    institution: Flouzo SARL
+    institution: OpenCraft
 FiloSottile:
     authors_entry: Filippo Valsorda <hi@filippo.io>
     agreement: institution
-    institution: Flouzo SARL
+    institution: OpenCraft
 racech:
     authors_entry: Krzysztof Bujniewicz <k@2g.pl>
     agreement: institution
-    institution: Flouzo SARL
+    institution: OpenCraft
 gitim:
     authors_entry: Timur Gibadullin <timur.gbd@gmail.com>
     agreement: individual
@@ -744,7 +744,7 @@ dhpollack:
 theJohnnyBrown:
     authors_entry: Johnny Brown <johnnybrown7@gmail.com>
     agreement: institution
-    institution: Flouzo SARL
+    institution: OpenCraft
 rodo:
     authors_entry: Rodolphe Quiedeville <rodolphe@quiedeville.org>
     agreement: individual
@@ -852,7 +852,7 @@ cptvitamin:
 dragonfi:
     authors_entry: David Gabor BODOR <david.gabor.bodor@gmail.com>
     agreement: institution
-    institution: Flouzo SARL
+    institution: OpenCraft
 xiangjf:
     authors_entry: Xiang Junfu <xiangjf.fnst@cn.fujitsu.com>
     agreement: individual
@@ -870,11 +870,11 @@ htareque:
 bradenmacdonald:
     authors_entry: Braden MacDonald <mail@bradenm.com>
     agreement: individual
-    institution: Flouzo SARL
+    institution: OpenCraft
 kelketek:
     authors_entry: Jonathan Piacenti <kelketek@gmail.com>
     agreement: individual
-    institution: Flouzo SARL
+    institution: OpenCraft
 e-kolpakov:
     authors_entry: Eugeny Kolpakov <eugeny.kolpakov@gmail.com>
     agreement: individual
