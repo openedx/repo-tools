@@ -28,8 +28,9 @@ def date_bucket_month(date):
     return "Y{:02d} M{:02d}".format(date.year % 100, date.month)
 
 def date_bucket_week(date):
-    """Compute the year and month for a date."""
-    return "Y{:02d} W{:02d}".format(date.year % 100, date.isocalendar()[1])
+    """Compute the date of the Monday for a date, to bucket by weeks."""
+    monday = date - datetime.timedelta(days=date.weekday())
+    return "{:%Y-%m-%d}".format(monday)
 
 
 def get_all_repos(date_bucket_fn):
