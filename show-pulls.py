@@ -27,12 +27,13 @@ COMMENT_FMT = "{:31}{user.login:cyan} {created_at:%b %d:yellow}  \t{body:oneline
 
 
 def show_pulls(labels=None, show_comments=False, state="open", since=None, org=False, intext=None):
+    num = 0
     repos = [ r for r in Repo.from_yaml() if r.track_pulls ]
     for repo in repos:
         issues = get_pulls(repo.name, labels, state, since, org=org or intext, pull_details="all")
 
         category = None
-        for index, issue in enumerate(issues):
+        for issue in issues:
             issue["repo"] = repo.nick
             if intext is not None:
                 if issue["intext"] != intext:
@@ -46,6 +47,7 @@ def show_pulls(labels=None, show_comments=False, state="open", since=None, org=F
                 import pprint
                 pprint.pprint(issue.obj)
             print(issue.format(ISSUE_FMT))
+            num += 1
 
             if show_comments:
                 comments_url = URLObject(issue['comments_url'])
@@ -56,9 +58,8 @@ def show_pulls(labels=None, show_comments=False, state="open", since=None, org=F
                 for comment in last_five_comments:
                     print(comment.format(COMMENT_FMT))
 
-    # index is now set to the total number of pull requests
     print()
-    print("{num} pull requests".format(num=index+1))
+    print("{num} pull requests".format(num=num))
 
 
 if 0:
@@ -98,9 +99,6 @@ if 0:
 
 def main(argv):
     parser = argparse.ArgumentParser(description="Summarize pull requests.")
-    parser.add_argument("-a", "--all-labels", action='store_true',
-        help="Show all open pull requests, else only open-source",
-        )
     parser.add_argument("--closed", action='store_true',
         help="Include closed pull requests",
         )
@@ -131,10 +129,6 @@ def main(argv):
     if args.debug == "requests":
         requests.all_requests = []
 
-    labels = []
-    if not args.all_labels:
-        labels.append("open-source-contribution")
-
     if args.open:
         if args.closed:
             state = "all"
@@ -158,7 +152,6 @@ def main(argv):
         since = datetime.datetime.now() - datetime.timedelta(days=args.since)
 
     show_pulls(
-        labels=labels,
         show_comments=args.show_comments,
         state=state,
         since=since,
