@@ -28,6 +28,8 @@ COMMENT_FMT = "{:31}{user.login:cyan} {created_at:%b %d:yellow}  \t{body:oneline
 
 def show_pulls(labels=None, show_comments=False, state="open", since=None, org=False, intext=None):
     num = 0
+    adds = 0
+    deletes = 0
     repos = [ r for r in Repo.from_yaml() if r.track_pulls ]
     for repo in repos:
         issues = get_pulls(repo.name, labels, state, since, org=org or intext, pull_details="all")
@@ -48,6 +50,8 @@ def show_pulls(labels=None, show_comments=False, state="open", since=None, org=F
                 pprint.pprint(issue.obj)
             print(issue.format(ISSUE_FMT))
             num += 1
+            adds += issue['pull']['additions']
+            deletes += issue['pull']['deletions']
 
             if show_comments:
                 comments_url = URLObject(issue['comments_url'])
@@ -59,7 +63,7 @@ def show_pulls(labels=None, show_comments=False, state="open", since=None, org=F
                     print(comment.format(COMMENT_FMT))
 
     print()
-    print("{num} pull requests".format(num=num))
+    print("{num} pull requests; {adds}+ {deletes}-".format(num=num, adds=adds, deletes=deletes))
 
 
 if 0:
