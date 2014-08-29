@@ -12,9 +12,10 @@ import dateutil.parser
 
 from helpers import paginated_get, requests
 from pulls import get_pulls
+from repos import Repo
 
 ISSUE_FMT = (
-    "{number:5d:white:bold} {user.login:>17s:cyan} {comments:3d:red}"
+    "{number:5d:white:bold} {repo:3s} {user.login:>17s:cyan} {comments:3d:red}"
     "  {title:.100s}"
     " {pull.commits}c{pull.changed_files}f"
     " {pull.additions:green}+{pull.deletions:red}-"
@@ -25,33 +26,44 @@ ISSUE_FMT = (
 COMMENT_FMT = "{:31}{user.login:cyan} {created_at:%b %d:yellow}  \t{body:oneline:.100s:white}"
 
 
-def show_pulls(labels=None, show_comments=False, state="open", since=None, org=False):
-    issues = get_pulls("edx/edx-platform", labels, state, since, org, pull_details="all")
+def show_pulls(labels=None, show_comments=False, state="open", since=None, org=False, intext=None):
+    num = 0
+    adds = 0
+    deletes = 0
+    repos = [ r for r in Repo.from_yaml() if r.track_pulls ]
+    for repo in repos:
+        issues = get_pulls(repo.name, labels, state, since, org=org or intext, pull_details="all")
 
-    category = None
-    for index, issue in enumerate(issues):
-        if issue.get("org") != category:
-            # new category! print category header
-            category = issue["org"]
-            print("-- {category} ----".format(category=category))
+        category = None
+        for issue in issues:
+            issue["repo"] = repo.nick
+            if intext is not None:
+                if issue["intext"] != intext:
+                    continue
+            if org and issue.get("org") != category:
+                # new category! print category header
+                category = issue["org"]
+                print("-- {category} ----".format(category=category))
 
-        if 0:
-            import pprint
-            pprint.pprint(issue.obj)
-        print(issue.format(ISSUE_FMT))
+            if 0:
+                import pprint
+                pprint.pprint(issue.obj)
+            print(issue.format(ISSUE_FMT))
+            num += 1
+            adds += issue['pull']['additions']
+            deletes += issue['pull']['deletions']
 
-        if show_comments:
-            comments_url = URLObject(issue['comments_url'])
-            comments_url = comments_url.set_query_param("sort", "created")
-            comments_url = comments_url.set_query_param("direction", "desc")
-            comments = paginated_get(comments_url)
-            last_five_comments = reversed(more_itertools.take(5, comments))
-            for comment in last_five_comments:
-                print(comment.format(COMMENT_FMT))
+            if show_comments:
+                comments_url = URLObject(issue['comments_url'])
+                comments_url = comments_url.set_query_param("sort", "created")
+                comments_url = comments_url.set_query_param("direction", "desc")
+                comments = paginated_get(comments_url)
+                last_five_comments = reversed(more_itertools.take(5, comments))
+                for comment in last_five_comments:
+                    print(comment.format(COMMENT_FMT))
 
-    # index is now set to the total number of pull requests
     print()
-    print("{num} pull requests".format(num=index+1))
+    print("{num} pull requests; {adds}+ {deletes}-".format(num=num, adds=adds, deletes=deletes))
 
 
 if 0:
@@ -91,11 +103,17 @@ if 0:
 
 def main(argv):
     parser = argparse.ArgumentParser(description="Summarize pull requests.")
-    parser.add_argument("-a", "--all-labels", action='store_true',
-        help="Show all open pull requests, else only open-source",
-        )
     parser.add_argument("--closed", action='store_true',
         help="Include closed pull requests",
+        )
+    parser.add_argument("--open", action='store_true',
+        help="Include open pull requests",
+        )
+    parser.add_argument("--external", action='store_true',
+        help="Include external pull requests",
+        )
+    parser.add_argument("--internal", action='store_true',
+        help="Include internal pull requests",
         )
     parser.add_argument("--comments", dest="show_comments", action='store_true',
         help="Also show 5 most recent comments",
@@ -115,25 +133,34 @@ def main(argv):
     if args.debug == "requests":
         requests.all_requests = []
 
-    labels = []
-    if not args.all_labels:
-        labels.append("open-source-contribution")
-
-    if args.closed:
-        state = "all"
+    if args.open:
+        if args.closed:
+            state = "all"
+        else:
+            state = "open"
     else:
-        state = "open"
+        if args.closed:
+            state = "closed"
+        else:
+            state = "open"
+
+    if args.internal:
+        intext = "internal"
+    elif args.external:
+        intext = "external"
+    else:
+        intext = None
 
     since = None
     if args.since:
         since = datetime.datetime.now() - datetime.timedelta(days=args.since)
 
     show_pulls(
-        labels=labels,
         show_comments=args.show_comments,
         state=state,
         since=since,
         org=args.org,
+        intext=intext,
     )
 
     if args.debug == "requests":
