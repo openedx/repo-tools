@@ -26,7 +26,18 @@ ISSUE_FMT = (
 COMMENT_FMT = "{:31}{user.login:cyan} {created_at:%b %d:yellow}  \t{body:oneline:.100s:white}"
 
 
-def show_pulls(labels=None, show_comments=False, state="open", since=None, org=False, intext=None):
+def show_pulls(labels=None, show_comments=False, state="open", since=None,
+               org=False, intext=None, merged=False):
+    """
+    `labels`: Filters PRs by labels (all are shown if None is specified)
+    `show_comments`: shows the last 5 comments on each PR, if True
+    `state`: Filter PRs by this state (either 'open' or 'closed')
+    `since`: a datetime representing the earliest time from which to pull information.
+             All PRs regardless of time are shown if None is specified.
+    `org`: If True, sorts by PR author affiliation
+    `intext`: specify 'int' (internal) or 'ext' (external) pull request
+    `merged`: If True and state="closed", shows only PRs that were merged.
+    """
     num = 0
     adds = 0
     deletes = 0
@@ -40,6 +51,18 @@ def show_pulls(labels=None, show_comments=False, state="open", since=None, org=F
             if intext is not None:
                 if issue["intext"] != intext:
                     continue
+            if state == 'closed' and merged and issue['combinedstate'] != 'merged':
+                # If we're filtering on closed PRs, and only want those that are merged,
+                # skip ones that were closed without merge.
+                continue
+            if state == 'closed' and since:
+                # If this PR was closed prior to the last `since` interval of days, continue on
+                # (it may have been *updated* - that is, referenced or commented on - more recently,
+                #  but we just want to see what's been merged or closed in the past "since" days)
+                closed_at = dateutil.parser.parse(issue["closed_at"][:-1])  # Remove TZ information
+                if closed_at < since:
+                    continue
+
             if org and issue.get("org") != category:
                 # new category! print category header
                 category = issue["org"]
@@ -106,6 +129,9 @@ def main(argv):
     parser.add_argument("--closed", action='store_true',
         help="Include closed pull requests",
         )
+    parser.add_argument("--merged", action='store_true',
+        help="Include just merged pull requests",
+        )
     parser.add_argument("--open", action='store_true',
         help="Include open pull requests",
         )
@@ -132,6 +158,14 @@ def main(argv):
 
     if args.debug == "requests":
         requests.all_requests = []
+
+    merged = False
+    if args.merged:
+        if args.open or args.closed:
+            print("--open and --closed options not supported when --merged is specified.")
+            return
+        args.closed = True
+        merged = True
 
     if args.open:
         if args.closed:
@@ -161,6 +195,7 @@ def main(argv):
         since=since,
         org=args.org,
         intext=intext,
+        merged=merged,
     )
 
     if args.debug == "requests":
