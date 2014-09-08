@@ -12,3 +12,5 @@ urlobject
 Flask==0.10.1
 gunicorn==18.0
 newrelic==2.24.0.21
+CacheControl==0.10.2
+lockfile==0.9.1
