@@ -22,7 +22,7 @@ class WrappedRequests(object):
     """
 
     def __init__(self):
-        self.session = real_requests.session()
+        self.session = real_requests.Session()
         if CacheControlAdapter:
             adapter = CacheControlAdapter(cache=FileCache(".webcache"))
             self.session.mount("http://", adapter)
