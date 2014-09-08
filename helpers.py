@@ -8,6 +8,12 @@ import requests as real_requests
 
 from urlobject import URLObject
 
+try:
+    from cachecontrol import CacheControlAdapter
+    from cachecontrol.caches import FileCache
+except ImportError:
+    CacheControlAdapter = None
+
 
 class WrappedRequests(object):
     """A helper wrapper around requests.
@@ -16,6 +22,12 @@ class WrappedRequests(object):
     """
 
     def __init__(self):
+        self.session = real_requests.session()
+        if CacheControlAdapter:
+            adapter = CacheControlAdapter(cache=FileCache(".webcache"))
+            self.session.mount("http://", adapter)
+            self.session.mount("https://", adapter)
+
         self.all_requests = None
 
     def record_request(self, method, url, args, kwargs):
@@ -40,11 +52,11 @@ class WrappedRequests(object):
 
     def get(self, url, *args, **kwargs):
         self.record_request("GET", url, args, kwargs)
-        return real_requests.get(url, *args, **self._kwargs(url, kwargs))
+        return self.session.get(url, *args, **self._kwargs(url, kwargs))
 
     def post(self, url, *args, **kwargs):
         self.record_request("POST", url, args, kwargs)
-        return real_requests.post(url, *args, **self._kwargs(url, kwargs))
+        return self.session.post(url, *args, **self._kwargs(url, kwargs))
 
 
 # Now we can use requests as usual, or even import it from this module.
