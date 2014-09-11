@@ -30,3 +30,13 @@ waiting on eCommerce:
     color: eb6420
 waiting on Platform:
     color: d4c5f9
+awaiting prioritization:
+    color: fad8c7
+community manager review:
+    color: 207de5
+engineering review:
+    color: c7def8
+needs triage:
+    color: e11d21
+product review:
+    color: 5319e7
