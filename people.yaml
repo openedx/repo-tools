@@ -77,11 +77,6 @@ jarv:
     authors_entry: John Jarvis <jarv@edx.org>
     agreement: institution
     institution: edX
-Aviendha:
-    authors_entry: <aviendhasl@gmail.com>
-    agreement: institution
-    institution: edX
-    comment: lyla
 shnayder:
     authors_entry: Victor Shnayder <victor@edx.org>
     agreement: institution
