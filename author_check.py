@@ -197,7 +197,13 @@ def check_user(username):
         if agreement == "individual":
             print_green(u"{} has signed an individual agreement".format(username))
         elif agreement == "institution":
-            print_green(u"{} is covered by an institutional agreement".format(username))
+            institution = people[username].get("institution")
+            msg = u"{} is covered by an institutional agreement".format(username)
+            if institution:
+                msg += u" with {}".format(institution)
+            else:
+                msg += u" (institution unknown)"
+            print_green(msg)
         else:
             print_red(u"{} has not signed agreement".format(username))
 
