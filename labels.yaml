@@ -40,3 +40,5 @@ needs triage:
     color: e11d21
 product review:
     color: 5319e7
+bug (open source):
+    color: bfdadc
