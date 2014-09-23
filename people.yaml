@@ -1001,3 +1001,8 @@ OmarIthawi:
     authors_entry: Omar Al-Ithawi <oithawi@qrf.org>
     agreement: individual
     institution: QRF
+AlasdairSwan:
+    authors_entry: Alasdair Swan <aswan@edx.org>
+    agreement: institution
+    institution: edX
+    jira: aswan
