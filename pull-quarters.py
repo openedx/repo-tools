@@ -70,7 +70,15 @@ def get_bucket_data(buckets, repo_name, date_bucket_fn, by_size=False):
             buckets[date_bucket_fn(merged)]["merged " + intext + size] += 1
 
 def size_of_pull(pull):
-    """Return a size (small/large) for the pull, based on a bunch of criteria."""
+    """Return a size (small/large) for the pull.
+
+    This is based on a number of criteria, with wild-ass guesses about the
+    dividing line between large and small.  Don't read too much into this
+    distinction.
+
+    Returns "small" or "large".
+
+    """
     limits = {
         'pull.additions': 30,
         'pull.changed_files': 5,
@@ -93,7 +101,9 @@ def main(argv):
         help="Report on weeks instead of quarters"
     )
     parser.add_argument("--by-size", action="store_true",
-        help="Include a breakdown by small/large"
+        help="Include a breakdown by small/large, "
+                "which is WILDLY arbitrary, "
+                "and a poor predicter of either effort or impact."
     )
     args = parser.parse_args(argv[1:])
 
