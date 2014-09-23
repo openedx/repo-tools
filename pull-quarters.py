@@ -8,6 +8,7 @@ from __future__ import print_function
 import argparse
 import collections
 import datetime
+import itertools
 import pprint
 import sys
 
@@ -33,43 +34,63 @@ def date_bucket_week(date):
     return "{:%Y-%m-%d}".format(monday)
 
 
-def get_all_repos(date_bucket_fn):
+def get_all_repos(date_bucket_fn, by_size=False):
     repos = [ r for r in Repo.from_yaml() if r.track_pulls ]
 
-    def bucket_blank():
-        return {
-            "opened": {
-                "internal": 0,
-                "external": 0,
-            },
-            "merged": {
-                "internal": 0,
-                "external": 0,
-            },
-        }
+    dimensions = [["opened", "merged"], ["internal", "external"]]
+    if by_size:
+        dimensions.append(["small", "large"])
 
-    buckets = collections.defaultdict(bucket_blank)
+    keys = [" ".join(prod) for prod in itertools.product(*dimensions)]
+    bucket_blank = dict.fromkeys(keys, 0)
+
+    buckets = collections.defaultdict(lambda: dict(bucket_blank))
     for repo in repos:
-        get_bucket_data(buckets, repo.name, date_bucket_fn)
+        get_bucket_data(buckets, repo.name, date_bucket_fn, by_size=by_size)
 
-    print("qrtr\topened internal\tmerged internal\topened external\tmerged external")
+    print("timespan\t" + "\t".join(keys))
     for q in sorted(buckets.keys()):
         data = buckets[q]
-        print("{}\t{}\t{}\t{}\t{}".format(q,
-            data["opened"]["internal"],
-            data["merged"]["internal"],
-            data["opened"]["external"],
-            data["merged"]["external"],
-        ))
+        print("{}\t{}".format(q, "\t".join(str(data[k]) for k in keys)))
 
-def get_bucket_data(buckets, repo_name, date_bucket_fn):
-    for pull in get_pulls(repo_name, state="all", pull_details="list", org=True):
+def get_bucket_data(buckets, repo_name, date_bucket_fn, by_size=False):
+    print(repo_name)
+    pull_details = "all" if by_size else "list"
+    for pull in get_pulls(repo_name, state="all", pull_details=pull_details, org=True):
         # print("{0[id]}: {0[combinedstate]} {0[intext]}".format(pull))
+        if by_size:
+            size = " " + size_of_pull(pull)
+        else:
+            size = ""
+        intext = pull["intext"]
         created = dateutil.parser.parse(pull['created_at'])
-        buckets[date_bucket_fn(created)]["opened"][pull["intext"]] += 1
+        buckets[date_bucket_fn(created)]["opened " + intext + size] += 1
         if pull['combinedstate'] == "merged":
             merged = dateutil.parser.parse(pull['pull.merged_at'])
-            buckets[date_bucket_fn(merged)]["merged"][pull["intext"]] += 1
+            buckets[date_bucket_fn(merged)]["merged " + intext + size] += 1
+
+def size_of_pull(pull):
+    """Return a size (small/large) for the pull.
+
+    This is based on a number of criteria, with wild-ass guesses about the
+    dividing line between large and small.  Don't read too much into this
+    distinction.
+
+    Returns "small" or "large".
+
+    """
+    limits = {
+        'pull.additions': 30,
+        'pull.changed_files': 5,
+        'pull.comments': 10,
+        'pull.commits': 3,
+        'pull.deletions': 30,
+        'pull.review_comments': 10,
+    }
+    for attr, limit in limits.iteritems():
+        if pull[attr] > limit:
+            return "large"
+    return "small"
 
 def main(argv):
     parser = argparse.ArgumentParser(description="Summarize pull requests.")
@@ -78,6 +99,11 @@ def main(argv):
     )
     parser.add_argument("--weekly", action="store_true",
         help="Report on weeks instead of quarters"
+    )
+    parser.add_argument("--by-size", action="store_true",
+        help="Include a breakdown by small/large, "
+                "which is WILDLY arbitrary, "
+                "and a poor predicter of either effort or impact."
     )
     args = parser.parse_args(argv[1:])
 
@@ -88,7 +114,7 @@ def main(argv):
     else:
         date_bucket_fn = date_bucket_quarter
 
-    get_all_repos(date_bucket_fn)
+    get_all_repos(date_bucket_fn, by_size=args.by_size)
 
 
 if __name__ == "__main__":
