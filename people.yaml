@@ -122,12 +122,14 @@ dementrock:
 # ???:
 #     name: Sidhanth Rao
 #     agreement: institution
+#     comment: edX intern summer 2012
 bcheng42:
     name: Brittany Cheng
     agreement: institution
 # ???:
 #     name: Dhaval Adjodah
 #     agreement: institution
+#     comment: edX intern summer 2012
 thomasxiii:
     name: Tom Giannattasio
     agreement: institution
@@ -181,9 +183,11 @@ VikParuchuri:
     agreement: institution
     institution: edX
     jira: vik
-# ???:
-#     name: Louis Sobel
-#     agreement: institution
+LouisSobel:
+    name: Louis Sobel
+    agreement: institution
+    institution: edX
+    comment: edX intern fall 2012
 brianhw:
     name: Brian Wilson
     agreement: institution
@@ -244,6 +248,8 @@ e0d:
 # ???:
 #     name: Deena Wang
 #     agreement: institution
+#     institution: edX
+#     comment: edX intern
 jnater:
     name: Jean Manuel Náter
     agreement: institution
