@@ -1,1008 +1,1007 @@
 # mapping from github username to info about the person
-# authors_entry is how they should appear in AUTHORS file
 # agreement is 'individual' if they've signed the individual CA and
 # 'institution' if they are convered
 
 pmitros:
-    authors_entry: Piotr Mitros <pmitros@edx.org>
+    name: Piotr Mitros
     agreement: institution
     institution: edX
     jira: pmitros
 kylefiedler:
-    authors_entry: Kyle Fiedler <kyle@kylefiedler.com>
+    name: Kyle Fiedler
     agreement: institution
 eipark:
-    authors_entry: Ernie Park <eipark@mit.edu>
+    name: Ernie Park
     agreement: institution
     email_ok: no    # bounced
 bridger:
-    authors_entry: Bridger Maxwell <bridger@mit.edu>
+    name: Bridger Maxwell
     agreement: institution
     institution: edX
 Lyla-Fischer:
-    authors_entry: Lyla Fischer <lyla@edx.org>
+    name: Lyla Fischer
     agreement: institution
     institution: edX
     jira: lyla
 ormsbee:
-    authors_entry: David Ormsbee <dave@edx.org>
+    name: David Ormsbee
     agreement: institution
     institution: edX
     jira: dormsbee
 terman:
-    authors_entry: Chris Terman <cjt@mit.edu>
+    name: Chris Terman
     agreement: institution
     institution: MIT
 kaishin:
-    authors_entry: Reda Lemeden <reda@thoughtbot.com>
+    name: Reda Lemeden
     agreement: institution
 anant*:    # Anant doesn't have a Github account
-    authors_entry: Anant Agarwal <agarwal@edx.org>
+    name: Anant Agarwal
     agreement: institution
     institution: edX
 jmclaus:
-    authors_entry: Jean-Michel Claus <jmc@edx.org>
+    name: Jean-Michel Claus
     agreement: institution
     institution: edX
     jira: jmc
 cpennington:
-    authors_entry: Calen Pennington <calen.pennington@gmail.com>
+    name: Calen Pennington
     agreement: institution
     institution: edX
     jira: cale
 jmvt:
-    authors_entry: JM Van Thong <jm@edx.org>
+    name: JM Van Thong
     agreement: institution
     institution: edX
 sikachu:
-    authors_entry: Prem Sichanugrist <psichanugrist@thoughtbot.com>
+    name: Prem Sichanugrist
     agreement: institution
     institution: edX
     comment: thoughtbot
 ichuang:
-    authors_entry: Isaac Chuang <ichuang@mit.edu>
+    name: Isaac Chuang
     agreement: individual
     institution: MIT
 frechg:
-    authors_entry: Galen Frechette <galen@thoughtbot.com>
+    name: Galen Frechette
     agreement: institution
     institution: edX
     comment: thoughtbot
 edwardloveall:
-    authors_entry: Edward Loveall <edward@edwardloveall.com>
+    name: Edward Loveall
     agreement: institution
     institution: edX
     comment: thoughtbot
 mjankowski:
-    authors_entry: Matt Jankowski <mjankowski@thoughtbot.com>
+    name: Matt Jankowski
     agreement: institution
     institution: edX
     comment: thoughtbot
 jarv:
-    authors_entry: John Jarvis <jarv@edx.org>
+    name: John Jarvis
     agreement: institution
     institution: edX
     jira: jarv
 shnayder:
-    authors_entry: Victor Shnayder <victor@edx.org>
+    name: Victor Shnayder
     agreement: institution
     institution: edX
     jira: victor
 halogenandtoast:
-    authors_entry: Matthew Mongeau <halogenandtoast@gmail.com>
+    name: Matthew Mongeau
     agreement: institution
     institution: edX
     comment: thoughtbot
 kimtonyhyun:
-    authors_entry: Tony Kim <kimth@edx.org>
+    name: Tony Kim
     agreement: institution
     institution: edX
 kimth:
-    authors_entry: Tony Kim <kimth@edx.org>
+    name: Tony Kim
     agreement: institution
     institution: edX
 arjun810:
-    authors_entry: Arjun Singh <arjun810@gmail.com>
+    name: Arjun Singh
     agreement: individual
 johnhess:
-    authors_entry: John Hess <mgojohn@gmail.com>
+    name: John Hess
     agreement: institution
     institution: edX
     jira: jh
 rocha:
-    authors_entry: Carlos Andrés Rocha <rocha@edx.org>
+    name: Carlos Andrés Rocha
     agreement: institution
     institution: edX
     jira: rocha
 ccp0101:
-    authors_entry: Mike Chen <ccp0101@gmail.com>
+    name: Mike Chen
     agreement: individual
 dementrock:
-    authors_entry: Rocky Duan <dementrock@gmail.com>
+    name: Rocky Duan
     agreement: individual
 # ???:
-#     authors_entry: Sidhanth Rao <sidhanth@mitx.mit.edu>
+#     name: Sidhanth Rao
 #     agreement: institution
 bcheng42:
-    authors_entry: Brittany Cheng <bcheng42@gmail.com>
+    name: Brittany Cheng
     agreement: institution
 # ???:
-#     authors_entry: Dhaval Adjodah <dhaval@mit.edu>
+#     name: Dhaval Adjodah
 #     agreement: institution
 thomasxiii:
-    authors_entry: Tom Giannattasio <tom@mitx.mit.edu>
+    name: Tom Giannattasio
     agreement: institution
     institution: edX
 ibrahima:
-    authors_entry: Ibrahim Awwal <ibrahim.awwal@gmail.com>
+    name: Ibrahim Awwal
     agreement: individual
 sarina:
-    authors_entry: Sarina Canelake <sarina@edx.org>
+    name: Sarina Canelake
     agreement: institution
     institution: edX
     jira: sarina
 markchang:
-    authors_entry: Mark L. Chang <mark.chang@gmail.com>
+    name: Mark L. Chang
     agreement: institution
     institution: edX
     jira: mchang
 deanxorr:
-    authors_entry: Dean Dieker <ddieker@gmail.com>
+    name: Dean Dieker
     agreement: institution
     institution: edX
 tmacwill:
-    authors_entry: Tommy MacWilliam <tmacwilliam@cs.harvard.edu>
+    name: Tommy MacWilliam
     agreement: institution
 natehardison:
-    authors_entry: Nate Hardison <natehardison@gmail.com>
+    name: Nate Hardison
     agreement: institution
     institution: Stanford
 chrisndodge:
-    authors_entry: Chris Dodge <cdodge@edx.org>
+    name: Chris Dodge
     agreement: institution
     institution: edX
     username: cdodge
 kevinchugh:
-    authors_entry: Kevin Chugh <kevinchugh@edx.org>
+    name: Kevin Chugh
     agreement: institution
     institution: edX
     jira: kevinchugh
 nedbat:
-    authors_entry: Ned Batchelder <ned@nedbatchelder.com>
+    name: Ned Batchelder
     agreement: institution
     institution: edX
     jira: ned
 auraz:
-    authors_entry: Alexander Kryklia <kryklia@gmail.com>
+    name: Alexander Kryklia
     agreement: institution
     institution: edX
     jira: kryklia
 VikParuchuri:
-    authors_entry: Vik Paruchuri <vik@edx.org>
+    name: Vik Paruchuri
     agreement: institution
     institution: edX
     jira: vik
 # ???:
-#     authors_entry: Louis Sobel <sobel@edx.org>
+#     name: Louis Sobel
 #     agreement: institution
 brianhw:
-    authors_entry: Brian Wilson <brian@edx.org>
+    name: Brian Wilson
     agreement: institution
     institution: edX
     jira: brian
 apenney:
-    authors_entry: Ashley Penney <apenney@edx.org>
+    name: Ashley Penney
     agreement: institution
     institution: edX
 dmitchell:
-    authors_entry: Don Mitchell <dmitchell@edx.org>
+    name: Don Mitchell
     agreement: institution
     institution: edX
     jira: dmitchell
 aculich:
-    authors_entry: Aaron Culich <aculich@edx.org>
+    name: Aaron Culich
     agreement: institution
     institution: Stanford
 talbs:
-    authors_entry: Brian Talbot <btalbot@edx.org>
+    name: Brian Talbot
     agreement: institution
     institution: edX
     jira: btalbot
 jzoldak:
-    authors_entry: Jay Zoldak <jzoldak@edx.org>
+    name: Jay Zoldak
     agreement: institution
     institution: edX
     jira: zoldak
 valera-rozuvan:
-    authors_entry: Valera Rozuvan <valera.rozuvan@gmail.com>
+    name: Valera Rozuvan
     agreement: institution
     institution: edX
     jira: valera
 dianakhuang:
-    authors_entry: Diana Huang <dkh@edx.org>
+    name: Diana Huang
     agreement: institution
     institution: edX
     jira: dkh
 marcotuts:
-    authors_entry: Marco Morales <marcotuts@gmail.com>
+    name: Marco Morales
     agreement: institution
     institution: edX
     jira: marco
 cahrens:
-    authors_entry: Christina Roberts <christina@edx.org>
+    name: Christina Roberts
     agreement: institution
     institution: edX
     jira: christina
 rcchirwa:
-    authors_entry: Robert Chirwa <robert@edx.org>
+    name: Robert Chirwa
     agreement: institution
     institution: edX
 e0d:
-    authors_entry: Ed Zarecor <ed@edx.org>
+    name: Ed Zarecor
     agreement: institution
     institution: edX
     jira: ed
 # ???:
-#     authors_entry: Deena Wang <thedeenawang@gmail.com>
+#     name: Deena Wang
 #     agreement: institution
 jnater:
-    authors_entry: Jean Manuel Náter <jnater@edx.org>
+    name: Jean Manuel Náter
     agreement: institution
     institution: edX
     jira: jnater
 # ???:
-#     authors_entry: Emily Zhang <1800.ehz.hang@gmail.com>
+#     name: Emily Zhang
 #     agreement: institution
 JAAkana:
-    authors_entry: Jennifer Akana <jaakana@gmail.com>
+    name: Jennifer Akana
     agreement: institution
     institution: edX
     jira: jaakana
 pbaratta:
-    authors_entry: Peter Baratta <peter.baratta@gmail.com>
+    name: Peter Baratta
     agreement: institution
     institution: edX
     jira: peter
 jkarni:
-    authors_entry: Julian Arni <julian@edx.org>
+    name: Julian Arni
     agreement: institution
     institution: edX
     jira: julian
 arthurian: # ?
-    authors_entry: Arthur Barrett <abarrett@edx.org>
+    name: Arthur Barrett
     agreement: institution
     institution: edX
 vaxXxa:
-    authors_entry: Vasyl Nakvasiuk <vaxxxa@gmail.com>
+    name: Vasyl Nakvasiuk
     agreement: institution
     institution: edX
     jira: vaxxxa
 wedaly:
-    authors_entry: Will Daly <will@edx.org>
+    name: Will Daly
     agreement: institution
     institution: edX
     jira: will
 jtauber:
-    authors_entry: James Tauber <jtauber@jtauber.com>
+    name: James Tauber
     agreement: institution
     institution: edX
     jira: jtauber
 gwprice:
-    authors_entry: Greg Price <gprice@edx.org>
+    name: Greg Price
     agreement: institution
     institution: edX
     jira: gprice
 jrbl:
-    authors_entry: Joe Blaylock <jrbl@stanford.edu>
+    name: Joe Blaylock
     agreement: institution
     institution: Stanford
     jira: jrbl
 sefk:
-    authors_entry: Sef Kloninger <sef@kloninger.com>
+    name: Sef Kloninger
     agreement: institution
     institution: Stanford
     jira: sef
 polesye:
-    authors_entry: Anton Stupak <s2pak.anton@gmail.com>
+    name: Anton Stupak
     agreement: institution
     institution: edX
     jira: anton
 dcadams:
-    authors_entry: David Adams <dcadams@stanford.edu>
+    name: David Adams
     agreement: institution
     institution: Stanford
     jira: dcadams@stanford.edu
 straz:
-    authors_entry: Steve Strassmann <straz@edx.org>
+    name: Steve Strassmann
     agreement: institution
     institution: edX
     jira: straz
 caesar2164:
-    authors_entry: Giulio Gratta <giulio@giuliogratta.com>
+    name: Giulio Gratta
     agreement: institution
     institution: Stanford
     jira: giulio@giuliogratta.com
 singingwolfboy:
-    authors_entry: David Baumgold <david@davidbaumgold.com>
+    name: David Baumgold
     agreement: institution
     institution: edX
     jira: db
 jbau:
-    authors_entry: Jason Bau <jbau@stanford.edu>
+    name: Jason Bau
     agreement: institution
     institution: Stanford
     jira: jbau
 frrrances:
-    authors_entry: Frances Botsford <frances@edx.org>
+    name: Frances Botsford
     agreement: institution
     institution: edX
     jira: frances
 JonahStanley:
-    authors_entry: Jonah Stanley <Jonah_Stanley@brown.edu>
+    name: Jonah Stanley
     agreement: institution
     institution: edX
     jira: jstanley
 Slater-Victoroff:
-    authors_entry: Slater Victoroff <slater.r.victoroff@gmail.com>
+    name: Slater Victoroff
     agreement: institution
     institution: edX
     jira: svictoroff
 peter-fogg:
-    authors_entry: Peter Fogg <peter.p.fogg@gmail.com>
+    name: Peter Fogg
     agreement: institution
     institution: edX
     jira: pfogg
 lapentab:
-    authors_entry: Bethany LaPenta <lapentab@mit.edu>
+    name: Bethany LaPenta
     agreement: institution
     institution: edX
     jira: blapenta
 rlucioni:
-    authors_entry: Renzo Lucioni <renzo@renzolucioni.com>
+    name: Renzo Lucioni
     agreement: institution
     institution: edX
     jira: rlucioni
 fephsun:
-    authors_entry: Felix Sun <felixsun@mit.edu>
+    name: Felix Sun
     agreement: institution
     institution: edX
     jira: felixsun
 adampalay:
-    authors_entry: Adam Palay <adam@edx.org>
+    name: Adam Palay
     agreement: institution
     institution: edX
     jira: adam
 ihoover:
-    authors_entry: Ian Hoover <ihoover@edx.org>
+    name: Ian Hoover
     agreement: institution
     institution: edX
     jira: ihoover
 mikigoyal:
-    authors_entry: Mukul Goyal <miki@edx.org>
+    name: Mukul Goyal
     agreement: institution
     institution: edX
     jira: miki
 robertjmarks:
-    authors_entry: Robert Marks <rmarks@edx.org>
+    name: Robert Marks
     agreement: individual
     jira: robert.j.marks
 yarko:
-    authors_entry: Yarko Tymciurak <yarkot1@gmail.com>
+    name: Yarko Tymciurak
     agreement: individual
     jira: yarko
 mlsteele:
-    authors_entry: Miles Steele <miles@milessteele.com>
+    name: Miles Steele
     agreement: institution
     institution: edX
     jira: msteele
 kluo:
-    authors_entry: Kevin Luo <kevluo@edx.org>
+    name: Kevin Luo
     agreement: institution
     institution: edX
 akjags:
-    authors_entry: Akshay Jagadeesh <akjags@gmail.com>
+    name: Akshay Jagadeesh
 nparlante:
-    authors_entry: Nick Parlante <nick.parlante@cs.stanford.edu>
+    name: Nick Parlante
     agreement: institution
     institution: Stanford
     jira: nick@stanford.edu
 hikari-boulders:
-    authors_entry: Marko Seric <marko.seric@math.uzh.ch>
+    name: Marko Seric
     agreement: individual
 felipemontoya:
-    authors_entry: Felipe Montoya <felipe.montoya@edunext.co>
+    name: Felipe Montoya
     agreement: individual
 flowerhack:
-    authors_entry: Julia Hansbrough <julia@edx.org>
+    name: Julia Hansbrough
     agreement: institution
     institution: edX
     jira: julia
 natea:
-    authors_entry: Nate Aune <naune@edx.org>
+    name: Nate Aune
     agreement: institution
     institution: edX
     jira: natea
 antoviaque:
-    authors_entry: Xavier Antoviaque <xavier@antoviaque.org>
+    name: Xavier Antoviaque
     agreement: institution
     institution: OpenCraft
     jira: XavierAntoviaque
 kern3020:
-    authors_entry: John Kern <kern3020@gmail.com>
+    name: John Kern
     agreement: individual
 feanil:
-    authors_entry: Feanil Patel <feanil@edx.org>
+    name: Feanil Patel
     agreement: institution
     institution: edX
     jira: feanil
 ammubhave:
-    authors_entry: Amol Bhave <ammubhave@gmail.com>
+    name: Amol Bhave
     agreement: institution
     institution: edX
 mcpanic:
-    authors_entry: Juho Kim <juhokim@edx.org>
+    name: Juho Kim
     agreement: institution
     institution: edX
 stkomarov:
-    authors_entry: Steve Komarov <skomarov@edx.org>
+    name: Steve Komarov
     agreement: institution
     institution: edX
     comment: worked with Piotr summer 2013
 jimabramson:
-    authors_entry: Jim Abramson <jsa@edx.org>
+    name: Jim Abramson
     agreement: institution
     institution: edX
     jira: jsa
 mulby:
-    authors_entry: Gabe Mulley <gabe@edx.org>
+    name: Gabe Mulley
     agreement: institution
     institution: edX
     jira: gabe
 Julian:
-    authors_entry: Julian Berman <Julian+edX@GrayVines.com>
+    name: Julian Berman
     agreement: individual
 tnorum:
-    authors_entry: Toddi Norum <toddi@edx.org>
+    name: Toddi Norum
     agreement: institution
     institution: edX
     jira: toddi
 jinpa:
-    authors_entry: Jane Manning <jmanning@gmail.com>
+    name: Jane Manning
     agreement: institution
     institution: Stanford
     jira: jmanning
 pchiu33:
-    authors_entry: Philippe Chiu <philippe.chiu@gmail.com>
+    name: Philippe Chiu
     agreement: individual
 carsongee:
-    authors_entry: Carson Gee <cgee@mit.edu>
+    name: Carson Gee
     agreement: individual
     institution: MIT
     jira: cgee@mit.edu
 kewubenduben:
-    authors_entry: Ker Ruben Ramos <xdiscent@gmail.com>
+    name: Ker Ruben Ramos
     agreement: individual
 # Neal McBurnett <nealmcb@gmail.com>
 # agreement: individual
 jorr-at-google:
-    authors_entry: John Orr <jorr@google.com>
+    name: John Orr
     agreement: institution
     institution: Google
     jira: jorr
 symbolist:
-    authors_entry: Usman Khalid <symbolist@users.noreply.github.com>
+    name: Usman Khalid
     agreement: institution
     institution: edX
     jira: khalid
 oliviermarquez:
-    authors_entry: Olivier Marquez <oliviermarquez@gmail.com>
+    name: Olivier Marquez
     agreement: individual
 Szczork:
-    authors_entry: Nicolas Chevalier <nicolas.chevalier@epitech.eu>
+    name: Nicolas Chevalier
     agreement: individual
 chrisrossi:
-    authors_entry: Chris Rossi <chris@archimedeanco.com>
+    name: Chris Rossi
     agreement: institution
 man2life:
-    authors_entry: Pavel Yushchenko <pavelyushchenko@gmail.com>
+    name: Pavel Yushchenko
     agreement: individual
 codyaustun:
-    authors_entry: ???
+    name: ???
     agreement: institution
 IainNZ:
-    authors_entry: Iain Dunning <idunning@mit.edu>
+    name: Iain Dunning
     agreement: individual
 abdoosh00:
-    authors_entry: Abdallah Nassif <abdoosh00@gmail.com>
+    name: Abdallah Nassif
     agreement: individual
     institution: QRF
 olmar:
-    authors_entry: Oleg Marshev <oleh.marshev@gmail.com>
+    name: Oleg Marshev
     agreement: institution
     institution: edX
     jira: oleg
 neurolit:
-    authors_entry: Florian Dufour <neurolit@gmail.com>
+    name: Florian Dufour
     agreement: individual
 manuel-freire:
-    authors_entry: Manuel Freire <manuel.freire@fdi.ucm.es>
+    name: Manuel Freire
     agreement: individual
 danielcebrian:
-    authors_entry: Daniel Cebrián Robles <danielcebrianr@gmail.com>
+    name: Daniel Cebrián Robles
     agreement: individual
     institution: Harvard
 dglance:
-    authors_entry: David Glance <david.glance@gmail.com>
+    name: David Glance
     agreement: individual
 ejsteven:
-    authors_entry: Steven Chen <s.chen13@uq.edu.au>
+    name: Steven Chen
     agreement: individual
 jzornig:
-    authors_entry: John Zornig <j.zornig@uq.edu.au>
+    name: John Zornig
     agreement: individual
 puntxo:
-    authors_entry: Javier Orts Peñarrocha <jorts@upv.es>
+    name: Javier Orts Peñarrocha
     agreement: individual
 goncha:
-    authors_entry: Gang Chen <goncha@gmail.com>
+    name: Gang Chen
     agreement: individual
 ngocchung75:
-    authors_entry: Ha Ngoc Chung <ngocchung75@gmail.com>
+    name: Ha Ngoc Chung
     agreement: individual
 danghuyhoa:
-    authors_entry: Dang Huy Hoa <danghuyhoa@gmail.com>
+    name: Dang Huy Hoa
     agreement: individual
 waheedahmed:
-    authors_entry: Waheed Ahmed <waheed.ahmed@arbisoft.com>
+    name: Waheed Ahmed
     agreement: institution
     institution: edX
     jira: waheed
 zubair-arbi:
-    authors_entry: Zubair Afzal <zubair.afzal@arbisoft.com>
+    name: Zubair Afzal
     agreement: institution
     institution: edX
     jira: zubair
 tusbar:
-    authors_entry: Bertrand Marron <bertrand.marron@ionis-group.com>
+    name: Bertrand Marron
     agreement: individual
     institution: IONIS
     jira: tusbar
 brainstorm:
-    authors_entry: Roman Valls Guimera <roman@incf.org>
+    name: Roman Valls Guimera
     agreement: individual
 ovnicraft:
-    authors_entry: Cristian Salamea <cristian.salamea@iaen.edu.ec>
+    name: Cristian Salamea
     agreement: individual
 louyihua:
-    authors_entry: Yihua Lou <supermouselyh@hotmail.com>
+    name: Yihua Lou
     agreement: individual
 pdehaye:
-    authors_entry: Paul-Olivier Dehaye <paulolivier@gmail.com>
+    name: Paul-Olivier Dehaye
     agreement: individual
 hwjworld:
-    authors_entry: Jerome Huang <canni3269@gmail.com>
+    name: Jerome Huang
     agreement: individual
     institution: DianDiYun
     comment: part of DianDiYun Inc
 chenshuchuan:
-    authors_entry: ShuChuan Chen <am15501@163.com>
+    name: ShuChuan Chen
     agreement: individual
     institution: DianDiYun
     comment: part of DianDiYun Inc
 TheBritKnight:
-    authors_entry: Charles Dawson <charles.dwsn@gmail.com>
+    name: Charles Dawson
     agreement: individual
 glowe:
-    authors_entry: Graham Lowe <graham.lowe@gmail.com>
+    name: Graham Lowe
     agreement: individual
 mattdrayer:
-    authors_entry: Matt Drayer <mattdrayer@edx.org>
+    name: Matt Drayer
     agreement: institution
     institution: edX
     jira: mattdrayer
 lamagnifica:
-    authors_entry: Alison Hodges <ahodges@edx.org>
+    name: Alison Hodges
     agreement: institution
     institution: edX
     jira: ahodges
 andy-armstrong:
-    authors_entry: Andy Armstrong <andya@edx.org>
+    name: Andy Armstrong
     agreement: institution
     institution: edX
     jira: andya
 stephensanchez:
-    authors_entry: Stephen Sanchez <steve@edx.org>
+    name: Stephen Sanchez
     agreement: institution
     institution: edX
     jira: steve
 mhoeber:
-    authors_entry: Mark Hoeber <hoeber@edx.org>
+    name: Mark Hoeber
     agreement: institution
     institution: edX
     jira: hoeber
 srpearce:
-    authors_entry: Sylvia Pearce <spearce@edx.org>
+    name: Sylvia Pearce
     agreement: institution
     institution: edX
     jira: spearce
 stroilova:
-    authors_entry: Olga Stroilova <olga@edx.org>
+    name: Olga Stroilova
     agreement: institution
     institution: edX
     jira: olga
 davestgermain:
-    authors_entry: Dave St.Germain <dstgermain@edx.org>
+    name: Dave St.Germain
     agreement: institution
     institution: edX
     jira: dstgermain
 hkim823:
-    authors_entry: Han Su Kim <hkim823@gmail.com>
+    name: Han Su Kim
     agreement: institution
     institution: edX
     jira: han
 Bachmann1234:
-    authors_entry: Matt Bachmann <bachmann.matt@gmail.com>
+    name: Matt Bachmann
     agreement: individual
 avinassh:
-    authors_entry: Avinash Sajjanshetty <avinashsajjan@gmail.com>
+    name: Avinash Sajjanshetty
     agreement: individual
 robertlight:
-    authors_entry: Robert Light <robert_light@verizon.net>
+    name: Robert Light
     agreement: individual
     institution: Harvard
 martynjames:
-    authors_entry: Martyn James <mjames@edx.org>
+    name: Martyn James
     agreement: institution
     institution: edX
 johncox-google:
-    authors_entry: John Cox <johncox@google.com>
+    name: John Cox
     agreement: institution
     institution: Google
 vicjwang:
-    authors_entry: Victor Wang <vjwang45@gmail.com>
+    name: Victor Wang
     agreement: individual
 aboudreault:
-    authors_entry: Alan Boudreault <boudreault.alan@gmail.com>
+    name: Alan Boudreault
     agreement: individual
 nasthagiri:
-    authors_entry: Nimisha Asthagiri <nasthagiri@edx.org>
+    name: Nimisha Asthagiri
     agreement: institution
     institution: edX
     jira: nasthagiri
 yrchen:
-    authors_entry: Xaver Y.R. Chen <yrchen@atcity.org>
+    name: Xaver Y.R. Chen
     agreement: individual
     jira: yrchen
 gremat??:
-    authors_entry: Matjaz Gregoric <gremat@gmail.com>
+    name: Matjaz Gregoric
     agreement: individual
 raeeschachar:
-    authors_entry: Raees Chachar <raees.chachar@arbisoft.com>
+    name: Raees Chachar
     agreement: institution
     institution: edX
     jira: raees.chachar@arbisoft.com
 muhammad-ammar:
-    authors_entry: Muhammad Ammar <mammar@edx.org>
+    name: Muhammad Ammar
     agreement: institution
     institution: edX
     jira: mammar
 dangtrinh:
-    authors_entry: Trinh Nguyen <dangtrinhnt@gmail.com>
+    name: Trinh Nguyen
     agreement: individual
 mtyaka:
-    authors_entry: Matjaz Gregoric <gremat@gmail.com>
+    name: Matjaz Gregoric
     agreement: institution
     institution: OpenCraft
 aboudreault:
-    authors_entry: Alan Boudreault <boudreault.alan@gmail.com>
+    name: Alan Boudreault
     agreement: institution
     institution: OpenCraft
 FiloSottile:
-    authors_entry: Filippo Valsorda <hi@filippo.io>
+    name: Filippo Valsorda
     agreement: institution
     institution: OpenCraft
 racech:
-    authors_entry: Krzysztof Bujniewicz <k@2g.pl>
+    name: Krzysztof Bujniewicz
     agreement: institution
     institution: OpenCraft
 gitim:
-    authors_entry: Timur Gibadullin <timur.gbd@gmail.com>
+    name: Timur Gibadullin
     agreement: individual
 Shedna:
-    authors_entry: William Desloge <william.desloge@ionis-group.com>
+    name: William Desloge
     agreement: individual
     institution: IONIS
 fredsmith:
-    authors_entry: Fred Smith <derf@edx.org>
+    name: Fred Smith
     agreement: institution
     institution: edX
     jira: derf
 fmyzjs:
-    authors_entry: Jason Zhu <fmyzjs@gmail.com>
+    name: Jason Zhu
     agreement: individual
     institution: iflab.org
 pku9104038:
-    authors_entry: Wang Peifeng <pku9104038@hotmail.com>
+    name: Wang Peifeng
     agreement: individual
 defance:
-    authors_entry: Dmitry Ivanyushin <d.ivanyushin@cde.ifmo.ru>
+    name: Dmitry Ivanyushin
     agreement: individual
 shindere:
-    authors_entry: Sébastien Hinderer <Sebastien.Hinderer@inria.fr>
+    name: Sébastien Hinderer
     agreement: individual
 marcore:
-    authors_entry: Marco Re <mrc.re@tiscali.it>
+    name: Marco Re
     agreement: individual
 rayhooker:
-    authors_entry: Ray Hooker <ray.hooker@gmail.com>
+    name: Ray Hooker
     agreement: individual
 trbm:
-    authors_entry: Thomas Brennan-Marquez <trbm@stanford.edu>
+    name: Thomas Brennan-Marquez
     agreement: individual
     institution: Stanford
 eikonomega:
-    authors_entry: Mike Dunn <mike@eikonomega.com>
+    name: Mike Dunn
     agreement: individual
 Leibniz137:
-    authors_entry: Nathaniel Gentile <7o.crates@gmail.com>
+    name: Nathaniel Gentile
     agreement: individual
 leourbina:
-    authors_entry: Leo Urbina <leo.a.urbina@gmail.com>
+    name: Leo Urbina
     agreement: individual
 TheJJ:
-    authors_entry: Jonas Jelten <jelten@in.tum.de>
+    name: Jonas Jelten
     agreement: individual
 Jenneh:
-    authors_entry: Jennifer Kotler <jennlkotler@gmail.com>
+    name: Jennifer Kotler
     agreement: individual
 clytwynec:
-    authors_entry: Christine Lytwynec <clytwynec@edx.org>
+    name: Christine Lytwynec
     agreement: institution
     institution: edX
     jira: clytwynec
 mlkwaqas:
-    authors_entry: Waqas Khalid <wkhalid@edx.org>
+    name: Waqas Khalid
     agreement: institution
     institution: edX
     jira: wkhalid
 msabramo:
-    authors_entry: Marc Abramowitz <marca@surveymonkey.com>
+    name: Marc Abramowitz
     agreement: individual
 itsbenweeks:
-    authors_entry: Ben Weeks <benweeks@mit.edu>
+    name: Ben Weeks
     agreement: institution
     institution: MIT
     jira: benweeks
 mslotkeEDX:
-    authors_entry: Michele Slotke <mslotke@edx.org>
+    name: Michele Slotke
     agreement: institution
     institution: edX
     jira: mslotke
 mihaibivol:
-    authors_entry: Mihai Bivol <mm.bivol@gmail.com>
+    name: Mihai Bivol
     agreement: individual
 simultech:
-    authors_entry: Andrew Dekker <a.dekker@uq.edu.au>
+    name: Andrew Dekker
     agreement: individual
 imiric:
-    authors_entry: Ivan Mirić <imiric@gmail.com>
+    name: Ivan Mirić
     agreement: individual
 drhodes:
-    authors_entry: Derek Rhodes <physci@gmail.com>
+    name: Derek Rhodes
     agreement: individual
 lduarte1991:
-    authors_entry: Luis Duarte <lduarte1991@gmail.com>
+    name: Luis Duarte
     agreement: institution
     institution: Harvard
     jira: lduarte1991
 gradyward:
-    authors_entry: Grady Ward <gward@edx.org>
+    name: Grady Ward
     agreement: institution
     institution: edX
     comment: ORA intern, summer 2014
     jira: gward
 stvstnfrd:
-    authors_entry: Steven Burch <stv@stanford.edu>
+    name: Steven Burch
     agreement: institution
     institution: Stanford
 ksteph:
-    authors_entry: Kristin Stephens <ksteph@cs.berkeley.edu>
+    name: Kristin Stephens
     agreement: institution
     institution: Stanford
 benpatterson:
-    authors_entry: Ben Patterson <bpatterson@edx.org>
+    name: Ben Patterson
     agreement: institution
     institution: edX
     jira: bpatterson
 deaspoon:
-    authors_entry: Derrick Pyle <dpyle@edx.org>
+    name: Derrick Pyle
     agreement: institution
     institution: edX
     jira: dpyle
 ADubus:
-    authors_entry: Alexandre Dubus <alexandre.dubus@inria.fr>
+    name: Alexandre Dubus
     agreement: individual
 ali123:
-    authors_entry: Ali Reza Sharafat <ali.sharafat@gmail.com>
+    name: Ali Reza Sharafat
     agreement: institution
     institution: Stanford
 dhpollack:
-    authors_entry: David Pollack <david@sologourmand.com>
+    name: David Pollack
     agreement: individual
 theJohnnyBrown:
-    authors_entry: Johnny Brown <johnnybrown7@gmail.com>
+    name: Johnny Brown
     agreement: institution
     institution: OpenCraft
 rodo:
-    authors_entry: Rodolphe Quiedeville <rodolphe@quiedeville.org>
+    name: Rodolphe Quiedeville
     agreement: individual
 trungpham:
-    authors_entry: Trung Pham <tpham@course-master.com>
+    name: Trung Pham
     agreement: individual
 benmcmorran:
-    authors_entry: Ben McMorran <bmcmorran@edx.org>
+    name: Ben McMorran
     agreement: institution
     institution: edX
     comment: Studio intern, summer 2014
     jira: bmcmorran
 AnuragRamdasan:
-    authors_entry: Anurag Ramdasan <anurag@course-master.com>
+    name: Anurag Ramdasan
     agreement: individual
     institution: CourseMaster
 dashea:
-    authors_entry: David Shea <david@reallylongword.org>
+    name: David Shea
     agreement: individual
 mmprandom:
-    authors_entry: Mat Peterson <mpeterson@edx.org>
+    name: Mat Peterson
     agreement: institution
     institution: edX
     comment: LMS intern, summer 2014
     jira: mpeterson
 asadiqbal08:
-    authors_entry: Asad Iqbal <aiqbal@edx.org>
+    name: Asad Iqbal
     agreement: institution
     institution: edX
     comment: Arbisoft solutions developer
     jira: aiqbal
 clintonb:
-    authors_entry: Clinton Blackburn <cblackburn@edx.org>
+    name: Clinton Blackburn
     agreement: institution
     institution: edX
     jira: cblackburn
 jhelbert:
-    authors_entry: Justin Helbert <jhelbert@edx.org>
+    name: Justin Helbert
     agreement: institution
     institution: edX
     comment: analytics intern, summer 2014
     jira: jhelbert
 minhtuev:
-    authors_entry: Minh-Tue Vo <mvo@edx.org>
+    name: Minh-Tue Vo
     agreement: institution
     institution: edX
     comment: testing intern, summer 2014
     jira: mvo
 tymofij:
-    authors_entry: Tim Babych <tim.babych@gmail.com>
+    name: Tim Babych
     agreement: institution
     institution: edX
     comment: blades, from Innovecs
     jira: tbabych
 papipsycho:
-    authors_entry: Julien Romagnoli <julien.romagnoli@gmail.com>
+    name: Julien Romagnoli
     agreement: individual
 jambonbill:
-    authors_entry: Pierre Boquet <jambonbill@gmail.com>
+    name: Pierre Boquet
     agreement: individual
 hugovk:
-    authors_entry: Hugo van Kemendade <hugovk@gmail.com>
+    name: Hugo van Kemendade
     agreement: individual
 bdero:
-    authors_entry: Brandon DeRosier <btd@cheesekeg.com>
+    name: Brandon DeRosier
     agreement: individual
     jira: bdero
 msegado:
-    authors_entry: Martin Segado <msegado@mit.edu>
+    name: Martin Segado
     agreement: individual
 njdup:
-    authors_entry: Nicholas Dupoux <njdupoux1994@gmail.com>
+    name: Nicholas Dupoux
     agreement: institution
     institution: Stanford
     comment: intern, summer 2014
     jira: njdup
 muhhshoaib:
-    authors_entry: Muhammad Shoaib <mshoaib@edx.org>
+    name: Muhammad Shoaib
     agreement: institution
     institution: edX
     jira: mshoaib
 iceraj:
-    authors_entry: Ivica Ceraj <ceraj@mit.edu>
+    name: Ivica Ceraj
     agreement: individual
 swdanielli:
-    authors_entry: Daniel Li <swli@edx.org>
+    name: Daniel Li
     agreement: institution
     institution: edX
 dan-f:
-    authors_entry: Daniel Friedman <dfriedman@edx.org>
+    name: Daniel Friedman
     agreement: institution
     institution: edX
     jira: dan-f
 juananpe:
-    authors_entry: Juanan Pereira <juanan.pereira@ehu.es>
+    name: Juanan Pereira
     agreement: individual
     jira: juananpe
 sjang92:
-    authors_entry: Se Won Jang <swjang@stanford.edu>
+    name: Se Won Jang
     agreement: institution
     institution: Stanford
     jira: swjang
 pdpinch:
-    authors_entry: Peter Pinch <pdpinch@mit.edu>
+    name: Peter Pinch
     agreement: institution
     institution: MIT
     jira: pdpinch@mit.edu
 doctoryes:
-    authors_entry: John Eskew <jeskew@edx.org>
+    name: John Eskew
     agreement: institution
     institution: edX
     jira: jeskew
 dmin7b5:
-    authors_entry: Jeff Owens <dmin7b5@gmail.com>
+    name: Jeff Owens
     agreement: individual
 cptvitamin:
-    authors_entry: Mark Sadecki <msadecki@edx.org>
+    name: Mark Sadecki
     agreement: institution
     institution: edX
     jira: msadecki
 dragonfi:
-    authors_entry: David Gabor BODOR <david.gabor.bodor@gmail.com>
+    name: David Gabor BODOR
     agreement: institution
     institution: OpenCraft
 xiangjf:
-    authors_entry: Xiang Junfu <xiangjf.fnst@cn.fujitsu.com>
+    name: Xiang Junfu
     agreement: individual
 BenjiLee:
-    authors_entry: Christopher Lee <clee@edx.org>
+    name: Christopher Lee
     agreement: institution
     institution: edX
     jira: clee
 MarCnu:
-    authors_entry: Marceau Cnudde <marceau.cnudde@gmail.com>
+    name: Marceau Cnudde
     agreement: individual
 htareque:
-    authors_entry: Henry Tareque <henry.tareque@gmail.com>
+    name: Henry Tareque
     agreement: individual
     institution: MIT
 bradenmacdonald:
-    authors_entry: Braden MacDonald <mail@bradenm.com>
+    name: Braden MacDonald
     agreement: individual
     institution: OpenCraft
     jira: bradenm
 kelketek:
-    authors_entry: Jonathan Piacenti <kelketek@gmail.com>
+    name: Jonathan Piacenti
     agreement: individual
     institution: OpenCraft
     jira: Kelketek
 e-kolpakov:
-    authors_entry: Eugeny Kolpakov <eugeny.kolpakov@gmail.com>
+    name: Eugeny Kolpakov
     agreement: individual
     jira: J0HN
 rohit-k:
-    authors_entry: Rohit Karajgi <rohit.karajgi@gmail.com>
+    name: Rohit Karajgi
     agreement: individual
 paulmedwal:
-    authors_entry: Paul Medlock-Walton <paulmw@mit.edu>
+    name: Paul Medlock-Walton
     agreement: individual
     institution: MIT
     jira: paulmedwal
 usernamenumber:
-    authors_entry: Brad Smith <usernamenumber@gmail.com>
+    name: Brad Smith
     agreement: individual
 OmarIthawi:
-    authors_entry: Omar Al-Ithawi <oithawi@qrf.org>
+    name: Omar Al-Ithawi
     agreement: individual
     institution: QRF
 AlasdairSwan:
-    authors_entry: Alasdair Swan <aswan@edx.org>
+    name: Alasdair Swan
     agreement: institution
     institution: edX
     jira: aswan

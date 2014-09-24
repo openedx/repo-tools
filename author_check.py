@@ -127,8 +127,8 @@ def check_repo(owner_repo):
                 print_red("{} is a contributor but not in people file".format(contributor))
                 all_clear = False
             else:
-                if people[contributor]["authors_entry"] not in a:
-                    print_yellow(u"{} {} is not in AUTHORS file".format(people[contributor]["authors_entry"], contributor))
+                if people[contributor]["name"] not in a:
+                    print_yellow(u"{} {} is not in AUTHORS file".format(people[contributor]["name"], contributor))
                     all_clear = False
                 if people[contributor].get("agreement") not in ["individual", "institution"]:
                     print_red(u"{} has contributed but not signed agreement".format(contributor))
@@ -193,7 +193,7 @@ def check_user(username):
         print_red(u"{} is not in people file".format(username))
     else:
         agreement = people[username]["agreement"]
-        print(people[username].get("authors_entry", ""))
+        print(people[username].get("name", ""))
         if agreement == "individual":
             print_green(u"{} has signed an individual agreement".format(username))
         elif agreement == "institution":
@@ -225,7 +225,7 @@ def main(argv):
         people = yaml.load(people_file)
         people = {k.lower():v for k,v in people.items()}
 
-    entry_to_github = {people[contributor]["authors_entry"]: contributor for contributor in people}
+    entry_to_github = {people[contributor]["name"]: contributor for contributor in people}
 
     github = github3.login(GITHUB_USER, password=PERSONAL_ACCESS_TOKEN)
 
