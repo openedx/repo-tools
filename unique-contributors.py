@@ -66,7 +66,7 @@ def unique_authors(repos):
 
     for when, window in sliding_window(pulls, key=key, width=width, step=step):
         num_authors = len(set(p.user for p in window))
-        yield (when, num_authors)
+        yield (when+width, num_authors)
 
 def main():
     requests.all_requests = []
