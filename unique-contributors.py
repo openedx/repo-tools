@@ -69,7 +69,6 @@ def unique_authors(repos):
         yield (when+width, num_authors)
 
 def main():
-    requests.all_requests = []
     repos = [ r.name for r in Repo.from_yaml() if r.track_pulls ]
     for when, num_authors in unique_authors(repos):
         print("{0:%Y-%m-%d}\t{1}".format(when, num_authors))
