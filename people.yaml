@@ -3,18 +3,22 @@
 # 'institution' if they are convered
 
 pmitros:
+    email: pmitros@edx.org
     name: Piotr Mitros
     agreement: institution
     institution: edX
     jira: pmitros
 kylefiedler:
+    email: kyle@kylefiedler.com
     name: Kyle Fiedler
     agreement: institution
 eipark:
+    email: eipark@mit.edu
     name: Ernie Park
     agreement: institution
     email_ok: no    # bounced
 bridger:
+    email: bridger@mit.edu
     name: Bridger Maxwell
     agreement: institution
     institution: edX
@@ -24,15 +28,18 @@ Lyla-Fischer:
     institution: edX
     jira: lyla
 ormsbee:
+    email: dave@edx.org
     name: David Ormsbee
     agreement: institution
     institution: edX
     jira: dormsbee
 terman:
+    email: cjt@mit.edu
     name: Chris Terman
     agreement: institution
     institution: MIT
 kaishin:
+    email: reda@thoughtbot.com
     name: Reda Lemeden
     agreement: institution
 anant*:    # Anant doesn't have a Github account
@@ -40,83 +47,101 @@ anant*:    # Anant doesn't have a Github account
     agreement: institution
     institution: edX
 jmclaus:
+    email: jmc@edx.org
     name: Jean-Michel Claus
     agreement: institution
     institution: edX
     jira: jmc
 cpennington:
+    email: calen.pennington@gmail.com
     name: Calen Pennington
     agreement: institution
     institution: edX
     jira: cale
 jmvt:
+    email: jm@edx.org
     name: JM Van Thong
     agreement: institution
     institution: edX
 sikachu:
+    email: psichanugrist@thoughtbot.com
     name: Prem Sichanugrist
     agreement: institution
     institution: edX
     comment: thoughtbot
 ichuang:
+    email: ichuang@mit.edu
     name: Isaac Chuang
     agreement: individual
     institution: MIT
 frechg:
+    email: galen@thoughtbot.com
     name: Galen Frechette
     agreement: institution
     institution: edX
     comment: thoughtbot
 edwardloveall:
+    email: edward@edwardloveall.com
     name: Edward Loveall
     agreement: institution
     institution: edX
     comment: thoughtbot
 mjankowski:
+    email: mjankowski@thoughtbot.com
     name: Matt Jankowski
     agreement: institution
     institution: edX
     comment: thoughtbot
 jarv:
+    email: jarv@edx.org
     name: John Jarvis
     agreement: institution
     institution: edX
     jira: jarv
 shnayder:
+    email: victor@edx.org
     name: Victor Shnayder
     agreement: institution
     institution: edX
     jira: victor
 halogenandtoast:
+    email: halogenandtoast@gmail.com
     name: Matthew Mongeau
     agreement: institution
     institution: edX
     comment: thoughtbot
 kimtonyhyun:
+    email: kimth@edx.org
     name: Tony Kim
     agreement: institution
     institution: edX
 kimth:
+    email: kimth@edx.org
     name: Tony Kim
     agreement: institution
     institution: edX
 arjun810:
+    email: arjun810@gmail.com
     name: Arjun Singh
     agreement: individual
 johnhess:
+    email: mgojohn@gmail.com
     name: John Hess
     agreement: institution
     institution: edX
     jira: jh
 rocha:
+    email: rocha@edx.org
     name: Carlos Andrés Rocha
     agreement: institution
     institution: edX
     jira: rocha
 ccp0101:
+    email: ccp0101@gmail.com
     name: Mike Chen
     agreement: individual
 dementrock:
+    email: dementrock@gmail.com
     name: Rocky Duan
     agreement: individual
 # ???:
@@ -124,6 +149,7 @@ dementrock:
 #     agreement: institution
 #     comment: edX intern summer 2012
 bcheng42:
+    email: bcheng42@gmail.com
     name: Brittany Cheng
     agreement: institution
 # ???:
@@ -131,54 +157,66 @@ bcheng42:
 #     agreement: institution
 #     comment: edX intern summer 2012
 thomasxiii:
+    email: tom@mitx.mit.edu
     name: Tom Giannattasio
     agreement: institution
     institution: edX
 ibrahima:
+    email: ibrahim.awwal@gmail.com
     name: Ibrahim Awwal
     agreement: individual
 sarina:
+    email: sarina@edx.org
     name: Sarina Canelake
     agreement: institution
     institution: edX
     jira: sarina
 markchang:
+    email: mark.chang@gmail.com
     name: Mark L. Chang
     agreement: institution
     institution: edX
     jira: mchang
 deanxorr:
+    email: ddieker@gmail.com
     name: Dean Dieker
     agreement: institution
     institution: edX
 tmacwill:
+    email: tmacwilliam@cs.harvard.edu
     name: Tommy MacWilliam
     agreement: institution
 natehardison:
+    email: natehardison@gmail.com
     name: Nate Hardison
     agreement: institution
     institution: Stanford
 chrisndodge:
+    email: cdodge@edx.org
     name: Chris Dodge
     agreement: institution
     institution: edX
     username: cdodge
 kevinchugh:
+    email: kevinchugh@edx.org
     name: Kevin Chugh
     agreement: institution
     institution: edX
     jira: kevinchugh
 nedbat:
+    email: ned@nedbatchelder.com
     name: Ned Batchelder
     agreement: institution
     institution: edX
     jira: ned
 auraz:
+    email: kryklia@gmail.com
     name: Alexander Kryklia
     agreement: institution
     institution: edX
     jira: kryklia
 VikParuchuri:
+    email: vik@edx.org
     name: Vik Paruchuri
     agreement: institution
     institution: edX
@@ -189,29 +227,35 @@ LouisSobel:
     institution: edX
     comment: edX intern fall 2012
 brianhw:
+    email: brian@edx.org
     name: Brian Wilson
     agreement: institution
     institution: edX
     jira: brian
 apenney:
+    email: apenney@edx.org
     name: Ashley Penney
     agreement: institution
     institution: edX
 dmitchell:
+    email: dmitchell@edx.org
     name: Don Mitchell
     agreement: institution
     institution: edX
     jira: dmitchell
 aculich:
+    email: aculich@edx.org
     name: Aaron Culich
     agreement: institution
     institution: Stanford
 talbs:
+    email: btalbot@edx.org
     name: Brian Talbot
     agreement: institution
     institution: edX
     jira: btalbot
 jzoldak:
+    email: jzoldak@edx.org
     name: Jay Zoldak
     agreement: institution
     institution: edX
@@ -222,25 +266,30 @@ valera-rozuvan:
     institution: edX
     jira: valera
 dianakhuang:
+    email: dkh@edx.org
     name: Diana Huang
     agreement: institution
     institution: edX
     jira: dkh
 marcotuts:
+    email: marcotuts@gmail.com
     name: Marco Morales
     agreement: institution
     institution: edX
     jira: marco
 cahrens:
+    email: christina@edx.org
     name: Christina Roberts
     agreement: institution
     institution: edX
     jira: christina
 rcchirwa:
+    email: robert@edx.org
     name: Robert Chirwa
     agreement: institution
     institution: edX
 e0d:
+    email: ed@edx.org
     name: Ed Zarecor
     agreement: institution
     institution: edX
@@ -251,6 +300,7 @@ e0d:
 #     institution: edX
 #     comment: edX intern
 jnater:
+    email: jnater@edx.org
     name: Jean Manuel Náter
     agreement: institution
     institution: edX
@@ -259,16 +309,19 @@ jnater:
 #     name: Emily Zhang
 #     agreement: institution
 JAAkana:
+    email: jaakana@gmail.com
     name: Jennifer Akana
     agreement: institution
     institution: edX
     jira: jaakana
 pbaratta:
+    email: peter.baratta@gmail.com
     name: Peter Baratta
     agreement: institution
     institution: edX
     jira: peter
 jkarni:
+    email: julian@edx.org
     name: Julian Arni
     agreement: institution
     institution: edX
@@ -278,71 +331,85 @@ arthurian: # ?
     agreement: institution
     institution: edX
 vaxXxa:
+    email: vaxxxa@gmail.com
     name: Vasyl Nakvasiuk
     agreement: institution
     institution: edX
     jira: vaxxxa
 wedaly:
+    email: will@edx.org
     name: Will Daly
     agreement: institution
     institution: edX
     jira: will
 jtauber:
+    email: jtauber@jtauber.com
     name: James Tauber
     agreement: institution
     institution: edX
     jira: jtauber
 gwprice:
+    email: gprice@edx.org
     name: Greg Price
     agreement: institution
     institution: edX
     jira: gprice
 jrbl:
+    email: jrbl@stanford.edu
     name: Joe Blaylock
     agreement: institution
     institution: Stanford
     jira: jrbl
 sefk:
+    email: sef@kloninger.com
     name: Sef Kloninger
     agreement: institution
     institution: Stanford
     jira: sef
 polesye:
+    email: s2pak.anton@gmail.com
     name: Anton Stupak
     agreement: institution
     institution: edX
     jira: anton
 dcadams:
+    email: dcadams@stanford.edu
     name: David Adams
     agreement: institution
     institution: Stanford
     jira: dcadams@stanford.edu
 straz:
+    email: straz@edx.org
     name: Steve Strassmann
     agreement: institution
     institution: edX
     jira: straz
 caesar2164:
+    email: giulio@giuliogratta.com
     name: Giulio Gratta
     agreement: institution
     institution: Stanford
     jira: giulio@giuliogratta.com
 singingwolfboy:
+    email: david@davidbaumgold.com
     name: David Baumgold
     agreement: institution
     institution: edX
     jira: db
 jbau:
+    email: jbau@stanford.edu
     name: Jason Bau
     agreement: institution
     institution: Stanford
     jira: jbau
 frrrances:
+    email: frances@edx.org
     name: Frances Botsford
     agreement: institution
     institution: edX
     jira: frances
 JonahStanley:
+    email: Jonah_Stanley@brown.edu
     name: Jonah Stanley
     agreement: institution
     institution: edX
@@ -358,55 +425,67 @@ peter-fogg:
     institution: edX
     jira: pfogg
 lapentab:
+    email: lapentab@mit.edu
     name: Bethany LaPenta
     agreement: institution
     institution: edX
     jira: blapenta
 rlucioni:
+    email: renzo@renzolucioni.com
     name: Renzo Lucioni
     agreement: institution
     institution: edX
     jira: rlucioni
 fephsun:
+    email: felixsun@mit.edu
     name: Felix Sun
     agreement: institution
     institution: edX
     jira: felixsun
 adampalay:
+    email: adam@edx.org
     name: Adam Palay
     agreement: institution
     institution: edX
     jira: adam
 ihoover:
+    email: ihoover@edx.org
     name: Ian Hoover
     agreement: institution
     institution: edX
     jira: ihoover
 mikigoyal:
+    email: miki@edx.org
     name: Mukul Goyal
     agreement: institution
     institution: edX
     jira: miki
 robertjmarks:
+    email: rmarks@edx.org
     name: Robert Marks
     agreement: individual
     jira: robert.j.marks
 yarko:
+    email: yarkot1@gmail.com
     name: Yarko Tymciurak
     agreement: individual
     jira: yarko
 mlsteele:
+    email: miles@milessteele.com
     name: Miles Steele
     agreement: institution
     institution: edX
     jira: msteele
 kluo:
+    email: kevluo@edx.org
     name: Kevin Luo
     agreement: institution
     institution: edX
 akjags:
+    email: akjags@gmail.com
     name: Akshay Jagadeesh
 nparlante:
+    email: nick.parlante@cs.stanford.edu
     name: Nick Parlante
     agreement: institution
     institution: Stanford
@@ -415,76 +494,93 @@ hikari-boulders:
     name: Marko Seric
     agreement: individual
 felipemontoya:
+    email: felipe.montoya@edunext.co
     name: Felipe Montoya
     agreement: individual
 flowerhack:
+    email: julia@edx.org
     name: Julia Hansbrough
     agreement: institution
     institution: edX
     jira: julia
 natea:
+    email: naune@edx.org
     name: Nate Aune
     agreement: institution
     institution: edX
     jira: natea
 antoviaque:
+    email: xavier@antoviaque.org
     name: Xavier Antoviaque
     agreement: institution
     institution: OpenCraft
     jira: XavierAntoviaque
 kern3020:
+    email: kern3020@gmail.com
     name: John Kern
     agreement: individual
 feanil:
+    email: feanil@edx.org
     name: Feanil Patel
     agreement: institution
     institution: edX
     jira: feanil
 ammubhave:
+    email: ammubhave@gmail.com
     name: Amol Bhave
     agreement: institution
     institution: edX
 mcpanic:
+    email: juhokim@edx.org
     name: Juho Kim
     agreement: institution
     institution: edX
 stkomarov:
+    email: skomarov@edx.org
     name: Steve Komarov
     agreement: institution
     institution: edX
     comment: worked with Piotr summer 2013
 jimabramson:
+    email: jsa@edx.org
     name: Jim Abramson
     agreement: institution
     institution: edX
     jira: jsa
 mulby:
+    email: gabe@edx.org
     name: Gabe Mulley
     agreement: institution
     institution: edX
     jira: gabe
 Julian:
+    email: Julian+edX@GrayVines.com
     name: Julian Berman
     agreement: individual
 tnorum:
+    email: toddi@edx.org
     name: Toddi Norum
     agreement: institution
     institution: edX
     jira: toddi
 jinpa:
+    email: jmanning@gmail.com
     name: Jane Manning
     agreement: institution
     institution: Stanford
     jira: jmanning
 pchiu33:
+    email: philippe.chiu@gmail.com
     name: Philippe Chiu
     agreement: individual
 carsongee:
+    email: cgee@mit.edu
     name: Carson Gee
     agreement: individual
     institution: MIT
     jira: cgee@mit.edu
 kewubenduben:
+    email: xdiscent@gmail.com
     name: Ker Ruben Ramos
     agreement: individual
 # Neal McBurnett <nealmcb@gmail.com>
@@ -495,69 +591,87 @@ jorr-at-google:
     institution: Google
     jira: jorr
 symbolist:
+    email: symbolist@users.noreply.github.com
     name: Usman Khalid
     agreement: institution
     institution: edX
     jira: khalid
 oliviermarquez:
+    email: oliviermarquez@gmail.com
     name: Olivier Marquez
     agreement: individual
 Szczork:
+    email: nicolas.chevalier@epitech.eu
     name: Nicolas Chevalier
     agreement: individual
 chrisrossi:
+    email: chris@archimedeanco.com
     name: Chris Rossi
     agreement: institution
 man2life:
+    email: pavelyushchenko@gmail.com
     name: Pavel Yushchenko
     agreement: individual
 codyaustun:
     name: ???
     agreement: institution
 IainNZ:
+    email: idunning@mit.edu
     name: Iain Dunning
     agreement: individual
 abdoosh00:
+    email: abdoosh00@gmail.com
     name: Abdallah Nassif
     agreement: individual
     institution: QRF
 olmar:
+    email: oleh.marshev@gmail.com
     name: Oleg Marshev
     agreement: institution
     institution: edX
     jira: oleg
 neurolit:
+    email: neurolit@gmail.com
     name: Florian Dufour
     agreement: individual
 manuel-freire:
     name: Manuel Freire
     agreement: individual
 danielcebrian:
+    email: danielcebrianr@gmail.com
     name: Daniel Cebrián Robles
     agreement: individual
     institution: Harvard
 dglance:
+    email: david.glance@gmail.com
     name: David Glance
     agreement: individual
 ejsteven:
+    email: s.chen13@uq.edu.au
     name: Steven Chen
     agreement: individual
 jzornig:
+    email: j.zornig@uq.edu.au
     name: John Zornig
     agreement: individual
 puntxo:
+    email: jorts@upv.es
     name: Javier Orts Peñarrocha
     agreement: individual
 goncha:
+    email: goncha@gmail.com
     name: Gang Chen
     agreement: individual
 ngocchung75:
+    email: ngocchung75@gmail.com
     name: Ha Ngoc Chung
     agreement: individual
 danghuyhoa:
+    email: danghuyhoa@gmail.com
     name: Dang Huy Hoa
     agreement: individual
 waheedahmed:
+    email: waheed.ahmed@arbisoft.com
     name: Waheed Ahmed
     agreement: institution
     institution: edX
@@ -568,44 +682,55 @@ zubair-arbi:
     institution: edX
     jira: zubair
 tusbar:
+    email: bertrand.marron@ionis-group.com
     name: Bertrand Marron
     agreement: individual
     institution: IONIS
     jira: tusbar
 brainstorm:
+    email: roman@incf.org
     name: Roman Valls Guimera
     agreement: individual
 ovnicraft:
+    email: cristian.salamea@iaen.edu.ec
     name: Cristian Salamea
     agreement: individual
 louyihua:
+    email: supermouselyh@hotmail.com
     name: Yihua Lou
     agreement: individual
 pdehaye:
+    email: paulolivier@gmail.com
     name: Paul-Olivier Dehaye
     agreement: individual
 hwjworld:
+    email: canni3269@gmail.com
     name: Jerome Huang
     agreement: individual
     institution: DianDiYun
     comment: part of DianDiYun Inc
 chenshuchuan:
+    email: am15501@163.com
     name: ShuChuan Chen
     agreement: individual
     institution: DianDiYun
     comment: part of DianDiYun Inc
 TheBritKnight:
+    email: charles.dwsn@gmail.com
     name: Charles Dawson
     agreement: individual
 glowe:
+    email: graham.lowe@gmail.com
     name: Graham Lowe
     agreement: individual
 mattdrayer:
+    email: mattdrayer@edx.org
     name: Matt Drayer
     agreement: institution
     institution: edX
     jira: mattdrayer
 lamagnifica:
+    email: ahodges@edx.org
     name: Alison Hodges
     agreement: institution
     institution: edX
@@ -616,46 +741,56 @@ andy-armstrong:
     institution: edX
     jira: andya
 stephensanchez:
+    email: steve@edx.org
     name: Stephen Sanchez
     agreement: institution
     institution: edX
     jira: steve
 mhoeber:
+    email: hoeber@edx.org
     name: Mark Hoeber
     agreement: institution
     institution: edX
     jira: hoeber
 srpearce:
+    email: spearce@edx.org
     name: Sylvia Pearce
     agreement: institution
     institution: edX
     jira: spearce
 stroilova:
+    email: olga@edx.org
     name: Olga Stroilova
     agreement: institution
     institution: edX
     jira: olga
 davestgermain:
+    email: dstgermain@edx.org
     name: Dave St.Germain
     agreement: institution
     institution: edX
     jira: dstgermain
 hkim823:
+    email: hkim823@gmail.com
     name: Han Su Kim
     agreement: institution
     institution: edX
     jira: han
 Bachmann1234:
+    email: bachmann.matt@gmail.com
     name: Matt Bachmann
     agreement: individual
 avinassh:
+    email: avinashsajjan@gmail.com
     name: Avinash Sajjanshetty
     agreement: individual
 robertlight:
+    email: robert_light@verizon.net
     name: Robert Light
     agreement: individual
     institution: Harvard
 martynjames:
+    email: mjames@edx.org
     name: Martyn James
     agreement: institution
     institution: edX
@@ -664,17 +799,21 @@ johncox-google:
     agreement: institution
     institution: Google
 vicjwang:
+    email: vjwang45@gmail.com
     name: Victor Wang
     agreement: individual
 aboudreault:
+    email: boudreault.alan@gmail.com
     name: Alan Boudreault
     agreement: individual
 nasthagiri:
+    email: nasthagiri@edx.org
     name: Nimisha Asthagiri
     agreement: institution
     institution: edX
     jira: nasthagiri
 yrchen:
+    email: yrchen@atcity.org
     name: Xaver Y.R. Chen
     agreement: individual
     jira: yrchen
@@ -682,6 +821,7 @@ gremat??:
     name: Matjaz Gregoric
     agreement: individual
 raeeschachar:
+    email: raees.chachar@arbisoft.com
     name: Raees Chachar
     agreement: institution
     institution: edX
@@ -692,237 +832,296 @@ muhammad-ammar:
     institution: edX
     jira: mammar
 dangtrinh:
+    email: dangtrinhnt@gmail.com
     name: Trinh Nguyen
     agreement: individual
 mtyaka:
+    email: gremat@gmail.com
     name: Matjaz Gregoric
     agreement: institution
     institution: OpenCraft
 aboudreault:
+    email: boudreault.alan@gmail.com
     name: Alan Boudreault
     agreement: institution
     institution: OpenCraft
 FiloSottile:
+    email: hi@filippo.io
     name: Filippo Valsorda
     agreement: institution
     institution: OpenCraft
 racech:
+    email: k@2g.pl
     name: Krzysztof Bujniewicz
     agreement: institution
     institution: OpenCraft
 gitim:
+    email: timur.gbd@gmail.com
     name: Timur Gibadullin
     agreement: individual
 Shedna:
+    email: william.desloge@ionis-group.com
     name: William Desloge
     agreement: individual
     institution: IONIS
 fredsmith:
+    email: derf@edx.org
     name: Fred Smith
     agreement: institution
     institution: edX
     jira: derf
 fmyzjs:
+    email: fmyzjs@gmail.com
     name: Jason Zhu
     agreement: individual
     institution: iflab.org
 pku9104038:
+    email: pku9104038@hotmail.com
     name: Wang Peifeng
     agreement: individual
 defance:
+    email: d.ivanyushin@cde.ifmo.ru
     name: Dmitry Ivanyushin
     agreement: individual
 shindere:
+    email: Sebastien.Hinderer@inria.fr
     name: Sébastien Hinderer
     agreement: individual
 marcore:
+    email: mrc.re@tiscali.it
     name: Marco Re
     agreement: individual
 rayhooker:
+    email: ray.hooker@gmail.com
     name: Ray Hooker
     agreement: individual
 trbm:
+    email: trbm@stanford.edu
     name: Thomas Brennan-Marquez
     agreement: individual
     institution: Stanford
 eikonomega:
+    email: mike@eikonomega.com
     name: Mike Dunn
     agreement: individual
 Leibniz137:
+    email: 7o.crates@gmail.com
     name: Nathaniel Gentile
     agreement: individual
 leourbina:
+    email: leo.a.urbina@gmail.com
     name: Leo Urbina
     agreement: individual
 TheJJ:
+    email: jelten@in.tum.de
     name: Jonas Jelten
     agreement: individual
 Jenneh:
+    email: jennlkotler@gmail.com
     name: Jennifer Kotler
     agreement: individual
 clytwynec:
+    email: clytwynec@edx.org
     name: Christine Lytwynec
     agreement: institution
     institution: edX
     jira: clytwynec
 mlkwaqas:
+    email: wkhalid@edx.org
     name: Waqas Khalid
     agreement: institution
     institution: edX
     jira: wkhalid
 msabramo:
+    email: marca@surveymonkey.com
     name: Marc Abramowitz
     agreement: individual
 itsbenweeks:
+    email: benweeks@mit.edu
     name: Ben Weeks
     agreement: institution
     institution: MIT
     jira: benweeks
 mslotkeEDX:
+    email: mslotke@edx.org
     name: Michele Slotke
     agreement: institution
     institution: edX
     jira: mslotke
 mihaibivol:
+    email: mm.bivol@gmail.com
     name: Mihai Bivol
     agreement: individual
 simultech:
+    email: a.dekker@uq.edu.au
     name: Andrew Dekker
     agreement: individual
 imiric:
+    email: imiric@gmail.com
     name: Ivan Mirić
     agreement: individual
 drhodes:
+    email: physci@gmail.com
     name: Derek Rhodes
     agreement: individual
 lduarte1991:
+    email: lduarte1991@gmail.com
     name: Luis Duarte
     agreement: institution
     institution: Harvard
     jira: lduarte1991
 gradyward:
+    email: gward@edx.org
     name: Grady Ward
     agreement: institution
     institution: edX
     comment: ORA intern, summer 2014
     jira: gward
 stvstnfrd:
+    email: stv@stanford.edu
     name: Steven Burch
     agreement: institution
     institution: Stanford
 ksteph:
+    email: ksteph@cs.berkeley.edu
     name: Kristin Stephens
     agreement: institution
     institution: Stanford
 benpatterson:
+    email: bpatterson@edx.org
     name: Ben Patterson
     agreement: institution
     institution: edX
     jira: bpatterson
 deaspoon:
+    email: dpyle@edx.org
     name: Derrick Pyle
     agreement: institution
     institution: edX
     jira: dpyle
 ADubus:
+    email: alexandre.dubus@inria.fr
     name: Alexandre Dubus
     agreement: individual
 ali123:
+    email: ali.sharafat@gmail.com
     name: Ali Reza Sharafat
     agreement: institution
     institution: Stanford
 dhpollack:
+    email: david@sologourmand.com
     name: David Pollack
     agreement: individual
 theJohnnyBrown:
+    email: johnnybrown7@gmail.com
     name: Johnny Brown
     agreement: institution
     institution: OpenCraft
 rodo:
+    email: rodolphe@quiedeville.org
     name: Rodolphe Quiedeville
     agreement: individual
 trungpham:
+    email: tpham@course-master.com
     name: Trung Pham
     agreement: individual
 benmcmorran:
+    email: bmcmorran@edx.org
     name: Ben McMorran
     agreement: institution
     institution: edX
     comment: Studio intern, summer 2014
     jira: bmcmorran
 AnuragRamdasan:
+    email: anurag@course-master.com
     name: Anurag Ramdasan
     agreement: individual
     institution: CourseMaster
 dashea:
+    email: david@reallylongword.org
     name: David Shea
     agreement: individual
 mmprandom:
+    email: mpeterson@edx.org
     name: Mat Peterson
     agreement: institution
     institution: edX
     comment: LMS intern, summer 2014
     jira: mpeterson
 asadiqbal08:
+    email: aiqbal@edx.org
     name: Asad Iqbal
     agreement: institution
     institution: edX
     comment: Arbisoft solutions developer
     jira: aiqbal
 clintonb:
+    email: cblackburn@edx.org
     name: Clinton Blackburn
     agreement: institution
     institution: edX
     jira: cblackburn
 jhelbert:
+    email: jhelbert@edx.org
     name: Justin Helbert
     agreement: institution
     institution: edX
     comment: analytics intern, summer 2014
     jira: jhelbert
 minhtuev:
+    email: mvo@edx.org
     name: Minh-Tue Vo
     agreement: institution
     institution: edX
     comment: testing intern, summer 2014
     jira: mvo
 tymofij:
+    email: tim.babych@gmail.com
     name: Tim Babych
     agreement: institution
     institution: edX
     comment: blades, from Innovecs
     jira: tbabych
 papipsycho:
+    email: julien.romagnoli@gmail.com
     name: Julien Romagnoli
     agreement: individual
 jambonbill:
+    email: jambonbill@gmail.com
     name: Pierre Boquet
     agreement: individual
 hugovk:
+    email: hugovk@gmail.com
     name: Hugo van Kemendade
     agreement: individual
 bdero:
+    email: btd@cheesekeg.com
     name: Brandon DeRosier
     agreement: individual
     jira: bdero
 msegado:
+    email: msegado@mit.edu
     name: Martin Segado
     agreement: individual
 njdup:
+    email: njdupoux1994@gmail.com
     name: Nicholas Dupoux
     agreement: institution
     institution: Stanford
     comment: intern, summer 2014
     jira: njdup
 muhhshoaib:
+    email: mshoaib@edx.org
     name: Muhammad Shoaib
     agreement: institution
     institution: edX
     jira: mshoaib
 iceraj:
+    email: ceraj@mit.edu
     name: Ivica Ceraj
     agreement: individual
 swdanielli:
+    email: swli@edx.org
     name: Daniel Li
     agreement: institution
     institution: edX
@@ -932,57 +1131,70 @@ dan-f:
     institution: edX
     jira: dan-f
 juananpe:
+    email: juanan.pereira@ehu.es
     name: Juanan Pereira
     agreement: individual
     jira: juananpe
 sjang92:
+    email: swjang@stanford.edu
     name: Se Won Jang
     agreement: institution
     institution: Stanford
     jira: swjang
 pdpinch:
+    email: pdpinch@mit.edu
     name: Peter Pinch
     agreement: institution
     institution: MIT
     jira: pdpinch@mit.edu
 doctoryes:
+    email: jeskew@edx.org
     name: John Eskew
     agreement: institution
     institution: edX
     jira: jeskew
 dmin7b5:
+    email: dmin7b5@gmail.com
     name: Jeff Owens
     agreement: individual
 cptvitamin:
+    email: msadecki@edx.org
     name: Mark Sadecki
     agreement: institution
     institution: edX
     jira: msadecki
 dragonfi:
+    email: david.gabor.bodor@gmail.com
     name: David Bodor
     agreement: institution
     institution: OpenCraft
 xiangjf:
+    email: xiangjf.fnst@cn.fujitsu.com
     name: Xiang Junfu
     agreement: individual
 BenjiLee:
+    email: clee@edx.org
     name: Christopher Lee
     agreement: institution
     institution: edX
     jira: clee
 MarCnu:
+    email: marceau.cnudde@gmail.com
     name: Marceau Cnudde
     agreement: individual
 htareque:
+    email: henry.tareque@gmail.com
     name: Henry Tareque
     agreement: individual
     institution: MIT
 bradenmacdonald:
+    email: mail@bradenm.com
     name: Braden MacDonald
     agreement: individual
     institution: OpenCraft
     jira: bradenm
 kelketek:
+    email: kelketek@gmail.com
     name: Jonathan Piacenti
     agreement: individual
     institution: OpenCraft
@@ -995,18 +1207,22 @@ rohit-k:
     name: Rohit Karajgi
     agreement: individual
 paulmedwal:
+    email: paulmw@mit.edu
     name: Paul Medlock-Walton
     agreement: individual
     institution: MIT
     jira: paulmedwal
 usernamenumber:
+    email: usernamenumber@gmail.com
     name: Brad Smith
     agreement: individual
 OmarIthawi:
+    email: oithawi@qrf.org
     name: Omar Al-Ithawi
     agreement: individual
     institution: QRF
 AlasdairSwan:
+    email: aswan@edx.org
     name: Alasdair Swan
     agreement: institution
     institution: edX
