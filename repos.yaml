@@ -63,6 +63,8 @@ edx/i18n-tools:
         - cpennington
 edx/insights:
 edx/js-test-tool:
+    nick: jst
+    track-pulls: true
 edx/loghandlersplus:
 edx/notifier:
     nick: not
@@ -96,4 +98,22 @@ edx/edx-val:
     track-pulls: true
 edx/edx-serverapi:
     nick: sap
+    track-pulls: true
+edx/edx-analytics-data-api:
+    nick: aap
+    track-pulls: true
+edx/edx-analytics-dashboard:
+    nick: dsh
+    track-pulls: true
+edx/edx-analytics-configuration:
+    nick: acf
+    track-pulls: true
+edx/edx-analytics-data-api-client:
+    nick: aap
+    track-pulls: true
+edx/edx-analytics-pipeline:
+    nick: pipe
+    track-pulls: true
+edx/edx-oauth2-provider:
+    nick: oau
     track-pulls: true
