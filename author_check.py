@@ -86,15 +86,38 @@ def contributors(owner_repo):
     hidden_contributors = set((REPO_INFO.get(owner_repo) or {}).get("hidden-contributors", []))
     return actual_contributors | hidden_contributors
 
+AUTHOR_ENTRY_RE = re.compile(r"""
+    ^    # start of line
+    \s*  # optional whitespace
+    (?P<name>[^<]+)  # the "name" is all characters up until the first "<"
+    \s+  # at least one space separating name and email
+    <(?P<email>[^>]+)>  # the "email" has "<" on the left and ">" on the right,
+                       # and doesn't contain ">" in it
+    \s*  # optional whitespace
+    $    # end of line
+    """, re.VERBOSE)
 
-def authors_file(owner_repo, branch="master", filename="AUTHORS"):
+
+def get_name_from_authors_entry(entry):
+    match = AUTHOR_ENTRY_RE.match(entry)
+    if match:
+        return match.group("name")
+    # if it doesn't match, assume the whole thing is just the name
+    return entry.strip()
+
+
+def authors_file_names(owner_repo, branch="master", filename="AUTHORS"):
     authors_url = AUTHORS_URL.format(
         owner_repo=owner_repo, branch=branch, filename=filename
     )
     r = requests.get(authors_url, auth=(GITHUB_USER, PERSONAL_ACCESS_TOKEN))
     if r.status_code == 404:
-        return None
-    return set(line for line in r.text.splitlines() if "@" in line)
+        return set()
+    return set(
+        get_name_from_authors_entry(line)
+        for line in r.text.splitlines()
+        if line
+    )
 
 
 def pull_requests(owner_repo):
@@ -113,12 +136,12 @@ def check_repo(owner_repo):
     print()
 
     c = contributors(owner_repo)
-    a = authors_file(owner_repo)
+    author_names = authors_file_names(owner_repo)
 
-    if a == set():
+    if not author_names:
         print_red("AUTHORS FILE RETURNED EMPTY")
 
-    if a is not None:
+    if author_names:
 
         # who has contributed but isn't in the AUTHORS file or hasn't signed a CA
 
@@ -127,7 +150,7 @@ def check_repo(owner_repo):
                 print_red("{} is a contributor but not in people file".format(contributor))
                 all_clear = False
             else:
-                if people[contributor]["name"] not in a:
+                if people[contributor]["name"] not in author_names:
                     print_yellow(u"{} {} is not in AUTHORS file".format(people[contributor]["name"], contributor))
                     all_clear = False
                 if people[contributor].get("agreement") not in ["individual", "institution"]:
@@ -136,7 +159,7 @@ def check_repo(owner_repo):
 
         # who is in the AUTHORS file but hasn't contributed
 
-        for author in a:
+        for author in author_names:
             if author not in entry_to_github:
                 print_red(u"{} is in AUTHORS but not in people file".format(author))
                 all_clear = False
