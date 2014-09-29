@@ -1228,12 +1228,17 @@ AlasdairSwan:
     institution: edX
     jira: aswan
 agbaji:
+    email: ruth.agbaji@gmail.com
     name: Ruth Agbaji
     agreement: individual
 ziafazal:
+    email: zfazal@edx.org
     name: Zia Fazal
-    agreement: individual
+    agreement: institution
+    institution: edX
+    comment: also signed an individual agreement
 dsjen:
+    email: djen@edx.org
     name: Dennis Jen
     agreement: institution
     institution: edX
