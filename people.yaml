@@ -1017,3 +1017,8 @@ agbaji:
 ziafazal:
     name: Zia Fazal
     agreement: individual
+dsjen:
+    name: Dennis Jen
+    agreement: institution
+    institution: edX
+    jira: djen
