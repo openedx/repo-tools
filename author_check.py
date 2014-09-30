@@ -87,21 +87,21 @@ def contributors(owner_repo):
     return actual_contributors | hidden_contributors
 
 AUTHOR_ENTRY_RE = re.compile(r"""
-    ^    # start of line
-    \s*  # optional whitespace
-    (?P<name>[^<]+)  # the "name" is all characters up until the first "<"
-    \s+  # at least one space separating name and email
+    ^                   # start of line
+    \s*                 # optional whitespace
+    (?P<name>[^<]+)     # the "name" is all characters up until the first "<"
+    \s*                 # maybe spaces separating name and email
     <(?P<email>[^>]+)>  # the "email" has "<" on the left and ">" on the right,
-                       # and doesn't contain ">" in it
-    \s*  # optional whitespace
-    $    # end of line
+                        # and doesn't contain ">" in it
+    \s*                 # optional whitespace
+    $                   # end of line
     """, re.VERBOSE)
 
 
 def get_name_from_authors_entry(entry):
     match = AUTHOR_ENTRY_RE.match(entry)
     if match:
-        return match.group("name")
+        return match.group("name").strip()
     # if it doesn't match, assume the whole thing is just the name
     return entry.strip()
 
@@ -116,7 +116,7 @@ def authors_file_names(owner_repo, branch="master", filename="AUTHORS"):
     return set(
         get_name_from_authors_entry(line)
         for line in r.text.splitlines()
-        if line
+        if line and not line.isupper()
     )
 
 
@@ -151,7 +151,11 @@ def check_repo(owner_repo):
                 all_clear = False
             else:
                 if people[contributor]["name"] not in author_names:
-                    print_yellow(u"{} {} is not in AUTHORS file".format(people[contributor]["name"], contributor))
+                    print_yellow(u"{} <{}> {} is not in AUTHORS file".format(
+                        people[contributor]["name"],
+                        people[contributor].get("email", ""),
+                        contributor
+                    ))
                     all_clear = False
                 if people[contributor].get("agreement") not in ["individual", "institution"]:
                     print_red(u"{} has contributed but not signed agreement".format(contributor))
