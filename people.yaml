@@ -1243,3 +1243,9 @@ dsjen:
     agreement: institution
     institution: edX
     jira: djen
+explorerleslie:
+    email: lgerhat@edx.org
+    name: Leslie Gerhat
+    agreement: institution
+    institution: edX
+    jira: lgerhat
