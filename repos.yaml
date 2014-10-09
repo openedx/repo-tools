@@ -90,9 +90,6 @@ edx/xqueue-watcher:
 edx/xserver:
     nick: xsr
     track-pulls: true
-edx/edx-analytics-api-client:
-    nick: aap
-    track-pulls: true
 edx/edx-val:
     nick: val
     track-pulls: true
