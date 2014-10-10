@@ -105,6 +105,9 @@ edx/edx-analytics-dashboard:
 edx/edx-analytics-configuration:
     nick: acf
     track-pulls: true
+edx/edx-analytics-api-client:
+    nick: aap
+    track-pulls: true
 edx/edx-analytics-data-api-client:
     nick: aap
     track-pulls: true
