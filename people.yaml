@@ -1258,3 +1258,9 @@ lpil:
     name: Louis Pilfold
     email: louis@lpil.uk
     agreement: individual
+catong:
+    email: ctong@edx.org
+    name: Carol Tong
+    agreement: institution
+    institution: edX
+    jira: ctong
