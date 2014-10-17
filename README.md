@@ -1,9 +1,9 @@
 This repo contains a number of tools for working with GitHub repositories:
 
- * author-check.py: Check that AUTHORS is correct in our repos.
- * pull-age.py: Compute the age of pull requests.
+ * author_check.py: Check that AUTHORS is correct in our repos.
+ * pull_age.py: Compute the age of pull requests.
  * wall.py: Run the wall-displayed Pull Request aging chart.
- * sync-labels.py: Sync labels across all GitHub repos to another.
+ * sync_labels.py: Sync labels across all GitHub repos to another.
 
 Most of these make GitHub API calls, and so will need GitHub credentials in
 order to not be severely rate-limited.  Edit (or create) `~/.netrc` so that it
@@ -30,13 +30,13 @@ Then run:
 entry for AUTHORS files. It also has information about whether the person has
 signed a contributor agreement or is covered by the institution they work for.
 
-# author-check
+# author_check
 
 A commandline utility for checking for consistency between committers,
 people who have signed a contributor agreement and people in the AUTHORS
 file.
 
-author-check needs a different authentication mechanism than `~/.netrc`.
+author_check needs a different authentication mechanism than `~/.netrc`.
 Create an `auth.yaml` file of the form:
 
     user: "<your github username>"
@@ -67,7 +67,7 @@ Generates the JSON used to build the wall-displayed Pull Request age chart.
     look at the awesome chart
 
 
-# sync-labels
+# sync_labels
 
 Syncs all github repos in `repos.yaml` to contain all the labels in `labels.yaml`
 
