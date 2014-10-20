@@ -64,11 +64,17 @@ def main(argv):
     for key in keys:
         print("{}: {}".format(key, len(by_org[key])))
 
-    for pr in by_org['unsigned']:
-        import pprint
-        pprint.pprint(pr.obj)
-        print()
-        print()
+    fmt = "{number:5d} {user.login:>17s} {title}"
+
+    for i, pull in enumerate(by_org['other']):
+        if i == 0:
+            print("\n'Other' pull requests:")
+        print(pull.format(fmt))
+
+    for i, pull in enumerate(by_org['unsigned']):
+        if i == 0:
+            print("\nUnsigned authors:")
+        print(pull.format(fmt))
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
