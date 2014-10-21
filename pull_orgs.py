@@ -23,10 +23,12 @@ def main(argv):
         help="Only consider pull requests closed in the past DAYS days"
     )
     parser.add_argument("--start", type=date_arg,
-        help="Date to start collecting"
+        help="Date to start collecting, format is flexible: "
+        "20141225, Dec/25/2014, 2014-12-25, etc"
     )
     parser.add_argument("--end", type=date_arg,
-        help="Date to end collecting"
+        help="Date to end collecting, format is flexible: "
+        "25/Dec/2014, 12/25/2014, 2014-12-25, etc"
     )
 
     args = parser.parse_args(argv[1:])
