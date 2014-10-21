@@ -124,6 +124,7 @@ arjun810:
     email: arjun810@gmail.com
     name: Arjun Singh
     agreement: individual
+    institution: Berkeley
 johnhess:
     email: mgojohn@gmail.com
     name: John Hess
@@ -497,6 +498,7 @@ felipemontoya:
     email: felipe.montoya@edunext.co
     name: Felipe Montoya
     agreement: individual
+    institution: EduNext
 flowerhack:
     email: julia@edx.org
     name: Julia Hansbrough
@@ -573,6 +575,7 @@ pchiu33:
     email: philippe.chiu@gmail.com
     name: Philippe Chiu
     agreement: individual
+    institution: IONIS
 carsongee:
     email: cgee@mit.edu
     name: Carson Gee
@@ -1098,11 +1101,13 @@ bdero:
     email: btd@cheesekeg.com
     name: Brandon DeRosier
     agreement: individual
+    institution: MIT
     jira: bdero
 msegado:
     email: msegado@mit.edu
     name: Martin Segado
     agreement: individual
+    institution: MIT
 njdup:
     email: njdupoux1994@gmail.com
     name: Nicholas Dupoux
