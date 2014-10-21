@@ -1275,3 +1275,8 @@ lukedmor:
     agreement: individual
     institution: edX
     jira: lmorales
+dylanrhodes:
+    email: dylanr@stanford.edu
+    name: Dylan Rhodes
+    agreement: institution
+    institution: Stanford
