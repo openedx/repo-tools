@@ -1226,6 +1226,7 @@ OmarIthawi:
     name: Omar Al-Ithawi
     agreement: individual
     institution: QRF
+    jira: OmarIthawi
 AlasdairSwan:
     email: aswan@edx.org
     name: Alasdair Swan
@@ -1259,6 +1260,7 @@ steffansluis:
     name: Steffan Sluis
     agreement: institution
     institution: Feedback Fruits
+    jira: steffansluis
 lpil:
     name: Louis Pilfold
     email: louis@lpil.uk
@@ -1281,10 +1283,11 @@ dylanrhodes:
     agreement: institution
     institution: Stanford
 jtriley:
-    email: ???
+    email: jtriley@mit.edu
     name: Justin Riley
     agreement: institution
     institution: MIT
+    jira: jtriley
 aleffert:
     email: akiva@edx.org
     name: Akiva Leffert
