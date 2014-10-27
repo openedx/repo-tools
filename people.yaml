@@ -1285,3 +1285,9 @@ jtriley:
     name: Justin Riley
     agreement: institution
     institution: MIT
+aleffert:
+    email: akiva@edx.org
+    name: Akiva Leffert
+    agreement: institution
+    institution: edX
+    jira: aleffert
