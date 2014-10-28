@@ -1294,3 +1294,8 @@ aleffert:
     agreement: institution
     institution: edX
     jira: aleffert
+ataki:
+    email: jimzheng@stanford.edu
+    name: Jim Zheng
+    agreement: institution
+    institution: Stanford
