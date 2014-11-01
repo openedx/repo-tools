@@ -653,6 +653,7 @@ ejsteven:
     email: s.chen13@uq.edu.au
     name: Steven Chen
     agreement: individual
+    email_ok: no    # bounced
 jzornig:
     email: j.zornig@uq.edu.au
     name: John Zornig
@@ -1040,6 +1041,7 @@ AnuragRamdasan:
     name: Anurag Ramdasan
     agreement: individual
     institution: CourseMaster
+    email_ok: no    # bounced
 dashea:
     email: david@reallylongword.org
     name: David Shea
