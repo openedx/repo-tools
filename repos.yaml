@@ -117,3 +117,9 @@ edx/edx-analytics-pipeline:
 edx/edx-oauth2-provider:
     nick: oau
     track-pulls: true
+edx/edx-documentation:
+    nick: doc
+    track-pulls: true
+edx/harprofiler:
+    nick: har
+    track-pulls: true
