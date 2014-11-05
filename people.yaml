@@ -1301,3 +1301,9 @@ ataki:
     name: Jim Zheng
     agreement: institution
     institution: Stanford
+cgoldberg:
+    email: cgoldberg@gmail.com
+    name: Corey Goldberg
+    agreement: institution
+    institution: edX
+    jira: cgoldberg
