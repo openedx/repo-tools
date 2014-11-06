@@ -1029,6 +1029,7 @@ trungpham:
     email: tpham@course-master.com
     name: Trung Pham
     agreement: individual
+    institution: CourseMaster
 benmcmorran:
     email: bmcmorran@edx.org
     name: Ben McMorran
