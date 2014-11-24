@@ -1321,3 +1321,8 @@ stem:
     email: stephane@etna-learning.fr
     name: Stephane Crivisier
     agreement: individual
+mollydb:
+    email: molly@edx.org
+    name: Molly de Blanc
+    agreement: institution
+    institution: edX
