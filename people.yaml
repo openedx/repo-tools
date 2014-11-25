@@ -1326,3 +1326,13 @@ mollydb:
     name: Molly de Blanc
     agreement: institution
     institution: edX
+rmachielse:
+    email: richardmachielse@gmail.com
+    name: Richard Machielse
+    agreement: institution
+    institution: Feedback Fruits
+mbifulco:
+    email: mbifulco@aquent.com
+    name: Mike Bifulco
+    agreement: individual
+    institution: Aquent
