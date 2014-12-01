@@ -23,6 +23,7 @@ from collections import defaultdict
 import functools
 import re
 import sys
+from datetime import date
 
 import colors
 import github3
@@ -179,12 +180,17 @@ def check_repo(owner_repo):
 
     not_in_people = defaultdict(set)
     no_agreement = defaultdict(set)
+    expired = defaultdict(set)
 
     for pull in pull_requests(owner_repo):
         user_login = pull.user.login.lower()
         if user_login not in people:
             not_in_people[pull.user.login].add(str(pull.number))
         else:
+            expires_on = people[user_login].get("expires_on", date.max)
+            if expires_on < date.today():
+                expired[pull.user.login].add(str(pull.number))
+
             if people[user_login].get("agreement") not in ["individual", "institution"]:
                 no_agreement[pull.user.login].add(str(pull.number))
 
@@ -221,6 +227,11 @@ def check_user(username):
     else:
         agreement = people[username]["agreement"]
         print(people[username].get("name", ""))
+        expires_on = people[username].get("expires_on", date.max)
+        if expires_on < date.today():
+            print_red(u"{} used to have an agreement, but it is expired".format(username))
+            return
+
         if agreement == "individual":
             print_green(u"{} has signed an individual agreement".format(username))
         elif agreement == "institution":
