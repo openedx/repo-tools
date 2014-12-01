@@ -27,6 +27,7 @@ Lyla-Fischer:
     agreement: institution
     institution: edX
     jira: lyla
+    expires_on: 2014-11-01
 ormsbee:
     email: dave@edx.org
     name: David Ormsbee
@@ -98,6 +99,7 @@ jarv:
     agreement: institution
     institution: edX
     jira: jarv
+    expires_on: 2014-12-12
 shnayder:
     email: victor@edx.org
     name: Victor Shnayder
@@ -131,6 +133,7 @@ johnhess:
     agreement: institution
     institution: edX
     jira: jh
+    expires_on: 2013-09-09
 rocha:
     email: rocha@edx.org
     name: Carlos Andrés Rocha
@@ -178,6 +181,7 @@ markchang:
     agreement: institution
     institution: edX
     jira: mchang
+    expires_on: 2014-10-01
 deanxorr:
     email: ddieker@gmail.com
     name: Dean Dieker
@@ -327,6 +331,7 @@ jkarni:
     agreement: institution
     institution: edX
     jira: julian
+    expires_on: 2014-10-2
 arthurian: # ?
     name: Arthur Barrett
     agreement: institution
@@ -349,6 +354,7 @@ jtauber:
     agreement: institution
     institution: edX
     jira: jtauber
+    expires_on: 2014-04-17
 gwprice:
     email: gprice@edx.org
     name: Greg Price
@@ -367,6 +373,7 @@ sefk:
     agreement: institution
     institution: Stanford
     jira: sef
+    expires_on: 2014-09-29
 polesye:
     email: s2pak.anton@gmail.com
     name: Anton Stupak
@@ -505,6 +512,7 @@ flowerhack:
     agreement: institution
     institution: edX
     jira: julia
+    expires_on: 2014-09-26
 natea:
     email: naune@edx.org
     name: Nate Aune
@@ -780,6 +788,7 @@ hkim823:
     agreement: institution
     institution: edX
     jira: han
+    expires_on: 2014-09-17
 Bachmann1234:
     email: bachmann.matt@gmail.com
     name: Matt Bachmann
@@ -982,6 +991,7 @@ gradyward:
     institution: edX
     comment: ORA intern, summer 2014
     jira: gward
+    expires_on: 2014-08-12
 stvstnfrd:
     email: stv@stanford.edu
     name: Steven Burch
@@ -1038,6 +1048,7 @@ benmcmorran:
     institution: edX
     comment: Studio intern, summer 2014
     jira: bmcmorran
+    expires_on: 2014-08-12
 AnuragRamdasan:
     email: anurag@course-master.com
     name: Anurag Ramdasan
@@ -1055,6 +1066,7 @@ mmprandom:
     institution: edX
     comment: LMS intern, summer 2014
     jira: mpeterson
+    expires_on: 2014-08-12
 asadiqbal08:
     email: aiqbal@edx.org
     name: Asad Iqbal
@@ -1075,6 +1087,7 @@ jhelbert:
     institution: edX
     comment: analytics intern, summer 2014
     jira: jhelbert
+    expires_on: 2014-08-12
 minhtuev:
     email: mvo@edx.org
     name: Minh-Tue Vo
@@ -1082,6 +1095,7 @@ minhtuev:
     institution: edX
     comment: testing intern, summer 2014
     jira: mvo
+    expires_on: 2014-08-12
 tymofij:
     email: tim.babych@gmail.com
     name: Tim Babych
@@ -1123,6 +1137,7 @@ njdup:
     institution: Stanford
     comment: intern, summer 2014
     jira: njdup
+    expires_on: 2014-08-12
 muhhshoaib:
     email: mshoaib@edx.org
     name: Muhammad Shoaib
@@ -1314,7 +1329,7 @@ cgoldberg:
     institution: edX
     jira: cgoldberg
 Shrhawk:
-    email:
+    email: hassan.raza@arbisoft.com
     name: Syed Hassan Raza
     agreement: institution
     institution: edX
