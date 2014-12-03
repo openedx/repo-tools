@@ -14,6 +14,7 @@ import sys
 
 import dateutil.parser
 
+from helpers import date_arg, make_timezone_aware
 from pulls import get_pulls
 from repos import Repo
 
@@ -34,7 +35,7 @@ def date_bucket_week(date):
     return "{:%Y-%m-%d}".format(monday)
 
 
-def get_all_repos(date_bucket_fn, by_size=False):
+def get_all_repos(date_bucket_fn, start, by_size=False):
     repos = [ r for r in Repo.from_yaml() if r.track_pulls ]
 
     dimensions = [["opened", "merged"], ["internal", "external"]]
@@ -46,14 +47,14 @@ def get_all_repos(date_bucket_fn, by_size=False):
 
     buckets = collections.defaultdict(lambda: dict(bucket_blank))
     for repo in repos:
-        get_bucket_data(buckets, repo.name, date_bucket_fn, by_size=by_size)
+        get_bucket_data(buckets, repo.name, date_bucket_fn, start=start, by_size=by_size)
 
     print("timespan\t" + "\t".join(keys))
     for q in sorted(buckets.keys()):
         data = buckets[q]
         print("{}\t{}".format(q, "\t".join(str(data[k]) for k in keys)))
 
-def get_bucket_data(buckets, repo_name, date_bucket_fn, by_size=False):
+def get_bucket_data(buckets, repo_name, date_bucket_fn, start, by_size=False):
     print(repo_name)
     pull_details = "all" if by_size else "list"
     for pull in get_pulls(repo_name, state="all", pull_details=pull_details, org=True):
@@ -64,10 +65,12 @@ def get_bucket_data(buckets, repo_name, date_bucket_fn, by_size=False):
             size = ""
         intext = pull["intext"]
         created = dateutil.parser.parse(pull['created_at'])
-        buckets[date_bucket_fn(created)]["opened " + intext + size] += 1
+        if created >= start:
+            buckets[date_bucket_fn(created)]["opened " + intext + size] += 1
         if pull['combinedstate'] == "merged":
             merged = dateutil.parser.parse(pull['pull.merged_at'])
-            buckets[date_bucket_fn(merged)]["merged " + intext + size] += 1
+            if merged >= start:
+                buckets[date_bucket_fn(merged)]["merged " + intext + size] += 1
 
 def size_of_pull(pull):
     """Return a size (small/large) for the pull.
@@ -105,6 +108,10 @@ def main(argv):
                 "which is WILDLY arbitrary, "
                 "and a poor predicter of either effort or impact."
     )
+    parser.add_argument("--start", type=date_arg,
+        help="Date to start collecting, format is flexible: "
+        "20141225, Dec/25/2014, 2014-12-25, etc"
+    )
     args = parser.parse_args(argv[1:])
 
     if args.monthly:
@@ -114,7 +121,12 @@ def main(argv):
     else:
         date_bucket_fn = date_bucket_quarter
 
-    get_all_repos(date_bucket_fn, by_size=args.by_size)
+    if args.start is None:
+        # Simplify the logic by always having a start date, but one so far back
+        # that it is like having no start date.
+        args.start = make_timezone_aware(datetime.datetime(2000, 1, 1))
+
+    get_all_repos(date_bucket_fn, by_size=args.by_size, start=args.start)
 
 
 if __name__ == "__main__":

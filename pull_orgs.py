@@ -7,15 +7,10 @@ import collections
 from datetime import date, timedelta
 import sys
 
-import dateutil.parser
-import dateutil.tz
-
+from helpers import date_arg
 from pulls import get_pulls
 from repos import Repo
 
-def date_arg(s):
-    """An argument parser for dates."""
-    return dateutil.parser.parse(s).replace(tzinfo=dateutil.tz.tzutc())
 
 def main(argv):
     parser = argparse.ArgumentParser(description="Summarize pull requests by organization.")

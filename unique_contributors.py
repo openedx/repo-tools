@@ -4,7 +4,7 @@
 from __future__ import print_function
 
 import collections
-from datetime import timedelta
+import datetime
 
 import iso8601
 
@@ -61,16 +61,20 @@ def unique_authors(repos):
     """Produce a sequence of pairs: (date, num-contributors)."""
     pulls = get_summaries_from_repos(repos)
     key = lambda s: s.created
-    width = timedelta(days=90)
-    step = timedelta(days=7)
+    width = datetime.timedelta(days=90)
+    step = datetime.timedelta(days=7)
 
     for when, window in sliding_window(pulls, key=key, width=width, step=step):
         num_authors = len(set(p.user for p in window))
         yield (when+width, num_authors)
 
 def main():
+    # Yes, hard-coded start date.
+    start = datetime.datetime(2013, 6, 5)
     repos = [ r.name for r in Repo.from_yaml() if r.track_pulls ]
     for when, num_authors in unique_authors(repos):
+        if when < start:
+            continue
         print("{0:%Y-%m-%d}\t{1}".format(when, num_authors))
 
 if __name__ == '__main__':
