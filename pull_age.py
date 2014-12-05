@@ -7,7 +7,7 @@ import sys
 import yaml
 
 from datetime import date, datetime, timedelta
-from backports import statistics
+import statistics
 
 import iso8601
 
