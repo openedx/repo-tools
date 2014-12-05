@@ -5,6 +5,9 @@ This repo contains a number of tools for working with GitHub repositories:
  * wall.py: Run the wall-displayed Pull Request aging chart.
  * sync_labels.py: Sync labels across all GitHub repos to another.
 
+
+## Setting up GitHub authentication
+
 Most of these make GitHub API calls, and so will need GitHub credentials in
 order to not be severely rate-limited.  Edit (or create) `~/.netrc` so that it
 has an entry like this:
@@ -13,8 +16,12 @@ has an entry like this:
       login your_user_name
       password ddf9079e12042ac022c101c61c0235965851e209
  
-The login is your GitHub user name, the password is the personal access token
-you get from <https://github.com/settings/applications>.
+Change the login to your GitHub user name.  You'll get the password value from
+<https://github.com/settings/applications>.  Visit that page, and in the
+section called "Personal access tokens," click "Generate new token."  It will
+prompt you for your password, then you'll see a scary list of scopes. Leave
+them at their defaults, and click "Generate token." Copy the password that
+appears. Paste it into your ~/.netrc.
 
 ## Installation
 
