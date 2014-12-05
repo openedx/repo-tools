@@ -1361,3 +1361,38 @@ regisb:
     email: regis.behmo@openfun.fr
     name: Régis Behmo
     agreement: individual
+DanielEidan:
+    email: daniel@bnotions.com
+    name: Daniel Eidan
+    agreement: institution
+    institution: BNOTIONS
+marc-ashman:
+    email: marc@bnotions.com
+    name: Marc Ashman
+    agreement: institution
+    institution: BNOTIONS
+PeterOrgana:
+    email: peter@bnotions.com
+    name: Peter Organa
+    agreement: institution
+    institution: BNOTIONS
+leenewton75:
+    email: lee@bnotions.com
+    name: Lee Newton
+    agreement: institution
+    institution: BNOTIONS
+thanks821:
+    email: tej@bnotions.com
+    name: Tej Koorapati
+    agreement: institution
+    institution: BNOTIONS
+WilliamMacNeil:
+    email: william@bnotions.com
+    name: William MacNeil
+    agreement: institution
+    institution: BNOTIONS
+clrux:
+    email: crodriguez@edx.org
+    name: Chris Rodriguez
+    agreement: institution
+    institution: edX
