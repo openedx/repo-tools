@@ -1400,3 +1400,13 @@ newbery:
     email: ric.newbery@gmail.com
     name: Ricardo Newbery
     agreement: individual
+kpeng:
+    email: kpeng@schoolyourself.org
+    name: Kenny Peng
+    agreement: institution
+    institution: School Yourself
+johnjlee:
+    email: jjl@schoolyourself.org
+    name: John Lee
+    agreement: institution
+    institution: School Yourself
