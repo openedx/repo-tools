@@ -1396,3 +1396,7 @@ clrux:
     name: Chris Rodriguez
     agreement: institution
     institution: edX
+newbery:
+    email: ric.newbery@gmail.com
+    name: Ricardo Newbery
+    agreement: individual
