@@ -12,16 +12,19 @@ kylefiedler:
     email: kyle@kylefiedler.com
     name: Kyle Fiedler
     agreement: institution
+    expires_on: 2012-10-01
 eipark:
     email: eipark@mit.edu
     name: Ernie Park
     agreement: institution
     email_ok: no    # bounced
+    expires_on: 2012-12-01
 bridger:
     email: bridger@mit.edu
     name: Bridger Maxwell
     agreement: institution
     institution: edX
+    expires_on: 2013-12-01
 Lyla-Fischer:
     name: Lyla Fischer
     agreement: institution
@@ -38,11 +41,12 @@ terman:
     email: cjt@mit.edu
     name: Chris Terman
     agreement: institution
-    institution: MIT
+    institution: edX
 kaishin:
     email: reda@thoughtbot.com
     name: Reda Lemeden
     agreement: institution
+    expires_on: 2012-10-01
 anant*:    # Anant doesn't have a Github account
     name: Anant Agarwal
     agreement: institution
@@ -64,12 +68,14 @@ jmvt:
     name: JM Van Thong
     agreement: institution
     institution: edX
+    expires_on: 2014-01-01
 sikachu:
     email: psichanugrist@thoughtbot.com
     name: Prem Sichanugrist
     agreement: institution
     institution: edX
     comment: thoughtbot
+    expires_on: 2012-10-01
 ichuang:
     email: ichuang@mit.edu
     name: Isaac Chuang
@@ -81,18 +87,21 @@ frechg:
     agreement: institution
     institution: edX
     comment: thoughtbot
+    expires_on: 2012-10-01
 edwardloveall:
     email: edward@edwardloveall.com
     name: Edward Loveall
     agreement: institution
     institution: edX
     comment: thoughtbot
+    expires_on: 2012-10-01
 mjankowski:
     email: mjankowski@thoughtbot.com
     name: Matt Jankowski
     agreement: institution
     institution: edX
     comment: thoughtbot
+    expires_on: 2012-10-01
 jarv:
     email: jarv@edx.org
     name: John Jarvis
@@ -112,21 +121,25 @@ halogenandtoast:
     agreement: institution
     institution: edX
     comment: thoughtbot
+    expires_on: 2012-10-01
 kimtonyhyun:
     email: kimth@edx.org
     name: Tony Kim
     agreement: institution
     institution: edX
+    expires_on: 2013-12-01
 kimth:
     email: kimth@edx.org
     name: Tony Kim
     agreement: institution
     institution: edX
+    expires_on: 2013-12-01
 arjun810:
     email: arjun810@gmail.com
     name: Arjun Singh
     agreement: individual
     institution: Berkeley
+    expires_on: 2013-12-01
 johnhess:
     email: mgojohn@gmail.com
     name: John Hess
@@ -152,14 +165,18 @@ dementrock:
 #     name: Sidhanth Rao
 #     agreement: institution
 #     comment: edX intern summer 2012
+#     expires_on: 2012-12-01
 bcheng42:
     email: bcheng42@gmail.com
     name: Brittany Cheng
     agreement: institution
+    institution: edX
+    expires_on: 2012-12-01
 # ???:
 #     name: Dhaval Adjodah
 #     agreement: institution
 #     comment: edX intern summer 2012
+#     expires_on: 2012-12-01
 thomasxiii:
     email: tom@mitx.mit.edu
     name: Tom Giannattasio
@@ -181,7 +198,7 @@ markchang:
     agreement: institution
     institution: edX
     jira: mchang
-    expires_on: 2014-10-01
+    expires_on: 2014-05-28
 deanxorr:
     email: ddieker@gmail.com
     name: Dean Dieker
@@ -231,6 +248,7 @@ LouisSobel:
     agreement: institution
     institution: edX
     comment: edX intern fall 2012
+    expires_on: 2013-02-01
 brianhw:
     email: brian@edx.org
     name: Brian Wilson
@@ -304,12 +322,14 @@ e0d:
 #     agreement: institution
 #     institution: edX
 #     comment: edX intern
+#     expires_on: 2013-02-01
 jnater:
     email: jnater@edx.org
     name: Jean Manuel Náter
     agreement: institution
     institution: edX
     jira: jnater
+    expires_on: 2013-09-01
 # ???:
 #     name: Emily Zhang
 #     agreement: institution
@@ -325,13 +345,14 @@ pbaratta:
     agreement: institution
     institution: edX
     jira: peter
+    expires_on: 2013-09-01
 jkarni:
     email: julian@edx.org
     name: Julian Arni
     agreement: institution
     institution: edX
     jira: julian
-    expires_on: 2014-10-2
+    expires_on: 2014-10-02
 arthurian: # ?
     name: Arthur Barrett
     agreement: institution
@@ -367,6 +388,7 @@ jrbl:
     agreement: institution
     institution: Stanford
     jira: jrbl
+    expires_on: 2015-02-01
 sefk:
     email: sef@kloninger.com
     name: Sef Kloninger
@@ -392,6 +414,7 @@ straz:
     agreement: institution
     institution: edX
     jira: straz
+    expires_on: 2013-09-01
 caesar2164:
     email: giulio@giuliogratta.com
     name: Giulio Gratta
@@ -422,22 +445,26 @@ JonahStanley:
     agreement: institution
     institution: edX
     jira: jstanley
+    expires_on: 2013-09-01
 Slater-Victoroff:
     name: Slater Victoroff
     agreement: institution
     institution: edX
     jira: svictoroff
+    expires_on: 2014-01-01
 peter-fogg:
     name: Peter Fogg
     agreement: institution
     institution: edX
     jira: pfogg
+    expires_on: 2013-09-01
 lapentab:
     email: lapentab@mit.edu
     name: Bethany LaPenta
     agreement: institution
     institution: edX
     jira: blapenta
+    expires_on: 2013-09-01
 rlucioni:
     email: renzo@renzolucioni.com
     name: Renzo Lucioni
@@ -450,6 +477,7 @@ fephsun:
     agreement: institution
     institution: edX
     jira: felixsun
+    expires_on: 2013-09-01
 adampalay:
     email: adam@edx.org
     name: Adam Palay
@@ -462,6 +490,7 @@ ihoover:
     agreement: institution
     institution: edX
     jira: ihoover
+    expires_on: 2013-09-01
 mikigoyal:
     email: miki@edx.org
     name: Mukul Goyal
@@ -484,6 +513,7 @@ mlsteele:
     agreement: institution
     institution: edX
     jira: msteele
+    expires_on: 2013-09-01
 kluo:
     email: kevinluo@alumni.stanford.edu
     name: Kevin Luo
@@ -545,12 +575,14 @@ mcpanic:
     name: Juho Kim
     agreement: institution
     institution: edX
+    expires_on: 2014-02-01
 stkomarov:
     email: skomarov@edx.org
     name: Steve Komarov
     agreement: institution
     institution: edX
     comment: worked with Piotr summer 2013
+    expires_on: 2014-02-01
 jimabramson:
     email: jsa@edx.org
     name: Jim Abramson
@@ -573,6 +605,7 @@ tnorum:
     agreement: institution
     institution: edX
     jira: toddi
+    expires_on: 2013-09-01
 jinpa:
     email: jmanning@gmail.com
     name: Jane Manning
@@ -1300,6 +1333,7 @@ lukedmor:
     agreement: individual
     institution: edX
     jira: lmorales
+    expires_on: 2015-01-01
 dylanrhodes:
     email: dylanr@stanford.edu
     name: Dylan Rhodes
