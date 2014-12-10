@@ -605,7 +605,7 @@ symbolist:
     email: symbolist@users.noreply.github.com
     name: Usman Khalid
     agreement: institution
-    institution: edX
+    institution: Arbisoft
     jira: khalid
 oliviermarquez:
     email: oliviermarquez@gmail.com
@@ -686,12 +686,12 @@ waheedahmed:
     email: waheed.ahmed@arbisoft.com
     name: Waheed Ahmed
     agreement: institution
-    institution: edX
+    institution: Arbisoft
     jira: waheed
 zubair-arbi:
     name: Zubair Afzal
     agreement: institution
-    institution: edX
+    institution: Arbisoft
     jira: zubair
 tusbar:
     email: bertrand.marron@ionis-group.com
@@ -837,12 +837,12 @@ raeeschachar:
     email: raees.chachar@arbisoft.com
     name: Raees Chachar
     agreement: institution
-    institution: edX
+    institution: Arbisoft
     jira: raees.chachar@arbisoft.com
 muhammad-ammar:
     name: Muhammad Ammar
     agreement: institution
-    institution: edX
+    institution: Arbisoft
     jira: mammar
 dangtrinh:
     email: dangtrinhnt@gmail.com
@@ -944,7 +944,7 @@ mlkwaqas:
     email: wkhalid@edx.org
     name: Waqas Khalid
     agreement: institution
-    institution: edX
+    institution: Arbisoft
     jira: wkhalid
 msabramo:
     email: marca@surveymonkey.com
@@ -1071,7 +1071,7 @@ asadiqbal08:
     email: aiqbal@edx.org
     name: Asad Iqbal
     agreement: institution
-    institution: edX
+    institution: Arbisoft
     comment: Arbisoft solutions developer
     jira: aiqbal
 clintonb:
@@ -1142,7 +1142,7 @@ muhhshoaib:
     email: mshoaib@edx.org
     name: Muhammad Shoaib
     agreement: institution
-    institution: edX
+    institution: Arbisoft
     jira: mshoaib
 iceraj:
     email: ceraj@mit.edu
@@ -1264,7 +1264,7 @@ ziafazal:
     email: zfazal@edx.org
     name: Zia Fazal
     agreement: institution
-    institution: edX
+    institution: Arbisoft
     comment: also signed an individual agreement
 dsjen:
     email: djen@edx.org
@@ -1332,7 +1332,7 @@ Shrhawk:
     email: hassan.raza@arbisoft.com
     name: Syed Hassan Raza
     agreement: institution
-    institution: edX
+    institution: Arbisoft
 stem:
     email: stephane@etna-learning.fr
     name: Stephane Crivisier
@@ -1356,7 +1356,7 @@ muzaffaryousaf:
     email: muzaffar@edx.org
     name: Muzaffar Yousaf
     agreement: institution
-    institution: edX
+    institution: Arbisoft
 regisb:
     email: regis.behmo@openfun.fr
     name: Régis Behmo
@@ -1414,4 +1414,4 @@ afzaledx:
     email: afzaledx@edx.org
     name: Afzal Wali
     agreement: institution
-    institution: edX
+    institution: Arbisoft
