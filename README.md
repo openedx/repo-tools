@@ -1,6 +1,5 @@
 This repo contains a number of tools for working with GitHub repositories:
 
- * author_check.py: Check that AUTHORS is correct in our repos.
  * pull_age.py: Compute the age of pull requests.
  * wall.py: Run the wall-displayed Pull Request aging chart.
  * sync_labels.py: Sync labels across all GitHub repos to another.
