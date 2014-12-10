@@ -17,9 +17,10 @@ class JPullRequest(jreport.JObj):
 
             # A pull request is external if marked as such, or if the author's
             # organization is not edX.
+            internal_orgs = {"edX", "Arbisoft", "BNOTIONS", "OpenCraft", "ExtensionEngine"}
             if "osc" in self['labels']:
                 self['intext'] = "external"
-            elif self['org'] == "edX":
+            elif self['org'] in internal_orgs:
                 self['intext'] = "internal"
             else:
                 self['intext'] = "external"
