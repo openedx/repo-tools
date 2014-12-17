@@ -39,6 +39,7 @@ class WrappedRequests(object):
             adapter = CacheControlAdapter(cache=FileCache(".webcache"))
             self.session.mount("http://", adapter)
             self.session.mount("https://", adapter)
+            print("Caching to .webcache")
 
         self.all_requests = None
 
@@ -64,7 +65,19 @@ class WrappedRequests(object):
 
     def get(self, url, *args, **kwargs):
         self.record_request("GET", url, args, kwargs)
-        return self.session.get(url, *args, **self._kwargs(url, kwargs))
+        response = self.session.get(url, *args, **self._kwargs(url, kwargs))
+        if 0:
+            # Useful for diagnosing caching issues with the GitHub API.
+            print("request:")
+            pprint.pprint(dict(response.request.headers))
+            if response.from_cache:
+                info = "cached"
+            else:
+                info = "{} left".format(response.headers["X-RateLimit-Remaining"])
+                print("headers:")
+                pprint.pprint(dict(response.headers))
+            print("GET {}: {}".format(url, info))
+        return response
 
     def post(self, url, *args, **kwargs):
         self.record_request("POST", url, args, kwargs)

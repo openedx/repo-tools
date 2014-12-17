@@ -35,7 +35,7 @@ def date_bucket_week(date):
     return "{:%Y-%m-%d}".format(monday)
 
 
-def get_all_repos(date_bucket_fn, start, by_size=False):
+def get_all_repos(date_bucket_fn, start, by_size=False, lines=False):
     repos = [ r for r in Repo.from_yaml() if r.track_pulls ]
 
     dimensions = [["opened", "merged"], ["internal", "external"]]
@@ -47,16 +47,16 @@ def get_all_repos(date_bucket_fn, start, by_size=False):
 
     buckets = collections.defaultdict(lambda: dict(bucket_blank))
     for repo in repos:
-        get_bucket_data(buckets, repo.name, date_bucket_fn, start=start, by_size=by_size)
+        get_bucket_data(buckets, repo.name, date_bucket_fn, start=start, by_size=by_size, lines=lines)
 
     print("timespan\t" + "\t".join(keys))
     for q in sorted(buckets.keys()):
         data = buckets[q]
         print("{}\t{}".format(q, "\t".join(str(data[k]) for k in keys)))
 
-def get_bucket_data(buckets, repo_name, date_bucket_fn, start, by_size=False):
+def get_bucket_data(buckets, repo_name, date_bucket_fn, start, by_size=False, lines=False):
     print(repo_name)
-    pull_details = "all" if by_size else "list"
+    pull_details = "all" if (by_size or lines) else "list"
     for pull in get_pulls(repo_name, state="all", pull_details=pull_details, org=True):
         # print("{0[id]}: {0[combinedstate]} {0[intext]}".format(pull))
         if by_size:
@@ -64,13 +64,20 @@ def get_bucket_data(buckets, repo_name, date_bucket_fn, start, by_size=False):
         else:
             size = ""
         intext = pull["intext"]
+
+        if lines:
+            increment = lines_in_pull(pull)
+        else:
+            increment = 1
+
         created = dateutil.parser.parse(pull['created_at'])
         if created >= start:
-            buckets[date_bucket_fn(created)]["opened " + intext + size] += 1
+            buckets[date_bucket_fn(created)]["opened " + intext + size] += increment
+
         if pull['combinedstate'] == "merged":
             merged = dateutil.parser.parse(pull['pull.merged_at'])
             if merged >= start:
-                buckets[date_bucket_fn(merged)]["merged " + intext + size] += 1
+                buckets[date_bucket_fn(merged)]["merged " + intext + size] += increment
 
 def size_of_pull(pull):
     """Return a size (small/large) for the pull.
@@ -95,6 +102,16 @@ def size_of_pull(pull):
             return "large"
     return "small"
 
+def lines_in_pull(pull):
+    """Return a line count for the pull request.
+
+    To consider both added and deleted, we add them together, but discount the
+    deleted count, on the theory that adding a line is harder than deleting a
+    line (*waves hands very broadly*).
+
+    """
+    return pull["pull.additions"] + pull["pull.deletions"]//5
+
 def main(argv):
     parser = argparse.ArgumentParser(description="Summarize pull requests.")
     parser.add_argument("--monthly", action="store_true",
@@ -107,6 +124,9 @@ def main(argv):
         help="Include a breakdown by small/large, "
                 "which is WILDLY arbitrary, "
                 "and a poor predicter of either effort or impact."
+    )
+    parser.add_argument("--lines", action="store_true",
+        help="Count the number of lines changed instead of number of pull requests"
     )
     parser.add_argument("--start", type=date_arg,
         help="Date to start collecting, format is flexible: "
@@ -126,7 +146,7 @@ def main(argv):
         # that it is like having no start date.
         args.start = make_timezone_aware(datetime.datetime(2000, 1, 1))
 
-    get_all_repos(date_bucket_fn, by_size=args.by_size, start=args.start)
+    get_all_repos(date_bucket_fn, by_size=args.by_size, start=args.start, lines=args.lines)
 
 
 if __name__ == "__main__":

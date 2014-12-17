@@ -35,6 +35,7 @@ class JPullRequest(jreport.JObj):
             pull_request = pulls.get(self['number'])
         if not pull_request:
             pull_request = requests.get(self['pull_request.url']).json()
+
         self['pull'] = pull_request
 
         if self['state'] == 'open':
