@@ -1473,3 +1473,10 @@ arbab-edx:
     name: Arbab Nazar
     agreement: institution
     institution: Arbisoft
+    jira: arbabnazar
+awais786:
+    email: awais@edx.org
+    name: Awais Qureshi
+    agreement: institution
+    institution: Arbisoft
+    jira: awais
