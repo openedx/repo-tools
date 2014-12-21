@@ -1458,3 +1458,30 @@ esbeka:
     name: Siem Kok
     agreement: institution
     institution: Feedback Fruits
+moayyadyaghi:
+    email: myaghi@qrf.org
+    name: Moayyad Yaghi
+    agreement: institution
+    institution: QRF
+devalih:
+    email: ahasan@qrf.org
+    name: Ali Hasan
+    agreement: institution
+    institution: QRF
+arbab-edx:
+    email: arbab@edx.org
+    name: Arbab Nazar
+    agreement: institution
+    institution: Arbisoft
+    jira: arbabnazar
+awais786:
+    email: awais@edx.org
+    name: Awais Qureshi
+    agreement: institution
+    institution: Arbisoft
+    jira: awais
+wwj718:
+    email: wuwenjie718@gmail.com
+    name: Wenjie Wu
+    agreement: individual
+    institution:
