@@ -8,7 +8,7 @@ from datetime import date, timedelta
 import sys
 
 from helpers import date_arg
-from pulls import get_pulls
+from webhookdb import get_pulls
 from repos import Repo
 
 
@@ -43,35 +43,34 @@ def main(argv):
     for repo in repos:
         for pull in get_pulls(repo.name, state="closed", pull_details="list", org=True, since=since):
             # We only want external pull requests.
-            if pull['intext'] != "external":
+            if pull.intext != "external":
                 continue
             # We only want merged pull requests.
-            if pull['combinedstate'] != "merged":
+            if pull.combinedstate != "merged":
                 continue
 
             if args.end is not None:
                 # We don't want to count things merged after our end date.
-                merged = dateutil.parser.parse(pull['pull.merged_at'])
-                if merged >= args.end:
+                if pull.merged_at >= args.end:
                     continue
 
-            by_org[pull['org']].append(pull)
+            by_org[pull.org].append(pull)
 
     keys = sorted(by_org, key=lambda k: len(by_org[k]), reverse=True)
     for key in keys:
         print("{}: {}".format(key, len(by_org[key])))
 
-    fmt = "{number:5d} {user.login:>17s} {title}"
+    fmt = "{pull.number:5d} {pull.user_login:>17s} {pull.title}"
 
     for i, pull in enumerate(by_org['other']):
         if i == 0:
             print("\n'Other' pull requests:")
-        print(pull.format(fmt))
+        print(fmt.format(pull=pull))
 
     for i, pull in enumerate(by_org['unsigned']):
         if i == 0:
             print("\nUnsigned authors:")
-        print(pull.format(fmt))
+        print(fmt.format(pull=pull))
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
