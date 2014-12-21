@@ -46,7 +46,7 @@ class WrappedRequests(object):
         self.all_requests = None
 
     def record_request(self, method, url, args, kwargs):
-        if 1:
+        if 0:
             print("{} {}".format(method, url))
         if self.all_requests is None:
             return

@@ -88,7 +88,6 @@ def get_wall_data(pretty=False):
     """Returns a JSON string of aging data for the wall display."""
     repos = [ r for r in Repo.from_yaml() if r.track_pulls ]
     wall_data = WallMaker().show_wall(repos)
-    import pprint;pprint.pprint(wall_data)
     return json.dumps(wall_data, indent=4 if pretty else None)
 
 def main():
