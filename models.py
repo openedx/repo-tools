@@ -1,13 +1,32 @@
+"""Models of interest to pull request programs."""
+
+import os
+
 import yaml
 
-people = None
+from helpers import only_once, requests
 
-def init_people():
-    global people
-    if people is None:
+
+@only_once
+def get_people():
+    """Get a dictionary of people.
+
+    Keys are GitHub logins, look at people.yaml to see what information is
+    provided.
+
+    """
+    # Define REPO_TOOLS_LATEST_PEOPLE=1 in the environment to force code to
+    # get people.yaml from GitHub instead of the local copy.
+    if int(os.environ.get('REPO_TOOLS_LATEST_PEOPLE', '0')):
+        # Read people.yaml from GitHub.
+        people_resp = requests.get("https://raw.githubusercontent.com/edx/repo-tools/master/people.yaml")
+        if not people_resp.ok:
+            people_resp.raise_for_status()
+        return yaml.safe_load(people_resp.text)
+    else:
         with open("people.yaml") as fpeople:
-            people = yaml.load(fpeople)
-    return people
+            return yaml.safe_load(fpeople)
+
 
 class PullRequestBase(object):
 
@@ -25,7 +44,7 @@ class PullRequestBase(object):
 
     @property
     def org(self):
-        people = init_people()
+        people = get_people()
         user_info = people.get(self.user_login)
         if not user_info:
             user_info = {"institution": "unsigned"}

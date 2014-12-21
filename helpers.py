@@ -131,3 +131,13 @@ def paginated_get(url, limit=None, debug=False, **kwargs):
             match = re.search(r'<(?P<url>[^>]+)>; rel="next"', resp.headers["link"])
             if match:
                 url = match.group('url')
+
+
+def only_once(func):
+    """Simple caching decorator for a no-argument function to only be called once."""
+    def decorator():
+        if not hasattr(func, "only_once_return"):
+            ret = func()
+            func.only_once_return = ret
+        return func.only_once_return
+    return decorator
