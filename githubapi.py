@@ -3,7 +3,6 @@ import pprint
 
 import dateutil.parser
 from urlobject import URLObject
-import yaml
 
 from helpers import paginated_get, requests
 from models import PullRequestBase

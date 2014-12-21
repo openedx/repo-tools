@@ -3,12 +3,7 @@
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import mapper, sessionmaker
 
-import datetime
-import yaml
-
 from models import PullRequestBase
-
-
 
 
 class PullRequest(PullRequestBase):

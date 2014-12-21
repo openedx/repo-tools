@@ -1,13 +1,12 @@
+"""Formatting helpers."""
+
 import datetime
-import pprint
-import string
 
 import colors
-import dateutil.parser
 
 
-def fformat(format, obj):
-    return format.format(FormatObj(obj))
+def fformat(fmt, obj):
+    return fmt.format(FormatObj(obj))
 
 
 class FormatObj(object):

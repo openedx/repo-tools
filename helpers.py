@@ -3,6 +3,7 @@
 import os
 import pprint
 import re
+import sys
 
 import requests as real_requests
 

@@ -5,13 +5,12 @@ import argparse
 import collections
 import datetime
 import more_itertools
-import operator
 import sys
 
 import dateutil.parser
 
 from formatting import fformat
-from helpers import paginated_get, requests
+from helpers import requests
 from githubapi import get_pulls, get_comments
 from repos import Repo
 

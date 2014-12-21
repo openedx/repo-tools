@@ -9,7 +9,6 @@ import argparse
 import collections
 import datetime
 import itertools
-import pprint
 import re
 import sys
 

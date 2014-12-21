@@ -9,8 +9,6 @@ import yaml
 from datetime import date, datetime, timedelta
 import statistics
 
-import iso8601
-
 from webhookdb import get_pulls
 from repos import Repo
 

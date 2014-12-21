@@ -6,9 +6,6 @@ from __future__ import print_function
 import collections
 import datetime
 
-import iso8601
-
-from helpers import requests
 from webhookdb import get_pulls
 from repos import Repo
 
