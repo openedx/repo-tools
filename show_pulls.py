@@ -10,11 +10,12 @@ import sys
 
 import dateutil.parser
 
+from formatting import fformat
 from helpers import paginated_get, requests
 from githubapi import get_pulls, get_comments
 from repos import Repo
 
-from jreport.jreport import JFormatObj
+
 
 ISSUE_FMT = (
     u"{0.number:5d:white:bold} {0.repo:3s} {0.user_login:>17s:cyan} {0.comments:3d:red}"
@@ -69,10 +70,7 @@ def show_pulls(labels=None, show_comments=False, state="open", since=None,
                 category = issue.org
                 print("-- {category} ----".format(category=category))
 
-            if 0:
-                import pprint
-                pprint.pprint(issue.obj)
-            print(ISSUE_FMT.format(JFormatObj(issue)))
+            print(fformat(ISSUE_FMT, issue))
             num += 1
             adds += issue.additions
             deletes += issue.deletions
@@ -81,7 +79,7 @@ def show_pulls(labels=None, show_comments=False, state="open", since=None,
                 comments = get_comments(issue)
                 last_five_comments = reversed(more_itertools.take(5, comments))
                 for comment in last_five_comments:
-                    print(COMMENT_FMT.format(JFormatObj(comment)))
+                    print(fformat(COMMENT_FMT, comment))
 
     print()
     print("{num} pull requests; {adds}+ {deletes}-".format(num=num, adds=adds, deletes=deletes))
