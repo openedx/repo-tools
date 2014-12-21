@@ -11,7 +11,7 @@ import statistics
 
 import iso8601
 
-from pulls import get_pulls
+from githubdb import get_pulls
 from repos import Repo
 
 DEBUG = False
@@ -49,19 +49,19 @@ def get_duration_data(durations, owner_repo="edx/edx-platform", since=None):
     )
 
     for issue, state in itertools.chain(open_issues_generator, closed_issues_generator):
-        created_at = iso8601.parse_date(issue["created_at"]).replace(tzinfo=None)
+        created_at = issue.created_at
         if state == "open":
             closed_at = datetime.utcnow()
         else:
-            closed_at = iso8601.parse_date(issue["closed_at"]).replace(tzinfo=None)
-        issue['duration'] = closed_at - created_at
+            closed_at = issue.closed_at
+        issue.duration = closed_at - created_at
 
         if DEBUG:
-            print("{pr[id]}: {pr[intext]} {state}".format(
+            print("{pr.id}: {pr.intext} {state}".format(
                 pr=issue, state=state
             ), file=sys.stderr)
 
-        durations[state][issue['intext']].append(issue)
+        durations[state][issue.intext].append(issue)
 
 
 def main(argv):
@@ -91,7 +91,7 @@ def main(argv):
     if args.org:
         categories = sorted(get_all_orgs())
         def cat_filter(cat, pr):
-            return pr['org'] == cat
+            return pr.org == cat
     else:
         categories = ["all"]
         def cat_filter(cat, pr):
@@ -116,7 +116,7 @@ def main(argv):
         ss_friendly = []
         for position in ("external", "internal"):
             for state in ("open", "closed"):
-                seconds = [p['duration'].total_seconds() for p in durations[state][position] if cat_filter(cat, p)]
+                seconds = [p.duration.total_seconds() for p in durations[state][position] if cat_filter(cat, p)]
                 if seconds:
                     median_seconds = int(statistics.median(seconds))
                     median_duration = timedelta(seconds=median_seconds)

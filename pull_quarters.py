@@ -13,10 +13,7 @@ import pprint
 import re
 import sys
 
-import dateutil.parser
-
 from helpers import date_arg, make_timezone_aware
-from pulls import get_pulls
 from repos import Repo
 
 
@@ -59,30 +56,30 @@ def get_bucket_data(buckets, repo_name, date_bucket_fn, start, by_size=False, li
     print(repo_name)
     pull_details = "all" if (by_size or lines) else "list"
     for pull in get_pulls(repo_name, state="all", pull_details=pull_details, org=True):
-        # print("{0[id]}: {0[combinedstate]} {0[intext]}".format(pull))
+        # print("{0.id}: {0.combinedstate} {0.intext}".format(pull))
 
         ignore_ref = "(^release$|^rc/)"
-        if re.search(ignore_ref, pull["base_ref"]):
-            #print("Ignoring pull #{0[number]}: {0[title]}".format(pull))
+        if re.search(ignore_ref, pull.base_ref):
+            #print("Ignoring pull #{0.number}: {0.title}".format(pull))
             continue
 
         if by_size:
             size = " " + size_of_pull(pull)
         else:
             size = ""
-        intext = pull["intext"]
+        intext = pull.intext
 
         if lines:
             increment = lines_in_pull(pull)
         else:
             increment = 1
 
-        created = dateutil.parser.parse(pull['created_at'])
+        created = make_timezone_aware(pull.created_at)
         if created >= start:
             buckets[date_bucket_fn(created)]["opened " + intext + size] += increment
 
-        if pull['combinedstate'] == "merged":
-            merged = dateutil.parser.parse(pull['pull.merged_at'])
+        if pull.combinedstate == "merged":
+            merged = make_timezone_aware(pull.merged_at)
             if merged >= start:
                 buckets[date_bucket_fn(merged)]["merged " + intext + size] += increment
 
@@ -125,8 +122,8 @@ def lines_in_pull(pull):
             #print("Ignoring file {}".format(f.filename))
             continue
         lines += f.additions + f.deletions//5
-    if pull["combinedstate"] == "merged" and lines > 2000:
-        print("*** Large pull: {lines:-6d} lines, {pr[created_at]} {pr[number]:-4d}: {pr[title]}".format(lines=lines, pr=pull))
+    if pull.combinedstate == "merged" and lines > 2000:
+        print("*** Large pull: {lines:-6d} lines, {pr.created_at} {pr.number:-4d}: {pr.title}".format(lines=lines, pr=pull))
     return lines
 
 def main(argv):
@@ -150,7 +147,7 @@ def main(argv):
         "20141225, Dec/25/2014, 2014-12-25, etc"
     )
     parser.add_argument("--db", action="store_true",
-        help="Use GitHubDB instead of GitHub"
+        help="Use WebhookDB instead of GitHub API"
     )
     args = parser.parse_args(argv[1:])
 
@@ -166,9 +163,11 @@ def main(argv):
         # that it is like having no start date.
         args.start = make_timezone_aware(datetime.datetime(2000, 1, 1))
 
+    global get_pulls
     if args.db:
-        global get_pulls
-        from githubdb import get_pulls
+        from webhookdb import get_pulls
+    else:
+        from githubapi import get_pulls
 
     get_all_repos(date_bucket_fn, by_size=args.by_size, start=args.start, lines=args.lines)
 

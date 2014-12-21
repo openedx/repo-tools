@@ -24,7 +24,9 @@ def date_arg(s):
 
 def make_timezone_aware(dt):
     """Make a datetime timezone-aware."""
-    return dt.replace(tzinfo=dateutil.tz.tzutc())
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=dateutil.tz.tzutc())
+    return dt
 
 
 class WrappedRequests(object):
@@ -44,6 +46,8 @@ class WrappedRequests(object):
         self.all_requests = None
 
     def record_request(self, method, url, args, kwargs):
+        if 1:
+            print("{} {}".format(method, url))
         if self.all_requests is None:
             return
         self.all_requests.append(
