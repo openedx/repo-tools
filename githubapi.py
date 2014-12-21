@@ -9,7 +9,44 @@ from helpers import paginated_get, requests
 from models import PullRequestBase
 
 
-class PullRequest(PullRequestBase):
+class JsonAttributeHelper(object):
+    @classmethod
+    def from_json(cls, issues_data):
+        for issue_data in issues_data:
+            if not cls.want_this_json_object(issue_data):
+                continue
+            yield cls(issue_data)
+
+    @classmethod
+    def want_this_json_object(cls, obj):
+        return True
+
+    def attribute_lookup(self, name, field_map, mapped_fields=None):
+        obj = None
+        for field_names, value in field_map:
+            if name in field_names:
+                obj = value
+                break
+
+        if obj is not None:
+            if mapped_fields:
+                name = mapped_fields.get(name, name)
+            val = self.deep_getitem(obj, name)
+            if name.endswith('_at') and val is not None:
+                val = dateutil.parser.parse(val)
+            return val
+
+        raise AttributeError("Nope: don't have {!r} attribute on {}".format(name, self.__class__.__name__))
+
+    def deep_getitem(self, val, key):
+        for k in key.split("."):
+            if val is None:
+                break
+            val = val[k]
+        return val
+
+
+class PullRequest(JsonAttributeHelper, PullRequestBase):
     def __init__(self, issue_data):
         self._issue = issue_data
         if 0:
@@ -19,17 +56,14 @@ class PullRequest(PullRequestBase):
         self.labels = [self.short_label(l['name']) for l in self.labels]
 
     @classmethod
-    def from_json(cls, issues_data):
-        for issue_data in issues_data:
-            issue = cls(issue_data)
-            pr_url = issue._issue.get('pull_request', {}).get('url')
-            if not pr_url:
-                continue
-
-            yield issue
+    def want_this_json_object(cls, obj):
+        pr_url = obj.get('pull_request', {}).get('url')
+        return bool(pr_url)
 
     ISSUE_FIELDS = {
         'assignee_login',
+        'comments',
+        'comments_url',
         'labels',
         'number',
         'pull_request_url',
@@ -42,6 +76,8 @@ class PullRequest(PullRequestBase):
     PULL_FIELDS = {
         'additions',
         'base_ref',
+        'changed_files',
+        'commits',
         'created_at',
         'deletions',
         'merged_at',
@@ -57,27 +93,11 @@ class PullRequest(PullRequestBase):
     }
 
     def __getattr__(self, name):
-        obj = None
-        if name in self.ISSUE_FIELDS:
-            obj = self._issue
-        elif name in self.PULL_FIELDS:
-            obj = self._pull
-
-        if obj is not None:
-            name = self.MAPPED_FIELDS.get(name, name)
-            val = self.deep_getitem(obj, name)
-            if name.endswith('_at') and val is not None:
-                val = dateutil.parser.parse(val)
-            return val
-
-        raise AttributeError("Nope: don't have {!r} attribute on PullRequest".format(name))
-
-    def deep_getitem(self, val, key):
-        for k in key.split("."):
-            if val is None:
-                break
-            val = val[k]
-        return val
+        return self.attribute_lookup(
+            name,
+            [(self.ISSUE_FIELDS, self._issue), (self.PULL_FIELDS, self._pull)],
+            self.MAPPED_FIELDS
+        )
 
     def load_pull_details(self, pulls=None):
         """Get pull request details also.
@@ -96,6 +116,23 @@ class PullRequest(PullRequestBase):
             print("---< Pull Request >--------------------------")
             pprint.pprint(self._pull)
 
+
+class Comment(JsonAttributeHelper):
+    def __init__(self, obj):
+        self._comment = obj
+
+    FIELDS = {
+        'body',
+        'created_at',
+        'user_login',
+    }
+
+    def __getattr__(self, name):
+        return self.attribute_lookup(
+            name,
+            [(self.FIELDS, self._comment)],
+            {'user_login': 'user.login'},
+        )
 
 
 def get_pulls(owner_repo, labels=None, state="open", since=None, org=False, pull_details=None):
@@ -139,3 +176,9 @@ def get_pulls(owner_repo, labels=None, state="open", since=None, org=False, pull
             issue.load_pull_details(pulls=pulls)
         issue.id = "{}.{}".format(owner_repo, issue.number)
         yield issue
+
+
+def get_comments(pull):
+    url = URLObject(pull.comments_url).set_query_param("sort", "created").set_query_param("direction", "desc")
+    comments = Comment.from_json(paginated_get(url))
+    return comments

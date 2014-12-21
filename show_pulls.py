@@ -11,19 +11,21 @@ import sys
 import dateutil.parser
 
 from helpers import paginated_get, requests
-from pulls import get_pulls
+from githubapi import get_pulls, get_comments
 from repos import Repo
 
+from jreport.jreport import JFormatObj
+
 ISSUE_FMT = (
-    "{number:5d:white:bold} {repo:3s} {user.login:>17s:cyan} {comments:3d:red}"
-    "  {title:.100s}"
-    " {pull.commits}c{pull.changed_files}f"
-    " {pull.additions:green}+{pull.deletions:red}-"
-    " {combinedstate:pad:{combinedstatecolor}:negative}"
-    " {updated_at:ago:white} {created_at:%b %d:yellow}"
-    " {labels:spacejoin:pad:yellow:negative}"
+    u"{0.number:5d:white:bold} {0.repo:3s} {0.user_login:>17s:cyan} {0.comments:3d:red}"
+    "  {0.title:.100s}"
+    " {0.commits}c{0.changed_files}f"
+    " {0.additions:green}+{0.deletions:red}-"
+    " {0.combinedstate:pad:{0.combinedstatecolor}:negative}"
+    " {0.updated_at:ago:white} {0.created_at:%b %d:yellow}"
+    " {0.labels:spacejoin:pad:yellow:negative}"
 )
-COMMENT_FMT = "{:31}{user.login:cyan} {created_at:%b %d:yellow}  \t{body:oneline:.100s:white}"
+COMMENT_FMT = u" "*33+"{0.user_login:cyan} {0.created_at:%b %d:yellow}  \t{0.body:oneline:.100s:white}"
 
 
 def show_pulls(labels=None, show_comments=False, state="open", since=None,
@@ -47,11 +49,11 @@ def show_pulls(labels=None, show_comments=False, state="open", since=None,
 
         category = None
         for issue in issues:
-            issue["repo"] = repo.nick
+            issue.repo = repo.nick
             if intext is not None:
-                if issue["intext"] != intext:
+                if issue.intext != intext:
                     continue
-            if state == 'closed' and merged and issue['combinedstate'] != 'merged':
+            if state == 'closed' and merged and issue.combinedstate != 'merged':
                 # If we're filtering on closed PRs, and only want those that are merged,
                 # skip ones that were closed without merge.
                 continue
@@ -59,31 +61,27 @@ def show_pulls(labels=None, show_comments=False, state="open", since=None,
                 # If this PR was closed prior to the last `since` interval of days, continue on
                 # (it may have been *updated* - that is, referenced or commented on - more recently,
                 #  but we just want to see what's been merged or closed in the past "since" days)
-                closed_at = dateutil.parser.parse(issue["closed_at"][:-1])  # Remove TZ information
-                if closed_at < since:
+                if issue.closed_at < since:
                     continue
 
-            if org and issue.get("org") != category:
+            if org and issue.org != category:
                 # new category! print category header
-                category = issue["org"]
+                category = issue.org
                 print("-- {category} ----".format(category=category))
 
             if 0:
                 import pprint
                 pprint.pprint(issue.obj)
-            print(issue.format(ISSUE_FMT))
+            print(ISSUE_FMT.format(JFormatObj(issue)))
             num += 1
-            adds += issue['pull']['additions']
-            deletes += issue['pull']['deletions']
+            adds += issue.additions
+            deletes += issue.deletions
 
             if show_comments:
-                comments_url = URLObject(issue['comments_url'])
-                comments_url = comments_url.set_query_param("sort", "created")
-                comments_url = comments_url.set_query_param("direction", "desc")
-                comments = paginated_get(comments_url)
+                comments = get_comments(issue)
                 last_five_comments = reversed(more_itertools.take(5, comments))
                 for comment in last_five_comments:
-                    print(comment.format(COMMENT_FMT))
+                    print(COMMENT_FMT.format(JFormatObj(comment)))
 
     print()
     print("{num} pull requests; {adds}+ {deletes}-".format(num=num, adds=adds, deletes=deletes))

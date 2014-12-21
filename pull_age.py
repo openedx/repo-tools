@@ -11,7 +11,7 @@ import statistics
 
 import iso8601
 
-from githubdb import get_pulls
+from webhookdb import get_pulls
 from repos import Repo
 
 DEBUG = False

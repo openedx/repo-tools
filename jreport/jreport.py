@@ -50,12 +50,12 @@ class JFormatObj(object):
             cls=self.__class__.__name__, obj=self.obj,
         )
 
-    def __getitem__(self, key):
+    def __getattr__(self, key):
         if key == "":
             return ""
         if key.startswith("'"):
             return key.strip("'")
-        return Formattable(self.obj[key])
+        return Formattable(getattr(self.obj, key))
 
 
 @functools.total_ordering
@@ -83,25 +83,25 @@ class Formattable(object):
     def __format__(self, spec):
         v = self.v
         for spec in spec.split(':'):
-            try:
+            if spec.startswith("%"):
                 v = format(v, spec)
-            except ValueError:
-                # Hmm, must be a custom one.
-                if spec.startswith("%"):
-                    v = format(dateutil.parser.parse(v), spec)
-                elif spec in colors.COLORS:
-                    v = colors.color(unicode(v), fg=spec)
-                elif spec in colors.STYLES:
-                    v = colors.color(v, style=spec)
-                elif spec == "ago":
-                    v = ago(v)
-                elif spec == "oneline":
-                    v = " ".join(v.split())
-                elif spec == "pad":
-                    v = " " + v + " "
-                elif spec == "spacejoin":
-                    v = " ".join(v)
-                else:
+            elif spec in colors.COLORS:
+                v = colors.color(unicode(v), fg=spec)
+            elif spec in colors.STYLES:
+                v = colors.color(v, style=spec)
+            elif spec == "ago":
+                v = ago(v)
+            elif spec == "oneline":
+                v = " ".join(v.split())
+            elif spec == "pad":
+                v = " " + v + " "
+            elif spec == "spacejoin":
+                v = " ".join(v)
+            else:
+                try:
+                    v = format(v, spec)
+                except ValueError:
+                    # Hmm, must be a custom one.
                     raise Exception("Don't know formatting {!r}".format(spec))
         return v
 
@@ -112,9 +112,8 @@ def english_units(num, unit, brief):
         s = "" if num == 1 else "s"
         return "{num} {unit}{s}".format(num=num, unit=unit, s=s)
 
-def ago(v, detail=2, brief=True):
+def ago(then, detail=2, brief=True):
     """Convert a datetime string into a '4 hours ago' string."""
-    then = dateutil.parser.parse(v)
     then = then.replace(tzinfo=None)
     now = datetime.datetime.utcnow()
     delta = now-then

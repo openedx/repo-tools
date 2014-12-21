@@ -39,3 +39,12 @@ class PullRequestBase(object):
             return 'merged'
         else:
             return 'closed'
+
+    @property
+    def combinedstatecolor(self):
+        if self.state == 'open':
+            return 'green'
+        elif self.merged_at:
+            return 'blue'
+        else:
+            return 'red'

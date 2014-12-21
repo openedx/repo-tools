@@ -36,14 +36,19 @@ class WrappedRequests(object):
     """
 
     def __init__(self):
-        self.session = real_requests.Session()
-        if CacheControlAdapter:
-            adapter = CacheControlAdapter(cache=FileCache(".webcache"))
-            self.session.mount("http://", adapter)
-            self.session.mount("https://", adapter)
-            print("Caching to .webcache")
-
+        self._session = None
         self.all_requests = None
+
+    @property
+    def session(self):
+        if self._session is None:
+            self._session = real_requests.Session()
+            if CacheControlAdapter:
+                adapter = CacheControlAdapter(cache=FileCache(".webcache"))
+                self._session.mount("http://", adapter)
+                self._session.mount("https://", adapter)
+                print("Caching to .webcache")
+        return self._session
 
     def record_request(self, method, url, args, kwargs):
         if 0:
