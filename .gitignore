@@ -1,4 +1,5 @@
 auth.yaml
+db.url
 venv
 *.pyc
 
