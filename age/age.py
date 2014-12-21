@@ -8,7 +8,7 @@ import json
 import yaml
 
 from helpers import paginated_get
-from pulls import get_pulls
+from githubapi import get_pulls
 from repos import Repo
 
 
@@ -28,18 +28,25 @@ def pull_summary(issue):
     keys = [
         "number", "title", "labels",
         "id", "repo", "intext", "org",
-        "pull_request.html_url",
-        "user.login",
-        "user.html_url",
+        "pull_request_html_url",
+        "user_login",
+        "user_html_url",
         "created_at", "updated_at",
-        "assignee.login",
-        "pull.base.ref",
+        "assignee_login",
+        "base_ref",
         #"pull.comments", "pull.comments_url",
         #"pull.commits", "pull.commits_url",
         #"pull.additions", "pull.deletions",
         #"pull.changed_files",
     ]
-    summary = { k.replace("pull.", "").replace(".","_"):issue[k] for k in keys }
+
+    summary = {}
+    for k in keys:
+        v = getattr(issue, k)
+        if isinstance(v, datetime.datetime):
+            v = v.isoformat()
+        summary[k] = v
+
     return summary
 
 
@@ -61,19 +68,19 @@ class WallMaker(object):
         return wall_data
 
     def add_pull(self, issue):
-        self.pulls[issue['id']] = pull_summary(issue)
+        self.pulls[issue.id] = pull_summary(issue)
 
     def one_repo(self, repo):
         issues = get_pulls(repo.name, state="open", org=True, pull_details="list")
         for issue in issues:
-            issue["repo"] = repo.nick
-            for label in issue['labels']:
+            issue.repo = repo.nick
+            for label in issue.labels:
                 if label in self.team_names:
                     self.add_pull(issue)
                     break
             else:
                 # Didn't find a blocking label, include it if external.
-                if issue['intext'] == "external":
+                if issue.intext == "external":
                     self.add_pull(issue)
 
 
@@ -81,6 +88,7 @@ def get_wall_data(pretty=False):
     """Returns a JSON string of aging data for the wall display."""
     repos = [ r for r in Repo.from_yaml() if r.track_pulls ]
     wall_data = WallMaker().show_wall(repos)
+    import pprint;pprint.pprint(wall_data)
     return json.dumps(wall_data, indent=4 if pretty else None)
 
 def main():

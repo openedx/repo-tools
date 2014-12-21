@@ -29,15 +29,31 @@ class PullRequest(PullRequestBase):
             yield issue
 
     ISSUE_FIELDS = {
-        'labels', 'number', 'pull_request_url', 'state', 'user_login',
+        'assignee_login',
+        'labels',
+        'number',
+        'pull_request_url',
+        'pull_request_html_url',
+        'state',
+        'title',
+        'user_html_url',
+        'user_login',
     }
     PULL_FIELDS = {
-        'additions', 'base_ref', 'created_at', 'deletions', 'merged_at',
+        'additions',
+        'base_ref',
+        'created_at',
+        'deletions',
+        'merged_at',
+        'updated_at',
     }
     MAPPED_FIELDS = {
+        'assignee_login': 'assignee.login',
         'base_ref': 'base.ref',
         'pull_request_url': 'pull_request.url',
+        'pull_request_html_url': 'pull_request.html_url',
         'user_login': 'user.login',
+        'user_html_url': 'user.html_url',
     }
 
     def __getattr__(self, name):
