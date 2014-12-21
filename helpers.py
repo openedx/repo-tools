@@ -1,5 +1,7 @@
 """Helpers for various things."""
 
+from __future__ import print_function
+
 import os
 import pprint
 import re

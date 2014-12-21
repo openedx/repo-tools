@@ -19,8 +19,8 @@ from repos import Repo
 def date_bucket_quarter(date):
     """Compute the quarter for a date."""
     date += datetime.timedelta(days=180)    # to almost get to our fiscal year
-    m = (date.month-1) // 3 + 1
-    return "Y{:02d} Q{}".format(date.year % 100, m)
+    quarter = (date.month-1) // 3 + 1
+    return "Y{:02d} Q{}".format(date.year % 100, quarter)
 
 def date_bucket_month(date):
     """Compute the year and month for a date."""
@@ -33,7 +33,7 @@ def date_bucket_week(date):
 
 
 def get_all_repos(date_bucket_fn, start, by_size=False, lines=False):
-    repos = [ r for r in Repo.from_yaml() if r.track_pulls ]
+    repos = [r for r in Repo.from_yaml() if r.track_pulls]
 
     dimensions = [["opened", "merged"], ["internal", "external"]]
     if by_size:
@@ -47,9 +47,9 @@ def get_all_repos(date_bucket_fn, start, by_size=False, lines=False):
         get_bucket_data(buckets, repo.name, date_bucket_fn, start=start, by_size=by_size, lines=lines)
 
     print("timespan\t" + "\t".join(keys))
-    for q in sorted(buckets.keys()):
-        data = buckets[q]
-        print("{}\t{}".format(q, "\t".join(str(data[k]) for k in keys)))
+    for time_period in sorted(buckets.keys()):
+        data = buckets[time_period]
+        print("{}\t{}".format(time_period, "\t".join(str(data[k]) for k in keys)))
 
 def get_bucket_data(buckets, repo_name, date_bucket_fn, start, by_size=False, lines=False):
     print(repo_name)
@@ -127,25 +127,30 @@ def lines_in_pull(pull):
 
 def main(argv):
     parser = argparse.ArgumentParser(description="Summarize pull requests.")
-    parser.add_argument("--monthly", action="store_true",
+    parser.add_argument(
+        "--monthly", action="store_true",
         help="Report on months instead of quarters"
     )
-    parser.add_argument("--weekly", action="store_true",
+    parser.add_argument(
+        "--weekly", action="store_true",
         help="Report on weeks instead of quarters"
     )
-    parser.add_argument("--by-size", action="store_true",
-        help="Include a breakdown by small/large, "
-                "which is WILDLY arbitrary, "
-                "and a poor predicter of either effort or impact."
+    parser.add_argument(
+        "--by-size", action="store_true",
+        help="Include a breakdown by small/large, which is WILDLY arbitrary, "
+            "and a poor predicter of either effort or impact."
     )
-    parser.add_argument("--lines", action="store_true",
+    parser.add_argument(
+        "--lines", action="store_true",
         help="Count the number of lines changed instead of number of pull requests"
     )
-    parser.add_argument("--start", type=date_arg,
+    parser.add_argument(
+        "--start", type=date_arg,
         help="Date to start collecting, format is flexible: "
         "20141225, Dec/25/2014, 2014-12-25, etc"
     )
-    parser.add_argument("--db", action="store_true",
+    parser.add_argument(
+        "--db", action="store_true",
         help="Use WebhookDB instead of GitHub API"
     )
     args = parser.parse_args(argv[1:])

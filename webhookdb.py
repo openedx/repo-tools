@@ -1,5 +1,7 @@
 """Access WebhookDB."""
 
+from __future__ import print_function
+
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import mapper, sessionmaker
 
@@ -38,17 +40,17 @@ def init_sqlalchemy():
         mapper(User, Table('webhookdb_user', meta, autoload=True))
 
         if 0:
-            print "PullRequest"
-            print dir(PullRequest)
-            print
-            print "PullRequestFile"
-            print dir(PullRequestFile)
-            print
-            print "Repository"
-            print dir(Repository)
-            print
-            print "User"
-            print dir(User)
+            print("PullRequest")
+            print(dir(PullRequest))
+            print()
+            print("PullRequestFile")
+            print(dir(PullRequestFile))
+            print()
+            print("Repository")
+            print(dir(Repository))
+            print()
+            print("User")
+            print(dir(User))
 
         Session = sessionmaker(bind=engine)
         session = Session()
@@ -78,6 +80,6 @@ def get_pulls(owner_repo, labels=None, state="open", since=None, org=False, pull
     if 0:
         print("{} pulls from {} with state {}:".format(len(pulls), owner_repo, state))
         #for pull in pulls:
-        #    print(" {p.number:-4d}: {p.title}".format(p=pull)) 
+        #    print(" {p.number:-4d}: {p.title}".format(p=pull))
 
     return pulls

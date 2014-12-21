@@ -121,31 +121,40 @@ if 0:
 
 def main(argv):
     parser = argparse.ArgumentParser(description="Summarize pull requests.")
-    parser.add_argument("--closed", action='store_true',
+    parser.add_argument(
+        "--closed", action='store_true',
         help="Include closed pull requests",
         )
-    parser.add_argument("--merged", action='store_true',
+    parser.add_argument(
+        "--merged", action='store_true',
         help="Include just merged pull requests",
         )
-    parser.add_argument("--open", action='store_true',
+    parser.add_argument(
+        "--open", action='store_true',
         help="Include open pull requests",
         )
-    parser.add_argument("--external", action='store_true',
+    parser.add_argument(
+        "--external", action='store_true',
         help="Include external pull requests",
         )
-    parser.add_argument("--internal", action='store_true',
+    parser.add_argument(
+        "--internal", action='store_true',
         help="Include internal pull requests",
         )
-    parser.add_argument("--comments", dest="show_comments", action='store_true',
+    parser.add_argument(
+        "--comments", dest="show_comments", action='store_true',
         help="Also show 5 most recent comments",
         )
-    parser.add_argument("--debug",
+    parser.add_argument(
+        "--debug",
         help="See what's going on.  DEBUG=http or json are fun.",
         )
-    parser.add_argument("--org", action='store_true',
+    parser.add_argument(
+        "--org", action='store_true',
         help="Include and sort by affiliation",
         )
-    parser.add_argument("--since", metavar="DAYS", type=int,
+    parser.add_argument(
+        "--since", metavar="DAYS", type=int,
         help="Include pull requests active in the last DAYS days.",
         )
 

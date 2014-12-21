@@ -1,3 +1,7 @@
+"""Access to information using the GitHub API."""
+
+from __future__ import print_function
+
 import operator
 import pprint
 
@@ -105,7 +109,6 @@ class PullRequest(JsonAttributeHelper, PullRequestBase):
         another request.
 
         """
-        pull_request = None
         if pulls:
             self._pull = pulls.get(self.number)
         if not self._pull:

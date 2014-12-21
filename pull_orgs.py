@@ -14,14 +14,17 @@ from repos import Repo
 
 def main(argv):
     parser = argparse.ArgumentParser(description="Summarize pull requests by organization.")
-    parser.add_argument("--since", metavar="DAYS", type=int,
+    parser.add_argument(
+        "--since", metavar="DAYS", type=int,
         help="Only consider pull requests closed in the past DAYS days"
     )
-    parser.add_argument("--start", type=date_arg,
+    parser.add_argument(
+        "--start", type=date_arg,
         help="Date to start collecting, format is flexible: "
         "20141225, Dec/25/2014, 2014-12-25, etc"
     )
-    parser.add_argument("--end", type=date_arg,
+    parser.add_argument(
+        "--end", type=date_arg,
         help="Date to end collecting, format is flexible: "
         "25/Dec/2014, 12/25/2014, 2014-12-25, etc"
     )

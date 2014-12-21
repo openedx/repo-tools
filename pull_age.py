@@ -66,16 +66,20 @@ def main(argv):
     global DEBUG
 
     parser = argparse.ArgumentParser(description="Summarize pull requests.")
-    parser.add_argument("--since", metavar="DAYS", type=int, default=14,
+    parser.add_argument(
+        "--since", metavar="DAYS", type=int, default=14,
         help="For closed issues, only include issues updated in the past DAYS days [%(default)d]"
     )
-    parser.add_argument("--human", action="store_true",
+    parser.add_argument(
+        "--human", action="store_true",
         help="Human-readable output"
     )
-    parser.add_argument("--org", action="store_true",
+    parser.add_argument(
+        "--org", action="store_true",
         help="Break down by organization"
     )
-    parser.add_argument("--debug", action="store_true",
+    parser.add_argument(
+        "--debug", action="store_true",
         help="Show debugging info"
     )
     args = parser.parse_args(argv[1:])
