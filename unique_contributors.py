@@ -9,15 +9,14 @@ import datetime
 import iso8601
 
 from helpers import requests
-from pulls import get_pulls
+from webhookdb import get_pulls
 from repos import Repo
 
 
 def get_opened_pulls(repo):
     """Produce a stream of pull requests."""
     for issue in get_pulls(repo, state="all", org=True):
-        if issue['intext'] == 'external':
-            issue['created_at'] = iso8601.parse_date(issue["created_at"]).replace(tzinfo=None)
+        if issue.intext == 'external':
             yield issue
 
 Summary = collections.namedtuple("Summary", "id, user, created")
@@ -26,7 +25,7 @@ def get_summaries_from_repos(repos):
     """Make a stream of summaries from a list of repos."""
     for repo in repos:
         for pull in get_opened_pulls(repo):
-            yield Summary(pull["id"], pull["user.login"], pull["created_at"])
+            yield Summary(pull.id, pull.user_login, pull.created_at)
 
 def date_range(start, end, step):
     """Like range(), but for other types, like dates."""

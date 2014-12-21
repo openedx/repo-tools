@@ -80,7 +80,7 @@ def get_pulls(owner_repo, labels=None, state="open", since=None, org=False, pull
     except IndexError:
         pulls = []
 
-    if 1:
+    if 0:
         print("{} pulls from {} with state {}:".format(len(pulls), owner_repo, state))
         #for pull in pulls:
         #    print(" {p.number:-4d}: {p.title}".format(p=pull)) 
