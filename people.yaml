@@ -1251,18 +1251,18 @@ htareque:
 bradenmacdonald:
     email: mail@bradenm.com
     name: Braden MacDonald
-    agreement: individual
+    agreement: institution
     institution: OpenCraft
     jira: bradenm
 Kelketek:
     email: kelketek@gmail.com
     name: Jonathan Piacenti
-    agreement: individual
+    agreement: institution
     institution: OpenCraft
     jira: Kelketek
 e-kolpakov:
     name: Eugeny Kolpakov
-    agreement: individual
+    agreement: institution
     institution: OpenCraft
     jira: J0HN
 rohit-k:
@@ -1485,4 +1485,9 @@ wwj718:
     email: wuwenjie718@gmail.com
     name: Wenjie Wu
     agreement: individual
-    institution:
+sjackso:
+    name: Steve Jackson
+    email: 
+    agreement: institution
+    institution: OpenCraft
+    jira: sjackso
