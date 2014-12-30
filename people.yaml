@@ -1487,7 +1487,19 @@ wwj718:
     agreement: individual
 sjackso:
     name: Steve Jackson
-    email: 
+    email:
     agreement: institution
     institution: OpenCraft
     jira: sjackso
+dsego:
+    name: Davorin Šego
+    agreement: institution
+    institution: ExtensionEngine
+marjev:
+    name: Marko Jevtić
+    agreement: institution
+    institution: ExtensionEngine
+dino-cikatic:
+    name: Dino Cikatic
+    agreement: institution
+    institution: ExtensionEngine
