@@ -1168,9 +1168,9 @@ njdup:
     name: Nicholas Dupoux
     agreement: institution
     institution: Stanford
-    comment: intern, summer 2014
+    comment: intern, summer - fall 2014
     jira: njdup
-    expires_on: 2014-08-12
+    expires_on: 2015-01-31
 muhhshoaib:
     email: mshoaib@edx.org
     name: Muhammad Shoaib
