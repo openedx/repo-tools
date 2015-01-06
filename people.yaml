@@ -1519,3 +1519,9 @@ cecilyhunt:
     name: Cecily Hunt
     agreement: individual
     institution: Harvey Mudd College
+maxrothman:
+    email: max@edx.org
+    name: Max Rothman
+    agreement: institution
+    institution: edX
+    jira: max
