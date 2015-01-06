@@ -1525,3 +1525,9 @@ maxrothman:
     agreement: institution
     institution: edX
     jira: max
+MatMoore:
+    name: Mat Moore
+    email: mat@mooresoftware.co.uk
+    agreement: institution
+    institution: OpenCraft
+    jira: MatMoore
