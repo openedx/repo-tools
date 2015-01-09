@@ -32,10 +32,15 @@ def date_bucket_week(date):
     return "{:%Y-%m-%d}".format(monday)
 
 
-def get_all_repos(date_bucket_fn, start, by_size=False, lines=False):
+def get_all_repos(date_bucket_fn, start, by_size=False, lines=False, closed=False):
     repos = [r for r in Repo.from_yaml() if r.track_pulls]
 
-    dimensions = [["opened", "merged"], ["internal", "external"]]
+    dimensions = []
+    if closed:
+        dimensions.append(["opened", "merged", "closed"])
+    else:
+        dimensions.append(["opened", "merged"])
+    dimensions.append(["internal", "external"])
     if by_size:
         dimensions.append(["small", "large"])
 
@@ -44,14 +49,14 @@ def get_all_repos(date_bucket_fn, start, by_size=False, lines=False):
 
     buckets = collections.defaultdict(lambda: dict(bucket_blank))
     for repo in repos:
-        get_bucket_data(buckets, repo.name, date_bucket_fn, start=start, by_size=by_size, lines=lines)
+        get_bucket_data(buckets, repo.name, date_bucket_fn, start=start, by_size=by_size, lines=lines, closed=closed)
 
     print("timespan\t" + "\t".join(keys))
     for time_period in sorted(buckets.keys()):
         data = buckets[time_period]
         print("{}\t{}".format(time_period, "\t".join(str(data[k]) for k in keys)))
 
-def get_bucket_data(buckets, repo_name, date_bucket_fn, start, by_size=False, lines=False):
+def get_bucket_data(buckets, repo_name, date_bucket_fn, start, by_size=False, lines=False, closed=False):
     print(repo_name)
     pull_details = "all" if (by_size or lines) else "list"
     for pull in get_pulls(repo_name, state="all", pull_details=pull_details, org=True):
@@ -81,6 +86,9 @@ def get_bucket_data(buckets, repo_name, date_bucket_fn, start, by_size=False, li
             merged = make_timezone_aware(pull.merged_at)
             if merged >= start:
                 buckets[date_bucket_fn(merged)]["merged " + intext + size] += increment
+        elif closed and pull.combinedstate == "closed":
+            closed = make_timezone_aware(pull.closed_at)
+            buckets[date_bucket_fn(closed)]["closed " + intext + size] += increment
 
 def size_of_pull(pull):
     """Return a size (small/large) for the pull.
@@ -153,6 +161,10 @@ def main(argv):
         "--db", action="store_true",
         help="Use WebhookDB instead of GitHub API"
     )
+    parser.add_argument(
+        "--closed", action="store_true",
+        help="Include closed pull requests also"
+    )
     args = parser.parse_args(argv[1:])
 
     if args.monthly:
@@ -173,7 +185,7 @@ def main(argv):
     else:
         from githubapi import get_pulls
 
-    get_all_repos(date_bucket_fn, by_size=args.by_size, start=args.start, lines=args.lines)
+    get_all_repos(date_bucket_fn, by_size=args.by_size, start=args.start, lines=args.lines, closed=args.closed)
 
 
 if __name__ == "__main__":

@@ -85,6 +85,7 @@ class PullRequest(JsonAttributeHelper, PullRequestBase):
         'deletions',
         'merged_at',
         'updated_at',
+        'closed_at',
     }
     MAPPED_FIELDS = {
         'assignee_login': 'assignee.login',
