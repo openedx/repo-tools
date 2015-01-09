@@ -1531,3 +1531,13 @@ MatMoore:
     agreement: institution
     institution: OpenCraft
     jira: MatMoore
+dhruvbaldawa:
+    name: Dhruv Baldawa
+    email: dhruvbaldawa@gmail.com
+    agreement: individual
+smarnach:
+    name: Sven Marnach
+    email: sven@marnach.net
+    agreement: institution
+    institution: OpenCraft
+    jira: smarnach
