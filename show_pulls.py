@@ -10,7 +10,7 @@ import sys
 import dateutil.parser
 
 from formatting import fformat
-from helpers import requests
+from helpers import requests, make_timezone_aware
 from githubapi import get_pulls, get_comments
 from repos import Repo
 
@@ -192,6 +192,7 @@ def main(argv):
     since = None
     if args.since:
         since = datetime.datetime.now() - datetime.timedelta(days=args.since)
+        since = make_timezone_aware(since)
 
     show_pulls(
         show_comments=args.show_comments,
