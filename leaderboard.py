@@ -39,6 +39,10 @@ def get_contributor_counts(pulls):
 def main(argv):
     parser = argparse.ArgumentParser(description="Count external pull requests opened by person")
     parser.add_argument(
+        "--since", metavar="DAYS", type=int,
+        help="Use a start date DAYS ago"
+    )
+    parser.add_argument(
         "--start", type=date_arg,
         help="Date to start collecting, format is flexible: "
         "20141225, Dec/25/2014, 2014-12-25, etc"
@@ -52,9 +56,12 @@ def main(argv):
     args = parser.parse_args(argv[1:])
 
     if args.start is None:
-        # Simplify the logic by always having a start date, but one so far back
-        # that it is like having no start date.
-        args.start = make_timezone_aware(datetime.datetime(2000, 1, 1))
+        if args.since is None:
+            # Simplify the logic by always having a start date, but one so far back
+            # that it is like having no start date.
+            args.start = make_timezone_aware(datetime.datetime(2000, 1, 1))
+        else:
+            args.start = make_timezone_aware(datetime.datetime.now() - datetime.timedelta(days=args.since))
     if args.end is None:
         # Simplify the logic by always having an end date, but one so far ahead
         # that it is like having no end date.
