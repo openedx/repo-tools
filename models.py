@@ -39,8 +39,14 @@ class PullRequestBase(object):
 
     @property
     def intext(self):
+        # We don't always have labels.
+        if "osc" in getattr(self, 'labels', ()):
+            return "external"
         internal_orgs = {"edX", "Arbisoft", "BNOTIONS", "OpenCraft", "ExtensionEngine"}
-        return "internal" if self.org in internal_orgs else "external"
+        if self.org in internal_orgs:
+            return "internal"
+        else:
+            return "external"
 
     @property
     def org(self):
