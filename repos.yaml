@@ -123,3 +123,15 @@ edx/edx-documentation:
 edx/harprofiler:
     nick: har
     track-pulls: true
+edx/edx-notes-api:
+    nick: not
+    track-pulls: true
+edx/django-lang-pref-middleware:
+    nick: lpm
+    track-pulls: true
+edx/edx-milestones:
+    nick: mil
+    track-pulls: true
+edx/edx-notifications:
+    nick: ntf
+    track-pulls: true
