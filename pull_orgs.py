@@ -7,7 +7,7 @@ import collections
 from datetime import date, timedelta
 import sys
 
-from helpers import date_arg
+from helpers import date_arg, make_timezone_aware
 from webhookdb import get_pulls
 from repos import Repo
 
@@ -33,7 +33,7 @@ def main(argv):
 
     since = None
     if args.since:
-        since = date.today() - timedelta(days=args.since)
+        since = make_timezone_aware(date.today() - timedelta(days=args.since))
     if args.start:
         if since is not None:
             raise Exception("Can't use --since and --start")
@@ -54,7 +54,8 @@ def main(argv):
 
             if args.end is not None:
                 # We don't want to count things merged after our end date.
-                if pull.merged_at >= args.end:
+                merged = make_timezone_aware(pull.merged_at)
+                if merged >= args.end:
                     continue
 
             by_org[pull.org].append(pull)
