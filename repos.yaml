@@ -135,3 +135,9 @@ edx/edx-milestones:
 edx/edx-notifications:
     nick: ntf
     track-pulls: true
+edx/edx-app-ios:
+    nick: ios
+    track-pulls: true
+edx/edx-app-android:
+    nick: and
+    track-pulls: true
