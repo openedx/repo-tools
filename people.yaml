@@ -1,6 +1,30 @@
-# mapping from github username to info about the person
-# agreement is 'individual' if they've signed the individual CA and
-# 'institution' if they are convered
+# Open edX contributors database
+#
+# The key is the GitHub login.  Fields in the data:
+#
+#   name:       The person's name in real life.
+#   email:      The person's email address.
+#   email_ok:   This will be "no" if we should not send them email.
+#   agreement:  One of:
+#                   "institution": this person's work is covered by an
+#                       institutional agreement with edX.
+#                   "individual": this person has signed an individual
+#                       contributor's agreement.
+#                   "none": this person currently has no agreement with edX,
+#                       and so cannot contribute.
+#   institution: The institution this person is associated with.  If they are
+#                   covered by an institutional agreement, this should be that
+#                   institution.  If they have an individual agreement, this
+#                   can still be provided, for other bookkeeping.
+#   jira:       The person's JIRA login.
+#   comment:    Arbitrary comment text (though why not use YAML comments?)
+#   expires_on: Date when the agreement ended, meaning they have no agreement
+#                   and cannot contribute.  These should be converted to
+#                   "before"-style entries.
+#   before:     A dictionary keyed by dates, of previous values of the
+#                   information for a user, so that people can transition
+#                   between agreements, but we can still examine the past
+#                   accurately.
 
 pmitros:
     email: pmitros@edx.org
