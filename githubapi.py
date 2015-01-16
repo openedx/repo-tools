@@ -65,14 +65,17 @@ class PullRequest(JsonAttributeHelper, PullRequestBase):
 
     ISSUE_FIELDS = {
         'assignee_login',
+        'closed_at',
         'comments',
         'comments_url',
+        'created_at',
         'labels',
         'number',
         'pull_request_url',
         'pull_request_html_url',
         'state',
         'title',
+        'updated_at',
         'user_html_url',
         'user_login',
     }
@@ -81,11 +84,8 @@ class PullRequest(JsonAttributeHelper, PullRequestBase):
         'base_ref',
         'changed_files',
         'commits',
-        'created_at',
         'deletions',
         'merged_at',
-        'updated_at',
-        'closed_at',
     }
     MAPPED_FIELDS = {
         'assignee_login': 'assignee.login',
