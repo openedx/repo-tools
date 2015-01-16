@@ -105,13 +105,12 @@ mjankowski:
 jarv:
     email: jarv@edx.org
     name: John Jarvis
-    agreement: none
+    agreement: individual
     jira: jarv
-    #before:
-        #2014-12-12:
-            #agreement: institution
-            #institution: edX
-    expires_on: 2014-12-12
+    before:
+        2014-12-12:
+            agreement: institution
+            institution: edX
 shnayder:
     email: victor@edx.org
     name: Victor Shnayder
@@ -266,9 +265,12 @@ apenney:
 dmitchell:
     email: dmitchell@edx.org
     name: Don Mitchell
-    agreement: institution
-    institution: edX
+    agreement: individual
     jira: dmitchell
+    before:
+        2015-01-19:
+            agreement: institution
+            institution: edX
 aculich:
     email: aculich@edx.org
     name: Aaron Culich
