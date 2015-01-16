@@ -105,9 +105,12 @@ mjankowski:
 jarv:
     email: jarv@edx.org
     name: John Jarvis
-    agreement: institution
-    institution: edX
+    agreement: none
     jira: jarv
+    #before:
+        #2014-12-12:
+            #agreement: institution
+            #institution: edX
     expires_on: 2014-12-12
 shnayder:
     email: victor@edx.org
