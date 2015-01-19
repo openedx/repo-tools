@@ -4,7 +4,7 @@ from __future__ import print_function
 
 import argparse
 import collections
-from datetime import date, timedelta
+from datetime import datetime, timedelta
 import sys
 
 from helpers import date_arg, make_timezone_aware
@@ -33,7 +33,7 @@ def main(argv):
 
     since = None
     if args.since:
-        since = make_timezone_aware(date.today() - timedelta(days=args.since))
+        since = make_timezone_aware(datetime.today() - timedelta(days=args.since))
     if args.start:
         if since is not None:
             raise Exception("Can't use --since and --start")
