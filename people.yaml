@@ -881,6 +881,7 @@ aboudreault:
     email: boudreault.alan@gmail.com
     name: Alan Boudreault
     agreement: individual
+    expires_on: 2014-10-15
 nasthagiri:
     email: nasthagiri@edx.org
     name: Nimisha Asthagiri
