@@ -1,11 +1,11 @@
-"""Access to the people.yaml database."""
+"""Access to the people.yaml data."""
 
 import yamldata
 
 
 class People(yamldata.YamlData):
     """
-    A database of people.
+    Information about people.
     """
 
     @classmethod

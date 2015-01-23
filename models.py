@@ -1,6 +1,7 @@
 """Models of interest to pull request programs."""
 
 from people import People
+from orgs import Orgs
 
 
 class PullRequestBase(object):
@@ -17,8 +18,8 @@ class PullRequestBase(object):
         # We don't always have labels.
         if "osc" in getattr(self, 'labels', ()):
             return "external"
-        internal_orgs = {"edX", "Arbisoft", "BNOTIONS", "Clarice", "OpenCraft", "ExtensionEngine"}
-        if self.org in internal_orgs:
+        orgs = Orgs.orgs()
+        if orgs.get(self.org)["internal"]:
             return "internal"
         else:
             return "external"
