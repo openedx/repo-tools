@@ -17,7 +17,7 @@ class PullRequestBase(object):
         # We don't always have labels.
         if "osc" in getattr(self, 'labels', ()):
             return "external"
-        internal_orgs = {"edX", "Arbisoft", "BNOTIONS", "OpenCraft", "ExtensionEngine"}
+        internal_orgs = {"edX", "Arbisoft", "BNOTIONS", "Clarice", "OpenCraft", "ExtensionEngine"}
         if self.org in internal_orgs:
             return "internal"
         else:
