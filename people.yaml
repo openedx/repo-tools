@@ -1577,6 +1577,12 @@ caijim:
     name: Jim Cai
     agreement: institution
     institution: Stanford
+La0:
+    email: bastien@nextcairn.com
+    name: Bastien Abadie
+    agreement: institution
+    institution: OpenCraft
+    jira: babadie
 rohan-dhamal-clarice:
     agreement: institution
     institution: Clarice
