@@ -42,3 +42,5 @@ product review:
     color: 5319e7
 bug (open source):
     color: bfdadc
+blocked by other work:
+    color: 009800
