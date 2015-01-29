@@ -1512,6 +1512,12 @@ awais786:
     agreement: institution
     institution: Arbisoft
     jira: awais
+ahsan-ul-haq:
+    email: ahsan@edx.org
+    name: Ahsan Haq
+    agreement: institution
+    institution: Arbisoft
+    jira: ahsan
 wwj718:
     email: wuwenjie718@gmail.com
     name: Wenjie Wu
