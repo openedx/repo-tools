@@ -1601,3 +1601,9 @@ rahul-clarice:
 jotiram:
     agreement: institution
     institution: Clarice
+ahsan-ul-haq:
+    email: ahsan@edx.org
+    name: Ahsan Ulhaq
+    agreement: institution
+    institution: Arbisoft
+    jira: ahsan
