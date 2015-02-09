@@ -1524,6 +1524,7 @@ sjackso:
     jira: sjackso
 dsego:
     name: Davorin Šego
+    email: dsego@edx.org
     agreement: institution
     institution: ExtensionEngine
 marjev:
