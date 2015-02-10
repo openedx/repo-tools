@@ -1602,3 +1602,13 @@ ahsan-ul-haq:
     agreement: institution
     institution: Arbisoft
     jira: ahsan
+lvnilesh:
+    email: nilesh@cloudgeni.us
+    name: Nilesh Londhe
+    agreement: individual
+    institution: Cloud Genius
+dmedvinsky:
+    email: me@dmedvinsky.name
+    name: Dimitry Medvinski
+    agreement: individual
+    institution:
