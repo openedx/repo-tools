@@ -1585,17 +1585,30 @@ La0:
     institution: OpenCraft
     jira: babadie
 rohan-dhamal-clarice:
-    agreement: institution
-    institution: Clarice
+     name: Rohan Dhamal
+     agreement: institution
+     institution: Clarice
+     email: rohan.dhamal@claricetechnologies.com
 shahidtamboli:
-    agreement: institution
-    institution: Clarice
+     name: Shahid Tamboli
+     agreement: institution
+     institution: Clarice
+     email: shahid.tamboli@claricetechnologies.com
 rahul-clarice:
-    agreement: institution
-    institution: Clarice
+     name: Rahul Varma
+     agreement: institution
+     institution: Clarice
+     email: rahul.varma@claricetechnologies.com
 jotiram:
-    agreement: institution
-    institution: Clarice
+     name: Jotiram Bhagat
+     agreement: institution
+     institution: Clarice
+     email: jotiram.bhagat@claricetechnologies.com
+abhra-clarice:
+     name: Abhradeep Mazumder
+     agreement: institution
+     institution: Clarice
+     email: abhradeep.mazumder@claricetechnologies.com
 ahsan-ul-haq:
     email: ahsan@edx.org
     name: Ahsan Ulhaq
