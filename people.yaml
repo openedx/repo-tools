@@ -51,10 +51,13 @@ bridger:
     expires_on: 2013-12-01
 Lyla-Fischer:
     name: Lyla Fischer
-    agreement: institution
-    institution: edX
+    email: lylafisch@gmail.com
+    agreement: individual
     jira: lyla
-    expires_on: 2014-11-01
+    before:
+        2014-11-01:
+            agreement: institution
+            institution: edX
 ormsbee:
     email: dave@edx.org
     name: David Ormsbee
@@ -1625,13 +1628,13 @@ dmedvinsky:
     name: Dimitry Medvinski
     agreement: individual
     institution:
-lyla-fischer:
-    email: lylafisch@gmail.com
-    name: Lyla Fischer
-    agreement: individual
-    institution:
 kashifch:
     email: kchaudhry@edx.org
     name: Kashif Chaudhry
     agreement: institution
     institution: Arbisoft
+jab5569:
+    name: John Baker
+    email: john@edx.org
+    agreement: institution
+    institution: edX
