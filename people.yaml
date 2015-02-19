@@ -1638,6 +1638,11 @@ jab5569:
     email: john@edx.org
     agreement: institution
     institution: edX
+riccardomurri:
+    name: Riccardo Murri
+    email: riccardomurri@uzh.ch
+    agreement: individual
+    institution: University of Zurich
 indagation:
     name: Kyle Boots
     email: kboots@mit.edy
