@@ -1638,3 +1638,8 @@ jab5569:
     email: john@edx.org
     agreement: institution
     institution: edX
+indagation:
+    name: Kyle Boots
+    email: kboots@mit.edy
+    agreement: individual
+    institution: MIT
