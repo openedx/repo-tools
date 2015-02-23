@@ -34,10 +34,10 @@ def init_sqlalchemy():
         engine = create_engine(db)
         meta = MetaData(engine)
 
-        mapper(PullRequest, Table('webhookdb_pull_request', meta, autoload=True))
-        mapper(PullRequestFile, Table('webhookdb_pull_request_file', meta, autoload=True))
-        mapper(Repository, Table('webhookdb_repository', meta, autoload=True))
-        mapper(User, Table('webhookdb_user', meta, autoload=True))
+        mapper(PullRequest, Table('github_pull_request', meta, autoload=True))
+        mapper(PullRequestFile, Table('github_pull_request_file', meta, autoload=True))
+        mapper(Repository, Table('github_repository', meta, autoload=True))
+        mapper(User, Table('github_user', meta, autoload=True))
 
         if 0:
             print("PullRequest")
