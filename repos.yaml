@@ -141,3 +141,6 @@ edx/edx-app-ios:
 edx/edx-app-android:
     nick: and
     track-pulls: true
+edx/xblock-utils:
+    nick: xbu
+    track-pulls: true
