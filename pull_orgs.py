@@ -58,23 +58,20 @@ def main(argv):
                 if merged >= args.end:
                     continue
 
+            pull.repo = repo.nick
             by_org[pull.org].append(pull)
 
     keys = sorted(by_org, key=lambda k: len(by_org[k]), reverse=True)
     for key in keys:
         print("{}: {}".format(key, len(by_org[key])))
 
-    fmt = "{pull.number:5d} {pull.user_login:>17s} {pull.title}"
+    fmt = "{pull.repo:4s} {pull.number:5d} {pull.user_login:>17s} {pull.title}"
 
-    for i, pull in enumerate(by_org['other']):
-        if i == 0:
-            print("\n'Other' pull requests:")
-        print(fmt.format(pull=pull))
+    for key in keys:
+        print("\n-- {} -------".format(key))
+        for pull in by_org[key]:
+            print(fmt.format(pull=pull))
 
-    for i, pull in enumerate(by_org['unsigned']):
-        if i == 0:
-            print("\nUnsigned authors:")
-        print(fmt.format(pull=pull))
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
