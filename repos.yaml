@@ -4,7 +4,7 @@
 # track-pulls is true if we should include that repo in our pull-request stats.
 #
 edx/acid-block:
-    nick: xb
+    nick: acid
     track-pulls: true
 edx/arch-prototype:
 edx/bok-choy:
@@ -14,7 +14,7 @@ edx/codejail:
     nick: cj
     track-pulls: true
 edx/configuration:
-    nick: cfg
+    nick: conf
     track-pulls: true
 edx/cs_comments_service:
     nick: com
@@ -27,7 +27,7 @@ edx/djeventstream:
 edx/ease:
 edx/edxanalytics:
 edx/edx-certificates:
-    nick: crt
+    nick: cert
     track-pulls: true
 edx/edx-demo-course:
 edx/edx-e2e-tests:
@@ -70,16 +70,16 @@ edx/notifier:
     nick: not
     track-pulls: true
 edx/opaque-keys:
-    nick: oky
+    nick: opky
     track-pulls: true
 edx/repo-tools:
-    nick: rt
+    nick: rept
     track-pulls: true
 edx/XBlock:
-    nick: xb
+    nick: xblk
     track-pulls: true
 edx/xblock-sdk:
-    nick: xb
+    nick: xbsd
     track-pulls: true
 edx/xqueue:
     nick: xq
@@ -88,7 +88,7 @@ edx/xqueue-watcher:
     nick: xqw
     track-pulls: true
 edx/xserver:
-    nick: xsr
+    nick: xsrv
     track-pulls: true
 edx/edx-val:
     nick: val
@@ -100,16 +100,16 @@ edx/edx-analytics-data-api:
     nick: aap
     track-pulls: true
 edx/edx-analytics-dashboard:
-    nick: dsh
+    nick: dash
     track-pulls: true
 edx/edx-analytics-configuration:
-    nick: acf
+    nick: acnf
     track-pulls: true
 edx/edx-analytics-api-client:
-    nick: aap
+    nick: aapi
     track-pulls: true
 edx/edx-analytics-data-api-client:
-    nick: aap
+    nick: adap
     track-pulls: true
 edx/edx-analytics-pipeline:
     nick: pipe
@@ -121,7 +121,7 @@ edx/edx-documentation:
     nick: doc
     track-pulls: true
 edx/harprofiler:
-    nick: har
+    nick: harp
     track-pulls: true
 edx/edx-notes-api:
     nick: not
@@ -130,7 +130,7 @@ edx/django-lang-pref-middleware:
     nick: lpm
     track-pulls: true
 edx/edx-milestones:
-    nick: mil
+    nick: mile
     track-pulls: true
 edx/edx-notifications:
     nick: ntf
@@ -139,13 +139,13 @@ edx/edx-app-ios:
     nick: ios
     track-pulls: true
 edx/edx-app-android:
-    nick: and
+    nick: andr
     track-pulls: true
 edx/xblock-utils:
     nick: xbu
     track-pulls: true
 edx/ux-pattern-library:
-    nick: uxp
+    nick: uxpl
     track-pulls: true
 edx/edx-lint:
     nick: lint

@@ -17,7 +17,7 @@ from repos import Repo
 
 
 ISSUE_FMT = (
-    u"{0.number:5d:white:bold} {0.repo:3s} {0.user_login:>17s:cyan} {0.comments:3d:red}"
+    u"{0.number:5d:white:bold} {0.repo:4s} {0.user_login:>17s:cyan} {0.comments:3d:red}"
     "  {0.title:.100s}"
     " {0.commits}c{0.changed_files}f"
     " {0.additions:green}+{0.deletions:red}-"
