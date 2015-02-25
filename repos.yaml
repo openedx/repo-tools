@@ -144,3 +144,15 @@ edx/edx-app-android:
 edx/xblock-utils:
     nick: xbu
     track-pulls: true
+edx/ux-pattern-library:
+    nick: uxp
+    track-pulls: true
+edx/edx-lint:
+    nick: lint
+    track-pulls: true
+edx/edx-ecommerce:
+    nick: ecom
+    track-pulls: true
+edx/django-oscar-extensions:
+    nick: oscx
+    track-pulls: true
