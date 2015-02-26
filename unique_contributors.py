@@ -3,11 +3,14 @@
 
 from __future__ import print_function
 
+import argparse
 import collections
 import datetime
+import sys
 
-from webhookdb import get_pulls
+from helpers import date_arg, make_timezone_aware
 from repos import Repo
+from webhookdb import get_pulls
 
 
 def get_external_pulls(repo):
@@ -53,25 +56,38 @@ def sliding_window(seq, key, width, step):
         in_window = [item for item in items if when <= key(item) < window_end]
         yield when, in_window
 
-def unique_authors(repos):
+def unique_authors(repos, days_window):
     """Produce a sequence of pairs: (date, num-contributors)."""
     pulls = get_summaries_from_repos(repos)
     key = lambda s: s.created
-    width = datetime.timedelta(days=90)
+    width = datetime.timedelta(days=days_window)
     step = datetime.timedelta(days=7)
 
     for when, window in sliding_window(pulls, key=key, width=width, step=step):
         num_authors = len(set(p.user for p in window))
         yield (when+width, num_authors)
 
-def main():
-    # Yes, hard-coded start date.
-    start = datetime.datetime(2013, 6, 5)
+def main(argv):
+    parser = argparse.ArgumentParser(description="Count unique contributors over time.")
+    parser.add_argument(
+        "--window", metavar="DAYS", type=int, default=90,
+        help="Count contributors over this large a window [%(default)d]"
+    )
+    parser.add_argument(
+        "--start", type=date_arg,
+        help="Date to start collecting, format is flexible: "
+        "20141225, Dec/25/2014, 2014-12-25, etc"
+    )
+    args = parser.parse_args(argv[1:])
+
+    if args.start is None:
+        args.start = (datetime.datetime(2013, 6, 5))
+
     repos = [ r.name for r in Repo.from_yaml() if r.track_pulls ]
-    for when, num_authors in unique_authors(repos):
-        if when < start:
+    for when, num_authors in unique_authors(repos, args.window):
+        if when < args.start:
             continue
         print("{0:%Y-%m-%d}\t{1}".format(when, num_authors))
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main(sys.argv))
