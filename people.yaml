@@ -1650,6 +1650,31 @@ riccardomurri:
     institution: University of Zurich
 indagation:
     name: Kyle Boots
-    email: kboots@mit.edy
+    email: kboots@mit.edu
     agreement: individual
     institution: MIT
+lazybird:
+    name: Sylvain Toé
+    email: sylvain@openfun.fr
+    agreement: individual
+    institution: FUN
+aclairekeum:
+    name: Claire Keum
+    email: dkdk8944@gmail.com
+    agreement: individual
+    institution: 
+TrueAlbanian101:
+    name: Jerun Trajko
+    email: trajko2@illinois.edu
+    agreement: individual
+    institution: 
+johnespinosa:
+    name: John Espinosa
+    email: jcespin2@illinois.edu
+    agreement: individual
+    institution: University of Illinois 
+mjmayank:
+    name: Mayank Jain
+    email: mjain6@illinois.edu
+    agreement: individual
+    institution: University of Illinois 
