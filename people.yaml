@@ -263,9 +263,13 @@ nedbat:
 auraz:
     email: kryklia@gmail.com
     name: Alexander Kryklia
-    agreement: institution
-    institution: edX
     jira: kryklia
+    agreement: none
+    institution: none
+    before:
+        2015-02-17:
+            agreement: institution
+            institution: edX
 VikParuchuri:
     email: vik@edx.org
     name: Vik Paruchuri
@@ -1662,19 +1666,19 @@ aclairekeum:
     name: Claire Keum
     email: dkdk8944@gmail.com
     agreement: individual
-    institution: 
+    institution:
 TrueAlbanian101:
     name: Jerun Trajko
     email: trajko2@illinois.edu
     agreement: individual
-    institution: 
+    institution:
 johnespinosa:
     name: John Espinosa
     email: jcespin2@illinois.edu
     agreement: individual
-    institution: University of Illinois 
+    institution: University of Illinois
 mjmayank:
     name: Mayank Jain
     email: mjain6@illinois.edu
     agreement: individual
-    institution: University of Illinois 
+    institution: University of Illinois
