@@ -156,3 +156,6 @@ edx/edx-ecommerce:
 edx/django-oscar-extensions:
     nick: oscx
     track-pulls: true
+edx/edx-search:
+    nick: srch
+    track-pulls: true
