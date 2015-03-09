@@ -1692,3 +1692,8 @@ cguardia:
     email: cguardia@yahoo.com
     agreement: institutional
     institution: MIT
+deniederhut:
+    name: Dillon Niederhut
+    email: dillon.niederhut@berkeley.edu
+    agreement: individual
+    institution: Berkeley
