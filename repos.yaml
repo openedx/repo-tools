@@ -150,7 +150,7 @@ edx/ux-pattern-library:
 edx/edx-lint:
     nick: lint
     track-pulls: true
-edx/edx-ecommerce:
+edx/ecommerce:
     nick: ecom
     track-pulls: true
 edx/django-oscar-extensions:
