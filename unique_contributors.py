@@ -59,7 +59,7 @@ def sliding_window(seq, key, width, step):
 def unique_authors(repos, days_window, interesting):
     """Produce a sequence of pairs: (date, num-contributors)."""
     pulls = get_summaries_from_repos(repos, interesting)
-    key = lambda s: s.created
+    key = lambda s: make_timezone_aware(s.created)
     width = datetime.timedelta(days=days_window)
     step = datetime.timedelta(days=7)
 
@@ -85,7 +85,7 @@ def main(argv):
     args = parser.parse_args(argv[1:])
 
     if args.start is None:
-        args.start = (datetime.datetime(2013, 6, 5))
+        args.start = make_timezone_aware(datetime.datetime(2013, 6, 5))
 
     if args.type == "external":
         interesting = lambda issue: issue.intext == "external"
