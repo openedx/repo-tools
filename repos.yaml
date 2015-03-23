@@ -2,14 +2,17 @@
 #
 # nick is a shorthand for displaying repo name in tight places.
 # track-pulls is true if we should include that repo in our pull-request stats.
+# area is for clumping repos into broad areas: core, mobile, analytics, etc.
 #
 edx/acid-block:
     nick: acid
     track-pulls: true
+    area: xblock
 edx/arch-prototype:
 edx/bok-choy:
     nick: bok
     track-pulls: true
+    area: tools
 edx/codejail:
     nick: cj
     track-pulls: true
@@ -22,6 +25,7 @@ edx/cs_comments_service:
 edx/diff-cover:
     nick: dfc
     track-pulls: true
+    area: tools
 edx/discern:
 edx/djeventstream:
 edx/ease:
@@ -61,10 +65,12 @@ edx/i18n-tools:
         - straz
         - adampalay
         - cpennington
+    area: tools
 edx/insights:
 edx/js-test-tool:
     nick: jst
     track-pulls: true
+    area: tools
 edx/loghandlersplus:
 edx/notifier:
     nick: not
@@ -75,12 +81,15 @@ edx/opaque-keys:
 edx/repo-tools:
     nick: rept
     track-pulls: true
+    area: tools
 edx/XBlock:
     nick: xblk
     track-pulls: true
+    area: xblock
 edx/xblock-sdk:
     nick: xbsd
     track-pulls: true
+    area: xblock
 edx/xqueue:
     nick: xq
     track-pulls: true
@@ -99,21 +108,27 @@ edx/edx-serverapi:
 edx/edx-analytics-data-api:
     nick: aap
     track-pulls: true
+    area: analytics
 edx/edx-analytics-dashboard:
     nick: dash
     track-pulls: true
+    area: analytics
 edx/edx-analytics-configuration:
     nick: acnf
     track-pulls: true
+    area: analytics
 edx/edx-analytics-api-client:
     nick: aapi
     track-pulls: true
+    area: analytics
 edx/edx-analytics-data-api-client:
     nick: adap
     track-pulls: true
+    area: analytics
 edx/edx-analytics-pipeline:
     nick: pipe
     track-pulls: true
+    area: analytics
 edx/edx-oauth2-provider:
     nick: oau
     track-pulls: true
@@ -123,6 +138,7 @@ edx/edx-documentation:
 edx/harprofiler:
     nick: harp
     track-pulls: true
+    area: tools
 edx/edx-notes-api:
     nick: not
     track-pulls: true
@@ -138,9 +154,11 @@ edx/edx-notifications:
 edx/edx-app-ios:
     nick: ios
     track-pulls: true
+    area: mobile
 edx/edx-app-android:
     nick: andr
     track-pulls: true
+    area: mobile
 edx/xblock-utils:
     nick: xbu
     track-pulls: true
@@ -150,12 +168,16 @@ edx/ux-pattern-library:
 edx/edx-lint:
     nick: lint
     track-pulls: true
-edx/edx-ecommerce:
+    area: tools
+edx/ecommerce:
     nick: ecom
     track-pulls: true
+    area: dedx
 edx/django-oscar-extensions:
     nick: oscx
     track-pulls: true
+    area: dedx
 edx/edx-search:
     nick: srch
     track-pulls: true
+    area: dedx

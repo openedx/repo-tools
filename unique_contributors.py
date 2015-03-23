@@ -13,18 +13,18 @@ from repos import Repo
 from webhookdb import get_pulls
 
 
-def get_external_pulls(repo):
+def get_filtered_pulls(repo, interesting):
     """Produce a stream of external pull requests."""
     for issue in get_pulls(repo, state="all", org=True):
-        if issue.intext == 'external':
+        if interesting(issue):
             yield issue
 
 Summary = collections.namedtuple("Summary", "id, user, created")
 
-def get_summaries_from_repos(repos):
+def get_summaries_from_repos(repos, interesting):
     """Make a stream of summaries from a list of repos."""
     for repo in repos:
-        for pull in get_external_pulls(repo):
+        for pull in get_filtered_pulls(repo, interesting):
             yield Summary(pull.id, pull.user_login, pull.created_at)
 
 def date_range(start, end, step):
@@ -56,10 +56,10 @@ def sliding_window(seq, key, width, step):
         in_window = [item for item in items if when <= key(item) < window_end]
         yield when, in_window
 
-def unique_authors(repos, days_window):
+def unique_authors(repos, days_window, interesting):
     """Produce a sequence of pairs: (date, num-contributors)."""
-    pulls = get_summaries_from_repos(repos)
-    key = lambda s: s.created
+    pulls = get_summaries_from_repos(repos, interesting)
+    key = lambda s: make_timezone_aware(s.created)
     width = datetime.timedelta(days=days_window)
     step = datetime.timedelta(days=7)
 
@@ -69,6 +69,10 @@ def unique_authors(repos, days_window):
 
 def main(argv):
     parser = argparse.ArgumentParser(description="Count unique contributors over time.")
+    parser.add_argument(
+        "--type", choices=["external", "internal"], default="external",
+        help="What kind of pull requests should be counted [%(default)s]"
+    )
     parser.add_argument(
         "--window", metavar="DAYS", type=int, default=90,
         help="Count contributors over this large a window [%(default)d]"
@@ -81,10 +85,15 @@ def main(argv):
     args = parser.parse_args(argv[1:])
 
     if args.start is None:
-        args.start = (datetime.datetime(2013, 6, 5))
+        args.start = make_timezone_aware(datetime.datetime(2013, 6, 5))
+
+    if args.type == "external":
+        interesting = lambda issue: issue.intext == "external"
+    elif args.type == "internal":
+        interesting = lambda issue: issue.intext == "internal"
 
     repos = [ r.name for r in Repo.from_yaml() if r.track_pulls ]
-    for when, num_authors in unique_authors(repos, args.window):
+    for when, num_authors in unique_authors(repos, args.window, interesting):
         if when < args.start:
             continue
         print("{0:%Y-%m-%d}\t{1}".format(when, num_authors))

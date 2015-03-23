@@ -1390,6 +1390,12 @@ aleffert:
     agreement: institution
     institution: edX
     jira: aleffert
+hanningni:
+    email: hanning@edx.org
+    name: Hanning Ni
+    agreement: institution
+    institution: edX
+    jira: hanning
 ataki:
     email: jimzheng@stanford.edu
     name: Jim Zheng
@@ -1606,21 +1612,29 @@ rahul-clarice:
      agreement: institution
      institution: Clarice
      email: rahul.varma@claricetechnologies.com
+     expires_on: 2015-03-16
 jotiram:
      name: Jotiram Bhagat
      agreement: institution
      institution: Clarice
      email: jotiram.bhagat@claricetechnologies.com
+     expires_on: 2015-03-16
 abhra-clarice:
      name: Abhradeep Mazumder
      agreement: institution
      institution: Clarice
      email: abhradeep.mazumder@claricetechnologies.com
+     expires_on: 2015-03-16
 swapnali-clarice:
      name: Swapnali Bhagat
      agreement: institution
      institution: Clarice
      email: swapnamala.bhagat@claricetechnologies.com
+Divakar-Patil-Clarice:
+    name: Divakar Patil
+    agreement: institution
+    institution: Clarice
+    email: divakar.patil@claricetechnologies.com
 ahsan-ul-haq:
     email: ahsan@edx.org
     name: Ahsan Ulhaq
