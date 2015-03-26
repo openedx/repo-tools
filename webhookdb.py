@@ -29,8 +29,12 @@ def init_sqlalchemy():
     global engine, session
 
     if engine is None:
-        with open("db.url") as f:
-            db = f.read().strip()
+        try:
+            with open("db.url") as f:
+                db = f.read().strip()
+        except Exception:
+            raise ValueError("It looks like you don't have a `db.url` file. Please contact someone on the Open Source team to help you out.")
+            
         engine = create_engine(db)
         meta = MetaData(engine)
 
