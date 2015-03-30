@@ -1440,6 +1440,7 @@ regisb:
     email: regis.behmo@openfun.fr
     name: Régis Behmo
     agreement: individual
+    institution: FUN
 DanielEidan:
     email: daniel@bnotions.com
     name: Daniel Eidan
@@ -1715,7 +1716,6 @@ dlackty:
     name: Richard Lee
     email: dlackty@gmail.com
     agreement: individual
-    institution:
 jp-bpl:
     name: Jonathan Peter
     email: jonathan.peter@blue-planet-life.org

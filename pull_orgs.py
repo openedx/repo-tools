@@ -51,10 +51,14 @@ def main(argv):
             # We only want merged pull requests.
             if pull.combinedstate != "merged":
                 continue
+            # Pull requests can be recently modified even if they were merged
+            # long ago, so only take things merged since our since date.
+            merged = make_timezone_aware(pull.merged_at)
+            if merged < since:
+                continue
 
             if args.end is not None:
                 # We don't want to count things merged after our end date.
-                merged = make_timezone_aware(pull.merged_at)
                 if merged >= args.end:
                     continue
 
