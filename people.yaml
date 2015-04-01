@@ -1723,6 +1723,11 @@ rmoch:
     name: Richard Moch
     email: richard.moch@gmail.com
     agreement: individual
+mcgachey:
+    email: phil_mcgachey@harvard.edu
+    name: Phil McGachey
+    agreement: institution
+    institution: Harvard
 tkeemon:
     email: keems21@gmail.com
     name: TJ Keemon
