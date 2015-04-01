@@ -237,6 +237,7 @@ tmacwill:
     email: tmacwilliam@cs.harvard.edu
     name: Tommy MacWilliam
     agreement: institution
+    institution: Harvard
 natehardison:
     email: natehardison@gmail.com
     name: Nate Hardison
@@ -1722,3 +1723,8 @@ rmoch:
     name: Richard Moch
     email: richard.moch@gmail.com
     agreement: individual
+mcgachey:
+    email: phil_mcgachey@harvard.edu
+    name: Phil McGachey
+    agreement: institution
+    institution: Harvard
