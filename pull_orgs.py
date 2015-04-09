@@ -75,7 +75,12 @@ def main(argv):
 
     fmt = "{pull.repo:4s} {pull.number:5d} {pull.user_login:>17s} {pull.title}"
 
-    if not args.short:
+    if args.short:
+        if 'unsigned' in keys:
+            print("\n-- {} -------".format('unsigned'))
+            for pull in by_org['unsigned']:
+                print(fmt.format(pull=pull))
+    else:
         for key in keys:
             print("\n-- {} -------".format(key))
             for pull in by_org[key]:
