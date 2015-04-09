@@ -28,6 +28,10 @@ def main(argv):
         help="Date to end collecting, format is flexible: "
         "25/Dec/2014, 12/25/2014, 2014-12-25, etc"
     )
+    parser.add_argument(
+        "--short", action="store_true",
+        help="Only show the short summary"
+    )
 
     args = parser.parse_args(argv[1:])
 
@@ -71,10 +75,11 @@ def main(argv):
 
     fmt = "{pull.repo:4s} {pull.number:5d} {pull.user_login:>17s} {pull.title}"
 
-    for key in keys:
-        print("\n-- {} -------".format(key))
-        for pull in by_org[key]:
-            print(fmt.format(pull=pull))
+    if not args.short:
+        for key in keys:
+            print("\n-- {} -------".format(key))
+            for pull in by_org[key]:
+                print(fmt.format(pull=pull))
 
 
 if __name__ == "__main__":
