@@ -863,6 +863,11 @@ hkim823:
     institution: edX
     jira: han
     expires_on: 2014-09-17
+jibsheet:
+    email: kevin@edx.org
+    name: Kevin Falcone
+    agreement: institution
+    jira: kevin
 Bachmann1234:
     email: bachmann.matt@gmail.com
     name: Matt Bachmann
