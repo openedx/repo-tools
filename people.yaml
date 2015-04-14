@@ -1751,3 +1751,33 @@ igpisa:
     name:  Ignacio Piqueras
     agreement: institution
     institution: UPV
+susinmotion:
+    email: steinman.tutoring@gmail.com
+    name: Susan Steinman
+    agreement: individual
+    comment: PyCon 2015!
+ma3lstrom:
+    email: sebastienluong@gmail.com
+    name: Sebastien Luong
+    agreement: individual
+    comment: PyCon 2015!
+xbs13:
+    email: michaelp193@gmail.com
+    name: Michael Perez
+    agreement: individual
+    comment: PyCon 2015!
+applecool:
+    email: kmitharsha@gmail.com
+    name: Sri Harsha Pamu
+    agreement: individual
+    comment: PyCon 2015!
+xpostudio4:
+    email: leonardo@codetiger.co
+    name: Leonardo Jimenez
+    agreement: individual
+    comment: PyCon 2015!
+doctaphred:
+    email: doctaphred@gmail.com
+    name: Frederizk Wagner
+    agreement: individual
+    comment: PyCon 2015!
