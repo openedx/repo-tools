@@ -1786,3 +1786,9 @@ doctaphred:
     name: Frederick Wagner
     agreement: individual
     comment: PyCon 2015!
+cewing:
+    email: cris@crisewing.com
+    name: Cris Ewing
+    agreement: institution
+    institution: MIT
+    comment: Works for Jazkarta, under contract with MIT
