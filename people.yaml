@@ -265,12 +265,15 @@ auraz:
     email: kryklia@gmail.com
     name: Alexander Kryklia
     jira: kryklia
-    agreement: none
-    institution: none
+    agreement: institution
+    institution: edX
     before:
         2015-02-17:
             agreement: institution
             institution: edX
+        2015-04-01:
+            agreement: none
+            institution: none
 VikParuchuri:
     email: vik@edx.org
     name: Vik Paruchuri
