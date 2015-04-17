@@ -1795,3 +1795,9 @@ cewing:
     agreement: institution
     institution: MIT
     comment: Works for Jazkarta, under contract with MIT
+cguardia:
+    email: carlos@jazkarta.com
+    name: Carlos de La Guardia
+    agreement: institution
+    institution: MIT
+    comment: Works for Jazkarta, under contract with MIT
