@@ -2,6 +2,7 @@ auth.yaml
 db.url
 venv
 *.pyc
+*~
 
 age/age.json
 
