@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 """
-Calculate pull requests opened and merged, by quarter.
+Calculate interal and external pull requests both opened and merged,
+by quarter, month, or week.
+
+Returns the raw # of PRs opened, and the raw # merged, per time increment.
+For example, if a PR is opened in July and merged in August, it is counted as
+opened in July, and merged in August.
 """
 
 from __future__ import print_function
@@ -134,7 +139,7 @@ def lines_in_pull(pull):
     return lines
 
 def main(argv):
-    parser = argparse.ArgumentParser(description="Summarize pull requests.")
+    parser = argparse.ArgumentParser(description="Calculate internal & external pull requests, both opened & merged, by quarter.")
     parser.add_argument(
         "--monthly", action="store_true",
         help="Report on months instead of quarters"
