@@ -182,6 +182,7 @@ rocha:
     agreement: institution
     institution: edX
     jira: rocha
+    expires_on: 2015-02-01
 ccp0101:
     email: ccp0101@gmail.com
     name: Mike Chen
@@ -485,18 +486,27 @@ JonahStanley:
     agreement: institution
     institution: edX
     jira: jstanley
+    comment: edX intern summer 2013
     expires_on: 2013-09-01
 Slater-Victoroff:
     name: Slater Victoroff
     agreement: institution
     institution: edX
     jira: svictoroff
+    comment: edX intern summer 2013
     expires_on: 2014-01-01
+csvoss:
+     name: Chelsea Voss
+     agreement: institution
+     institution: edX
+     comment: edX intern summer 2013
+     expires_on: 2013-09-01
 peter-fogg:
     name: Peter Fogg
     agreement: institution
     institution: edX
     jira: pfogg
+    comment: edX intern summer 2013
     expires_on: 2013-09-01
 lapentab:
     email: lapentab@mit.edu
@@ -504,12 +514,14 @@ lapentab:
     agreement: institution
     institution: edX
     jira: blapenta
+    comment: edX intern summer 2013
     expires_on: 2013-09-01
 rlucioni:
     email: renzo@renzolucioni.com
     name: Renzo Lucioni
     agreement: institution
     institution: edX
+    comment: edX intern summer 2013
     jira: rlucioni
 fephsun:
     email: felixsun@mit.edu
@@ -517,6 +529,7 @@ fephsun:
     agreement: institution
     institution: edX
     jira: felixsun
+    comment: edX intern summer 2013
     expires_on: 2013-09-01
 adampalay:
     email: adam@edx.org
@@ -530,6 +543,7 @@ ihoover:
     agreement: institution
     institution: edX
     jira: ihoover
+    comment: edX intern summer 2013
     expires_on: 2013-09-01
 mikigoyal:
     email: miki@edx.org
@@ -553,6 +567,7 @@ mlsteele:
     agreement: institution
     institution: edX
     jira: msteele
+    comment: edX intern summer 2013
     expires_on: 2013-09-01
 kluo:
     email: kevinluo@alumni.stanford.edu
