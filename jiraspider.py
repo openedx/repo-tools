@@ -7,6 +7,7 @@ from __future__ import print_function
 from collections import namedtuple
 
 import datetime
+import dateutil.parser
 import json
 import re
 
@@ -67,40 +68,58 @@ class JiraSpider(scrapy.Spider):
         return requests
 
     def parse(self, response):
+        """
+        Parses a single response into an IssueStateDurations() object.
+        Returns the object itself.
+
+        (this function must be named as such for the scrapy spider to properly work)
+        """
         item = IssueStateDurations()
         item['issue'] = response.meta['issue_key']
         item['labels'] = response.meta['labels']
         states = {}
 
         transitions = response.xpath('.//table[tr/th[text()="Time In Source Status"]]/tr[td]')
+        # Parse each transition, pulling out the source status & how much time was spent in that status
         for trans in transitions:
             source_status = trans.xpath('td[1]/table/tr/td[2]/text()').extract()[0].strip()
             duration = trans.xpath('td[2]/text()').extract()[0].strip()
             # need to account for the fact that states can be revisited, along different transition arrow
+            # parse the time into a datetime.timedelta object
             duration_datetime = self.parse_time(duration)
-            try:
-                states[source_status] = states.get(source_status, self.default_time) + duration_datetime
-            except Exception:
-                src = states.get(source_status, self.default_time)
-                print('source status: {} {}'.format(src, type(src)))
-                print('duration: {} {}'.format(duration, type(duration)))
-                return
 
-        # TODO need to consider current state, unless in "merged" or "closed"
-        # we're in final state so get dest_status
+            # Add the amount of time spent in source status to any previous recorded time we've spent there
+            states[source_status] = states.get(source_status, self.default_time) + duration_datetime
+
+        # Need to consider current state, as well. We're in final state so get dest_status
         dest_status = trans.xpath('td[1]/table/tr/td[5]/text()').extract()[0].strip()
+
         if dest_status in ['Merged', 'Closed']:
-            # Store the resolution as a tuple of (source, result) so we can get not just resolution but previous state before resolution
+            # If the ticket's been resolved (merged or closed), store the resolution as a tuple of
+            # (source, result) so we can get not just resolution but previous state prior to resolution
             states['Resolution'] = (source_status, dest_status)
+
         else:
             # get "Last Execution Date" time -- in a terribly shitty format.
             trans_date = trans.xpath('td[5]/text()').extract()[0].strip()
-        #    current_duration = datetime.datetime.now() - self.parse_last_execution_time(trans_date)
-        #    states[dest_status] = states.get(dest_status, self.default_time) + current_duration
+            try:
+                current_duration = datetime.datetime.now() - self.parse_last_execution_time(trans_date)
+            except ValueError:
+                # couldn't parse the last execution time for some reason. Log error and continue.
+                states['error'] = 'Error parsing transition into {dest} from date {date}'.format(
+                    dest=dest_status,
+                    date=trans_date
+                )
+            else:
+                states[dest_status] = states.get(dest_status, self.default_time) + current_duration
 
         # json-serialize each timedelta ('xx:yy', xx days, yy seconds) (skipping useconds)
         item['states'] = {}
         for (state, tdelta) in states.iteritems():
+            # "error" & "Resolution" states have string values
+            if state in ['error', 'Resolution']:
+                item['states'][state] = tdelta
+                continue
             item['states'][state] = '{0.days}:{0.seconds}'.format(tdelta)
 
         return item
@@ -136,4 +155,14 @@ class JiraSpider(scrapy.Spider):
 
         Returns a datetime.datetime object representing whe the last execution time occured
         """
-        raise NotImplementedError()
+        # dateutil.parser.parse will do all the formats we need except the "Yesterday"
+        if 'today' in etime:
+            # For things that happend "Today", we can parse using the fuzzy flag.
+            return dateutil.parser.parse(etime, fuzzy=True)
+
+        if 'yesterday' in etime:
+            today = datetime.datetime.now()
+            yesterday = '{0.month}/{1}/{0.year}'.format(today, today.day - 1)
+            etime = etime.replace('Yesterday', yesterday)
+
+        return dateutil.parser.parse(etime)
