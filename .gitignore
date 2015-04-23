@@ -5,6 +5,7 @@ venv
 *~
 
 age/age.json
+states.json
 
 .sass-cache
 .webcache
