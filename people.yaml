@@ -1816,3 +1816,17 @@ cguardia:
     agreement: institution
     institution: MIT
     comment: Works for Jazkarta, under contract with MIT
+colin-fredricks:
+    email: colin.fredricks@gmail.com
+    name:  Colin Fredricks
+    agreement: institution
+    institution: Harvard
+greggay:
+    email: greggay@gmail.com
+    name:  Greg Gay
+    agreement: individual
+xionglun:
+    email: xheavey@gmail.com
+    name:  Allen Heavey
+    agreement: individual
+
