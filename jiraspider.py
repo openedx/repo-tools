@@ -44,9 +44,21 @@ def jira_issues(server_url, project_name):
 
 
 class IssueStateDurations(scrapy.Item):
+    # String: JIRA issue key, eg "OSPR-1"
     issue = scrapy.Field()
+    # Dictionary: States: amount of time ("days:seconds" format) spent in that state, eg
+    # {"Waiting on Author": "0:72180", "Needs Triage": "1:38520"}
     states = scrapy.Field()
+    # List: Labels present on the ticket, if any, eg ["TNL"]
     labels = scrapy.Field()
+    # String: any debug information the parser outputs on this entry
+    debug = scrapy.Field()
+    # String: any error information the parser outputs on this entry
+    error = scrapy.Field()
+    # List [str, str]: Resolution transition of the issue, if resolved, eg
+    # ["Waiting on Author", "Merged"] indicates that the issue was merged from
+    # the "Waiting on Author" state.
+    resolution = scrapy.Field()
 
 
 class JiraSpider(scrapy.Spider):
@@ -74,18 +86,22 @@ class JiraSpider(scrapy.Spider):
 
         (this function must be named as such for the scrapy spider to properly work)
         """
+        # Set up item to hold info from the response
         item = IssueStateDurations()
         item['issue'] = response.meta['issue_key']
         item['labels'] = response.meta['labels']
-        states = {}
+        item['debug'] = ''
+        item['error'] = ''
 
+        states = {}
         transitions = response.xpath('.//table[tr/th[text()="Time In Source Status"]]/tr[td]')
+
         # Parse each transition, pulling out the source status & how much time was spent in that status
-        for trans in transitions:
-            # TODO how do we account for "verified" stupidity (eg https://openedx.atlassian.net/browse/OSPR-369)
-            # TODO how do we want to handle ones that are closed and reopened (eg https://openedx.atlassian.net/browse/OSPR-415)
+        for trans in self.clean_transitions(transitions, item):
+            # TODO how do we want to handle ones that are closed and reopened (eg https://openedx.atlassian.net/browse/OSPR-415) -- possibly just leave to parsing later on
             source_status = trans.xpath('td[1]/table/tr/td[2]/text()').extract()[0].strip()
             duration = trans.xpath('td[2]/text()').extract()[0].strip()
+
             # need to account for the fact that states can be revisited, along different transition arrow
             # parse the time into a datetime.timedelta object
             duration_datetime = self.parse_time(duration)
@@ -95,11 +111,11 @@ class JiraSpider(scrapy.Spider):
 
         # Need to consider current state, as well. We're in final state so get dest_status
         dest_status = trans.xpath('td[1]/table/tr/td[5]/text()').extract()[0].strip()
-
+        # item['debug'] += "dest_status is: " + dest_status
         if dest_status in ['Merged', 'Rejected']:
             # If the ticket's been resolved (merged or closed), store the resolution as a tuple of
             # (source, result) so we can get not just resolution but previous state prior to resolution
-            states['Resolution'] = (source_status, dest_status)
+            item['resolution'] = (source_status, dest_status)
 
         else:
             # get "Last Execution Date" time -- in a terribly shitty format.
@@ -108,7 +124,7 @@ class JiraSpider(scrapy.Spider):
                 current_duration = datetime.datetime.now() - self.parse_last_execution_time(trans_date)
             except ValueError:
                 # couldn't parse the last execution time for some reason. Log error and continue.
-                states['error'] = 'Error parsing transition into {dest} from date {date}'.format(
+                item['error'] += 'Error parsing transition into {dest} from date {date}\n'.format(
                     dest=dest_status,
                     date=trans_date
                 )
@@ -118,13 +134,29 @@ class JiraSpider(scrapy.Spider):
         # json-serialize each timedelta ('xx:yy', xx days, yy seconds) (skipping useconds)
         item['states'] = {}
         for (state, tdelta) in states.iteritems():
-            # "error" & "Resolution" states have string values
-            if state in ['error', 'Resolution']:
-                item['states'][state] = tdelta
-                continue
             item['states'][state] = '{0.days}:{0.seconds}'.format(tdelta)
 
         return item
+
+
+    def clean_transitions(self, transitions, item):
+        """
+        Parse each transition, discarding any transitions that go in/out of the "Verified" state
+        and cleaning up other random states that may have been introduced
+
+        See https://openedx.atlassian.net/browse/OSPR-369
+        """
+        # TODO: States to clean up: "Open", "Ready for Grooming", "In Backlog"
+        # TODO: emit debug message if we find an unexpected state
+        cleaned = []
+        for trans in transitions:
+            source_status = trans.xpath('td[1]/table/tr/td[2]/text()').extract()[0].strip()
+            dest_status = trans.xpath('td[1]/table/tr/td[5]/text()').extract()[0].strip()
+            if source_status == "Verified" or dest_status == "Verified":
+                continue
+            cleaned.append(trans)
+
+        return cleaned
 
     def parse_time(self, duration):
         """
