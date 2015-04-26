@@ -19,24 +19,11 @@ import itertools
 import re
 import sys
 
-from helpers import date_arg, make_timezone_aware
+from helpers import (
+    date_bucket_quarter, date_bucket_month, date_bucket_week,
+    date_arg, make_timezone_aware, lines_in_pull, print_repo_output
+)
 from repos import Repo
-
-
-def date_bucket_quarter(date):
-    """Compute the quarter for a date."""
-    date += datetime.timedelta(days=180)    # to almost get to our fiscal year
-    quarter = (date.month-1) // 3 + 1
-    return "Y{:02d} Q{}".format(date.year % 100, quarter)
-
-def date_bucket_month(date):
-    """Compute the year and month for a date."""
-    return "Y{:02d} M{:02d}".format(date.year % 100, date.month)
-
-def date_bucket_week(date):
-    """Compute the date of the Monday for a date, to bucket by weeks."""
-    monday = date - datetime.timedelta(days=date.weekday())
-    return "{:%Y-%m-%d}".format(monday)
 
 
 def get_all_repos(date_bucket_fn, start, lines=False, internal=False):
@@ -55,10 +42,7 @@ def get_all_repos(date_bucket_fn, start, lines=False, internal=False):
     for repo in repos:
         get_bucket_data(buckets, repo.name, date_bucket_fn, start=start, lines=lines, internal=internal)
 
-    print("timespan\t" + "\t".join(keys))
-    for time_period in sorted(buckets.keys()):
-        data = buckets[time_period]
-        print("{}\t{}".format(time_period, "\t".join(str(data[k]) for k in keys)))
+    print_repo_output(keys, buckets)
 
 
 def get_bucket_data(buckets, repo_name, date_bucket_fn, start, lines=False, internal=False):
@@ -96,27 +80,6 @@ def get_bucket_data(buckets, repo_name, date_bucket_fn, start, lines=False, inte
             else:
                 # PR is still open
                 buckets[bucket_key]["unresolved " + intext] += increment
-
-
-def lines_in_pull(pull):
-    """Return a line count for the pull request.
-
-    To consider both added and deleted, we add them together, but discount the
-    deleted count, on the theory that adding a line is harder than deleting a
-    line (*waves hands very broadly*).
-
-    """
-    ignore = r"(/vendor/)|(conf/locale)|(static/fonts)|(test/data/uploads)"
-    lines = 0
-    files = pull.get_files()
-    for f in files:
-        if re.search(ignore, f.filename):
-            #print("Ignoring file {}".format(f.filename))
-            continue
-        lines += f.additions + f.deletions//5
-    if pull.combinedstate == "merged" and lines > 2000:
-        print("*** Large pull: {lines:-6d} lines, {pr.created_at} {pr.number:-4d}: {pr.title}".format(lines=lines, pr=pull))
-    return lines
 
 
 def main(argv):
