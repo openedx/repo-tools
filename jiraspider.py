@@ -19,6 +19,24 @@ from scrapy.http import Request
 
 SERVER = 'https://openedx.atlassian.net'
 TIME_REGEX = re.compile(r'((?P<days>\d+?)d)?((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?')
+OSPR_STATES = [
+    'Needs Triage',
+    'Waiting on Author',
+    'Blocked by Other Work',
+    'Product Review',
+    'Community Manager Review',
+    'Awaiting Prioritization',
+    'Engineering Review',
+    'Merged',
+    'Rejected',
+]
+STATE_MAP = {
+    'Open': 'Awaiting Prioritization',
+    'Ready for Grooming': 'Awaiting Prioritization',
+    'Groomed': 'Awaiting Prioritization',
+    'In Backlog': 'Awaiting Prioritization',
+    'Engineering Code Review': 'Engineering Review',
+}
 
 IssueFields = namedtuple('IssueFields', ['key', 'labels', 'issuetype'])
 
@@ -64,6 +82,7 @@ class IssueStateDurations(scrapy.Item):
 class JiraSpider(scrapy.Spider):
     name = 'jiraspider'
     default_time = datetime.timedelta(0)
+    onemin = datetime.timedelta(**{'minutes': 1})
 
     def start_requests(self):
         issues = jira_issues(SERVER, 'OSPR')
@@ -95,23 +114,32 @@ class JiraSpider(scrapy.Spider):
 
         states = {}
         transitions = response.xpath('.//table[tr/th[text()="Time In Source Status"]]/tr[td]')
+        if not transitions:
+            item['error'] += "ERROR: Could not find any transitions for key {}!".format(item['issue'])
+            return item
 
         # Parse each transition, pulling out the source status & how much time was spent in that status
         for trans in self.clean_transitions(transitions, item):
-            # TODO how do we want to handle ones that are closed and reopened (eg https://openedx.atlassian.net/browse/OSPR-415) -- possibly just leave to parsing later on
-            source_status = trans.xpath('td[1]/table/tr/td[2]/text()').extract()[0].strip()
-            duration = trans.xpath('td[2]/text()').extract()[0].strip()
+            (source_status, dest_status, duration) = trans
 
             # need to account for the fact that states can be revisited, along different transition arrow
             # parse the time into a datetime.timedelta object
-            duration_datetime = self.parse_time(duration)
+            duration_datetime = self.parse_duration(duration)
+            # ignore states that we spent less than one minute in (often this is just because transitioning
+            # through JIRA states is stupid, or botbro is stupid)
+            if source_status != 'Needs Triage' and duration_datetime < self.onemin:
+                item['debug'] += "Ignoring state ({}) of length {}".format(source_status, duration)
+                continue
 
             # Add the amount of time spent in source status to any previous recorded time we've spent there
             states[source_status] = states.get(source_status, self.default_time) + duration_datetime
+            self.validate_tdelta(
+                states[source_status],
+                item,
+                'adding src status time: {}'.format(duration_datetime)
+            )
 
-        # Need to consider current state, as well. We're in final state so get dest_status
-        dest_status = trans.xpath('td[1]/table/tr/td[5]/text()').extract()[0].strip()
-        # item['debug'] += "dest_status is: " + dest_status
+        # Need to consider current state ('dest_status'), as well.
         if dest_status in ['Merged', 'Rejected']:
             # If the ticket's been resolved (merged or closed), store the resolution as a tuple of
             # (source, result) so we can get not just resolution but previous state prior to resolution
@@ -119,22 +147,39 @@ class JiraSpider(scrapy.Spider):
 
         else:
             # get "Last Execution Date" time -- in a terribly shitty format.
-            trans_date = trans.xpath('td[5]/text()').extract()[0].strip()
+            trans_date = transitions[-1].xpath('td[5]/text()').extract()[0].strip()
             try:
-                current_duration = datetime.datetime.now() - self.parse_last_execution_time(trans_date)
+                last_execution_time = self.parse_last_execution_time(trans_date)
             except ValueError:
                 # couldn't parse the last execution time for some reason. Log error and continue.
-                item['error'] += 'Error parsing transition into {dest} from date {date}\n'.format(
+                item['error'] += 'ERROR: parse fail transition into {dest} from date {date}\n'.format(
                     dest=dest_status,
                     date=trans_date
                 )
             else:
+                current_duration = datetime.datetime.now() - last_execution_time
+                self.validate_tdelta(
+                    current_duration,
+                    item,
+                    'cd: now() minus last time, {}'.format(last_execution_time)
+                )
                 states[dest_status] = states.get(dest_status, self.default_time) + current_duration
+                self.validate_tdelta(
+                    states[dest_status],
+                    item,
+                    'getting dest status {}, duration {}'.format(dest_status, current_duration)
+                )
 
         # json-serialize each timedelta ('xx:yy', xx days, yy seconds) (skipping useconds)
         item['states'] = {}
         for (state, tdelta) in states.iteritems():
             item['states'][state] = '{0.days}:{0.seconds}'.format(tdelta)
+
+        # If we didn't find any debugs or errors, remove before returning
+        if item['debug'] == '':
+            del item['debug']
+        if item['error'] == '':
+            del item['error']
 
         return item
 
@@ -146,19 +191,43 @@ class JiraSpider(scrapy.Spider):
 
         See https://openedx.atlassian.net/browse/OSPR-369
         """
-        # TODO: States to clean up: "Open", "Ready for Grooming", "In Backlog"
-        # TODO: emit debug message if we find an unexpected state
         cleaned = []
         for trans in transitions:
-            source_status = trans.xpath('td[1]/table/tr/td[2]/text()').extract()[0].strip()
-            dest_status = trans.xpath('td[1]/table/tr/td[5]/text()').extract()[0].strip()
-            if source_status == "Verified" or dest_status == "Verified":
+            try:
+                source_status = trans.xpath('td[1]/table/tr/td[2]/text()').extract()[0].strip()
+                dest_status = trans.xpath('td[1]/table/tr/td[5]/text()').extract()[0].strip()
+                # Discard transitions that go in/out of the "Verified" state
+                if source_status == "Verified" or dest_status == "Verified":
+                    continue
+
+                source_status = self.remap_states(source_status, item)
+                dest_status = self.remap_states(dest_status, item)
+                duration = trans.xpath('td[2]/text()').extract()[0].strip()
+                # print('*'*10 + source_status + '->' + dest_status + '; ' + duration)
+                cleaned.append((source_status, dest_status, duration))
+
+            except Exception as e:
+                item['error'] += "ERROR in clean_transactions: {}".format(e)
                 continue
-            cleaned.append(trans)
 
         return cleaned
 
-    def parse_time(self, duration):
+    def remap_states(self, status, item):
+        """
+        Cleans up messy data by remapping other board's states into OSPR states.
+
+        Logs debug messages for any states we don't know about.
+        """
+        if status in STATE_MAP.keys():
+            return STATE_MAP[status]
+
+        elif status not in OSPR_STATES:
+            # emit debug message if we find an unexpected state
+            item['debug'] += "DEBUG: Found unexpected state '{}'!".format(status)
+
+        return status
+
+    def parse_duration(self, duration):
         """
         Parses the duration time that we scrape from the "Time in Source Status" field.
 
@@ -199,4 +268,19 @@ class JiraSpider(scrapy.Spider):
             yesterday = '{0.month}/{1}/{0.year}'.format(today, today.day - 1)
             etime = etime.replace('Yesterday', yesterday)
 
-        return dateutil.parser.parse(etime)
+        # This is sometimes returning dates in the future when the day is
+        # specified as an abstract day such as "Wednesday"
+        parsed_dt = dateutil.parser.parse(etime)
+        # if it's a date in the future, take it back 7 days
+        if parsed_dt > datetime.datetime.now():
+            parsed_dt = parsed_dt + datetime.timedelta(**{'days': -7})
+
+        return parsed_dt
+
+    def validate_tdelta(self, tdelta, item, msg):
+        """
+        Validates that the given timedelta is a positive quantity.
+        Logs a debug message if not.
+        """
+        if tdelta < datetime.timedelta(0):
+            item['debug'] += 'DEBUG: negative time found. {}'.format(msg)
