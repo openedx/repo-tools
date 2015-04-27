@@ -82,6 +82,8 @@ class JiraSpider(scrapy.Spider):
         transitions = response.xpath('.//table[tr/th[text()="Time In Source Status"]]/tr[td]')
         # Parse each transition, pulling out the source status & how much time was spent in that status
         for trans in transitions:
+            # TODO how do we account for "verified" stupidity (eg https://openedx.atlassian.net/browse/OSPR-369)
+            # TODO how do we want to handle ones that are closed and reopened (eg https://openedx.atlassian.net/browse/OSPR-415)
             source_status = trans.xpath('td[1]/table/tr/td[2]/text()').extract()[0].strip()
             duration = trans.xpath('td[2]/text()').extract()[0].strip()
             # need to account for the fact that states can be revisited, along different transition arrow
@@ -94,7 +96,7 @@ class JiraSpider(scrapy.Spider):
         # Need to consider current state, as well. We're in final state so get dest_status
         dest_status = trans.xpath('td[1]/table/tr/td[5]/text()').extract()[0].strip()
 
-        if dest_status in ['Merged', 'Closed']:
+        if dest_status in ['Merged', 'Rejected']:
             # If the ticket's been resolved (merged or closed), store the resolution as a tuple of
             # (source, result) so we can get not just resolution but previous state prior to resolution
             states['Resolution'] = (source_status, dest_status)
@@ -156,11 +158,11 @@ class JiraSpider(scrapy.Spider):
         Returns a datetime.datetime object representing whe the last execution time occured
         """
         # dateutil.parser.parse will do all the formats we need except the "Yesterday"
-        if 'today' in etime:
+        if 'Today' in etime:
             # For things that happend "Today", we can parse using the fuzzy flag.
             return dateutil.parser.parse(etime, fuzzy=True)
 
-        if 'yesterday' in etime:
+        if 'Yesterday' in etime:
             today = datetime.datetime.now()
             yesterday = '{0.month}/{1}/{0.year}'.format(today, today.day - 1)
             etime = etime.replace('Yesterday', yesterday)
