@@ -18,7 +18,11 @@ from scrapy.http import Request
 
 
 SERVER = 'https://openedx.atlassian.net'
-TIME_REGEX = re.compile(r'((?P<days>\d+?)d)?((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?')
+
+# Regex to match the duration field ("14d 22h 5m", "2h 33m", or "1m 10s")
+DURATION_REGEX = re.compile(r'((?P<days>\d+?)d)?((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?')
+
+# All states in the ospr jira ticket workflow
 OSPR_STATES = [
     'Needs Triage',
     'Waiting on Author',
@@ -30,6 +34,9 @@ OSPR_STATES = [
     'Merged',
     'Rejected',
 ]
+
+# Sometimes, tickets have other states (perhaps they were moved from one project to the OSPR project).
+# Map those states to equivalent OSPR workflow states.
 STATE_MAP = {
     'Open': 'Awaiting Prioritization',
     'Ready for Grooming': 'Awaiting Prioritization',
@@ -115,7 +122,8 @@ class JiraSpider(scrapy.Spider):
         states = {}
         transitions = response.xpath('.//table[tr/th[text()="Time In Source Status"]]/tr[td]')
         if not transitions:
-            item['error'] += "ERROR: Could not find any transitions for key {}!".format(item['issue'])
+            # Generally this means that the ticket is newly-opened
+            item['debug'] += "DEBUG: Could not find any transitions for key {}".format(item['issue'])
             return item
 
         # Parse each transition, pulling out the source status & how much time was spent in that status
@@ -171,6 +179,7 @@ class JiraSpider(scrapy.Spider):
                 )
 
         # json-serialize each timedelta ('xx:yy', xx days, yy seconds) (skipping useconds)
+        # TODO serialize these as a list [xx, yy] to make deserialization a bit easier
         item['states'] = {}
         for (state, tdelta) in states.iteritems():
             item['states'][state] = '{0.days}:{0.seconds}'.format(tdelta)
@@ -222,8 +231,8 @@ class JiraSpider(scrapy.Spider):
             return STATE_MAP[status]
 
         elif status not in OSPR_STATES:
-            # emit debug message if we find an unexpected state
-            item['debug'] += "DEBUG: Found unexpected state '{}'!".format(status)
+            # emit error message if we find an unexpected state
+            item['error'] += "ERROR: Found unexpected state '{}'!".format(status)
 
         return status
 
@@ -236,7 +245,7 @@ class JiraSpider(scrapy.Spider):
         We discard the seconds, and turn the d/h/m into a datetime.timedelta
         """
         duration = duration.replace(' ', '')
-        parts = TIME_REGEX.match(duration)
+        parts = DURATION_REGEX.match(duration)
         td_dict = {}
         for (name, value) in parts.groupdict().iteritems():
             if value:
