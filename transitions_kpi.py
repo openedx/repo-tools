@@ -56,6 +56,23 @@ def engineering_time_spent(state_dict):
     return total_time
 
 
+def single_state_time_spent(state_dict, state):
+    """
+    Given a ticket's state dictionary, returns how much time it spent
+    in the given `state`.
+
+    Assumes state_dict has the key `state` present.
+    """
+    # Measurement 2: Average Time Spent in Scrum Team Backlog
+    # For the PRs that need to be reviewed by a scrum team, obtain an average of how long a ticket spends in a team backlog.
+    # AverageBacklog = sum(amount of time a ticket spends in "Awaiting Prioritization") /
+    #                  count(tickets with a non-zero amount of time spent in "Awaiting Prioritization")
+    # This will be a rolling average over all tickets currently open, or closed in the past X days.
+    # In the initial rollout of this measurement, we'll track for X=14, 30, and 60 days. After we have a few months'
+    # worth of data, we can assess what historical interval(s) gives us the most useful, actionable data.
+    return state_dict[state]
+
+
 def sanitize_ticket_states(state_dict):
     """
     Converts timedelta strings back into timedeltas.
@@ -78,8 +95,9 @@ def parse_jira_info(debug=False, pretty=False):
         # Optional keys are: 'resolution' -> list, 'debug' -> string, 'error' -> string
         tickets = json.load(state_file)
 
-    eng_time_spent = datetime.timedelta(0)
-    num_tickets = 0
+    # Set up vars
+    triage_time_spent = eng_time_spent = backlog_time = product_time = datetime.timedelta(0)
+    num_tickets = backlog_tickets = product_tickets = 0
     # TODO need to get when tickets were merged!
     for ticket in tickets:
         if ticket.get('error', False):
@@ -90,19 +108,45 @@ def parse_jira_info(debug=False, pretty=False):
         if ticket.get('states', False):
             # Sanitize ticket state dict (need to convert time strings to timedeltas)
             ticket['states'] = sanitize_ticket_states(ticket['states'])
+
+            # Get amount of time this spent in "Needs Triage" (roughly, time to first response)
+            triage_time_spent += ticket['states']['Needs Triage']
+
             # Calculate total time spent by engineering team on this ticket
             eng_time_spent = engineering_time_spent(ticket['states'])
             num_tickets += 1
+
+            # Get time spent in backlog
+            if ticket['states'].get('Awaiting Prioritization', False):
+                backlog_time += single_state_time_spent(ticket['states'], 'Awaiting Prioritization')
+                backlog_tickets += 1
+
+            # Get time spent in product review
+            if ticket['states'].get('Product Review', False):
+                product_time += single_state_time_spent(ticket['states'], 'Product Review')
+                product_tickets += 1
+
         elif debug or pretty:
             print("No states yet for newly-opened ticket {}".format(ticket['issue']))
 
+    print_time_spent(triage_time_spent, num_tickets, 'Average time spent in Needs Triage', pretty)
+    print_time_spent(eng_time_spent, num_tickets, 'Average time spent in edX engineering states', pretty)
+    print_time_spent(backlog_time, backlog_tickets, 'Average time spent in team backlog', pretty)
+    print_time_spent(product_time, product_tickets, 'Average time spent in product review', pretty)
+
+
+def print_time_spent(time_spent, ticket_count, message, pretty):
+    """
+    Prints out the average time spent over the number of tickets.
+    Message should be the header message to print out.
+    """
     # Calculate average engineering time spent
-    avg_time = eng_time_spent / num_tickets
+    avg_time = time_spent / ticket_count
     # Pretty print the average time
     days = avg_time.days
     hours, remainder = divmod(avg_time.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
-    print('\nAverage time spent in engineering review:')
+    print('\n' + message + ', over {} tickets'.format(ticket_count))
     if pretty:
         print('\t {} days, {} hours, {} minutes, {} seconds'.format(days, hours, minutes, seconds))
     else:
