@@ -62,10 +62,8 @@ def sanitize_ticket_states(state_dict):
     These were explicitly serialized as '{0.days}:{0.seconds}'.format(tdelta)
     """
     result = {}
-    keys = ['days', 'seconds']
     for state, tdelta in state_dict.iteritems():
-        tdelta = [int(x) for x in tdelta.split(':')]
-        tdict = {key: value for key, value in zip(keys, tdelta)}
+        tdict = {'days': tdelta[0], 'seconds': tdelta[1]}
         result[state] = datetime.timedelta(**tdict)
     return result
 
@@ -106,12 +104,13 @@ def parse_jira_info(debug=False, pretty=False):
     minutes, seconds = divmod(remainder, 60)
     print('\nAverage time spent in engineering review:')
     if pretty:
-         print('\t {} days, {} hours, {} minutes, {} seconds'.format(days, hours, minutes, seconds))
+        print('\t {} days, {} hours, {} minutes, {} seconds'.format(days, hours, minutes, seconds))
     else:
         print('\t {}:{}:{}:{}'.format(days, hours, minutes, seconds))
 
 
 def main(argv):
+    """a docstring for main, really?"""
     parser = argparse.ArgumentParser(description="Summarize JIRA info.")
     parser.add_argument(
         "--no-scrape", action="store_true",

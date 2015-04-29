@@ -8,7 +8,6 @@ from collections import namedtuple
 
 import datetime
 import dateutil.parser
-import json
 import re
 
 from jira.client import JIRA
@@ -49,6 +48,9 @@ IssueFields = namedtuple('IssueFields', ['key', 'labels', 'issuetype'])
 
 
 def extract_fields(issue):
+    """
+    Extracts JIRA issue fields and returns an IssueFields object
+    """
     key = issue.key
     labels = issue.fields.labels
     issuetype = issue.fields.issuetype.name
@@ -63,16 +65,17 @@ def jira_issues(server_url, project_name):
     [IssueFields(key='OSPR-456', labels=['Dedx'], issuetype=u'Sub-task'),
      IssueFields(key='OSPR-458', labels=[], issuetype=u'Pull Request Review')]
     """
-    jira = JIRA({ 'server': server_url })
+    jira = JIRA({'server': server_url})
     issues = jira.search_issues('project = {}'.format(project_name), maxResults=None)
     return [extract_fields(iss) for iss in issues]
 
 
 class IssueStateDurations(scrapy.Item):
+    """Scrapy item class. Defines fields that will be json-serialized."""
     # String: JIRA issue key, eg "OSPR-1"
     issue = scrapy.Field()
-    # Dictionary: States: amount of time ("days:seconds" format) spent in that state, eg
-    # {"Waiting on Author": "0:72180", "Needs Triage": "1:38520"}
+    # Dictionary: States: amount of time ([days, seconds] format) spent in that state, eg
+    # {"Waiting on Author": [0, 72180], "Needs Triage": [1, 38520]}
     states = scrapy.Field()
     # List: Labels present on the ticket, if any, eg ["TNL"]
     labels = scrapy.Field()
@@ -87,11 +90,13 @@ class IssueStateDurations(scrapy.Item):
 
 
 class JiraSpider(scrapy.Spider):
+    """Scrapy spider for scraping JIRA"""
     name = 'jiraspider'
     default_time = datetime.timedelta(0)
     onemin = datetime.timedelta(**{'minutes': 1})
 
     def start_requests(self):
+        """Scrapy method. Starts the spider."""
         issues = jira_issues(SERVER, 'OSPR')
         requests = []
         for issue in issues:
@@ -179,10 +184,9 @@ class JiraSpider(scrapy.Spider):
                 )
 
         # json-serialize each timedelta ('xx:yy', xx days, yy seconds) (skipping useconds)
-        # TODO serialize these as a list [xx, yy] to make deserialization a bit easier
         item['states'] = {}
         for (state, tdelta) in states.iteritems():
-            item['states'][state] = '{0.days}:{0.seconds}'.format(tdelta)
+            item['states'][state] = [tdelta.days, tdelta.seconds]
 
         # If we didn't find any debugs or errors, remove before returning
         if item['debug'] == '':
@@ -191,7 +195,6 @@ class JiraSpider(scrapy.Spider):
             del item['error']
 
         return item
-
 
     def clean_transitions(self, transitions, item):
         """
@@ -215,8 +218,8 @@ class JiraSpider(scrapy.Spider):
                 # print('*'*10 + source_status + '->' + dest_status + '; ' + duration)
                 cleaned.append((source_status, dest_status, duration))
 
-            except Exception as e:
-                item['error'] += "ERROR in clean_transactions: {}".format(e)
+            except Exception as err:
+                item['error'] += "ERROR in clean_transactions: {}".format(err)
                 continue
 
         return cleaned
