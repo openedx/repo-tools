@@ -1631,11 +1631,13 @@ rohan-dhamal-clarice:
      agreement: institution
      institution: Clarice
      email: rohan.dhamal@claricetechnologies.com
+     expires_on: 2015-04-05
 shahidtamboli:
      name: Shahid Tamboli
      agreement: institution
      institution: Clarice
      email: shahid.tamboli@claricetechnologies.com
+     expires_on: 2015-04-05
 rahul-clarice:
      name: Rahul Varma
      agreement: institution
@@ -1659,17 +1661,31 @@ swapnali-clarice:
      agreement: institution
      institution: Clarice
      email: swapnamala.bhagat@claricetechnologies.com
+     expires_on: 2015-04-05
 Divakar-Patil-Clarice:
     name: Divakar Patil
     agreement: institution
     institution: Clarice
     email: divakar.patil@claricetechnologies.com
+    expires_on: 2015-04-05
 ahsan-ul-haq:
     email: ahsan@edx.org
     name: Ahsan Ulhaq
     agreement: institution
     institution: Arbisoft
     jira: ahsan
+ehmadzubair:
+    email: ehmad@edx.org
+    name: Ehmad Zubair
+    agreement: institution
+    institution: Arbisoft
+    jira: Ehmad
+'1zaman':
+    email: ibraheem@edx.org
+    name: Ibraheem Zaman
+    agreement: institution
+    institution: Arbisoft
+    jira: izaman
 lvnilesh:
     email: nilesh@cloudgeni.us
     name: Nilesh Londhe
