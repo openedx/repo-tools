@@ -12,6 +12,7 @@ from subprocess import check_call
 
 import argparse
 import datetime
+import dateutil.parser
 import json
 import sys
 
@@ -36,7 +37,7 @@ def scrape_jira():
     check_call("scrapy runspider jiraspider.py -o states.json".split(" "))
 
 
-def engineering_time_spent(state_dict):
+def engineering_time_spent(state_dict, resolved_date):
     """
     Given a ticket's state dictionary, returns how much engineering time was spent on it.
     Engineering states determined by EDX_ENGINEERING_STATES list.
@@ -56,7 +57,7 @@ def engineering_time_spent(state_dict):
     return total_time
 
 
-def single_state_time_spent(state_dict, state):
+def single_state_time_spent(state_dict, state, resolved_date):
     """
     Given a ticket's state dictionary, returns how much time it spent
     in the given `state`.
@@ -105,25 +106,33 @@ def parse_jira_info(debug=False, pretty=False):
         if debug and ticket.get('debug', False):
             print("Debug: ticket {}: {}".format(ticket['issue'], ticket['debug']))
 
+        if ticket.get('resolved', False):
+            # Turn str(datetime) back into a datetime object
+            ticket['resolved'] = dateutil.parser.parse(ticket['resolved'])
+        else:
+            # Ticket is not yet resolved. Set "resolved" date to right now, so it'll
+            # show up in the filter for being resolved within the past X days (hack for cleaner code)
+            ticket['resolved'] = datetime.datetime.now()
+
         if ticket.get('states', False):
             # Sanitize ticket state dict (need to convert time strings to timedeltas)
             ticket['states'] = sanitize_ticket_states(ticket['states'])
 
             # Get amount of time this spent in "Needs Triage" (roughly, time to first response)
-            triage_time_spent += ticket['states']['Needs Triage']
+            triage_time_spent += single_state_time_spent(ticket['states'], 'Needs Triage', ticket['resolved'])
 
             # Calculate total time spent by engineering team on this ticket
-            eng_time_spent = engineering_time_spent(ticket['states'])
+            eng_time_spent = engineering_time_spent(ticket['states'], ticket['resolved'])
             num_tickets += 1
 
             # Get time spent in backlog
             if ticket['states'].get('Awaiting Prioritization', False):
-                backlog_time += single_state_time_spent(ticket['states'], 'Awaiting Prioritization')
+                backlog_time += single_state_time_spent(ticket['states'], 'Awaiting Prioritization', ticket['resolved'])
                 backlog_tickets += 1
 
             # Get time spent in product review
             if ticket['states'].get('Product Review', False):
-                product_time += single_state_time_spent(ticket['states'], 'Product Review')
+                product_time += single_state_time_spent(ticket['states'], 'Product Review', ticket['resolved'])
                 product_tickets += 1
 
         elif debug or pretty:

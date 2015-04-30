@@ -83,6 +83,8 @@ class IssueStateDurations(scrapy.Item):
     debug = scrapy.Field()
     # String: any error information the parser outputs on this entry
     error = scrapy.Field()
+    # Resolution date - serialized datetime
+    resolved = scrapy.Field()
     # List [str, str]: Resolution transition of the issue, if resolved, eg
     # ["Waiting on Author", "Merged"] indicates that the issue was merged from
     # the "Waiting on Author" state.
@@ -153,28 +155,34 @@ class JiraSpider(scrapy.Spider):
             )
 
         # Need to consider current state ('dest_status'), as well.
+
+        # get "Last Execution Date" time -- in a terribly shitty format.
+        trans_date = transitions[-1].xpath('td[5]/text()').extract()[0].strip()
+        try:
+            last_execution_date = self.parse_last_execution_time(trans_date)
+        except ValueError:
+            # couldn't parse the last execution time for some reason. Log error and continue.
+            item['error'] += 'ERROR: failed to parse last execution date from date {date}\n'.format(
+                dest=dest_status,
+                date=trans_date
+            )
+            last_execution_date = None
+
         if dest_status in ['Merged', 'Rejected']:
             # If the ticket's been resolved (merged or closed), store the resolution as a tuple of
             # (source, result) so we can get not just resolution but previous state prior to resolution
             item['resolution'] = (source_status, dest_status)
+            # Also store when it was resolved
+            if last_execution_date:
+                item['resolved'] = str(last_execution_date)
 
         else:
-            # get "Last Execution Date" time -- in a terribly shitty format.
-            trans_date = transitions[-1].xpath('td[5]/text()').extract()[0].strip()
-            try:
-                last_execution_time = self.parse_last_execution_time(trans_date)
-            except ValueError:
-                # couldn't parse the last execution time for some reason. Log error and continue.
-                item['error'] += 'ERROR: parse fail transition into {dest} from date {date}\n'.format(
-                    dest=dest_status,
-                    date=trans_date
-                )
-            else:
-                current_duration = datetime.datetime.now() - last_execution_time
+            if last_execution_date:
+                current_duration = datetime.datetime.now() - last_execution_date
                 self.validate_tdelta(
                     current_duration,
                     item,
-                    'cd: now() minus last time, {}'.format(last_execution_time)
+                    'cd: now() minus last time, {}'.format(last_execution_date)
                 )
                 states[dest_status] = states.get(dest_status, self.default_time) + current_duration
                 self.validate_tdelta(
@@ -268,7 +276,7 @@ class JiraSpider(scrapy.Spider):
         if today:
         - Today 9:09 AM
 
-        Returns a datetime.datetime object representing whe the last execution time occured
+        Returns a datetime.datetime object representing when the last execution time occured
         """
         # dateutil.parser.parse will do all the formats we need except the "Yesterday"
         if 'Today' in etime:
