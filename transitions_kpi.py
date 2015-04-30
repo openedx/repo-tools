@@ -164,10 +164,13 @@ def calculate_kpi(tickets, pretty=False, num_past_days=0):
             product_time += single_state_time_spent(ticket['states'], 'Product Review')
             product_tickets += 1
 
-    print_time_spent(triage_time_spent, num_tickets, 'Average time spent in Needs Triage', pretty)
-    print_time_spent(eng_time_spent, num_tickets, 'Average time spent in edX engineering states', pretty)
-    print_time_spent(backlog_time, backlog_tickets, 'Average time spent in team backlog', pretty)
-    print_time_spent(product_time, product_tickets, 'Average time spent in product review', pretty)
+    teng = print_time_spent(eng_time_spent, num_tickets, 'Average time spent in edX engineering states', pretty)
+    tnt = print_time_spent(triage_time_spent, num_tickets, 'Average time spent in Needs Triage', pretty)
+    tpr = print_time_spent(product_time, product_tickets, 'Average time spent in product review', pretty)
+    tap = print_time_spent(backlog_time, backlog_tickets, 'Average time spent in team backlog', pretty)
+    if not pretty:
+        print('Eng\t| Triage\t| Product\t| Backlog')
+        print('{}\t{}\t{}\t{}'.format(teng, tnt, tpr, tap))
 
 
 def print_time_spent(time_spent, ticket_count, message, pretty):
@@ -181,11 +184,11 @@ def print_time_spent(time_spent, ticket_count, message, pretty):
     days = avg_time.days
     hours, remainder = divmod(avg_time.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
-    print('\n' + message + ', over {} tickets'.format(ticket_count))
     if pretty:
+        print('\n' + message + ', over {} tickets'.format(ticket_count))
         print('\t {} days, {} hours, {} minutes, {} seconds'.format(days, hours, minutes, seconds))
     else:
-        print('\t {}:{}:{}:{}'.format(days, hours, minutes, seconds))
+        return '{}:{}:{}:{}'.format(days, hours, minutes, seconds)
 
 
 def main(argv):
