@@ -130,8 +130,7 @@ class JiraSpider(scrapy.Spider):
         transitions = response.xpath('.//table[tr/th[text()="Time In Source Status"]]/tr[td]')
         if not transitions:
             # Generally this means that the ticket is newly-opened
-            item['debug'] += "DEBUG: Could not find any transitions for key {}".format(item['issue'])
-            return item
+            item['debug'] += "DEBUG: Could not find any transitions for key {}. ".format(item['issue'])
 
         # Parse each transition, pulling out the source status & how much time was spent in that status
         for trans in self.clean_transitions(transitions, item):
@@ -143,7 +142,7 @@ class JiraSpider(scrapy.Spider):
             # ignore states that we spent less than one minute in (often this is just because transitioning
             # through JIRA states is stupid, or botbro is stupid)
             if source_status != 'Needs Triage' and duration_datetime < self.onemin:
-                item['debug'] += "Ignoring state ({}) of length {}".format(source_status, duration)
+                item['debug'] += "Ignoring state ({}) of length {}. ".format(source_status, duration)
                 continue
 
             # Add the amount of time spent in source status to any previous recorded time we've spent there
@@ -155,7 +154,6 @@ class JiraSpider(scrapy.Spider):
             )
 
         # Need to consider current state ('dest_status'), as well.
-
         # get "Last Execution Date" time -- in a terribly shitty format.
         trans_date = transitions[-1].xpath('td[5]/text()').extract()[0].strip()
         try:

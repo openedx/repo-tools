@@ -37,7 +37,7 @@ def scrape_jira():
     check_call("scrapy runspider jiraspider.py -o states.json".split(" "))
 
 
-def engineering_time_spent(state_dict, resolved_date):
+def engineering_time_spent(state_dict):
     """
     Given a ticket's state dictionary, returns how much engineering time was spent on it.
     Engineering states determined by EDX_ENGINEERING_STATES list.
@@ -57,7 +57,7 @@ def engineering_time_spent(state_dict, resolved_date):
     return total_time
 
 
-def single_state_time_spent(state_dict, state, resolved_date):
+def single_state_time_spent(state_dict, state):
     """
     Given a ticket's state dictionary, returns how much time it spent
     in the given `state`.
@@ -89,6 +89,9 @@ def sanitize_ticket_states(state_dict):
 def parse_jira_info(debug=False, pretty=False):
     """
     Read in and parse states.json
+
+    Converts json representations of time to datetime objects, then returns a list of
+    ticket dictionaries.
     """
     with open("states.json") as state_file:
         # tickets is a list composed of state dictionaries for each ospr ticket.
@@ -96,10 +99,7 @@ def parse_jira_info(debug=False, pretty=False):
         # Optional keys are: 'resolution' -> list, 'debug' -> string, 'error' -> string
         tickets = json.load(state_file)
 
-    # Set up vars
-    triage_time_spent = eng_time_spent = backlog_time = product_time = datetime.timedelta(0)
-    num_tickets = backlog_tickets = product_tickets = 0
-    # TODO need to get when tickets were merged!
+    # Go through tickets and sanitize data, report errors, etc
     for ticket in tickets:
         if ticket.get('error', False):
             print("Error in ticket {}: {}".format(ticket['issue'], ticket['error']))
@@ -118,25 +118,51 @@ def parse_jira_info(debug=False, pretty=False):
             # Sanitize ticket state dict (need to convert time strings to timedeltas)
             ticket['states'] = sanitize_ticket_states(ticket['states'])
 
-            # Get amount of time this spent in "Needs Triage" (roughly, time to first response)
-            triage_time_spent += single_state_time_spent(ticket['states'], 'Needs Triage', ticket['resolved'])
-
-            # Calculate total time spent by engineering team on this ticket
-            eng_time_spent = engineering_time_spent(ticket['states'], ticket['resolved'])
-            num_tickets += 1
-
-            # Get time spent in backlog
-            if ticket['states'].get('Awaiting Prioritization', False):
-                backlog_time += single_state_time_spent(ticket['states'], 'Awaiting Prioritization', ticket['resolved'])
-                backlog_tickets += 1
-
-            # Get time spent in product review
-            if ticket['states'].get('Product Review', False):
-                product_time += single_state_time_spent(ticket['states'], 'Product Review', ticket['resolved'])
-                product_tickets += 1
-
         elif debug or pretty:
             print("No states yet for newly-opened ticket {}".format(ticket['issue']))
+        if ticket['issue'] == 'OSPR-566':
+            print('OSPR-565, states {}'.format(ticket['states']))
+    return tickets
+
+
+def calculate_kpi(tickets, pretty=False, num_past_days=0):
+    """
+    Calculates kpi metrics over the given sanitized metrics. Reports on all currently
+    opened tickets as well as tickets resolved within num_past_days.
+
+    num_past_days=0 will report on all tickets, regardless of when they were resolved.
+    """
+    # Set up vars
+    triage_time_spent = eng_time_spent = backlog_time = product_time = datetime.timedelta(0)
+    num_tickets = backlog_tickets = product_tickets = 0
+
+    date_x_days_ago = datetime.datetime.now() - datetime.timedelta(days=num_past_days)
+
+    # Go through tickets again, gathering and reporting information
+    for ticket in tickets:
+        # If we're restricting to past days, and the ticket was resolved longer ago
+        # than our limit, skip it.
+        if num_past_days > 0 and ticket['resolved'] < date_x_days_ago:
+            continue
+
+        # Get amount of time this spent in "Needs Triage" (roughly, time to first response)
+        triage_time_spent += single_state_time_spent(ticket['states'], 'Needs Triage')
+
+        # Calculate total time spent by engineering team on this ticket
+        eng_time_spent = engineering_time_spent(ticket['states'])
+        # if eng_time_spent <= datetime.timedelta(seconds=3600):
+        #     print("Spent {} on ticket {}".format(eng_time_spent, ticket['issue']))
+        num_tickets += 1
+
+        # Get time spent in backlog
+        if ticket['states'].get('Awaiting Prioritization', False):
+            backlog_time += single_state_time_spent(ticket['states'], 'Awaiting Prioritization')
+            backlog_tickets += 1
+
+        # Get time spent in product review
+        if ticket['states'].get('Product Review', False):
+            product_time += single_state_time_spent(ticket['states'], 'Product Review')
+            product_tickets += 1
 
     print_time_spent(triage_time_spent, num_tickets, 'Average time spent in Needs Triage', pretty)
     print_time_spent(eng_time_spent, num_tickets, 'Average time spent in edX engineering states', pretty)
@@ -170,6 +196,10 @@ def main(argv):
         help="Don't re-run the scraper, just read the current states.json file"
     )
     parser.add_argument(
+        "--since", metavar="DAYS", type=int, default=0,
+        help="Only consider unresolved PRs & PRs closed in the past DAYS days"
+    )
+    parser.add_argument(
         "--debug", action="store_true",
         help="Show debugging messages"
     )
@@ -177,12 +207,15 @@ def main(argv):
         "--pretty", action="store_true",
         help="Pretty print output"
     )
+
     args = parser.parse_args(argv[1:])
 
     if not args.no_scrape:
         scrape_jira()
 
-    parse_jira_info(args.debug, args.pretty)
+    tickets = parse_jira_info(args.debug, args.pretty)
+    calculate_kpi(tickets, args.pretty, args.since)
+    
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
