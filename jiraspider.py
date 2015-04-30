@@ -14,7 +14,11 @@ from jira.client import JIRA
 
 import scrapy
 from scrapy.http import Request
+from scrapy.conf import settings
 
+
+# Log only at INFO level -- change to 'DEBUG' for extremely verbose output.
+settings.set('LOG_LEVEL', 'INFO')
 
 SERVER = 'https://openedx.atlassian.net'
 
@@ -90,6 +94,9 @@ class IssueStateDurations(scrapy.Item):
     # the "Waiting on Author" state.
     resolution = scrapy.Field()
 
+    def __str__(self):
+        return "Processed issue {}".format(self.issue)
+
 
 class JiraSpider(scrapy.Spider):
     """Scrapy spider for scraping JIRA"""
@@ -161,7 +168,6 @@ class JiraSpider(scrapy.Spider):
         except ValueError:
             # couldn't parse the last execution time for some reason. Log error and continue.
             item['error'] += 'ERROR: failed to parse last execution date from date {date}\n'.format(
-                dest=dest_status,
                 date=trans_date
             )
             last_execution_date = None

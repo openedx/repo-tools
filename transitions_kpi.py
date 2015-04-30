@@ -34,7 +34,9 @@ def scrape_jira():
     with open("states.json", "w"):
         pass
 
+    print("Running scrapy spider over JIRA...")
     check_call("scrapy runspider jiraspider.py -o states.json".split(" "))
+    print("-" * 20)
 
 
 def engineering_time_spent(state_dict):
@@ -120,8 +122,7 @@ def parse_jira_info(debug=False, pretty=False):
 
         elif debug or pretty:
             print("No states yet for newly-opened ticket {}".format(ticket['issue']))
-        if ticket['issue'] == 'OSPR-566':
-            print('OSPR-565, states {}'.format(ticket['states']))
+
     return tickets
 
 
@@ -218,7 +219,7 @@ def main(argv):
 
     tickets = parse_jira_info(args.debug, args.pretty)
     calculate_kpi(tickets, args.pretty, args.since)
-    
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
