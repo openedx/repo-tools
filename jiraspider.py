@@ -135,9 +135,6 @@ class JiraSpider(scrapy.Spider):
 
         states = {}
         transitions = response.xpath('.//table[tr/th[text()="Time In Source Status"]]/tr[td]')
-        if not transitions:
-            # Generally this means that the ticket is newly-opened
-            item['debug'] += "DEBUG: Could not find any transitions for key {}. ".format(item['issue'])
 
         # Parse each transition, pulling out the source status & how much time was spent in that status
         for trans in self.clean_transitions(transitions, item):
@@ -161,8 +158,19 @@ class JiraSpider(scrapy.Spider):
             )
 
         # Need to consider current state ('dest_status'), as well.
-        # get "Last Execution Date" time -- in a terribly shitty format.
-        trans_date = transitions[-1].xpath('td[5]/text()').extract()[0].strip()
+        if not transitions:
+            # If we didn't find any transtions, generally this means that the ticket is newly-opened. But log
+            # so we can look at things anyway.
+            item['debug'] += "DEBUG: Could not find any transitions for key {}. ".format(item['issue'])
+            # Set current status by hand, since we know it.
+            dest_status = "Needs Triage"
+            # get "created" time (this is new, so doesn't have any transitions; it's still in needs triage)
+            trans_date = response.xpath('.//span[@id="create-date"]/time[@class="livestamp"]/text()').extract()[0].strip()
+
+        else:
+            # get "Last Execution Date" time -- in a terribly shitty format.
+            trans_date = transitions[-1].xpath('td[5]/text()').extract()[0].strip()
+
         try:
             last_execution_date = self.parse_last_execution_time(trans_date)
         except ValueError:
