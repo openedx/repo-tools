@@ -885,6 +885,7 @@ jibsheet:
     email: kevin@edx.org
     name: Kevin Falcone
     agreement: institution
+    institution: edX
     jira: kevin
 Bachmann1234:
     email: bachmann.matt@gmail.com
