@@ -150,9 +150,7 @@ def calculate_kpi(tickets, pretty=False, num_past_days=0):
         triage_time_spent += single_state_time_spent(ticket['states'], 'Needs Triage')
 
         # Calculate total time spent by engineering team on this ticket
-        eng_time_spent = engineering_time_spent(ticket['states'])
-        # if eng_time_spent <= datetime.timedelta(seconds=3600):
-        #     print("Spent {} on ticket {}".format(eng_time_spent, ticket['issue']))
+        eng_time_spent += engineering_time_spent(ticket['states'])
         num_tickets += 1
 
         # Get time spent in backlog
