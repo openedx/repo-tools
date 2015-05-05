@@ -8,12 +8,14 @@ file to obtain KPI information.
 See https://openedx.atlassian.net/wiki/display/OPEN/Tracking+edX+Commitment+To+OSPRs
 """
 from __future__ import print_function
+from functools import reduce
 from subprocess import check_call
 
 import argparse
 import datetime
 import dateutil.parser
 import json
+import operator
 import sys
 
 
@@ -103,11 +105,13 @@ def parse_jira_info(debug=False, pretty=False):
 
     # Go through tickets and sanitize data, report errors, etc
     for ticket in tickets:
+        # Report any errors / debug messages
         if ticket.get('error', False):
             print("Error in ticket {}: {}".format(ticket['issue'], ticket['error']))
         if debug and ticket.get('debug', False):
             print("Debug: ticket {}: {}".format(ticket['issue'], ticket['debug']))
 
+        # Deal with "resolved" datetime
         if ticket.get('resolved', False):
             # Turn str(datetime) back into a datetime object
             ticket['resolved'] = dateutil.parser.parse(ticket['resolved'])
@@ -116,12 +120,12 @@ def parse_jira_info(debug=False, pretty=False):
             # show up in the filter for being resolved within the past X days (hack for cleaner code)
             ticket['resolved'] = datetime.datetime.now()
 
+        # Sanitize ticket state dict (need to convert time strings to timedeltas)
         if ticket.get('states', False):
-            # Sanitize ticket state dict (need to convert time strings to timedeltas)
             ticket['states'] = sanitize_ticket_states(ticket['states'])
-
-        elif debug or pretty:
-            print("No states yet for newly-opened ticket {}".format(ticket['issue']))
+        else:
+            # This shouldn't happen so something's going wrong
+            print("No states for ticket {}".format(ticket['issue']))
 
     return tickets
 
@@ -134,8 +138,7 @@ def calculate_kpi(tickets, pretty=False, num_past_days=0):
     num_past_days=0 will report on all tickets, regardless of when they were resolved.
     """
     # Set up vars
-    triage_time_spent = eng_time_spent = backlog_time = product_time = datetime.timedelta(0)
-    num_tickets = backlog_tickets = product_tickets = 0
+    triage_time_spent, eng_time_spent, backlog_time, product_time = [], [], [], []
 
     date_x_days_ago = datetime.datetime.now() - datetime.timedelta(days=num_past_days)
 
@@ -147,44 +150,42 @@ def calculate_kpi(tickets, pretty=False, num_past_days=0):
             continue
 
         # Get amount of time this spent in "Needs Triage" (roughly, time to first response)
-        triage_time_spent += single_state_time_spent(ticket['states'], 'Needs Triage')
+        triage_time_spent.append(single_state_time_spent(ticket['states'], 'Needs Triage'))
 
         # Calculate total time spent by engineering team on this ticket
-        eng_time_spent += engineering_time_spent(ticket['states'])
-        num_tickets += 1
+        eng_time_spent.append(engineering_time_spent(ticket['states']))
 
         # Get time spent in backlog
         if ticket['states'].get('Awaiting Prioritization', False):
-            backlog_time += single_state_time_spent(ticket['states'], 'Awaiting Prioritization')
-            backlog_tickets += 1
+            backlog_time.append(single_state_time_spent(ticket['states'], 'Awaiting Prioritization'))
 
         # Get time spent in product review
         if ticket['states'].get('Product Review', False):
-            product_time += single_state_time_spent(ticket['states'], 'Product Review')
-            product_tickets += 1
+            product_time.append(single_state_time_spent(ticket['states'], 'Product Review'))
 
-    teng = print_time_spent(eng_time_spent, num_tickets, 'Average time spent in edX engineering states', pretty)
-    tnt = print_time_spent(triage_time_spent, num_tickets, 'Average time spent in Needs Triage', pretty)
-    tpr = print_time_spent(product_time, product_tickets, 'Average time spent in product review', pretty)
-    tap = print_time_spent(backlog_time, backlog_tickets, 'Average time spent in team backlog', pretty)
+    teng = avg_time_spent(eng_time_spent, 'Average time spent in edX engineering states', pretty)
+    tnt = avg_time_spent(triage_time_spent, 'Average time spent in Needs Triage', pretty)
+    tpr = avg_time_spent(product_time, 'Average time spent in product review', pretty)
+    tap = avg_time_spent(backlog_time, 'Average time spent in team backlog', pretty)
     if not pretty:
         print('Eng\t| Triage\t| Product\t| Backlog')
         print('{}\t{}\t{}\t{}'.format(teng, tnt, tpr, tap))
 
 
-def print_time_spent(time_spent, ticket_count, message, pretty):
+def avg_time_spent(time_spent, message, pretty):
     """
     Prints out the average time spent over the number of tickets.
     Message should be the header message to print out.
     """
     # Calculate average engineering time spent
-    avg_time = time_spent / ticket_count
+    avg_time = reduce(operator.add, time_spent, datetime.timedelta(0)) / len(time_spent)
+
     # Pretty print the average time
     days = avg_time.days
     hours, remainder = divmod(avg_time.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     if pretty:
-        print('\n' + message + ', over {} tickets'.format(ticket_count))
+        print('\n' + message + ', over {} tickets'.format(len(time_spent)))
         print('\t {} days, {} hours, {} minutes, {} seconds'.format(days, hours, minutes, seconds))
     else:
         return '{}:{}:{}:{}'.format(days, hours, minutes, seconds)
