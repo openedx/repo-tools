@@ -130,15 +130,18 @@ def parse_jira_info(debug=False, pretty=False):
     return tickets
 
 
-def calculate_kpi(tickets, pretty=False, num_past_days=0):
+def get_time_lists(tickets, num_past_days=0):
     """
-    Calculates kpi metrics over the given sanitized metrics. Reports on all currently
-    opened tickets as well as tickets resolved within num_past_days.
+    Iterates over tickets, collecting lists of how much time was spent in various states.
 
-    num_past_days=0 will report on all tickets, regardless of when they were resolved.
+    Returns: Four lists of datetime.timedelta objects:
+      - Time each ticket spent in all engineering states
+      - Time each ticket spent in triage
+      - Time each ticket spent in product review
+      - Time each ticket spent in team backlogs
     """
     # Set up vars
-    triage_time_spent, eng_time_spent, backlog_time, product_time = [], [], [], []
+    eng_time_spent, triage_time_spent, product_time, backlog_time = [], [], [], []
 
     date_x_days_ago = datetime.datetime.now() - datetime.timedelta(days=num_past_days)
 
@@ -163,32 +166,73 @@ def calculate_kpi(tickets, pretty=False, num_past_days=0):
         if ticket['states'].get('Product Review', False):
             product_time.append(single_state_time_spent(ticket['states'], 'Product Review'))
 
-    teng = avg_time_spent(eng_time_spent, 'Average time spent in edX engineering states', pretty)
-    tnt = avg_time_spent(triage_time_spent, 'Average time spent in Needs Triage', pretty)
-    tpr = avg_time_spent(product_time, 'Average time spent in product review', pretty)
-    tap = avg_time_spent(backlog_time, 'Average time spent in team backlog', pretty)
-    if not pretty:
-        print('Eng\t| Triage\t| Product\t| Backlog')
-        print('{}\t{}\t{}\t{}'.format(teng, tnt, tpr, tap))
+
+    return (eng_time_spent, triage_time_spent, product_time, backlog_time)
 
 
-def avg_time_spent(time_spent, message, pretty):
+# Time functions
+def median_time_spent(time_spent):
+    """
+    Prints out the median time spent over the number of tickets.
+    Message should be the header message to print out.
+    """
+    sorted_time = sorted(time_spent)
+    lenlst = len(sorted_time)
+    index = (lenlst - 1) // 2
+
+    # Calculate median time spent
+    if lenlst % 2 == 1:
+        return sorted_time[index]
+
+    return (sorted_time[index] + sorted_time[index + 1]) / 2
+
+
+def avg_time_spent(time_spent):
     """
     Prints out the average time spent over the number of tickets.
     Message should be the header message to print out.
     """
-    # Calculate average engineering time spent
-    avg_time = reduce(operator.add, time_spent, datetime.timedelta(0)) / len(time_spent)
+    return reduce(operator.add, time_spent, datetime.timedelta(0)) / len(time_spent)
 
-    # Pretty print the average time
-    days = avg_time.days
-    hours, remainder = divmod(avg_time.seconds, 3600)
+
+def pretty_print_time(time, message=None, num_tickets=0):
+    """Pretty print the given time"""
+    days = time.days
+    hours, remainder = divmod(time.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
-    if pretty:
-        print('\n' + message + ', over {} tickets'.format(len(time_spent)))
+    if message is not None:
+        print('\n' + message + ', over {} tickets'.format(num_tickets))
         print('\t {} days, {} hours, {} minutes, {} seconds'.format(days, hours, minutes, seconds))
+    return '{}:{}:{}:{}'.format(days, hours, minutes, seconds)
+
+
+def get_stats(time_lists, time_function, fname, pretty=False):
+    """
+    Given a time_function (such as `avg_time_spent`) and the human-readable `fname` (such
+    as 'Average'), prints out the /function/ over each time list, optionally in a pretty
+    format.
+    """
+    eng_time_spent, triage_time_spent, product_time, backlog_time = time_lists
+    teng = time_function(eng_time_spent)
+    tnt = time_function(triage_time_spent)
+    tpr = time_function(product_time)
+    tap = time_function(backlog_time)
+    times = [teng, tnt, tpr, tap]
+
+    if not pretty:
+        times = [pretty_print_time(t) for t in times]
+        print("{} time spent in each state".format(fname))
+        print('Eng\t| Triage\t| Product\t| Backlog')
+        print('{t[0]}\t{t[1]}\t{t[2]}\t{t[3]}'.format(t=times))
     else:
-        return '{}:{}:{}:{}'.format(days, hours, minutes, seconds)
+        times = zip(times, [len(tl) for tl in time_lists])
+        messages = []
+        for state in 'edX engineering states', 'Needs Triage', 'Product Review', 'Team Backlog':
+            messages.append('{} time spent in {}'.format(fname, state))
+
+        for t_n_tuple, message in zip(times, messages):
+            time, num_tickets = t_n_tuple
+            pretty_print_time(time, message, num_tickets)
 
 
 def main(argv):
@@ -210,6 +254,15 @@ def main(argv):
         "--pretty", action="store_true",
         help="Pretty print output"
     )
+    parser.add_argument(
+        "--average", action="store_true",
+        help="Print out the average time spent in each of 4 states "
+        "(this is the default action if none are selected)"
+    )
+    parser.add_argument(
+        "--median", action="store_true",
+        help="Print out the median time spent in each of 4 states"
+    )
 
     args = parser.parse_args(argv[1:])
 
@@ -217,7 +270,15 @@ def main(argv):
         scrape_jira()
 
     tickets = parse_jira_info(args.debug, args.pretty)
-    calculate_kpi(tickets, args.pretty, args.since)
+    time_lists = get_time_lists(tickets, args.since)
+    stats_printed = False
+
+    if args.median:
+        get_stats(time_lists, median_time_spent, 'Median', args.pretty)
+        stats_printed = True
+
+    if args.average or not stats_printed:
+        get_stats(time_lists, avg_time_spent, 'Average', args.pretty)
 
 
 if __name__ == "__main__":
