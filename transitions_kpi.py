@@ -171,22 +171,6 @@ def get_time_lists(tickets, num_past_days=0):
     return (eng_time_spent, triage_time_spent, product_time, backlog_time)
 
 
-# Time functions
-def median_time_spent(time_spent):
-    """
-    Returns the median time spent over the number of tickets.
-    """
-    sorted_time = sorted(time_spent)
-    lenlst = len(sorted_time)
-    index = (lenlst - 1) // 2
-
-    # Calculate median time spent
-    if lenlst % 2 == 1:
-        return sorted_time[index]
-
-    return (sorted_time[index] + sorted_time[index + 1]) / 2
-
-
 def avg_time_spent(time_spent):
     """
     Returns the average time spent over the number of tickets.
@@ -293,6 +277,7 @@ def main(argv):
     stats_printed = False
 
     if args.median:
+        median_time_spent = make_percentile(50)
         get_stats(time_lists, median_time_spent, 'Median', args.pretty)
         stats_printed = True
 
