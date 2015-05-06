@@ -175,7 +175,25 @@ def avg_time_spent(time_spent):
     """
     Returns the average time spent over the number of tickets.
     """
+    # Can't use numpy or other standards because sum() won't work with
+    # a list of datetime.timedeltas
     return reduce(operator.add, time_spent, datetime.timedelta(0)) / len(time_spent)
+
+
+def std_dev(time_spent):
+    """
+    Standard deviation of the list.
+
+    Calculation follows formula std = sqrt(mean( (x - x.mean())**2 ) )
+    """
+    avg = avg_time_spent(time_spent)
+    summation = 0
+    for sample in time_spent:
+        diff = sample - avg
+        summation += diff.total_seconds()**2
+    variance = summation / len(time_spent)
+    std = int(numpy.sqrt(variance))
+    return datetime.timedelta(seconds=std)
 
 
 def make_percentile(qper):
@@ -266,6 +284,10 @@ def main(argv):
         "--percentile", type=float,
         help="Print out the qth percentile of all tickets in each state"
     )
+    parser.add_argument(
+        "--std-dev", action="store_true",
+        help="Print out the standard deviation across the data"
+    )
 
     args = parser.parse_args(argv[1:])
 
@@ -284,6 +306,10 @@ def main(argv):
     if args.percentile:
         pfunc = make_percentile(args.percentile)
         get_stats(time_lists, pfunc, '{} Percentile'.format(args.percentile), args.pretty)
+        stats_printed = True
+
+    if args.std_dev:
+        get_stats(time_lists, std_dev, 'Std Deviation', args.pretty)
         stats_printed = True
 
     if args.average or not stats_printed:
