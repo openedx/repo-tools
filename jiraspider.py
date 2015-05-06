@@ -89,6 +89,8 @@ class IssueStateDurations(scrapy.Item):
     error = scrapy.Field()
     # Resolution date - serialized datetime
     resolved = scrapy.Field()
+    # State the ticket is currently in (if not resolved)
+    current = scrapy.Field()
     # List [str, str]: Resolution transition of the issue, if resolved, eg
     # ["Waiting on Author", "Merged"] indicates that the issue was merged from
     # the "Waiting on Author" state.
@@ -189,6 +191,8 @@ class JiraSpider(scrapy.Spider):
                 item['resolved'] = str(last_execution_date)
 
         else:
+            # This is the current ticket state
+            item['current'] = dest_status
             if last_execution_date:
                 current_duration = datetime.datetime.now() - last_execution_date
                 self.validate_tdelta(
