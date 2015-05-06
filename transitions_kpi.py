@@ -15,6 +15,7 @@ import argparse
 import datetime
 import dateutil.parser
 import json
+import numpy
 import operator
 import sys
 
@@ -173,8 +174,7 @@ def get_time_lists(tickets, num_past_days=0):
 # Time functions
 def median_time_spent(time_spent):
     """
-    Prints out the median time spent over the number of tickets.
-    Message should be the header message to print out.
+    Returns the median time spent over the number of tickets.
     """
     sorted_time = sorted(time_spent)
     lenlst = len(sorted_time)
@@ -189,10 +189,25 @@ def median_time_spent(time_spent):
 
 def avg_time_spent(time_spent):
     """
-    Prints out the average time spent over the number of tickets.
-    Message should be the header message to print out.
+    Returns the average time spent over the number of tickets.
     """
     return reduce(operator.add, time_spent, datetime.timedelta(0)) / len(time_spent)
+
+
+def make_percentile(qper):
+    """
+    Returns a percentile function for the given numeric qper
+    qper: Float in range of [0,100]. Percentile to compute which must be
+      between 0 and 100 inclusive.
+    """
+    def percentile(time_spent):
+        """
+        Returns the qth percentile of the tickets
+        """
+        seconds_spent = map(datetime.timedelta.total_seconds, time_spent)
+        raw_result = numpy.percentile(seconds_spent, qper)
+        return datetime.timedelta(seconds=raw_result)
+    return percentile
 
 
 def pretty_print_time(time, message=None, num_tickets=0):
@@ -263,6 +278,10 @@ def main(argv):
         "--median", action="store_true",
         help="Print out the median time spent in each of 4 states"
     )
+    parser.add_argument(
+        "--percentile", type=float,
+        help="Print out the qth percentile of all tickets in each state"
+    )
 
     args = parser.parse_args(argv[1:])
 
@@ -275,6 +294,11 @@ def main(argv):
 
     if args.median:
         get_stats(time_lists, median_time_spent, 'Median', args.pretty)
+        stats_printed = True
+
+    if args.percentile:
+        pfunc = make_percentile(args.percentile)
+        get_stats(time_lists, pfunc, '{} Percentile'.format(args.percentile), args.pretty)
         stats_printed = True
 
     if args.average or not stats_printed:
