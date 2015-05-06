@@ -288,6 +288,14 @@ def main(argv):
         "--std-dev", action="store_true",
         help="Print out the standard deviation across the data"
     )
+    parser.add_argument(
+        "--max", action="store_true",
+        help="Show the maximum time in the series"
+    )
+    parser.add_argument(
+        "--min", action="store_true",
+        help="Show the minimum time in the series"
+    )
 
     args = parser.parse_args(argv[1:])
 
@@ -310,6 +318,14 @@ def main(argv):
 
     if args.std_dev:
         get_stats(time_lists, std_dev, 'Std Deviation', args.pretty)
+        stats_printed = True
+
+    if args.max:
+        get_stats(time_lists, lambda lst: max(lst), 'Maximum', args.pretty)
+        stats_printed = True
+
+    if args.min:
+        get_stats(time_lists, lambda lst: min(lst), 'Minimum', args.pretty)
         stats_printed = True
 
     if args.average or not stats_printed:
