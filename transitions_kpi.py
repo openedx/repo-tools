@@ -8,6 +8,7 @@ file to obtain KPI information.
 See https://openedx.atlassian.net/wiki/display/OPEN/Tracking+edX+Commitment+To+OSPRs
 """
 from __future__ import print_function
+from collections import OrderedDict
 from functools import reduce
 from subprocess import check_call
 
@@ -135,7 +136,7 @@ def get_time_lists(tickets, num_past_days=0):
     """
     Iterates over tickets, collecting lists of how much time was spent in various states.
 
-    Returns: Four lists of datetime.timedelta objects:
+    Returns: dictionary of {'name': [datetime.timedelta,]}
       - Time each ticket spent in all engineering states
       - Time each ticket spent in triage
       - Time each ticket spent in product review
@@ -167,8 +168,12 @@ def get_time_lists(tickets, num_past_days=0):
         if ticket['states'].get('Product Review', False):
             product_time.append(single_state_time_spent(ticket['states'], 'Product Review'))
 
-
-    return (eng_time_spent, triage_time_spent, product_time, backlog_time)
+    result = OrderedDict()
+    list_order = ['edX engineering states', 'Needs Triage', 'Product Review', 'Team Backlog']
+    lists = (eng_time_spent, triage_time_spent, product_time, backlog_time)
+    for name, lst in zip(list_order, lists):
+        result[name] = lst
+    return result
 
 
 def avg_time_spent(time_spent):
@@ -212,44 +217,37 @@ def make_percentile(qper):
     return percentile
 
 
-def pretty_print_time(time, message=None, num_tickets=0):
+def pretty_print_time(time, message=None):
     """Pretty print the given time"""
     days = time.days
     hours, remainder = divmod(time.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     if message is not None:
-        print('\n' + message + ', over {} tickets'.format(num_tickets))
+        print(message)
         print('\t {} days, {} hours, {} minutes, {} seconds'.format(days, hours, minutes, seconds))
     return '{}:{}:{}:{}'.format(days, hours, minutes, seconds)
 
 
-def get_stats(time_lists, time_function, fname, pretty=False):
+def get_stats(time_spent, functions, pretty=False):
     """
-    Given a time_function (such as `avg_time_spent`) and the human-readable `fname` (such
-    as 'Average'), prints out the /function/ over each time list, optionally in a pretty
-    format.
+    Given a list of times and a list of stats functions, prints out all the
+    stats over the list (optionally in a pretty format)
     """
-    eng_time_spent, triage_time_spent, product_time, backlog_time = time_lists
-    teng = time_function(eng_time_spent)
-    tnt = time_function(triage_time_spent)
-    tpr = time_function(product_time)
-    tap = time_function(backlog_time)
-    times = [teng, tnt, tpr, tap]
+    header = ''
+    results = ''
+    for func, fname in functions:
+        output = func(time_spent)
+        if pretty:
+            msg = '{} time spent'.format(fname)
+            pretty_print_time(output, msg)
+        else:
+            # build up a string to print out.
+            header += "{}\t|".format(fname)
+            results += "{}\t".format(pretty_print_time(output))
 
     if not pretty:
-        times = [pretty_print_time(t) for t in times]
-        print("{} time spent in each state".format(fname))
-        print('Eng\t| Triage\t| Product\t| Backlog')
-        print('{t[0]}\t{t[1]}\t{t[2]}\t{t[3]}'.format(t=times))
-    else:
-        times = zip(times, [len(tl) for tl in time_lists])
-        messages = []
-        for state in 'edX engineering states', 'Needs Triage', 'Product Review', 'Team Backlog':
-            messages.append('{} time spent in {}'.format(fname, state))
-
-        for t_n_tuple, message in zip(times, messages):
-            time, num_tickets = t_n_tuple
-            pretty_print_time(time, message, num_tickets)
+        print(header)
+        print(results + '\n')
 
 
 def main(argv):
@@ -273,8 +271,7 @@ def main(argv):
     )
     parser.add_argument(
         "--average", action="store_true",
-        help="Print out the average time spent in each of 4 states "
-        "(this is the default action if none are selected)"
+        help="Print out the average time spent in each of 4 states"
     )
     parser.add_argument(
         "--median", action="store_true",
@@ -296,40 +293,55 @@ def main(argv):
         "--min", action="store_true",
         help="Show the minimum time in the series"
     )
+    parser.add_argument(
+        "--all", action="store_true",
+        help="Show all statistics"
+    )
 
     args = parser.parse_args(argv[1:])
 
+    # Parse out what functions we want to gather for this report
+    functions = []
+
+    if args.average or args.all:
+        functions.append((avg_time_spent, 'Average'))
+
+    if args.median or args.all:
+        median_time_spent = make_percentile(50)
+        functions.append((median_time_spent, 'Median'))
+
+    if args.percentile or args.all:
+        pnum = args.percentile or 95
+        pfunc = make_percentile(pnum)
+        functions.append((pfunc, '{} Percentile'.format(pnum)))
+
+    if args.std_dev or args.all:
+        functions.append((std_dev, 'Std Deviation'))
+
+    if args.max or args.all:
+        functions.append((lambda lst: max(lst), 'Max'))
+
+    if args.min or args.all:
+        functions.append((lambda lst: min(lst), 'Min'))
+
+    if len(functions) == 0:
+        print("Alert: No statistical functions specified. Please use '--help' to see which are available, or use '--all' to run all.")
+        return
+
+    # Scrape jira unless told otherwise
     if not args.no_scrape:
         scrape_jira()
 
+    # Parse states.json into times list
     tickets = parse_jira_info(args.debug, args.pretty)
-    time_lists = get_time_lists(tickets, args.since)
-    stats_printed = False
-
-    if args.median:
-        median_time_spent = make_percentile(50)
-        get_stats(time_lists, median_time_spent, 'Median', args.pretty)
-        stats_printed = True
-
-    if args.percentile:
-        pfunc = make_percentile(args.percentile)
-        get_stats(time_lists, pfunc, '{} Percentile'.format(args.percentile), args.pretty)
-        stats_printed = True
-
-    if args.std_dev:
-        get_stats(time_lists, std_dev, 'Std Deviation', args.pretty)
-        stats_printed = True
-
-    if args.max:
-        get_stats(time_lists, lambda lst: max(lst), 'Maximum', args.pretty)
-        stats_printed = True
-
-    if args.min:
-        get_stats(time_lists, lambda lst: min(lst), 'Minimum', args.pretty)
-        stats_printed = True
-
-    if args.average or not stats_printed:
-        get_stats(time_lists, avg_time_spent, 'Average', args.pretty)
+    # Gets {'list name': list}
+    ticket_lists = get_time_lists(tickets, args.since)
+    for list_name, time_spent in ticket_lists.iteritems():
+        print("-" * 40)
+        num_tix = len(time_spent)
+        print("Statistics for '{}', over {} tickets".format(list_name, num_tix))
+        print("-" * 40)
+        get_stats(time_spent, functions, args.pretty)
 
 
 if __name__ == "__main__":
