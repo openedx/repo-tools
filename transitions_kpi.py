@@ -246,8 +246,8 @@ def get_stats(time_spent, functions, pretty=False):
             results += "{}\t".format(pretty_print_time(output))
 
     if not pretty:
-        print(header)
-        print(results + '\n')
+        print(header + 'Num tickets')
+        print(results + '{}\n'.format(len(time_spent)))
 
 
 def main(argv):
