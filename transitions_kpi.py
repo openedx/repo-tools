@@ -225,7 +225,9 @@ def pretty_print_time(time, message=None):
     if message is not None:
         print(message)
         print('\t {} days, {} hours, {} minutes, {} seconds'.format(days, hours, minutes, seconds))
-    return '{}:{}:{}:{}'.format(days, hours, minutes, seconds)
+    # Print out fractional days things have been in this state
+    total = days + hours/24. + minutes/(24.*60) + seconds/(24.*3600)
+    return str(total)
 
 
 def get_stats(time_spent, functions, pretty=False):
