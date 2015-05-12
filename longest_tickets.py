@@ -3,7 +3,7 @@
 Parses JIRA a little to get at specific dates, quickly.
 Doesn't run the scraper, run transitions_kpi.py to get that
 """
-from transitions_kpi import parse_jira_info, engineering_time_spent
+from transitions_kpi import parse_jira_info, engineering_time_spent, scrape_jira
 
 import argparse
 import datetime
@@ -93,6 +93,11 @@ def main(argv):
     parser = argparse.ArgumentParser(description="Get information about the tickets open the longest :(")
 
     parser.add_argument(
+        "--scrape", action="store_true",
+        help="Rescrape JIRA"
+    )
+
+    parser.add_argument(
         "--longest", action="store_true",
         help="Show the longest amount of time spent in each state, over currently-open tickets"
     )
@@ -106,6 +111,9 @@ def main(argv):
     )
 
     args = parser.parse_args(argv[1:])
+
+    if args.scrape:
+        scrape_jira()
 
     tickets = parse_jira_info()
     if args.longest or args.historic:
