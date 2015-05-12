@@ -1856,3 +1856,18 @@ utkjad:
     name: Utkarsh Jadhav
     agreement: institution
     institution: edX
+robertgerinlajoie:
+    email: robert.gerin-lajoie@umontreal.ca
+    name: Gérin-Lajoie Robert
+    agreement: institution
+    institution: University of Montreal
+sambapete:
+    email: pierre.mailhot@gmail.com 
+    name: Pierre Mailhot
+    agreement: institution
+    institution: University of Montreal
+joyalce:
+    email: cedric.joyal@umontreal.ca 
+    name: Cédric Joyal
+    agreement: institution
+    institution: University of Montreal
