@@ -17,6 +17,7 @@ try:
 except ImportError:
     CacheControlAdapter = None
 
+import datetime
 import dateutil.parser
 import dateutil.tz
 
