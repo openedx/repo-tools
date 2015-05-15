@@ -1878,3 +1878,11 @@ joyalce:
     name: Cédric Joyal
     agreement: institution
     institution: University of Montreal
+nickersoft:
+    email: nickersoft@gmail.com
+    name: Tyler Nickerson
+    agreement: institution
+    institution: edX
+    jira: tjnickerson
+    comment: edX intern summer 2015
+    expires_on: 2015-08-14
