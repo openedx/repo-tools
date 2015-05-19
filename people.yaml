@@ -1886,3 +1886,19 @@ Nickersoft:
     jira: tjnickerson
     comment: edX intern summer 2015
     expires_on: 2015-08-14
+mekkz:
+    email: kylemccor@gmail.com
+    name: Kyle McCormick
+    agreement: institution
+    institution: edX
+    jira: kyle
+    comment: edX intern summer 2015
+    expires_on: 2015-08-05
+rando305:
+    email: rando305@gmail.com
+    name: Randy Ostler
+    agreement: individual
+dfrdmn:
+    email: friedman.david@gmail.com
+    name: David Friedman
+    agreement: individual
