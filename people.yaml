@@ -1902,3 +1902,8 @@ dfrdmn:
     email: friedman.david@gmail.com
     name: David Friedman
     agreement: individual
+crispweed:
+    email: thomas@upcoder.com 
+    name: Thomas Young
+    agreement: institution
+    institution: OpenCraft
