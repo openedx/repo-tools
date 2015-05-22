@@ -1911,3 +1911,9 @@ billagee:
     email: billagee@gmail.com
     name: William Agee
     agreement: individual
+itsjeyd:
+    email: t.krones@gmx.net
+    name: Tim Krones
+    agreement: institution
+    institution: OpenCraft
+    jira: tikr
