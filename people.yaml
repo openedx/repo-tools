@@ -506,8 +506,10 @@ peter-fogg:
     agreement: institution
     institution: edX
     jira: pfogg
-    comment: edX intern summer 2013
-    expires_on: 2013-09-01
+    before:
+        2013-09-01:
+            agreement: institution
+            institution: edX
 lapentab:
     email: lapentab@mit.edu
     name: Bethany LaPenta
