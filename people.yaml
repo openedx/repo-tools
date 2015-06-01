@@ -1929,3 +1929,13 @@ oksana-slu:
     name: Oksana Slusarenko
     agreement: institution
     institution: Raccoon Gang
+jrowan:
+    email: jrowan@edx.org
+    name: James Rowan
+    agreement: institution
+    institution: edX
+    comment: edX intern summer 2015
+    jira: jrowan
+    expires_on: 2015-08-31
+
+
