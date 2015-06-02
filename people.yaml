@@ -1941,6 +1941,12 @@ vinhub:
     email: v-vibhal@microsoft.com
     name: Vinayak Bhalerao
     agreement: individual
+afzaledx:
+    email: afzal@edx.org
+    name: Afzal Wali Naushahi
+    agreement: institution
+    institution: Arbisoft
+    jira: afzal
 
 
 
