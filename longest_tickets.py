@@ -20,6 +20,7 @@ OSPR_STATES = [
     'Awaiting Prioritization',
     'Engineering Review',
     'All Engineering',
+    'All',
 ]
 
 
@@ -73,11 +74,18 @@ def all_with_length(tickets, state):
             target_tickets.append(
                 (ticket['issue'], engineering_time_spent(ticket['states']), ticket['current'])
             )
+        elif state == 'All' and not ticket.get('resolution', False):
+            total_time = datetime.timedelta(0)
+            for __, tdelta in ticket['states'].iteritems():
+                total_time += tdelta
+            target_tickets.append(
+                (ticket['issue'], total_time, ticket['current'])
+            )
 
     # sort these by how long they've been open.
     target_tickets.sort(key=lambda x: x[1])
     target_tickets.reverse()
-    if state == 'All Engineering':
+    if state == 'All Engineering' or state == 'All':
         print("Issue Number (Time Spent in {}) - Current state".format(state))
         for issue, time, current in target_tickets:
             print("{} ({}) - {}".format(issue, time, current))
