@@ -8,7 +8,7 @@ For example, if a PR is opened in July and merged in August, it is counted as
 opened in July, and merged in August.
 """
 
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import argparse
 import collections

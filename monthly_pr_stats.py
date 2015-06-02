@@ -10,7 +10,7 @@ The sum of the first three data columns (#merged, #rejected, #unresolved) must e
 the final column (#opened).
 """
 
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import argparse
 import collections

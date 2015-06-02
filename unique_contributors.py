@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Count the number of unique contributors in a 90-day sliding window."""
 
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import argparse
 import collections
