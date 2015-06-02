@@ -116,13 +116,13 @@ def main(argv):
         scrape_jira()
 
     tickets = parse_jira_info()
-    if args.longest or args.historic:
-        current = not args.historic
-        longest_open_per_state(tickets, current)
-
     if args.state:
         # TODO (potentially) report over historic data
         all_with_length(tickets, args.state)
+
+    else:  # if args.longest or args.historic:
+        current = not args.historic
+        longest_open_per_state(tickets, current)
 
 
 if __name__ == "__main__":

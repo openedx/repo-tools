@@ -79,7 +79,7 @@ def get_bucket_data(buckets, repo_name, date_bucket_fn, start, lines=False, inte
                 buckets[bucket_key]["closed " + intext] += increment
             else:
                 # PR is still open
-                print("Unresolved: pull #{0.number}: {0.title}".format(pull))
+                print("Unresolved[{1}]: pull #{0.number}: {0.title}".format(pull, bucket_key))
                 buckets[bucket_key]["unresolved " + intext] += increment
 
 
