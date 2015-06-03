@@ -760,6 +760,7 @@ jzornig:
     email: j.zornig@uq.edu.au
     name: John Zornig
     agreement: individual
+    institution: UQ
 puntxo:
     email: jorts@upv.es
     name: Javier Orts Peñarrocha
@@ -1071,6 +1072,7 @@ simultech:
     email: a.dekker@uq.edu.au
     name: Andrew Dekker
     agreement: individual
+    institution: UQ
 imiric:
     email: imiric@gmail.com
     name: Ivan Mirić
