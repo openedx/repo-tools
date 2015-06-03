@@ -1949,6 +1949,13 @@ afzaledx:
     agreement: institution
     institution: Arbisoft
     jira: afzal
-
+beardeer:
+    email: xiaolu@edx.org
+    name: Xiaolu Xiong
+    agreement: institution
+    institution: edX
+    comment: edX intern summer 2015
+    jira: beardeer
+    expires_on: 2015-08-14
 
 
