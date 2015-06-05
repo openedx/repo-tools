@@ -713,6 +713,7 @@ chrisrossi:
     email: chris@archimedeanco.com
     name: Chris Rossi
     agreement: institution
+    institution: Jazkarta
 man2life:
     email: pavelyushchenko@gmail.com
     name: Pavel Yushchenko
@@ -1752,11 +1753,6 @@ alawibaba:
     email: mali@edx.org
     agreement: institutional
     institution: edX
-cguardia:
-    name: Carlos de la Guardia
-    email: cguardia@yahoo.com
-    agreement: institutional
-    institution: MIT
 deniederhut:
     name: Dillon Niederhut
     email: dillon.niederhut@berkeley.edu
@@ -1957,5 +1953,13 @@ beardeer:
     comment: edX intern summer 2015
     jira: beardeer
     expires_on: 2015-08-14
-
-
+bryanlandia:
+    email: bryanlandia@gmail.com
+    name: Bryan Christian Wilson
+    agreement: institution
+    institution: Jazkarta
+davisagli:
+    email: david@glicksoftware.com
+    name: David Glick
+    agreement: institution
+    institution: Jazkarta
