@@ -1963,3 +1963,9 @@ davisagli:
     name: David Glick
     agreement: institution
     institution: Jazkarta
+mushtaqak:
+    email: mushtaque@edx.org
+    name: Mushtaw Ali
+    agreement: institution
+    institution: Arbisoft
+    jira: mushtaqak
