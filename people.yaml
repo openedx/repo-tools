@@ -1969,3 +1969,11 @@ mushtaqak:
     agreement: institution
     institution: Arbisoft
     jira: mushtaqak
+tlindaliu:
+    email: lliu@edx.org
+    name: Linda Liu
+    agreement: institution
+    institution: edX
+    comment: edX intern summer 2015
+    jira: lindaliu
+    expires_on: 2015-08-31
