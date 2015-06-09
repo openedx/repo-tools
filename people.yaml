@@ -1850,7 +1850,7 @@ xionglun:
     email: xheavey@gmail.com
     name:  Allen Heavey
     agreement: individual
-amir-qayyum-arbisoft:
+amir-qayyum-khan:
     email: amir.qayyum@arbisoft.com
     name: Amir Qayyum Khan
     agreement: institution
@@ -1977,3 +1977,13 @@ tlindaliu:
     comment: edX intern summer 2015
     jira: lindaliu
     expires_on: 2015-08-31
+AkA84:
+    email: finalmente2@tin.it
+    name: Alessandro Verdura
+    agreement: institution
+    institution: OpenCraft
+afzalwali:
+    email: afzal.wali@arbisoft.org
+    name: Afzal Wali
+    agreement: institution
+    institution: Arbisoft
