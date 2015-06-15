@@ -1830,21 +1830,11 @@ cewing:
     name: Cris Ewing
     agreement: institution
     institution: Jazkarta
-    before:
-        2015-06-11:
-            agreement: institution
-            institution: MIT
-            comment: Works for Jazkarta, under contract with MIT.
 cguardia:
     email: carlos@jazkarta.com
     name: Carlos de La Guardia
     agreement: institution
     institution: Jazkarta
-    before:
-        2015-06-11:
-            agreement: institution
-            institution: MIT
-            comment: Works for Jazkarta, under contract with MIT.
 Colin-Fredricks:
     email: colin.fredricks@gmail.com
     name:  Colin Fredricks
