@@ -1990,3 +1990,9 @@ afzalwali:
     name: Afzal Wali
     agreement: institution
     institution: Arbisoft
+pwilkins:
+    email: pwilkins@mit.edu
+    name: Peter Wilkins
+    agreement: institution
+    institution: MIT
+    jira: pwilkins
