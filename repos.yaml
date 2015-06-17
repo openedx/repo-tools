@@ -173,10 +173,6 @@ edx/ecommerce:
     nick: ecom
     track-pulls: true
     area: dedx
-edx/django-oscar-extensions:
-    nick: oscx
-    track-pulls: true
-    area: dedx
 edx/edx-search:
     nick: srch
     track-pulls: true
