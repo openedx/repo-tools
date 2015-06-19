@@ -422,7 +422,7 @@ gwprice:
     name: Greg Price
     agreement: individual
     before:
-        2015-06-19:
+        2015-06-20:
             agreement: institution
             institution: edX
             jira: gprice
