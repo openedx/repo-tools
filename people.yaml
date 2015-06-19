@@ -420,9 +420,12 @@ jtauber:
 gwprice:
     email: gprice@edx.org
     name: Greg Price
-    agreement: institution
-    institution: edX
-    jira: gprice
+    agreement: individual
+    before:
+        2015-06-19:
+            agreement: institution
+            institution: edX
+            jira: gprice
 jrbl:
     email: jrbl@stanford.edu
     name: Joe Blaylock
