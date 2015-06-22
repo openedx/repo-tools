@@ -8,13 +8,10 @@ edX:
 Arbisoft:
     internal: true
 BNOTIONS:
-    internal: true
     contractor: true
 Clarice:
-    internal: true
+    contractor: true
 ExtensionEngine:
-    internal: true
     contractor: true
 OpenCraft:
-    internal: true
     contractor: true
