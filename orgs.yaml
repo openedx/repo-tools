@@ -4,9 +4,9 @@
 # can automate some of our contribution processes.
 
 edX:
-    internal: true
+    committer: true
 Arbisoft:
-    internal: true
+    committer: true
 BNOTIONS:
     contractor: true
 Clarice:
