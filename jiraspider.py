@@ -46,6 +46,9 @@ STATE_MAP = {
     'Groomed': 'Awaiting Prioritization',
     'In Backlog': 'Awaiting Prioritization',
     'Engineering Code Review': 'Engineering Review',
+    'Resolved': 'Merged',
+    'In Progress': 'Engineering Review',
+    'Blocked': 'Waiting on Author',
 }
 
 IssueFields = namedtuple('IssueFields', ['key', 'labels', 'issuetype'])
