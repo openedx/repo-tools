@@ -19,7 +19,7 @@ class PullRequestBase(object):
         if "osc" in getattr(self, 'labels', ()):
             return "external"
         orgs = Orgs.orgs()
-        if orgs.get(self.org)["internal"]:
+        if orgs.get(self.org).get("internal", False):
             return "internal"
         else:
             return "external"

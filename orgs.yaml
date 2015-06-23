@@ -4,14 +4,20 @@
 # can automate some of our contribution processes.
 
 edX:
+    internal: true
     committer: true
 Arbisoft:
+    internal: true
     committer: true
 BNOTIONS:
+    internal: true
     contractor: true
 Clarice:
+    internal: true
     contractor: true
 ExtensionEngine:
+    internal: true
     contractor: true
 OpenCraft:
+    internal: true
     contractor: true
