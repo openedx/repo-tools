@@ -3,12 +3,14 @@ Flask==0.10.1
 PyYAML==3.11
 SQLAlchemy==0.9.8
 ansicolors==1.0.2
+click
 github3.py==0.7.1
 gunicorn==18.0
 iso8601
 lockfile==0.9.1
 more_itertools
 psycopg2==2.5.4
+pylint
 python-dateutil
 requests==2.5.0
 statistics
