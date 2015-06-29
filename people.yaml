@@ -16,6 +16,8 @@
 #                   covered by an institutional agreement, this should be that
 #                   institution.  If they have an individual agreement, this
 #                   can still be provided, for other bookkeeping.
+#   committer:  True if this person is a committer, only needed if the person
+#                   is not a member of a committer institution.
 #   jira:       The person's JIRA login.
 #   comment:    Arbitrary comment text (though why not use YAML comments?)
 #   expires_on: Date when the agreement ended, meaning they have no agreement
@@ -614,6 +616,7 @@ antoviaque:
     name: Xavier Antoviaque
     agreement: institution
     institution: OpenCraft
+    committer: true
     jira: XavierAntoviaque
 kern3020:
     email: kern3020@gmail.com
@@ -682,6 +685,7 @@ carsongee:
     name: Carson Gee
     agreement: individual
     institution: MIT
+    committer: true
     jira: cgee@mit.edu
 kewubenduben:
     email: xdiscent@gmail.com
@@ -797,6 +801,7 @@ tusbar:
     name: Bertrand Marron
     agreement: individual
     institution: IONIS
+    committer: true
     jira: tusbar
 brainstorm:
     email: roman@incf.org
@@ -1286,6 +1291,7 @@ pdpinch:
     name: Peter Pinch
     agreement: institution
     institution: MIT
+    committer: true
     jira: pdpinch@mit.edu
 doctoryes:
     email: jeskew@edx.org
@@ -1332,6 +1338,7 @@ bradenmacdonald:
     name: Braden MacDonald
     agreement: institution
     institution: OpenCraft
+    committer: true
     jira: bradenm
 Kelketek:
     email: kelketek@gmail.com
@@ -1779,6 +1786,7 @@ mcgachey:
     name: Phil McGachey
     agreement: institution
     institution: Harvard
+    committer: true
 tkeemon:
     email: keems21@gmail.com
     name: TJ Keemon
