@@ -2007,3 +2007,10 @@ pwilkins:
     agreement: institution
     institution: MIT
     jira: pwilkins
+albertliangcode:
+    email: albertliangcode@gmail.com
+    name: Albert Liang
+    agreement: institution
+    institution: Stanford
+    comment: Stanford intern summer 2015
+    expires_on: 2015-08-31
