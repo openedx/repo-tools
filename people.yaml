@@ -2012,3 +2012,29 @@ pwilkins:
     agreement: institution
     institution: MIT
     jira: pwilkins
+albertliangcode:
+    email: albertliangcode@gmail.com
+    name: Albert Liang
+    agreement: institution
+    institution: Stanford
+    comment: Stanford intern summer 2015
+    expires_on: 2015-08-31
+xcompass:
+    email: pan.luo@ubc.ca
+    name: Pan Luo
+    agreement: institution
+    institution: UBC
+wmono:
+    email: william.ono@ubc.ca
+    name: William Ono
+    agreement: institution
+    institution: UBC
+uofajillian:
+    email: jillian.vogel@adelaide.edu.au
+    name: Jillian Vogel
+    agreement: individual
+vkaracic:
+    email: vedran@edx.org
+    name: Vedran Karacic
+    agreement: institution
+    institution: ExtensionEngine
