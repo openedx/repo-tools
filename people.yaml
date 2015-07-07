@@ -2028,3 +2028,8 @@ uofajillian:
     email: jillian.vogel@adelaide.edu.au
     name: Jillian Vogel
     agreement: individual
+vkaracic:
+    email: vedran@edx.org
+    name: Vedran Karacic
+    agreement: institution
+    institution: ExtensionEngine
