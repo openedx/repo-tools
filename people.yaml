@@ -2029,6 +2029,18 @@ wmono:
     name: William Ono
     agreement: institution
     institution: UBC
+richardtape:
+    name: Richard Tape
+    agreement: institution
+    institution: UBC
+ionparticle:
+    name: John Hsu
+    agreement: institution
+    institution: UBC
+scmc:
+    name: Scott McMillan
+    agreement: institution
+    institution: UBC
 uofajillian:
     email: jillian.vogel@adelaide.edu.au
     name: Jillian Vogel
