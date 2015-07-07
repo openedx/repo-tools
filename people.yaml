@@ -5,6 +5,8 @@
 #   name:       The person's name in real life.
 #   email:      The person's email address.
 #   email_ok:   This will be "no" if we should not send them email.
+#   other_emails:   A list of other emails the user uses. This is used to help
+#               identify the user.
 #   agreement:  One of:
 #                   "institution": this person's work is covered by an
 #                       institutional agreement with edX.
@@ -259,11 +261,14 @@ kevinchugh:
     institution: edX
     jira: kevinchugh
 nedbat:
-    email: ned@nedbatchelder.com
+    email: ned@edx.org
     name: Ned Batchelder
     agreement: institution
     institution: edX
     jira: ned
+    other_emails:
+        - ned@nedbatchelder.com
+        - ned@python.org
 auraz:
     email: kryklia@gmail.com
     name: Alexander Kryklia
