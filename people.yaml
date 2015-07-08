@@ -89,11 +89,13 @@ jmclaus:
     institution: edX
     jira: jmc
 cpennington:
-    email: calen.pennington@gmail.com
+    email: cale@edx.org
     name: Calen Pennington
     agreement: institution
     institution: edX
     jira: cale
+    other_emails:
+        - calen.pennington@gmail.com
 jmvt:
     email: jm@edx.org
     name: JM Van Thong
@@ -512,10 +514,13 @@ csvoss:
      comment: edX intern summer 2013
      expires_on: 2013-09-01
 peter-fogg:
+    email: pfogg@edx.org
     name: Peter Fogg
     agreement: institution
     institution: edX
     jira: pfogg
+    other_emails:
+        - peter.p.fogg@gmail.com
     before:
         2013-09-01:
             agreement: institution
@@ -529,12 +534,14 @@ lapentab:
     comment: edX intern summer 2013
     expires_on: 2013-09-01
 rlucioni:
-    email: renzo@renzolucioni.com
+    email: renzo@edx.org
     name: Renzo Lucioni
     agreement: institution
     institution: edX
     comment: edX intern summer 2013
     jira: rlucioni
+    other_emails:
+        - renzo@renzolucioni.com
 fephsun:
     email: felixsun@mit.edu
     name: Felix Sun
@@ -1203,6 +1210,8 @@ clintonb:
     agreement: institution
     institution: edX
     jira: cblackburn
+    other_emails:
+        - clinton.blackburn@edx.org
 jhelbert:
     email: jhelbert@edx.org
     name: Justin Helbert
@@ -1341,12 +1350,14 @@ htareque:
     agreement: individual
     institution: MIT
 bradenmacdonald:
-    email: mail@bradenm.com
+    email: braden@opencraft.com
     name: Braden MacDonald
     agreement: institution
     institution: OpenCraft
     committer: true
     jira: bradenm
+    other_emails:
+        - mail@bradenm.com
 Kelketek:
     email: kelketek@gmail.com
     name: Jonathan Piacenti
