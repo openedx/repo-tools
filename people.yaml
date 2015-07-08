@@ -549,6 +549,8 @@ adampalay:
     agreement: institution
     institution: edX
     jira: adam
+    other_emails:
+        - adampalay@gmail.com
 ihoover:
     email: ihoover@edx.org
     name: Ian Hoover
@@ -1888,12 +1890,12 @@ robertgerinlajoie:
     agreement: institution
     institution: University of Montreal
 sambapete:
-    email: pierre.mailhot@gmail.com 
+    email: pierre.mailhot@gmail.com
     name: Pierre Mailhot
     agreement: institution
     institution: University of Montreal
 joyalce:
-    email: cedric.joyal@umontreal.ca 
+    email: cedric.joyal@umontreal.ca
     name: Cédric Joyal
     agreement: institution
     institution: University of Montreal
@@ -1922,7 +1924,7 @@ dfrdmn:
     name: David Friedman
     agreement: individual
 crispweed:
-    email: thomas@upcoder.com 
+    email: thomas@upcoder.com
     name: Thomas Young
     agreement: institution
     institution: OpenCraft
