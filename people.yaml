@@ -859,6 +859,8 @@ mattdrayer:
     agreement: institution
     institution: edX
     jira: mattdrayer
+    other_emails:
+        - mattdrayer@hotmail.com
 lamagnifica:
     email: ahodges@edx.org
     name: Alison Hodges
@@ -1287,10 +1289,13 @@ swdanielli:
     agreement: institution
     institution: edX
 dan-f:
+    email: dfriedman@edx.org
     name: Daniel Friedman
     agreement: institution
     institution: edX
     jira: dan-f
+    other_emails:
+        - dfriedman58@gmail.com
 juananpe:
     email: juanan.pereira@ehu.es
     name: Juanan Pereira
