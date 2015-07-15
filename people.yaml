@@ -1723,6 +1723,12 @@ ehmadzubair:
     agreement: institution
     institution: Arbisoft
     jira: Ehmad
+miankhalid:
+    email: mkhalid@edx.org
+    name: Mian Khalid
+    agreement: institution
+    institution: Arbisoft
+    jira: miankhalid
 '1zaman':
     email: ibraheem@edx.org
     name: Ibraheem Zaman
