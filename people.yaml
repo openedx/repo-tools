@@ -1612,6 +1612,8 @@ dsego:
     email: dsego@edx.org
     agreement: institution
     institution: ExtensionEngine
+    other_emails:
+        - davorin.sego@gmail.com
 marjev:
     name: Marko Jevtić
     agreement: institution
