@@ -2056,14 +2056,17 @@ wmono:
     agreement: institution
     institution: UBC
 richardtape:
+    email: richard.tape@ubc.ca
     name: Richard Tape
     agreement: institution
     institution: UBC
 ionparticle:
+    email: john.hsu@ubc.ca
     name: John Hsu
     agreement: institution
     institution: UBC
 scmc:
+    email: scott.mcmillan@ubc.ca
     name: Scott McMillan
     agreement: institution
     institution: UBC
