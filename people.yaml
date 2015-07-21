@@ -262,6 +262,7 @@ kevinchugh:
     agreement: institution
     institution: edX
     jira: kevinchugh
+    expires_on: 2013-09-30
 nedbat:
     email: ned@edx.org
     name: Ned Batchelder
@@ -290,6 +291,7 @@ VikParuchuri:
     agreement: institution
     institution: edX
     jira: vik
+    expires_on: 2013-10-18
 LouisSobel:
     name: Louis Sobel
     agreement: institution
@@ -307,6 +309,7 @@ apenney:
     name: Ashley Penney
     agreement: institution
     institution: edX
+    expires_on: 2013-02-28
 dmitchell:
     email: dmitchell@edx.org
     name: Don Mitchell
@@ -338,6 +341,7 @@ valera-rozuvan:
     agreement: institution
     institution: edX
     jira: valera
+    expires_on: 2015-02-17
 dianakhuang:
     email: dkh@edx.org
     name: Diana Huang
@@ -413,6 +417,7 @@ vaxXxa:
     agreement: institution
     institution: edX
     jira: vaxxxa
+    expires_on: 2015-02-17
 wedaly:
     email: will@edx.org
     name: Will Daly
@@ -455,6 +460,7 @@ polesye:
     agreement: institution
     institution: edX
     jira: anton
+    expires_on: 2015-02-17
 dcadams:
     email: dcadams@stanford.edu
     name: David Adams
@@ -486,6 +492,7 @@ jbau:
     agreement: institution
     institution: Stanford
     jira: jbau
+    expires_on: 2015-02-28
 frrrances:
     email: frances@edx.org
     name: Frances Botsford
@@ -689,6 +696,7 @@ jinpa:
     agreement: institution
     institution: Stanford
     jira: jmanning
+    expires_on: 2015-04-01
 pchiu33:
     email: philippe.chiu@gmail.com
     name: Philippe Chiu
@@ -2073,7 +2081,8 @@ scmc:
 uofajillian:
     email: jillian.vogel@adelaide.edu.au
     name: Jillian Vogel
-    agreement: individual
+    agreement: institution
+    institution: Adelaide
 vkaracic:
     email: vedran@edx.org
     name: Vedran Karacic
