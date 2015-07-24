@@ -2107,3 +2107,10 @@ joaopapereira:
     email: joaopapereira@gmail.com
     name: Joao Pereira
     agreement: individual
+DongwookYoon:
+    email: dongwook@edx.org
+    name: Dongwook Yoon
+    agreement: instituion
+    institution: edX
+    comment: edX intern summer 2015
+    expires_on: 2015-08-21
