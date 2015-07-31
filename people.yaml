@@ -2107,6 +2107,8 @@ jbarciauskas:
     name: Joel Barciauskas
     agreement: institution
     institution: edX
+    other_emails:
+        - barciajo@gmail.com
 joaopapereira:
     email: joaopapereira@gmail.com
     name: Joao Pereira
