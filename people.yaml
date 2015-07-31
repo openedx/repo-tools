@@ -1599,6 +1599,8 @@ arbabnazar:
     agreement: institution
     institution: Arbisoft
     jira: arbabnazar
+    other_emails:
+        - arbabnazar@users.noreply.github.com
 awais786:
     email: awais@edx.org
     name: Awais Qureshi
@@ -1727,6 +1729,8 @@ ahsan-ul-haq:
     agreement: institution
     institution: Arbisoft
     jira: ahsan
+    other_emails:
+        - ahsan-ul-haq@users.noreply.github.com
 ehmadzubair:
     email: ehmad@edx.org
     name: Ehmad Zubair
