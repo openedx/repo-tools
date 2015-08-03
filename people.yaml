@@ -1555,6 +1555,8 @@ clrux:
     name: Chris Rodriguez
     agreement: institution
     institution: edX
+    other_emails:
+        - github@chrisrodriguez.me
 newbery:
     email: ric.newbery@gmail.com
     name: Ricardo Newbery
