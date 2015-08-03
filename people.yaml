@@ -2111,6 +2111,7 @@ jbarciauskas:
     institution: edX
     other_emails:
         - barciajo@gmail.com
+    jira: joel
 joaopapereira:
     email: joaopapereira@gmail.com
     name: Joao Pereira
@@ -2122,3 +2123,10 @@ DongwookYoon:
     institution: edX
     comment: edX intern summer 2015
     expires_on: 2015-08-22
+bderusha:
+    email: bill@edx.org
+    name: William DeRusha
+    agreement: institution
+    institution: edX
+    jira: bderusha
+
