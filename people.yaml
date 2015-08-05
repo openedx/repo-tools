@@ -1315,6 +1315,7 @@ sjang92:
     agreement: institution
     institution: Stanford
     jira: swjang
+    expires_on: 2015-07-01
 pdpinch:
     email: pdpinch@mit.edu
     name: Peter Pinch
@@ -1480,6 +1481,7 @@ ataki:
     name: Jim Zheng
     agreement: institution
     institution: Stanford
+    expires_on: 2015-07-01
 cgoldberg:
     email: cgoldberg@gmail.com
     name: Corey Goldberg
@@ -1677,6 +1679,7 @@ caijim:
     name: Jim Cai
     agreement: institution
     institution: Stanford
+    expires_on: 2015-07-01
 La0:
     email: bastien@nextcairn.com
     name: Bastien Abadie
