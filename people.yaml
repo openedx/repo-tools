@@ -277,7 +277,7 @@ auraz:
     name: Alexander Kryklia
     jira: kryklia
     agreement: institution
-    institution: edX
+    institution: raccoongang
     before:
         2015-02-17:
             agreement: institution
