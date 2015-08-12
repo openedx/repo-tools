@@ -120,8 +120,10 @@ def main(argv):
         date_bucket_fn = date_bucket_month
 
     if args.start is None:
-        # Start keeping track Jun 1 2013 (when we became open source)
-        args.start = make_timezone_aware(datetime.datetime(2013, 6, 1))
+        # Default list past 24 months
+        two_yr = datetime.datetime.now() - datetime.timedelta(days=365*2)
+        # Be sure to start on the 1st day of the month 24 months ago
+        args.start = make_timezone_aware(datetime.datetime(two_yr.year, two_yr.month, 1))
 
     global get_pulls
     if args.db:
