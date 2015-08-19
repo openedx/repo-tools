@@ -2147,3 +2147,14 @@ mikekatz:
     name: Michael Katz
     agreement: institution
     institution: edX
+ahmedaljazzar:
+    email: ahmed.mojaz@gmail.com
+    name: Ahmed Jazzar
+    agreement: individual
+    institution: QRF
+    other_emails:
+        - ajazzar@edraak.org
+solashirai:
+    email: sola@edx.org
+    name: Sola Shirai
+    agreement: individual
