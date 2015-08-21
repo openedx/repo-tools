@@ -143,7 +143,9 @@ class JiraSpider(scrapy.Spider):
         # transitions = response.xpath('.//table[tr/th[text()="Time In Source Status"]]/tr[td]')
 
         # Find each <div class="changehistory action-body"> (both class names are necessary)
-        transitions = response.xpath('//div[@class="changehistory action-body"]')
+        # transitions = response.xpath('//div[@class="changehistory action-body"]')
+        # <div class="issue-data-block">
+        transitions = response.xpath('//div[@class="issue-data-block"]')
         # Parse each transition, pulling out the source status & how much time was spent in that status
         for trans in self.clean_transitions(transitions, item):
             (source_status, dest_status, duration) = trans
@@ -177,7 +179,7 @@ class JiraSpider(scrapy.Spider):
 
         else:
             # get "Last Execution Date" time -- in a terribly shitty format.
-            trans_date = transitions[-1].xpath('td[5]/text()').extract()[0].strip()
+            trans_date = transitions[-1].xpath('.//div[@class="action-details"]//time[@class="livestamp"]/text()').extract()[0].strip()
 
         try:
             last_execution_date = self.parse_last_execution_time(trans_date)
@@ -234,8 +236,10 @@ class JiraSpider(scrapy.Spider):
         See https://openedx.atlassian.net/browse/OSPR-369
         """
         cleaned = []
-        for trans in transitions:
+        for block in transitions:
             try:
+                # Find the _relative_ (.//) changehistory div
+                trans = block.xpath('.//div[@class="changehistory action-body"]')
                 # Within each <div class="changehistory action-body"> find the table, with three entries (<td> elts).
                 # td1 has a nested table; this table's td1 is the source; td3 is the dest.
                 # td2 (of the outer table) is the duration.
