@@ -139,9 +139,9 @@ class JiraSpider(scrapy.Spider):
         item['error'] = ''
 
         states = {}
-        transitions = response.xpath('.//table[tr/th[text()="Time In Source Status"]]/tr[td]')
-
-        # Parse each transition, pulling out the source status & how much time was spent in that status
+        # Find each <div class="issue-data-block">
+        transitions = response.xpath('//div[@class="issue-data-block"]')
+        # Parse each transition block, pulling out the source status & how much time was spent in that status
         for trans in self.clean_transitions(transitions, item):
             (source_status, dest_status, duration) = trans
 
@@ -173,8 +173,8 @@ class JiraSpider(scrapy.Spider):
             trans_date = response.xpath('.//span[@id="create-date"]/time[@class="livestamp"]/text()').extract()[0].strip()
 
         else:
-            # get "Last Execution Date" time -- in a terribly shitty format.
-            trans_date = transitions[-1].xpath('td[5]/text()').extract()[0].strip()
+            # get the time this transition was executed -- in a terribly shitty format.
+            trans_date = transitions[-1].xpath('.//div[@class="action-details"]//time[@class="livestamp"]/text()').extract()[0].strip()
 
         try:
             last_execution_date = self.parse_last_execution_time(trans_date)
@@ -231,17 +231,22 @@ class JiraSpider(scrapy.Spider):
         See https://openedx.atlassian.net/browse/OSPR-369
         """
         cleaned = []
-        for trans in transitions:
+        for block in transitions:
             try:
-                source_status = trans.xpath('td[1]/table/tr/td[2]/text()').extract()[0].strip()
-                dest_status = trans.xpath('td[1]/table/tr/td[5]/text()').extract()[0].strip()
+                # Find the _relative_ (.//) changehistory div
+                trans = block.xpath('.//div[@class="changehistory action-body"]')
+                # Within each <div class="changehistory action-body"> find the table, with three entries (<td> elts).
+                # td1 has a nested table; this table's td1 is the source; td3 is the dest.
+                # td2 (of the outer table) is the duration.
+                source_status = trans.xpath('table/tr/td[1]/table/tr/td[1]/span/text()').extract()[0].strip()
+                dest_status = trans.xpath('table/tr/td[1]/table/tr/td[3]/span/text()').extract()[0].strip()
                 # Discard transitions that go in/out of the "Verified" state
                 if source_status == "Verified" or dest_status == "Verified":
                     continue
 
                 source_status = self.remap_states(source_status, item)
                 dest_status = self.remap_states(dest_status, item)
-                duration = trans.xpath('td[2]/text()').extract()[0].strip()
+                duration = trans.xpath('table/tr/td[2]/text()').extract()[0].strip()
                 # print('*'*10 + source_status + '->' + dest_status + '; ' + duration)
                 cleaned.append((source_status, dest_status, duration))
 
