@@ -139,14 +139,9 @@ class JiraSpider(scrapy.Spider):
         item['error'] = ''
 
         states = {}
-        ### Old style JIRA parsing ###
-        # transitions = response.xpath('.//table[tr/th[text()="Time In Source Status"]]/tr[td]')
-
-        # Find each <div class="changehistory action-body"> (both class names are necessary)
-        # transitions = response.xpath('//div[@class="changehistory action-body"]')
-        # <div class="issue-data-block">
+        # Find each <div class="issue-data-block">
         transitions = response.xpath('//div[@class="issue-data-block"]')
-        # Parse each transition, pulling out the source status & how much time was spent in that status
+        # Parse each transition block, pulling out the source status & how much time was spent in that status
         for trans in self.clean_transitions(transitions, item):
             (source_status, dest_status, duration) = trans
 
@@ -178,7 +173,7 @@ class JiraSpider(scrapy.Spider):
             trans_date = response.xpath('.//span[@id="create-date"]/time[@class="livestamp"]/text()').extract()[0].strip()
 
         else:
-            # get "Last Execution Date" time -- in a terribly shitty format.
+            # get the time this transition was executed -- in a terribly shitty format.
             trans_date = transitions[-1].xpath('.//div[@class="action-details"]//time[@class="livestamp"]/text()').extract()[0].strip()
 
         try:
@@ -252,7 +247,7 @@ class JiraSpider(scrapy.Spider):
                 source_status = self.remap_states(source_status, item)
                 dest_status = self.remap_states(dest_status, item)
                 duration = trans.xpath('table/tr/td[2]/text()').extract()[0].strip()
-                print('*'*10 + source_status + '->' + dest_status + '; ' + duration)
+                # print('*'*10 + source_status + '->' + dest_status + '; ' + duration)
                 cleaned.append((source_status, dest_status, duration))
 
             except Exception as err:
