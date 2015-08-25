@@ -14,8 +14,6 @@ waiting on author:
     color: 0052cc
 waiting on Doc:
     color: 5319e7
-waiting on community managers:
-    color: 207de5
 waiting on Sustaining:
     color: 0052cc
 waiting on Solutions:
@@ -44,3 +42,5 @@ bug (open source):
     color: bfdadc
 blocked by other work:
     color: 009800
+community review:
+    color: fbca04

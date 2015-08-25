@@ -26,7 +26,6 @@ edx/diff-cover:
     nick: dfc
     track-pulls: true
     area: tools
-edx/discern:
 edx/djeventstream:
 edx/ease:
 edx/edxanalytics:
