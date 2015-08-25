@@ -47,6 +47,7 @@ STATE_MAP = {
     'In Backlog': 'Awaiting Prioritization',
     'Engineering Code Review': 'Engineering Review',
     'Resolved': 'Merged',
+    'Verified': 'Merged',
     'In Progress': 'Engineering Review',
     'Blocked': 'Waiting on Author',
 }
