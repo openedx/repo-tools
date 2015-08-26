@@ -2170,3 +2170,9 @@ nikolas:
     email: nnyby@columbia.edu
     name: Nik Nyby
     agreement: individual
+bguertin:
+    email: bguertin@edx.org
+    name: Ben Guertin
+    agreement: institution
+    institution: edX
+    expires_on: 2015-10-01
