@@ -264,7 +264,7 @@ def main(argv):
     # This is hacky; you need to have repo-tools-data cloned locally one dir up.
     # To do this properly, you should use yamldata.py
     with open("../repo-tools-data/people.yaml") as people_yaml:
-        people = yaml.load(people_file)
+        people = yaml.load(people_yaml)
         people = {k.lower():v for k,v in people.items()}
 
     entry_to_github = {people[contributor]["name"]: contributor for contributor in people}
