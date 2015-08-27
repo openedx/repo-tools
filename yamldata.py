@@ -42,7 +42,7 @@ class YamlData(object):
                 cls._the_data[filename] = cls.from_string(resp.text)
             else:
                 # Read from a file.
-                with open(filename) as f:
+                with open(os.path.join('../repo-tools-data', filename)) as f:
                     cls._the_data[filename] = cls.from_file(f)
 
         return cls._the_data[filename]
