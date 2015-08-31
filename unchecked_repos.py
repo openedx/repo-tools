@@ -9,7 +9,9 @@ from helpers import paginated_get
 
 REPOS_URL = "https://api.github.com/orgs/{org}/repos"
 
-with open("repos.yaml") as repos_yaml:
+# This is hacky; you need to have repo-tools-data cloned locally one dir up.
+# To do this properly, you should use yamldata.py
+with open("../repo-tools-data/repos.yaml") as repos_yaml:
     tracked_repos = yaml.load(repos_yaml)
 
 repos = list(paginated_get(REPOS_URL.format(org="edX")))

@@ -48,7 +48,9 @@ def set_or_delete_labels(owner_repo, new_labels):
 
 
 def sync_labels():
-    with open("labels.yaml") as label_names:
+    # This is hacky; you need to have repo-tools-data cloned locally one dir up.
+    # To do this properly, you should use yamldata.py
+    with open("../repo-tools-data/labels.yaml") as label_names:
         labels = yaml.load(label_names)
         LABEL_NAMES = []
         for name, info in labels.iteritems():
@@ -57,7 +59,9 @@ def sync_labels():
             ldict.update(info)
             LABEL_NAMES.append(ldict)
 
-    with open("repos.yaml") as repos_file:
+    # This is hacky; you need to have repo-tools-data cloned locally one dir up.
+    # To do this properly, you should use yamldata.py
+    with open("../repo-tools-data/repos.yaml") as repos_file:
         REPO_INFO = yaml.load(repos_file)
 
     for repo in sorted(REPO_INFO):

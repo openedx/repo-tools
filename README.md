@@ -33,9 +33,10 @@ Then run:
     $ source venv/bin/activate
     $ pip install -r requirements.txt
 
-`people.yaml` contains the mapping between GitHub username and the canonical
-entry for AUTHORS files. It also has information about whether the person has
-signed a contributor agreement or is covered by the institution they work for.
+`people.yaml` (in the private repo edx/repo-tools-data/) contains the mapping
+between GitHub username and the canonical entry for AUTHORS files. It also has
+information about whether the person has signed a contributor agreement or is
+covered by the institution they work for.
 
 # author_check
 
@@ -79,6 +80,8 @@ Generates the JSON used to build the wall-displayed Pull Request age chart.
 Syncs all github repos in `repos.yaml` to contain all the labels in `labels.yaml`
 
 Deletes any labels that exist in a repo but not in `labels.yaml`
+
+Both .yaml files are in the private edx/repo-tools-data repo.
 
 ## Feedback
 
