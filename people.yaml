@@ -2180,3 +2180,23 @@ KirillMakarov:
     email: kir-maka@yandex.ru
     name: Kirill Makarov
     agreement: individual
+ShawnMilo:
+    email: milochik@mit.edu
+    name: Shawn K Milochik
+    agreement: institution
+    institution: MIT
+noisecapella:
+    email: gschneel@mit.edu
+    name: George Schneeloch
+    agreement: institution
+    institution: MIT
+giocalitri:
+    email: gdimilia@mit.edu
+    name: Giovanni Di Milia
+    agreement: institution
+    institution: MIT
+jamiefolsom:
+    email: jfolsom@mit.edu
+    name: Jamie M Folsom
+    agreement: institution
+    institution: MIT
