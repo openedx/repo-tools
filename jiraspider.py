@@ -181,7 +181,7 @@ class JiraSpider(scrapy.Spider):
             last_execution_date = self.parse_last_execution_time(trans_date)
         except ValueError:
             # couldn't parse the last execution time for some reason. Log error and continue.
-            item['error'] += 'ERROR: failed to parse last execution date from date {date}\n'.format(
+            item['error'] += 'ERROR: failed to parse last execution date from date "{date}"\n'.format(
                 date=trans_date
             )
             last_execution_date = None
@@ -309,8 +309,8 @@ class JiraSpider(scrapy.Spider):
             return dateutil.parser.parse(etime, fuzzy=True)
 
         if 'Yesterday' in etime:
-            today = datetime.datetime.now()
-            yesterday = '{0.month}/{1}/{0.year}'.format(today, today.day - 1)
+            ayer = datetime.date.today() - datetime.timedelta(days=1)
+            yesterday = '{0.month}/{0.day}/{0.year}'.format(ayer)
             etime = etime.replace('Yesterday', yesterday)
 
         # This is sometimes returning dates in the future when the day is
