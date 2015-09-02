@@ -98,7 +98,7 @@ def all_with_length(tickets, state):
 
 def main(argv):
     """a docstring for main, really?"""
-    parser = argparse.ArgumentParser(description="Get information about the tickets open the longest :(")
+    parser = argparse.ArgumentParser(description="Get information about the tickets open the longest :(\nDefaults to --state='All'")
 
     parser.add_argument(
         "--scrape", action="store_true",
@@ -128,9 +128,12 @@ def main(argv):
         # TODO (potentially) report over historic data
         all_with_length(tickets, args.state)
 
-    else:  # if args.longest or args.historic:
+    elif args.longest or args.historic:
         current = not args.historic
         longest_open_per_state(tickets, current)
+
+    else:
+        all_with_length(tickets, 'All')
 
 
 if __name__ == "__main__":
