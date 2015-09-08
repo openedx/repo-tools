@@ -32,6 +32,7 @@ OSPR_STATES = [
     'Blocked by Other Work',
     'Product Review',
     'Community Manager Review',
+    'Community Review',
     'Awaiting Prioritization',
     'Engineering Review',
     'Merged',
