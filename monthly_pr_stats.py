@@ -122,8 +122,9 @@ def main(argv):
     if args.start is None:
         # Default list past 24 months
         two_yr = datetime.datetime.now() - datetime.timedelta(days=365*2)
-        # Be sure to start on the 1st day of the month 24 months ago
-        args.start = make_timezone_aware(datetime.datetime(two_yr.year, two_yr.month, 1))
+        # Be sure to start on the 1st day of the month 23 months ago
+        # (we report 24 months of data, inclusive of current month)
+        args.start = make_timezone_aware(datetime.datetime(two_yr.year, two_yr.month + 1, 1))
 
     global get_pulls
     if args.db:
