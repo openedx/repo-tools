@@ -51,6 +51,7 @@ STATE_MAP = {
     'Verified': 'Merged',
     'In Progress': 'Engineering Review',
     'Blocked': 'Waiting on Author',
+    'Community Review': 'Open edX Community Review',
 }
 
 IssueFields = namedtuple('IssueFields', ['key', 'labels', 'issuetype'])
