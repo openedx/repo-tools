@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import sys
 
 from helpers import date_arg, make_timezone_aware
-from webhookdb import get_pulls
+from githubapi import get_pulls
 from repos import Repo
 
 
