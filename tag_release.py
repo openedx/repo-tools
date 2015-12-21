@@ -751,7 +751,7 @@ def main():
     repos = override_repo_refs(
         repos,
         override_ref=args.override_ref,
-        overrides=dict(args.overrides),
+        overrides=dict(args.overrides or ()),
     )
 
     to_tag = commits_to_tag_in_repos(repos, session, skip_invalid=args.skip_invalid)
