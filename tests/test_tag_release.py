@@ -3,8 +3,8 @@ import json
 import requests
 from collections import OrderedDict
 from tag_release import (
-    openedx_release_repos, repos_where_tag_exists, commits_to_tag_in_repos,
-    tag_repos, untag_repos, override_repo_refs
+    openedx_release_repos, repos_where_ref_exists, commit_ref_info,
+    create_ref_for_repos, remove_ref_for_repos, override_repo_refs
 )
 
 pytestmark = pytest.mark.usefixtures("common_mocks")
@@ -62,18 +62,18 @@ def test_get_repos(session):
     assert repos == expected_repos
 
 
-def test_repos_where_tag_exists(session):
-    result = repos_where_tag_exists("tag-exists-some-repos", expected_repos, session)
+def test_repos_where_ref_exists(session):
+    result = repos_where_ref_exists("tag-exists-some-repos", expected_repos, session)
     assert result == ["edx/edx-platform"]
 
 
-def test_repos_where_tag_does_not_exist(session):
-    result = repos_where_tag_exists("tag-exists-no-repos", expected_repos, session)
+def test_repos_where_ref_does_not_exist(session):
+    result = repos_where_ref_exists("tag-exists-no-repos", expected_repos, session)
     assert result == []
 
 
-def test_commits_to_tag(session):
-    result = commits_to_tag_in_repos(expected_repos, session)
+def test_commit_ref_info(session):
+    result = commit_ref_info(expected_repos, session)
     assert result == expected_commits
 
 
@@ -120,9 +120,9 @@ def test_overrides_global_ref_and_dict():
     assert "parent-repo" not in result["edx/XBlock"]["openedx-release"]
 
 
-def test_tag_repos_happy_path(session, responses):
+def test_create_happy_path(session, responses):
     # creating a tag that does not already exist anywhere
-    result = tag_repos(
+    result = create_ref_for_repos(
         expected_commits,
         "tag-exists-no-repos",
         session,
@@ -153,13 +153,13 @@ def test_tag_repos_happy_path(session, responses):
     }
 
 
-def test_tag_repos_existing_tag(session, responses):
+def test_create_existing_tag(session, responses):
     # creating a tag that already exists in edx-platform: we'll make sure
     # that edx-platform is attempted *first*
     ordered_commits = OrderedDict(
         sorted(expected_commits.items(), key=lambda x: x[0], reverse=True)
     )
-    result = tag_repos(
+    result = create_ref_for_repos(
         ordered_commits,
         "tag-exists-some-repos",
         session,
@@ -173,13 +173,13 @@ def test_tag_repos_existing_tag(session, responses):
         "ref": "refs/tags/tag-exists-some-repos",
     }
 
-def test_tag_repos_existing_tag_at_end(session, responses):
+def test_create_existing_tag_at_end(session, responses):
     # creating a tag that already exists in edx-platform: we'll make sure
     # that edx-platform is attempted *last*
     ordered_commits = OrderedDict(
         sorted(expected_commits.items(), key=lambda x: x[0], reverse=False)
     )
-    result = tag_repos(
+    result = create_ref_for_repos(
         ordered_commits,
         "tag-exists-some-repos",
         session,
@@ -211,14 +211,14 @@ def test_tag_repos_existing_tag_at_end(session, responses):
     assert responses.calls[4].request.method == 'DELETE'
 
 
-def test_tag_repos_existing_tag_at_end_no_rollback(session, responses):
+def test_create_existing_tag_at_end_no_rollback(session, responses):
     # creating a tag that already exists in edx-platform: we'll make sure
     # that edx-platform is attempted *last*
     ordered_commits = OrderedDict(
         sorted(expected_commits.items(), key=lambda x: x[0], reverse=False)
     )
     with pytest.raises(RuntimeError) as excinfo:
-        tag_repos(
+        create_ref_for_repos(
             ordered_commits,
             "tag-exists-some-repos",
             session,
@@ -245,10 +245,10 @@ def test_tag_repos_existing_tag_at_end_no_rollback(session, responses):
     }
     assert "No rollback attempted" in str(excinfo.value)
     assert "Reference already exists" in str(excinfo.value)
-    assert "Tags exist on the following repos: edx/XBlock, edx/configuration" in str(excinfo.value)
+    assert "Refs exist on the following repos: edx/XBlock, edx/configuration" in str(excinfo.value)
 
 
-def test_tag_repos_existing_tag_at_end_rollback_failure(session, responses):
+def test_create_existing_tag_at_end_rollback_failure(session, responses):
     # creating a tag that already exists in edx-platform: we'll make sure
     # that edx-platform is attempted *last*
     ordered_commits = OrderedDict(
@@ -270,7 +270,7 @@ def test_tag_repos_existing_tag_at_end_rollback_failure(session, responses):
     ### END PRIVATE API ACCESS FOR RESPONSES LIBRARY ###
 
     with pytest.raises(RuntimeError) as excinfo:
-        tag_repos(
+        create_ref_for_repos(
             ordered_commits,
             "tag-exists-some-repos",
             session,
@@ -300,12 +300,12 @@ def test_tag_repos_existing_tag_at_end_rollback_failure(session, responses):
     assert responses.calls[4].request.url == "https://api.github.com/repos/edx/configuration/git/refs/tags/tag-exists-some-repos"
     assert responses.calls[4].request.method == 'DELETE'
     # ... but configuration fails, so we get an exception
-    assert "failed to delete tag on the following repos: edx/configuration" in str(excinfo)
+    assert "failed to delete ref on the following repos: edx/configuration" in str(excinfo)
 
 
-def test_untag_repos_all(session, responses):
+def test_remove_all(session, responses):
     repo_names = ["edx/edx-platform", "edx/configuration", "edx/XBlock"]
-    result = untag_repos(repo_names, "tag-exists-all-repos", session)
+    result = remove_ref_for_repos(repo_names, "tag-exists-all-repos", session)
     assert result is True
     assert len(responses.calls) == 3
     assert responses.calls[0].request.url == "https://api.github.com/repos/edx/edx-platform/git/refs/tags/tag-exists-all-repos"
@@ -316,9 +316,9 @@ def test_untag_repos_all(session, responses):
     assert responses.calls[2].request.method == "DELETE"
 
 
-def test_untag_repos_some(session, responses):
+def test_remove_some(session, responses):
     repo_names = ["edx/edx-platform", "edx/configuration", "edx/XBlock"]
-    result = untag_repos(repo_names, "tag-exists-some-repos", session)
+    result = remove_ref_for_repos(repo_names, "tag-exists-some-repos", session)
     assert result is True
     assert len(responses.calls) == 3
     assert responses.calls[0].request.url == "https://api.github.com/repos/edx/edx-platform/git/refs/tags/tag-exists-some-repos"
@@ -329,9 +329,9 @@ def test_untag_repos_some(session, responses):
     assert responses.calls[2].request.method == "DELETE"
 
 
-def test_untag_repos_none(session, responses):
+def test_remove_none(session, responses):
     repo_names = ["edx/edx-platform", "edx/configuration", "edx/XBlock"]
-    result = untag_repos(repo_names, "tag-exists-no-repos", session)
+    result = remove_ref_for_repos(repo_names, "tag-exists-no-repos", session)
     assert result is False
     assert len(responses.calls) == 3
     assert responses.calls[0].request.url == "https://api.github.com/repos/edx/edx-platform/git/refs/tags/tag-exists-no-repos"
@@ -342,7 +342,7 @@ def test_untag_repos_none(session, responses):
     assert responses.calls[2].request.method == "DELETE"
 
 
-def test_untag_repos_with_errors(session, responses):
+def test_remove_with_errors(session, responses):
     repo_names = ["edx/edx-platform", "edx/configuration", "edx/XBlock"]
 
     # when we try to delete the edx-platform tag, it will fail with a 500 error
@@ -360,7 +360,7 @@ def test_untag_repos_with_errors(session, responses):
     ### END PRIVATE API ACCESS FOR RESPONSES LIBRARY ###
 
     with pytest.raises(RuntimeError) as excinfo:
-        untag_repos(repo_names, "tag-exists-all-repos", session)
+        remove_ref_for_repos(repo_names, "tag-exists-all-repos", session)
 
     assert len(responses.calls) == 3
     assert responses.calls[0].request.url == "https://api.github.com/repos/edx/edx-platform/git/refs/tags/tag-exists-all-repos"
@@ -369,4 +369,4 @@ def test_untag_repos_with_errors(session, responses):
     assert responses.calls[1].request.method == "DELETE"
     assert responses.calls[2].request.url == "https://api.github.com/repos/edx/XBlock/git/refs/tags/tag-exists-all-repos"
     assert responses.calls[2].request.method == "DELETE"
-    assert "Failed to untag the following repos: edx/edx-platform" in str(excinfo)
+    assert "Failed to remove the ref from the following repos: edx/edx-platform" in str(excinfo)

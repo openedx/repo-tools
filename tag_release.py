@@ -52,25 +52,25 @@ REQUIREMENT_RE = re.compile(r"""
 
 def make_parser():
     parser = argparse.ArgumentParser(
-        description="Tag GitHub repos for Open edX releases",
+        description="Create/remove tags & branches on GitHub repos for Open edX releases",
     )
     parser.add_argument(
-        'tag', metavar="REFNAME",
+        'ref', metavar="REFNAME",
         help="The name of the ref to create in the repos",
     )
 
     refgroup = parser.add_argument_group(
         "arguments for git refs",
     )
-    # reftype = refgroup.add_mutually_exclusive_group()
-    # reftype.add_argument(
-    #     '--tag', action="store_true", default=True, dest="use_tag",
-    #     help="Create tags in repos [default]"
-    # )
-    # reftype.add_argument(
-    #     '--branch', action="store_false", default=True, dest="use_tag",
-    #     help="Create branches in repos"
-    # )
+    reftype = refgroup.add_mutually_exclusive_group()
+    reftype.add_argument(
+        '--tag', action="store_true", default=True, dest="use_tag",
+        help="Create tags in repos [default]"
+    )
+    reftype.add_argument(
+        '--branch', action="store_false", default=True, dest="use_tag",
+        help="Create branches in repos"
+    )
     refgroup.add_argument(
         '--override-ref', nargs=1, metavar="REF",
         help="A reference to use that overrides the references from the "
@@ -95,7 +95,7 @@ def make_parser():
     )
     parser.add_argument(
         '-R', '--reverse', action="store_true", default=False,
-        help="delete tag instead of creating it"
+        help="delete ref instead of creating it"
     )
     parser.add_argument(
         '--skip-invalid', action="store_true", default=False,
@@ -298,7 +298,7 @@ def override_repo_refs(repos, override_ref=None, overrides=None):
     return repos_copy
 
 
-def commits_to_tag_in_repos(repos, session, skip_invalid=False):
+def commit_ref_info(repos, session, skip_invalid=False):
     """
     Returns a dictionary of information about what commit should be tagged
     for each repository passed into this function. The return type is as
@@ -326,7 +326,7 @@ def commits_to_tag_in_repos(repos, session, skip_invalid=False):
     this function will throw an error unless `skip_invalid` is set to True,
     in which case the invalid information will simply be logged and ignored.
     """
-    to_tag = {}
+    ref_info = {}
     for repo_name, repo_data in repos.items():
         # make sure the repo exists
         repo_url = "https://api.github.com/repos/{repo}".format(repo=repo_name)
@@ -339,18 +339,18 @@ def commits_to_tag_in_repos(repos, session, skip_invalid=False):
             else:
                 raise RuntimeError(msg)
         # are we specifying a ref?
-        ref_name = repo_data["openedx-release"].get("ref")
-        if ref_name:
+        ref = repo_data["openedx-release"].get("ref")
+        if ref:
             try:
-                to_tag[repo_name] = get_latest_commit_for_ref(
+                ref_info[repo_name] = get_latest_commit_for_ref(
                     repo_name,
-                    ref_name,
+                    ref,
                     session=session,
                 )
             except RequestException, ValueError:
                 if skip_invalid:
                     msg = "Invalid ref {ref} in repo {repo}".format(
-                        ref=ref_name,
+                        ref=ref,
                         repo=repo_name,
                     )
                     log.error(msg)
@@ -366,7 +366,7 @@ def commits_to_tag_in_repos(repos, session, skip_invalid=False):
             requirements_file = parent_release_data.get("requirements", "requirements.txt")
 
             try:
-                to_tag[repo_name] = get_latest_commit_for_parent_repo(
+                ref_info[repo_name] = get_latest_commit_for_parent_repo(
                     repo_name,
                     parent_repo_name,
                     parent_ref,
@@ -382,14 +382,14 @@ def commits_to_tag_in_repos(repos, session, skip_invalid=False):
                     continue
                 else:
                     raise
-    return to_tag
+    return ref_info
 
 
 def get_latest_commit_for_ref(repo_name, ref, session):
     """
     Given a repo name and a ref in that repo, return some information about
     the commit that the ref refers to. This function is called by
-    commits_to_tag_in_repos(), and it returns information in the same structure.
+    commit_ref_info(), and it returns information in the same structure.
     """
     # is it a branch?
     branch_url = "https://api.github.com/repos/{repo}/branches/{branch}".format(
@@ -464,7 +464,7 @@ def get_latest_commit_for_parent_repo(
     reference the parent uses to point at the target, and looks up the commit
     that the reference points to in the target repo.
 
-    This function is called by commits_to_tag_in_repos(),
+    This function is called by commit_ref_info(),
     and it returns information in the same structure.
     """
     req_file_url = "https://raw.githubusercontent.com/{parent_repo}/{ref}/{req_file}".format(
@@ -512,34 +512,39 @@ def get_ref_for_dependency(requirements_text, repo_name, parent_repo_name=None):
     return ref
 
 
-def tag_exists_in_repo(tag, repo, session):
+def ref_exists_in_repo(ref, repo, session, use_tag=True):
     """
-    Returns a boolean indicating whether the given tag already exists in the
+    Returns a boolean indicating whether the given ref already exists in the
     given repo.
     """
-    tag_url = "https://api.github.com/repos/{repo}/git/refs/tags/{tag}".format(
+    if not ref.startswith("refs/"):
+        ref = "refs/{type}/{name}".format(
+            type="tags" if use_tag else "heads",
+            name=ref,
+        )
+    ref_url = "https://api.github.com/repos/{repo}/git/{ref}".format(
         repo=repo,
-        tag=tag,
+        ref=ref,
     )
-    tag_resp = session.get(tag_url)
-    return tag_resp.ok
+    ref_resp = session.get(ref_url)
+    return ref_resp.ok
 
 
-def repos_where_tag_exists(tag, repos, session):
-    return [repo for repo in repos if tag_exists_in_repo(tag, repo, session)]
+def repos_where_ref_exists(ref, repos, session, use_tag=True):
+    return [repo for repo in repos if ref_exists_in_repo(ref, repo, session, use_tag)]
 
 
-def todo_list(to_tag):
+def todo_list(ref_info):
     """
     Returns a string, suitable to be printed on the command line,
     that contains a record of the repos and commits that are about to be tagged.
     If no tag info is passed in, return None.
     """
-    if not to_tag:
+    if not ref_info:
         return None
 
     lines = []
-    for repo_name, commit_info in to_tag.items():
+    for repo_name, commit_info in ref_info.items():
         lines.append("{repo}: {ref} ({type}) {sha}".format(
             repo=repo_name,
             ref=commit_info['ref'],
@@ -550,33 +555,37 @@ def todo_list(to_tag):
     return "\n".join(lines)
 
 
-def tag_repos(to_tag, tag_name, session, rollback_on_fail=True):
+def create_ref_for_repos(ref_info, ref, session, use_tag=True, rollback_on_fail=True):
     """
-    Actually tag the repos with the given tag name.
-    If `rollback_on_fail` is True, then on any failure, try to delete the tags
+    Actually create refs on the given repos.
+    If `rollback_on_fail` is True, then on any failure, try to delete the refs
     that we're just created, so that we don't fail in a partially-completed
     state. (Note that this is *not* a reliable rollback -- other people could
-    have already fetched the tags from GitHub, or the deletion attempt might
+    have already fetched the refs from GitHub, or the deletion attempt might
     itself fail!)
 
     If this function succeeds, it will return True. If this function fails,
     but the world is in a consistent state, this function will return False.
-    The world is consistent if *no* repos were successfully tagged in the first
-    place, or all repos that were originally tagged were successfully rolled
+    The world is consistent if *no* refs were successfully created on repos in the first
+    place, or all created refs were were successfully rolled
     back (because `rollback_on_fail` is set to True). If this function fails,
     and the world is in an inconsistent state, this function will raise a
-    RuntimeError. This could happen if some (but not all) of the tags are created,
+    RuntimeError. This could happen if some (but not all) of the refs are created,
     and either rollback is not attempted (because `rollback_on_fail` is set to
     False), or rollback fails.
     """
+    if not ref.startswith("refs/"):
+        ref = "refs/{type}/{name}".format(
+            type="tags" if use_tag else "heads",
+            name=ref,
+        )
     succeeded = []
     failed_resp = None
     failed_repo = None
-    ref_name = "refs/tags/{name}".format(name=tag_name)
-    for repo_name, commit_info in to_tag.items():
+    for repo_name, commit_info in ref_info.items():
         ref_url = "https://api.github.com/repos/{repo}/git/refs".format(repo=repo_name)
         payload = {
-            "ref": ref_name,
+            "ref": ref,
             "sha": commit_info['sha'],
         }
         resp = session.post(ref_url, json=payload)
@@ -599,10 +608,10 @@ def tag_repos(to_tag, tag_name, session, rollback_on_fail=True):
 
     if not succeeded:
         msg = (
-            "Failed to create {ref_name} on {failed_repo}. "
-            "Error was {orig_err}. No tags have been created on any repos."
+            "Failed to create {ref} on {failed_repo}. "
+            "Error was {orig_err}. No refs have been created on any repos."
         ).format(
-            ref_name=ref_name,
+            ref=ref,
             failed_repo=failed_repo,
             orig_err=original_err_msg,
         )
@@ -612,9 +621,9 @@ def tag_repos(to_tag, tag_name, session, rollback_on_fail=True):
     if rollback_on_fail:
         rollback_failures = []
         for repo_name in succeeded:
-            ref_url = "https://api.github.com/repos/{repo}/git/{ref_name}".format(
+            ref_url = "https://api.github.com/repos/{repo}/git/{ref}".format(
                 repo=repo_name,
-                ref_name=ref_name,
+                ref=ref,
             )
             resp = session.delete(ref_url)
             if not resp.ok:
@@ -622,12 +631,12 @@ def tag_repos(to_tag, tag_name, session, rollback_on_fail=True):
 
         if rollback_failures:
             msg = (
-                "Failed to create {ref_name} on {failed_repo}. "
+                "Failed to create {ref} on {failed_repo}. "
                 "Error was {orig_err}. "
-                "Attempted to roll back, but failed to delete tag on "
+                "Attempted to roll back, but failed to delete ref on "
                 "the following repos: {rollback_failures}"
             ).format(
-                ref_name=ref_name,
+                ref=ref,
                 failed_repo=failed_repo,
                 orig_err=original_err_msg,
                 rollback_failures=", ".join(rollback_failures)
@@ -638,11 +647,11 @@ def tag_repos(to_tag, tag_name, session, rollback_on_fail=True):
             raise err
         else:
             msg = (
-                "Failed to create {ref_name} on {failed_repo}. "
+                "Failed to create {ref} on {failed_repo}. "
                 "Error was {orig_err}. However, all refs were successfully "
                 "rolled back."
             ).format(
-                ref_name=ref_name,
+                ref=ref,
                 failed_repo=failed_repo,
                 orig_err=original_err_msg,
             )
@@ -651,11 +660,11 @@ def tag_repos(to_tag, tag_name, session, rollback_on_fail=True):
     else:
         # don't try to rollback, just raise an error
         msg = (
-            "Failed to create {ref_name} on {failed_repo}. "
-            "Error was {orig_err}. No rollback attempted. Tags exist on "
+            "Failed to create {ref} on {failed_repo}. "
+            "Error was {orig_err}. No rollback attempted. Refs exist on "
             "the following repos: {tagged_repos}"
         ).format(
-            ref_name=ref_name,
+            ref=ref,
             failed_repo=failed_repo,
             orig_err=original_err_msg,
             tagged_repos=", ".join(succeeded)
@@ -666,27 +675,33 @@ def tag_repos(to_tag, tag_name, session, rollback_on_fail=True):
         raise err
 
 
-def untag_repos(repo_names, tag_name, session):
+def remove_ref_for_repos(repo_names, ref, session, use_tag=True):
     """
     Given an iterable of repository full names (like "edx/edx-platform") and
-    a tag name, this function attempts to delete the named tag from each
-    GitHub repository listed in the iterable. If the tag does not exist on
+    a tag name, this function attempts to delete the named ref from each
+    GitHub repository listed in the iterable. If the ref does not exist on
     the repo, it is skipped.
 
-    This function returns True if any repos were untagged, or False if no repos
-    were modified. If an error occurs while trying to untag a repo, the function
-    will continue trying to untag all the other repos in the iterable -- but
-    after all repos have been attempted, this function will raise a RuntimeError
-    with a list of all the repos that were not untagged. Trying to remove a tag
-    from a repo that does not have that tag to begin with is *not* treated as
-    an error.
+    This function returns True if any repos had the reference removed,
+    or False if no repos were modified. If an error occurs while trying
+    to remove a ref from a repo, the function will continue trying to
+    remove refs from all the other repos in the iterable -- but after all repos
+    have been attempted, this function will raise a RuntimeError with
+    a list of all the repos that did not have the ref removed.
+    Trying to remove a ref from a repo that does not have that ref
+    to begin with is *not* treated as an error.
     """
+    if not ref.startswith("refs/"):
+        ref = "refs/{type}/{name}".format(
+            type="tags" if use_tag else "heads",
+            name=ref,
+        )
     failures = {}
     modified = False
     for repo_name in repo_names:
-        ref_url = "https://api.github.com/repos/{repo}/git/{ref_name}".format(
+        ref_url = "https://api.github.com/repos/{repo}/git/{ref}".format(
             repo=repo_name,
-            ref_name="refs/tags/{tag}".format(tag=tag_name),
+            ref=ref,
         )
         resp = session.delete(ref_url)
         if resp.ok:
@@ -704,7 +719,7 @@ def untag_repos(repo_names, tag_name, session):
 
     if failures:
         msg = (
-            "Failed to untag the following repos: {repos}"
+            "Failed to remove the ref from the following repos: {repos}"
         ).format(
             repos=", ".join(failures.keys())
         )
@@ -730,23 +745,23 @@ def main():
         raise ValueError("No repos marked for openedx-release in repos.yaml!")
 
     if args.reverse:
-        modified = untag_repos(repos, args.tag, session)
+        modified = remove_ref_for_repos(repos, args.ref, session, use_tag=args.use_tag)
         if not args.quiet:
             if modified:
-                print("{tag} tag removed from {repos}".format(
-                    tag=args.tag,
+                print("{ref} ref removed from {repos}".format(
+                    ref=args.ref,
                     repos=", ".join(repos.keys())
                 ))
             else:
-                print("No tags modified")
+                print("No refs modified")
         return modified
 
-    already_exists = repos_where_tag_exists(args.tag, repos, session)
+    already_exists = repos_where_ref_exists(args.ref, repos, session, use_tag=args.use_tag)
     if already_exists:
         msg = (
-            "The {tag} tag already exists in the following repos: {repos}"
+            "The {ref} ref already exists in the following repos: {repos}"
         ).format(
-            tag=args.tag,
+            ref=args.ref,
             repos=", ".join(already_exists),
         )
         raise ValueError(msg)
@@ -757,20 +772,20 @@ def main():
         overrides=dict(args.overrides or ()),
     )
 
-    to_tag = commits_to_tag_in_repos(repos, session, skip_invalid=args.skip_invalid)
+    ref_info = commit_ref_info(repos, session, skip_invalid=args.skip_invalid)
     if args.interactive or not args.quiet:
-        print(todo_list(to_tag))
+        print(todo_list(ref_info))
     if args.interactive:
         response = raw_input("Is this correct? [y/N] ")
         if response.lower() not in ("y", "yes", "1"):
             return
 
-    result = tag_repos(to_tag, args.tag, session)
+    result = create_ref_for_repos(ref_info, args.ref, session, use_tag=args.use_tag)
     if not args.quiet:
         if result:
             print("Success!")
         else:
-            print("Failed to tag repos, but rolled back successfully")
+            print("Failed to create refs, but rolled back successfully")
     return result
 
 
