@@ -424,6 +424,12 @@ def get_latest_commit_for_ref(repo_name, ref, session):
     tag_resp = session.get(tag_url)
     if tag_resp.ok:
         tag = tag_resp.json()
+        if tag["object"]["type"] == "tag":
+            # An annotated tag, one more level of indirection.
+            tag_resp = session.get(tag["object"]["url"])
+            if not tag_resp.ok:
+                tag_resp.raise_for_status()
+            tag = tag_resp.json()
         # need to do a subsequent API call to get the tagged commit
         commit_url = tag["object"]["url"]
         commit_resp = session.get(commit_url)
