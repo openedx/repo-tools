@@ -18,6 +18,7 @@ import json
 import getpass
 import argparse
 import logging
+import copy
 try:
     from path import Path as path
     from git import Repo, Commit
@@ -54,9 +55,36 @@ def make_parser():
         description="Tag GitHub repos for Open edX releases",
     )
     parser.add_argument(
-        'tag', metavar="TAGNAME",
-        help="The name of the tag to create in the repos",
+        'tag', metavar="REFNAME",
+        help="The name of the ref to create in the repos",
     )
+
+    refgroup = parser.add_argument_group(
+        "arguments for git refs",
+    )
+    # reftype = refgroup.add_mutually_exclusive_group()
+    # reftype.add_argument(
+    #     '--tag', action="store_true", default=True, dest="use_tag",
+    #     help="Create tags in repos [default]"
+    # )
+    # reftype.add_argument(
+    #     '--branch', action="store_false", default=True, dest="use_tag",
+    #     help="Create branches in repos"
+    # )
+    refgroup.add_argument(
+        '--override-ref', nargs=1, metavar="REF",
+        help="A reference to use that overrides the references from the "
+            "repos.yaml file in *ALL* repos. This might be a release candidate "
+            "branch, for example."
+    )
+    refgroup.add_argument(
+        '--override', nargs=2, metavar=("REPO", "REF"),
+        action="append", dest="overrides",
+        help="Override a reference for a specific repo. The repo must be "
+            "specified using the full name of the repo, like 'edx/edx-platform'. "
+            "This option can be provided multiple times."
+    )
+
     parser.add_argument(
         '-y', '--yes', action="store_false", default=True, dest="interactive",
         help="non-interactive mode: answer yes to all questions",
@@ -74,6 +102,7 @@ def make_parser():
         help="if the repos.yaml file points to an invalid repo, skip it "
             "instead of throwing an error"
     )
+
     return parser
 
 
@@ -243,6 +272,32 @@ def openedx_release_repos(session):
     repos = {name: data for name, data in all_repos.items()
              if data and data.get("openedx-release")}
     return repos
+
+
+def override_repo_refs(repos, override_ref=None, overrides=None):
+    """
+    Returns a new `repos` dictionary with the CLI overrides applied.
+    """
+    overrides = overrides or {}
+    if not override_ref and not overrides:
+        return repos
+
+    repos_copy = copy.deepcopy(repos)
+    for repo_name, repo_data in repos.items():
+        if not repo_data:
+            continue
+        release_data = repo_data.get("openedx-release")
+        if not release_data:
+            continue
+        local_override = override_ref
+        if repo_name in overrides:
+            local_override = overrides[repo_name]
+        if local_override:
+            repos_copy[repo_name]["openedx-release"]["ref"] = local_override
+            if "parent-repo" in repos_copy[repo_name]["openedx-release"]:
+                del repos_copy[repo_name]["openedx-release"]["parent-repo"]
+
+    return repos_copy
 
 
 def commits_to_tag_in_repos(repos, session, skip_invalid=False):
@@ -692,6 +747,12 @@ def main():
             repos=", ".join(already_exists),
         )
         raise ValueError(msg)
+
+    repos = override_repo_refs(
+        repos,
+        override_ref=args.override_ref,
+        overrides=dict(args.overrides),
+    )
 
     to_tag = commits_to_tag_in_repos(repos, session, skip_invalid=args.skip_invalid)
     if args.interactive or not args.quiet:

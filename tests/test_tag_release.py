@@ -4,7 +4,7 @@ import requests
 from collections import OrderedDict
 from tag_release import (
     openedx_release_repos, repos_where_tag_exists, commits_to_tag_in_repos,
-    tag_repos, untag_repos,
+    tag_repos, untag_repos, override_repo_refs
 )
 
 pytestmark = pytest.mark.usefixtures("common_mocks")
@@ -75,6 +75,49 @@ def test_repos_where_tag_does_not_exist(session):
 def test_commits_to_tag(session):
     result = commits_to_tag_in_repos(expected_repos, session)
     assert result == expected_commits
+
+
+def test_overrides_none():
+    result = override_repo_refs(expected_repos)
+    assert expected_repos == expected_repos
+
+
+def test_overrides_global_ref():
+    result = override_repo_refs(expected_repos, override_ref="abcdef")
+    assert result["edx/edx-platform"]["openedx-release"]["ref"] == "abcdef"
+    assert result["edx/configuration"]["openedx-release"]["ref"] == "abcdef"
+    assert result["edx/XBlock"]["openedx-release"]["ref"] == "abcdef"
+    assert "parent-repo" not in result["edx/XBlock"]["openedx-release"]
+
+
+def test_overrides_dict():
+    overrides = {
+        "edx/edx-platform": "xyz",
+        "edx/configuration": "refs/branch/no-way",
+        "edx/does-not-exist": "does-not-matter",
+    }
+    result = override_repo_refs(expected_repos, overrides=overrides)
+    assert result["edx/edx-platform"]["openedx-release"]["ref"] == "xyz"
+    assert result["edx/configuration"]["openedx-release"]["ref"] == "refs/branch/no-way"
+    assert result["edx/XBlock"]["openedx-release"]["parent-repo"] == "edx/edx-platform"
+    assert "ref" not in result["edx/XBlock"]["openedx-release"]
+
+
+def test_overrides_global_ref_and_dict():
+    override_ref = "fakie-mcfakerson"
+    overrides = {
+        "edx/edx-platform": "xyz",
+        "edx/does-not-exist": "does-not-matter",
+    }
+    result = override_repo_refs(
+        expected_repos,
+        override_ref=override_ref,
+        overrides=overrides,
+    )
+    assert result["edx/edx-platform"]["openedx-release"]["ref"] == "xyz"
+    assert result["edx/configuration"]["openedx-release"]["ref"] == "fakie-mcfakerson"
+    assert result["edx/XBlock"]["openedx-release"]["ref"] == "fakie-mcfakerson"
+    assert "parent-repo" not in result["edx/XBlock"]["openedx-release"]
 
 
 def test_tag_repos_happy_path(session, responses):
