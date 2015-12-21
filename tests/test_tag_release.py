@@ -14,6 +14,7 @@ expected_repos = {
     'edx/edx-platform': {
         'openedx-release': {
             'ref': 'release',
+            'requirements': 'requirements/edx/github.txt',
         }
     },
     'edx/configuration': {

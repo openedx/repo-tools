@@ -308,12 +308,16 @@ def commits_to_tag_in_repos(repos, session, skip_invalid=False):
         parent_repo_name = repo_data["openedx-release"].get("parent-repo")
         if parent_repo_name:
             # we need the ref for the parent repo
-            parent_ref = repos[parent_repo_name]["openedx-release"]["ref"]
+            parent_release_data = repos[parent_repo_name]["openedx-release"]
+            parent_ref = parent_release_data["ref"]
+            requirements_file = parent_release_data.get("requirements", "requirements.txt")
+
             try:
                 to_tag[repo_name] = get_latest_commit_for_parent_repo(
                     repo_name,
                     parent_repo_name,
                     parent_ref,
+                    requirements_file,
                     session=session,
                 )
             except RequestException, ValueError:
@@ -391,7 +395,7 @@ def get_latest_commit_for_ref(repo_name, ref, session):
 
 
 def get_latest_commit_for_parent_repo(
-        repo_name, parent_repo_name, parent_ref, session,
+        repo_name, parent_repo_name, parent_ref, requirements_file, session,
     ):
     """
     Some repos point to other repos via requirements files. For example,
@@ -405,11 +409,6 @@ def get_latest_commit_for_parent_repo(
     This function is called by commits_to_tag_in_repos(),
     and it returns information in the same structure.
     """
-    if parent_repo_name == "edx/edx-platform":
-        requirements_file = "requirements/edx/github.txt"
-    else:
-        requirements_file = "requirements.txt"
-
     req_file_url = "https://raw.githubusercontent.com/{parent_repo}/{ref}/{req_file}".format(
         parent_repo=parent_repo_name,
         ref=parent_ref,
