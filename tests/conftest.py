@@ -29,6 +29,7 @@ def common_mocks(mocker, responses):
         edx/edx-platform:
             openedx-release:
                 ref: release
+                requirements: requirements/edx/github.txt
         edx/configuration:
             openedx-release:
                 ref: master
