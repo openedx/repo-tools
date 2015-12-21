@@ -289,9 +289,7 @@ def override_repo_refs(repos, override_ref=None, overrides=None):
         release_data = repo_data.get("openedx-release")
         if not release_data:
             continue
-        local_override = override_ref
-        if repo_name in overrides:
-            local_override = overrides[repo_name]
+        local_override = overrides.get(repo_name, override_ref)
         if local_override:
             repos_copy[repo_name]["openedx-release"]["ref"] = local_override
             if "parent-repo" in repos_copy[repo_name]["openedx-release"]:
