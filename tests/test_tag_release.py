@@ -3,7 +3,7 @@ import json
 import requests
 from collections import OrderedDict
 from tag_release import (
-    openedx_release_repos, repos_where_ref_exists, commit_ref_info,
+    openedx_release_repos, get_ref_for_repos, commit_ref_info,
     create_ref_for_repos, remove_ref_for_repos, override_repo_refs
 )
 
@@ -47,12 +47,12 @@ expected_commits = {
         'message': 'commit message for configuration master commit',
     },
     'edx/XBlock': {
-        'committer': {'name': 'Dev 3'},
-        'author': {'name': 'Dev 3'},
+        'committer': {'name': 'Dev 1'},
+        'author': {'name': 'Dev 1'},
         'sha': '1a2b3c4d5e6f',
         'ref_type': 'tag',
         'ref': '0.4.4',
-        'message': 'commit message for XBlock at 0.4.4 tag',
+        'message': 'commit message for refs/tags/0.4.4',
     }
 }
 
@@ -62,14 +62,24 @@ def test_get_repos(session):
     assert repos == expected_repos
 
 
-def test_repos_where_ref_exists(session):
-    result = repos_where_ref_exists("tag-exists-some-repos", expected_repos, session)
-    assert result == ["edx/edx-platform"]
+def test_get_ref_for_repos(session):
+    result = get_ref_for_repos(expected_repos, "tag-exists-some-repos", session)
+    expected_result = {
+        'edx/edx-platform': {
+            'author': {'name': 'Dev 6'},
+            'committer': {'name': 'Dev 6'},
+            'message': 'commit message for refs/tags/tag-exists-some-repos',
+            'ref': 'refs/tags/tag-exists-some-repos',
+            'ref_type': 'tag',
+            'sha': '65656565',
+        }
+    }
+    assert result == expected_result
 
 
-def test_repos_where_ref_does_not_exist(session):
-    result = repos_where_ref_exists("tag-exists-no-repos", expected_repos, session)
-    assert result == []
+def test_get_ref_for_repos_not_exist(session):
+    result = get_ref_for_repos(expected_repos, "tag-exists-no-repos", session)
+    assert result == {}
 
 
 def test_commit_ref_info(session):

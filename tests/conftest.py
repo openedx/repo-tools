@@ -58,6 +58,13 @@ def common_mocks(mocker, responses):
             "refs/tags/0.4.4": "1a2b3c4d5e6f",
         }
     }
+    commit_url_re = re.compile(r"""
+        https://api.github.com/repos/
+        (?P<owner>[a-zA-Z0-9_.-]+)/
+        (?P<repo>[a-zA-Z0-9_.-]+)/
+        git/commits/
+        (?P<sha>[0-9a-f]+)
+    """, re.VERBOSE)
     index_ref_url_re = re.compile(r"""
         https://api\.github\.com/repos/
         (?P<owner>[a-zA-Z0-9_.-]+)/
@@ -73,6 +80,38 @@ def common_mocks(mocker, responses):
         (?P<name>[a-zA-Z0-9_./-]+)
     """, re.VERBOSE)
 
+    def get_commit_callback(request):
+        match = commit_url_re.match(request.url)
+        owner = match.group('owner')
+        repo = match.group('repo')
+        full_repo_name = "{owner}/{repo}".format(owner=owner, repo=repo)
+
+        # for the purposes of this mock, we'll say that a commit only exists
+        # in a repo if there's a ref for it
+        ref_dict = repo_refs[full_repo_name]
+        # invert the dict to get commit shas as keys
+        commits = {sha: ref for ref, sha in ref_dict.items()}
+
+        sha = match.group('sha')
+        if sha in commits:
+            # author/committer will be based on first character of sha
+            author_name = "Dev {id}".format(id=sha[0])
+            ret_payload = {
+                "sha": sha,
+                "author": {"name": author_name},
+                "committer": {"name": author_name},
+                "message": "commit message for {ref}".format(ref=commits[sha])
+            }
+            return 200, {"Content-Type": "application/json"}, json.dumps(ret_payload)
+        else:
+            ret_payload = {
+                "message": "Not Found",
+            }
+            return 404, {"Content-Type": "application/json"}, json.dumps(ret_payload)
+
+    responses.add_callback(
+        responses.GET, commit_url_re, callback=get_commit_callback,
+    )
 
     def get_ref_callback(request):
         match = ref_url_re.match(request.url)
@@ -210,17 +249,6 @@ def common_mocks(mocker, responses):
     github_txt_url = "https://raw.githubusercontent.com/edx/edx-platform/release/requirements/edx/github.txt"
     responses.add(responses.GET, github_txt_url, body=github_txt)
 
-    xblock_tag_commit_url = "https://api.github.com/repos/edx/XBlock/git/commits/1a2b3c4d5e6f"
-    xblock_tag_commit = {
-        "sha": "1a2b3c4d5e6f",
-        "author": {
-            "name": "Dev 3"
-        },
-        "committer": {
-            "name": "Dev 3",
-        },
-        "message": "commit message for XBlock at 0.4.4 tag",
-    }
     xblock_branch_url = "https://api.github.com/repos/edx/XBlock/branches/0.4.4"
     responses.add(responses.GET, xblock_branch_url, status=404)
-    responses.add(responses.GET, xblock_tag_commit_url, json=xblock_tag_commit)
+
