@@ -72,7 +72,7 @@ def make_parser():
         help="Create branches in repos"
     )
     refgroup.add_argument(
-        '--override-ref', nargs=1, metavar="REF",
+        '--override-ref', action="store", metavar="REF",
         help="A reference to use that overrides the references from the "
             "repos.yaml file in *ALL* repos. This might be a release candidate "
             "branch, for example."
