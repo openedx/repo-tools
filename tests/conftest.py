@@ -45,41 +45,47 @@ def common_mocks(mocker, responses):
         body=fake_repos,
     )
 
-    repo_tags = {
+    repo_refs = {
         "edx/edx-platform": {
-            "tag-exists-all-repos": "7878787",
-            "tag-exists-some-repos": "65656565",
+            "refs/tags/tag-exists-all-repos": "7878787",
+            "refs/tags/tag-exists-some-repos": "65656565",
         },
         "edx/configuration": {
-            "tag-exists-all-repos": "34233423"
+            "refs/tags/tag-exists-all-repos": "34233423"
         },
         "edx/XBlock": {
-            "tag-exists-all-repos": "987078987",
-            "0.4.4": "1a2b3c4d5e6f",
+            "refs/tags/tag-exists-all-repos": "987078987",
+            "refs/tags/0.4.4": "1a2b3c4d5e6f",
         }
     }
-    ref_url_re = re.compile(r"""
+    index_ref_url_re = re.compile(r"""
         https://api\.github\.com/repos/
         (?P<owner>[a-zA-Z0-9_.-]+)/
         (?P<repo>[a-zA-Z0-9_.-]+)/
         git/refs
     """, re.VERBOSE)
-    tag_url_re = re.compile(r"""
+    ref_url_re = re.compile(r"""
         https://api\.github\.com/repos/
         (?P<owner>[a-zA-Z0-9_.-]+)/
         (?P<repo>[a-zA-Z0-9_.-]+)/
-        git/refs/tags/
-        (?P<tag>[a-zA-Z0-9_./-]+)
+        git/refs/
+        (?P<type>tags|heads)/
+        (?P<name>[a-zA-Z0-9_./-]+)
     """, re.VERBOSE)
 
 
-    def get_tag_callback(request):
-        match = tag_url_re.match(request.url)
-        tag = match.group('tag')
+    def get_ref_callback(request):
+        match = ref_url_re.match(request.url)
+        name = match.group('name')
+        ref_type = match.group('type')
+        ref = "refs/{type}/{name}".format(
+            type=ref_type,
+            name=name,
+        )
         owner = match.group('owner')
         repo = match.group('repo')
         full_repo_name = "{owner}/{repo}".format(owner=owner, repo=repo)
-        sha = repo_tags.get(full_repo_name, {}).get(tag, "")
+        sha = repo_refs.get(full_repo_name, {}).get(ref, "")
         if sha:
             commit_url = "https://api.github.com/repos/{owner}/{repo}/git/commits/{sha}".format(
                 owner=owner,
@@ -87,7 +93,7 @@ def common_mocks(mocker, responses):
                 sha=sha
             )
             ret_payload = {
-                "ref": "refs/tags/{tag}".format(tag=tag),
+                "ref": ref,
                 "object": {
                     "type": "commit",
                     "url": commit_url,
@@ -98,28 +104,26 @@ def common_mocks(mocker, responses):
             return 404, {}, ''
 
     responses.add_callback(
-        responses.GET, tag_url_re, callback=get_tag_callback,
+        responses.GET, ref_url_re, callback=get_ref_callback,
     )
 
-    def create_tag_callback(request):
-        match = ref_url_re.match(request.url)
+    def create_ref_callback(request):
+        match = index_ref_url_re.match(request.url)
         owner = match.group('owner')
         repo = match.group('repo')
         full_repo_name = "{owner}/{repo}".format(owner=owner, repo=repo)
         payload = json.loads(request.body)
         ref = payload["ref"]
-        assert ref.startswith("refs/tags/")
-        tag = ref[10:]
-        if tag not in repo_tags.get(full_repo_name, {}):
-            # create the tag
+        if ref not in repo_refs.get(full_repo_name, {}):
+            # create the ref
             sha = payload["sha"]
-            repo_tags[full_repo_name][tag] = sha
-            tag_url = "https://api.github.com/repos/{full_repo}/git/refs/tags/{tag}".format(
+            repo_refs[full_repo_name][ref] = sha
+            tag_url = "https://api.github.com/repos/{full_repo}/git/{ref}".format(
                 full_repo=full_repo_name,
-                tag=tag,
+                ref=ref,
             )
             ret_payload = {
-                "ref": "refs/tags/{tag}".format(tag=tag),
+                "ref": ref,
                 "url": tag_url,
                 "object": {
                     "sha": sha,
@@ -136,27 +140,32 @@ def common_mocks(mocker, responses):
             return 422, {"Content-Type": "application/json"}, json.dumps({"message": "Reference already exists"})
 
     responses.add_callback(
-        responses.POST, ref_url_re, callback=create_tag_callback,
+        responses.POST, index_ref_url_re, callback=create_ref_callback,
     )
 
-    def delete_tag_callback(request):
-        match = tag_url_re.match(request.url)
-        tag = match.group('tag')
+    def delete_ref_callback(request):
+        match = ref_url_re.match(request.url)
+        name = match.group('name')
+        ref_type = match.group('type')
+        ref = "refs/{type}/{name}".format(
+            type=ref_type,
+            name=name,
+        )
         owner = match.group('owner')
         repo = match.group('repo')
         full_repo_name = "{owner}/{repo}".format(owner=owner, repo=repo)
-        if tag in repo_tags.get(full_repo_name, {}):
-            del repo_tags[full_repo_name][tag]
+        if ref in repo_refs.get(full_repo_name, {}):
+            del repo_refs[full_repo_name][ref]
             return 204, {}, ''
         else:
             return 422, {"Content-Type": "application/json"}, json.dumps({"message": "Reference does not exist"})
 
     responses.add_callback(
-        responses.DELETE, tag_url_re, callback=delete_tag_callback,
+        responses.DELETE, ref_url_re, callback=delete_ref_callback,
     )
 
     repo_url_tpl = "https://api.github.com/repos/{full_repo}"
-    for repo_name in repo_tags:
+    for repo_name in repo_refs:
         responses.add(responses.GET, repo_url_tpl.format(full_repo=repo_name), status=200)
 
     platform_release_branch = {
