@@ -512,33 +512,63 @@ def get_ref_for_dependency(requirements_text, repo_name, parent_repo_name=None):
     return ref
 
 
-def ref_exists_in_repo(ref, repo, session, use_tag=True):
+def get_ref_for_repos(repos, ref, session, use_tag=True):
     """
-    Returns a boolean indicating whether the given ref already exists in the
-    given repo.
+    Returns a dictionary with a key-value pairing for each repo in the given
+    list of repos where the given ref exists in that repo. The key is the
+    full name of the repo, and the value is a dictionary of information about
+    the commit that the ref points to in that repo.
+    If no repos contain the given ref, this function will return an empty dict
+    -- as a result, you can use the return value of this function to check
+    if the ref exists in any repos, just by coercing the return value
+    to a boolean. (Empty dicts are falsy, populated dicts are truthy.)
     """
     if not ref.startswith("refs/"):
         ref = "refs/{type}/{name}".format(
             type="tags" if use_tag else "heads",
             name=ref,
         )
-    ref_url = "https://api.github.com/repos/{repo}/git/{ref}".format(
-        repo=repo,
-        ref=ref,
-    )
-    ref_resp = session.get(ref_url)
-    return ref_resp.ok
+    return_value = {}
+    ref_url_tpl = "https://api.github.com/repos/{repo}/git/{ref}"
+    for repo_name in repos:
+        ref_url = ref_url_tpl.format(repo=repo_name, ref=ref)
+        ref_resp = session.get(ref_url)
+        if ref_resp.status_code != 404:
+            ref_resp.raise_for_status()
 
+        if ref_resp.ok:
+            ref_obj = ref_resp.json()
+            if ref_obj["object"]["type"] == "tag":
+                # this is an annotated tag -- fetch the actual commit
+                tag_resp = session.get(ref_obj["object"]["url"])
+                tag_resp.raise_for_status()
+                ref_obj = tag_resp.json()
+            commit_resp = session.get(ref_obj["object"]["url"])
+            commit_resp.raise_for_status()
+            commit = commit_resp.json()
 
-def repos_where_ref_exists(ref, repos, session, use_tag=True):
-    return [repo for repo in repos if ref_exists_in_repo(ref, repo, session, use_tag)]
+            # save the sha value for the commit into the returned dict
+            if ref.startswith("refs/heads/"):
+                ref_type = "branch"
+            else:
+                ref_type = "tag"
+            return_value[repo_name] = {
+                "ref": ref,
+                "ref_type": ref_type,
+                "sha": commit["sha"],
+                "message": commit["message"],
+                "author": commit["author"],
+                "committer": commit["committer"],
+            }
+
+    return return_value
 
 
 def todo_list(ref_info):
     """
     Returns a string, suitable to be printed on the command line,
-    that contains a record of the repos and commits that are about to be tagged.
-    If no tag info is passed in, return None.
+    that contains a record of the repos and commits that are about to be modified.
+    If no ref info is passed in, return None.
     """
     if not ref_info:
         return None
@@ -744,49 +774,63 @@ def main():
     if not repos:
         raise ValueError("No repos marked for openedx-release in repos.yaml!")
 
-    if args.reverse:
-        modified = remove_ref_for_repos(repos, args.ref, session, use_tag=args.use_tag)
-        if not args.quiet:
-            if modified:
-                print("{ref} ref removed from {repos}".format(
-                    ref=args.ref,
-                    repos=", ".join(repos.keys())
-                ))
-            else:
-                print("No refs modified")
-        return modified
-
-    already_exists = repos_where_ref_exists(args.ref, repos, session, use_tag=args.use_tag)
-    if already_exists:
-        msg = (
-            "The {ref} ref already exists in the following repos: {repos}"
-        ).format(
-            ref=args.ref,
-            repos=", ".join(already_exists),
-        )
-        raise ValueError(msg)
-
     repos = override_repo_refs(
         repos,
         override_ref=args.override_ref,
         overrides=dict(args.overrides or ()),
     )
 
-    ref_info = commit_ref_info(repos, session, skip_invalid=args.skip_invalid)
-    if args.interactive or not args.quiet:
-        print(todo_list(ref_info))
-    if args.interactive:
-        response = raw_input("Is this correct? [y/N] ")
-        if response.lower() not in ("y", "yes", "1"):
-            return
+    existing_refs = get_ref_for_repos(repos, args.ref, session, use_tag=args.use_tag)
 
-    result = create_ref_for_repos(ref_info, args.ref, session, use_tag=args.use_tag)
-    if not args.quiet:
-        if result:
-            print("Success!")
-        else:
-            print("Failed to create refs, but rolled back successfully")
-    return result
+    if args.reverse:
+        if not existing_refs:
+            msg = (
+                "Ref {ref} is not present in any repos, cannot remove it"
+            ).format(
+                ref=args.ref,
+            )
+            print(msg)
+            return False
+        if args.interactive or not args.quiet:
+            print(todo_list(existing_refs))
+        if args.interactive:
+            response = raw_input("Remove these refs? [y/N] ")
+            if response.lower() not in ("y", "yes", "1"):
+                return
+
+        modified = remove_ref_for_repos(repos, args.ref, session, use_tag=args.use_tag)
+        if not args.quiet:
+            if modified:
+                print("Success!")
+            else:
+                print("No refs modified")
+        return modified
+
+    else:
+        if existing_refs:
+            msg = (
+                "The {ref} ref already exists in the following repos: {repos}"
+            ).format(
+                ref=args.ref,
+                repos=", ".join(existing_refs.keys()),
+            )
+            raise ValueError(msg)
+
+        ref_info = commit_ref_info(repos, session, skip_invalid=args.skip_invalid)
+        if args.interactive or not args.quiet:
+            print(todo_list(ref_info))
+        if args.interactive:
+            response = raw_input("Is this correct? [y/N] ")
+            if response.lower() not in ("y", "yes", "1"):
+                return
+
+        result = create_ref_for_repos(ref_info, args.ref, session, use_tag=args.use_tag)
+        if not args.quiet:
+            if result:
+                print("Success!")
+            else:
+                print("Failed to create refs, but rolled back successfully")
+        return result
 
 
 if __name__ == "__main__":
