@@ -536,8 +536,16 @@ def get_ref_for_repos(repos, ref, session, use_tag=True):
         if ref_resp.status_code != 404:
             ref_resp.raise_for_status()
 
-        if ref_resp.ok:
+        found = ref_resp.ok
+        if found:
             ref_obj = ref_resp.json()
+            if isinstance(ref_obj, list):
+                # If the ref isn't found, GitHub uses the ref as a substring,
+                # and returns all the refs that start with that string as an
+                # array.  So array means not found.
+                found = False
+
+        if found:
             if ref_obj["object"]["type"] == "tag":
                 # this is an annotated tag -- fetch the actual commit
                 tag_resp = session.get(ref_obj["object"]["url"])
