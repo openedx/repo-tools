@@ -89,7 +89,7 @@ def test_commit_ref_info(session):
 
 def test_overrides_none():
     result = override_repo_refs(expected_repos)
-    assert expected_repos == expected_repos
+    assert result == expected_repos
 
 
 def test_overrides_global_ref():
