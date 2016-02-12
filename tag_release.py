@@ -12,13 +12,16 @@ Tag repos for an Open edX release. When run, this script will:
 6. Upon confirmation, create Git tags for the repos using the GitHub API
 """
 from __future__ import unicode_literals, print_function
-import sys
-import re
-import json
-import getpass
+
 import argparse
-import logging
 import copy
+import datetime
+import getpass
+import json
+import logging
+import re
+import sys
+
 try:
     from path import Path as path
     from git import Repo, Commit
@@ -589,7 +592,12 @@ def todo_list(ref_info):
             type=commit_info['ref_type'],
             sha=commit_info['sha'][0:7],
         ))
-        lines.append("  " + commit_info["message"].splitlines()[0])
+        when = datetime.datetime.strptime(commit_info['committer']['date'], "%Y-%m-%dT%H:%M:%SZ")
+        lines.append("  {when:%Y-%m-%d} {who}: {msg}".format(
+            msg=commit_info["message"].splitlines()[0],
+            when=when,
+            who=commit_info['committer']['name'],
+        ))
     return "\n".join(lines)
 
 
