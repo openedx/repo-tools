@@ -14,7 +14,10 @@ REPOS_URL = "https://api.github.com/orgs/{org}/repos"
 with open("../repo-tools-data/repos.yaml") as repos_yaml:
     tracked_repos = yaml.load(repos_yaml)
 
-repos = list(paginated_get(REPOS_URL.format(org="edX")))
+ORGS = ["edX", "edx-solutions"]
+repos = []
+for org in ORGS:
+    repos.extend(paginated_get(REPOS_URL.format(org=org)))
 
 shown_any = False
 for r in repos:
