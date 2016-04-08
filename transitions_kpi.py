@@ -227,7 +227,7 @@ def pretty_print_time(time, message=None):
         print('\t {} days, {} hours, {} minutes, {} seconds'.format(days, hours, minutes, seconds))
     # Print out fractional days things have been in this state
     total = days + hours/24. + minutes/(24.*60) + seconds/(24.*3600)
-    return str(total)
+    return "{:.1f}".format(total)
 
 
 def get_stats(time_spent, functions, pretty=False):
@@ -245,7 +245,7 @@ def get_stats(time_spent, functions, pretty=False):
         else:
             # build up a string to print out.
             header += "{}\t|".format(fname)
-            results += "{}\t".format(pretty_print_time(output))
+            results += "{}\t ".format(pretty_print_time(output))
 
     if not pretty:
         print(header + 'Num tickets')
@@ -315,10 +315,10 @@ def main(argv):
     if args.percentile or args.all:
         pnum = args.percentile or 95
         pfunc = make_percentile(pnum)
-        functions.append((pfunc, '{} Percentile'.format(pnum)))
+        functions.append((pfunc, '{}%'.format(pnum)))
 
     if args.std_dev or args.all:
-        functions.append((std_dev, 'Std Deviation'))
+        functions.append((std_dev, 'StdDev'))
 
     if args.max or args.all:
         functions.append((lambda lst: max(lst), 'Max'))
