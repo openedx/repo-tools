@@ -3,18 +3,20 @@ Spider to scrape JIRA for transitions in and out of states.
 
 Usage: `scrapy runspider jiraspider.py -o states.json`
 """
+
 from __future__ import print_function
 from collections import namedtuple
-
 import datetime
-import dateutil.parser
+import json
 import re
 
+import dateutil.parser
 from jira.client import JIRA
 
 import scrapy
 from scrapy.http import Request
 from scrapy.conf import settings
+from scrapy.selector import Selector
 
 
 # Log only at INFO level -- change to 'DEBUG' for extremely verbose output.
@@ -141,9 +143,19 @@ class JiraSpider(scrapy.Spider):
         item['debug'] = ''
         item['error'] = ''
 
+        # if you need to figure out why this scraper is broken, dumping the
+        # response bodies is really helpful...
+        if 0:
+            with open("jira-{}.html".format(response.meta['issue_key']), "w") as f:
+                f.write(response.body)
+
+        # The data we need to parse is stored in a JavaScript string. Find it
+        # and parse it.
+        embedded = self.parse_embedded_ajax_data(response, "activity-panel-pipe-id")
+
         states = {}
         # Find each <div class="issue-data-block">
-        transitions = response.xpath('//div[@class="issue-data-block"]')
+        transitions = embedded.xpath('//div[@class="issue-data-block"]')
         # Parse each transition block, pulling out the source status & how much time was spent in that status
         for trans in self.clean_transitions(transitions, item):
             (source_status, dest_status, duration) = trans
@@ -173,7 +185,7 @@ class JiraSpider(scrapy.Spider):
             # Set current status by hand, since we know it.
             dest_status = "Needs Triage"
             # get "created" time (this is new, so doesn't have any transitions; it's still in needs triage)
-            trans_date = response.xpath('.//span[@id="create-date"]/time[@class="livestamp"]/text()').extract()[0].strip()
+            trans_date = response.xpath('.//span[@id="created-val"]/time[@class="livestamp"]/text()').extract()[0].strip()
 
         else:
             # get the time this transition was executed -- in a terribly shitty format.
@@ -225,6 +237,35 @@ class JiraSpider(scrapy.Spider):
             del item['error']
 
         return item
+
+    def parse_embedded_ajax_data(self, response, key):
+        """
+        Find a JavaScript string indicated by a particular key, and unpack it
+        in gross ways.
+
+        Returns:
+            A Scrapy Selector for the data.
+
+        """
+        marker = 'WRM._unparsedData["{}"]='.format(key)
+        for line in response.body.splitlines():
+            if line.startswith(marker):
+                break
+        else:
+            raise Exception("Couldn't find {} in response".format(key))
+
+        # Extract the data from the line.
+        js_str = line.split('=', 1)[1].strip().rstrip(';')
+        # A Javascript string can have \' but JSON cannot.
+        js_str = js_str.replace(r"\'", "'")
+        # Now json.load can handle the string literal, to get the JS data.
+        js_data = json.loads(js_str)
+        # The JS data is JSON, so loads it to get the real data.
+        html_data = json.loads(js_data)
+
+        # Parse it as HTML, and return the Selector.
+        selector = Selector(text=html_data)
+        return selector
 
     def clean_transitions(self, transitions, item):
         """
