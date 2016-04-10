@@ -1,45 +1,35 @@
 """Tests of people.py"""
 
 import datetime
+import os
+
+import pytest
 
 from people import People
 
-SAMPLE_PEOPLE = """\
-ned:
-    institution: edX
-    before:
-        2012-10-01:
-            institution: freelance
-        2010-12-01:
-            institution: Hewlett Packard
-        2007-05-01:
-            institution: Tabblo
-        2006-01-09:
-            institution: Kubi Software
-        2001-09-24:
-            institution: Blue Ripple
-db:
-    institution: Optimists United
-"""
+@pytest.fixture
+def test_data(mocker):
+    """Read people.yaml from this directory."""
+    mocker.patch.object(People, '_data_dir', os.path.dirname(__file__))
 
-def test_main_singleton_is_a_singleton():
+def test_main_singleton_is_a_singleton(test_data):
     p1 = People.people()
     p2 = People.people()
     assert p1 is p2
 
-def test_get_institution():
-    people = People.from_string(SAMPLE_PEOPLE)
+def test_get_institution(test_data):
+    people = People.people()
     assert people.get("ned")['institution'] == "edX"
     assert people.get("db")['institution'] == "Optimists United"
 
-def test_get_non_person():
-    people = People.from_string(SAMPLE_PEOPLE)
+def test_get_non_person(test_data):
+    people = People.people()
     ghost = people.get("ghost")
     assert ghost['institution'] == "unsigned"
     assert ghost['agreement'] == "none"
 
-def test_history():
-    people = People.from_string(SAMPLE_PEOPLE)
+def test_history(test_data):
+    people = People.people()
 
     def ned_then(year):
         ned = people.get("ned", datetime.datetime(year, 1, 1))

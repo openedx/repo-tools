@@ -13,6 +13,9 @@ class YamlData(object):
     # A dict mapping filenames to the data we read from the file.
     _the_data = {}
 
+    # Where we read repo-tools-data from.
+    _data_dir = "../repo-tools-data"
+
     def __init__(self, data):
         self.data = data
 
@@ -42,7 +45,7 @@ class YamlData(object):
                 cls._the_data[filename] = cls.from_string(resp.text)
             else:
                 # Read from a file.
-                with open(os.path.join('../repo-tools-data', filename)) as f:
+                with open(os.path.join(cls._data_dir, filename)) as f:
                     cls._the_data[filename] = cls.from_file(f)
 
         return cls._the_data[filename]
