@@ -238,7 +238,10 @@ def get_stats(time_spent, functions, pretty=False):
     header = ''
     results = ''
     for func, fname in functions:
-        output = func(time_spent)
+        if time_spent:
+            output = func(time_spent)
+        else:
+            output = datetime.timedelta(0)
         if pretty:
             msg = '{} time spent'.format(fname)
             pretty_print_time(output, msg)

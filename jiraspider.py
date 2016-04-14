@@ -8,6 +8,7 @@ from __future__ import print_function
 from collections import namedtuple
 import datetime
 import json
+import logging
 import re
 
 import dateutil.parser
@@ -17,10 +18,11 @@ import scrapy
 from scrapy.http import Request
 from scrapy.conf import settings
 from scrapy.selector import Selector
+#from scrapy.utils.log import configure_logging
 
 
 # Log only at INFO level -- change to 'DEBUG' for extremely verbose output.
-settings.set('LOG_LEVEL', 'INFO')
+#configure_logging({'LOG_LEVEL': logging.INFO})
 
 SERVER = 'https://openedx.atlassian.net'
 
@@ -105,7 +107,7 @@ class IssueStateDurations(scrapy.Item):
     resolution = scrapy.Field()
 
     def __str__(self):
-        return "Processed issue {}".format(self.issue)
+        return "Processed issue {}".format(self['issue'])
 
 
 class JiraSpider(scrapy.Spider):
@@ -120,9 +122,7 @@ class JiraSpider(scrapy.Spider):
         requests = []
         for issue in issues:
             # TODO (potentially) ignore subtasks, or do something with them? (issue.issuetype)
-            request = Request(
-                "{}/browse/{}?page=com.googlecode.jira-suite-utilities:transitions-summary-tabpanel".format(SERVER, issue.key)
-            )
+            request = Request("{}/browse/{}".format(SERVER, issue.key))
             request.meta['issue_key'] = issue.key
             request.meta['labels'] = issue.labels
             requests.append(request)

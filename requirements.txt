@@ -18,6 +18,7 @@ uritemplate.py==0.2.0
 urlobject
 wsgiref==0.1.2
 jira
-scrapy
+Scrapy>=1.0
 path.py
 gitpython
+numpy
