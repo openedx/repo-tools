@@ -10,3 +10,5 @@ states.json
 .sass-cache
 .webcache
 .cache
+
+.env

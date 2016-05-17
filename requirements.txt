@@ -21,3 +21,4 @@ jira
 scrapy
 path.py
 gitpython
+python-dotenv
