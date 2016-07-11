@@ -114,6 +114,10 @@ class JiraSpider(scrapy.Spider):
     default_time = datetime.timedelta(0)
     onemin = datetime.timedelta(**{'minutes': 1})
 
+    # If you need to force authentication, you can define these here.
+    # http_user = 'ned'
+    # http_pass = 'not-my-real-password'
+
     def start_requests(self):
         """Scrapy method. Starts the spider."""
         issues = jira_issues(SERVER, 'OSPR')
