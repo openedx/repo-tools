@@ -1,3 +1,4 @@
+import functools
 import getpass
 import os.path
 import sys
@@ -38,68 +39,77 @@ def do_two_factor():
     return TWO_FACTOR_CODE
 
 
-@click.command(context_settings=dict(default_map=AUTH_SETTINGS))
-@click.option('--username', prompt=True, help='Specify the user to log in to GitHub with')
-@click.option('--password', help='Password to log in to GitHub with')
-@click.option('--token', help='Personal access token to log in to GitHub with')
-@click.option('--debug/--no-debug', help='Enable debug logging', default=False)
+def pass_github(f):
+    @click.command(context_settings=dict(default_map=AUTH_SETTINGS))
+    @click.option('--username', prompt=True, help='Specify the user to log in to GitHub with')
+    @click.option('--password', help='Password to log in to GitHub with')
+    @click.option('--token', help='Personal access token to log in to GitHub with')
+    @click.option('--debug/--no-debug', help='Enable debug logging', default=False)
+    @click.pass_context
+    @functools.wraps(f)
+    def wrapped(ctx, username, password, token, debug, *args, **kwargs):
+        if debug:
+            logging.getLogger().setLevel(logging.DEBUG)
+
+        # Log in with password, if it's supplied
+        if password is not None and username == AUTH_SETTINGS.get('username'):
+            hub = login(username, password, two_factor_callback=do_two_factor)
+
+        # Otherwise, log in with the stored token
+        elif token is not None and username == AUTH_SETTINGS.get('username'):
+            hub = login(username, token)
+
+        # If no password or token, prompt for a password
+        # and generate a token, and then store the token
+        else:
+            password = getpass.getpass()
+
+            hub = login(username, password, two_factor_callback=do_two_factor)
+
+            try:
+                token = hub.authorize(
+                    login=username,
+                    password=password,
+                    note=AUTHORIZATION_NOTE,
+                )
+            except GitHubError as exc:
+                if exc.msg != "Validation Failed":
+                    raise
+
+                LOGGER.debug('Attempting to delete existing authorization')
+
+                authorizations = hub.iter_authorizations()
+                for authorization in authorizations:
+                    if authorization.note == AUTHORIZATION_NOTE:
+                        authorization.delete()
+
+                token = hub.authorize(
+                    login=username,
+                    password=password,
+                    scopes=['repo'],
+                    note=AUTHORIZATION_NOTE,
+                )
+
+            if not os.path.exists(CONFIG_DIR):
+                os.makedirs(CONFIG_DIR)
+
+            with open(AUTH_CONFIG_FILE, 'w') as auth_config:
+                yaml.safe_dump({
+                    'username': username,
+                    'token': token.token,
+                }, auth_config)
+
+        ctx.invoke(f, hub, *args, **kwargs)
+    return wrapped
+
+
+@pass_github
 @click.option('--dry/--yes', help='Actually create the pull requests', default=True)
-def cli(username, password, token, debug, dry):
+def cli(hub, dry):
     """
     Explode the repos.yaml file out into pull requests for all of the
     repositories specified in that file.
     """
-
-    if debug:
-        logging.getLogger().setLevel(logging.DEBUG)
-
-    # Log in with password, if it's supplied
-    if password is not None:
-        hub = login(username, password, two_factor_callback=do_two_factor)
-
-    # Otherwise, log in with the stored token
-    elif token is not None:
-        hub = login(username, token)
-
-    # If no password or token, prompt for a password
-    # and generate a token, and then store the token
-    else:
-        password = getpass.getpass()
-
-        hub = login(username, password, two_factor_callback=do_two_factor)
-
-        try:
-            token = hub.authorize(
-                login=username,
-                password=password,
-                note=AUTHORIZATION_NOTE,
-            )
-        except GitHubError as exc:
-            if exc.msg != "Validation Failed":
-                raise
-
-            LOGGER.debug('Attempting to delete existing authorization')
-
-            authorizations = hub.iter_authorizations()
-            for authorization in authorizations:
-                if authorization.note == AUTHORIZATION_NOTE:
-                    authorization.delete()
-
-            token = hub.authorize(
-                login=username,
-                password=password,
-                scopes=['repo'],
-                note=AUTHORIZATION_NOTE,
-            )
-
-        if not os.path.exists(CONFIG_DIR):
-            os.makedirs(CONFIG_DIR)
-
-        with open(AUTH_CONFIG_FILE, 'w') as auth_config:
-            yaml.safe_dump({
-                'username': username,
-                'token': token.token,
-            }, auth_config)
 
     repo_tools_data = hub.repository('edx', 'repo-tools-data')
     repos_yaml = repo_tools_data.contents('repos.yaml').decoded
