@@ -1,5 +1,4 @@
 import functools
-import getpass
 import logging
 import os.path
 
@@ -60,7 +59,7 @@ def pass_github(f):
         # If no password or token, prompt for a password
         # and generate a token, and then store the token
         else:
-            password = getpass.getpass()
+            password = click.prompt('Password', hide_input=True)
 
             hub = login(username, password, two_factor_callback=do_two_factor)
 
