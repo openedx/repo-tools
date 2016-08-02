@@ -1,10 +1,11 @@
+appdirs==1.4.0
 CacheControl==0.10.7
 Flask==0.10.1
 PyYAML==3.11
 SQLAlchemy==0.9.8
 ansicolors==1.0.2
 click
-github3.py==0.7.1
+github3.py
 gunicorn==18.0
 iso8601
 lockfile==0.9.1
@@ -22,3 +23,5 @@ scrapy
 path.py
 gitpython
 python-dotenv
+
+.
