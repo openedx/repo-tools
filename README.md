@@ -4,6 +4,7 @@ This repo contains a number of tools for working with GitHub repositories:
  * pull_age.py: Compute the age of pull requests.
  * wall.py: Run the wall-displayed Pull Request aging chart.
  * sync_labels.py: Sync labels across all GitHub repos to another.
+ * oep2: Report on [OEP-2](http://open-edx-proposals.readthedocs.io/en/latest/oeps/oep-0002.html) compliance across repositories
 
 
 ## Setting up GitHub authentication
@@ -82,6 +83,10 @@ Syncs all github repos in `repos.yaml` to contain all the labels in `labels.yaml
 Deletes any labels that exist in a repo but not in `labels.yaml`
 
 Both .yaml files are in the private edx/repo-tools-data repo.
+
+# oep2
+
+Reports on compliance with [OEP-2](http://open-edx-proposals.readthedocs.io/en/latest/oeps/oep-0002.html).
 
 ## Feedback
 

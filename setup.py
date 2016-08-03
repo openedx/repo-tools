@@ -12,7 +12,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'explode-repos-yaml=edx_repo_tools.oep2.explode_repos_yaml:cli',
+            'oep2=edx_repo_tools.oep2:cli',
         ]
     },
 )

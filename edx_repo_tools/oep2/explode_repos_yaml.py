@@ -1,11 +1,12 @@
 import click
 import yaml
 
-from ..auth import pass_github
+from edx_repo_tools.auth import pass_github
 
 BRANCH_NAME = 'add-openedx-yaml'
 
 
+@click.command()
 @pass_github
 @click.option('--dry/--yes', help='Actually create the pull requests', default=True)
 def cli(hub, dry):

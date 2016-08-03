@@ -37,10 +37,9 @@ def do_two_factor():
 
 
 def pass_github(f):
-    @click.command(context_settings=dict(default_map=AUTH_SETTINGS))
-    @click.option('--username', prompt=True, help='Specify the user to log in to GitHub with')
+    @click.option('--username', help='Specify the user to log in to GitHub with', default=AUTH_SETTINGS.get('username'))
     @click.option('--password', help='Password to log in to GitHub with')
-    @click.option('--token', help='Personal access token to log in to GitHub with')
+    @click.option('--token', help='Personal access token to log in to GitHub with', default=AUTH_SETTINGS.get('token'))
     @click.option('--debug/--no-debug', help='Enable debug logging', default=False)
     @click.pass_context
     @functools.wraps(f)
@@ -59,6 +58,9 @@ def pass_github(f):
         # If no password or token, prompt for a password
         # and generate a token, and then store the token
         else:
+            if username is None:
+                username = click.prompt('Username')
+
             password = click.prompt('Password', hide_input=True)
 
             hub = login(username, password, two_factor_callback=do_two_factor)

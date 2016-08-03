@@ -23,5 +23,8 @@ scrapy
 path.py
 gitpython
 python-dotenv
+tabulate
+lazy
+
 
 .
