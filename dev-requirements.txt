@@ -1,5 +1,6 @@
 pytest==2.8.5
 pytest-mock==0.9.0
+pytest-xdist
 responses
 
 -e .
