@@ -32,7 +32,7 @@ Then run:
     $ git clone https://github.com/edx/repo-tools.git
     $ virtualenv venv
     $ source venv/bin/activate
-    $ pip install -r requirements.txt
+    $ make install
 
 `people.yaml` (in the private repo edx/repo-tools-data/) contains the mapping
 between GitHub username and the canonical entry for AUTHORS files. It also has

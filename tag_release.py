@@ -29,7 +29,7 @@ try:
     import yaml
 except ImportError:
     print("Error: missing dependencies! Please run this command to install them:")
-    print("pip install -r requirements.txt")
+    print("make install")
     sys.exit(1)
 
 log = logging.getLogger(__name__)
