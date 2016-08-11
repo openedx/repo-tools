@@ -1,9 +1,15 @@
+"""
+Configuration for ``oep2 report`` (to adapt py.test for OEP-2 reporting).
+"""
 import pytest
 import yaml
 from edx_repo_tools.auth import login_github
 
 
 def pytest_addoption(parser):
+    """
+    Add options to py.test
+    """
     group = parser.getgroup("OEP", "OEP reporting", "general")
     group.addoption(
         "--org", action="append", default=[],
@@ -11,7 +17,8 @@ def pytest_addoption(parser):
     )
     group.addoption(
         "--repo", action="append", default=[],
-        help="list of specific repositories (specified as org/repo) to run tests on"
+        help="list of specific repositories (specified as org/repo) "
+             "to run tests on"
     )
     group.addoption(
         "--username", action="store", default=None,
@@ -33,6 +40,9 @@ def pytest_addoption(parser):
 
 
 def pytest_generate_tests(metafunc):
+    """
+    Generate test instances for all repositories to be checked.
+    """
     hub = login_github(
         metafunc.config.option.username,
         metafunc.config.option.password,
@@ -73,6 +83,15 @@ def pytest_generate_tests(metafunc):
 
 @pytest.fixture(scope="session")
 def openedx_yaml(github_repo):
+    """
+    py.test fixture to read the openedx.yaml file from the supplied github_repo.
+
+    Arguments:
+        github_repo (:class:`~github3.GitHub`): The repo to read from
+
+    Returns:
+        A dictionary with the parsed contents of openedx.yaml.
+    """
     raw_contents = github_repo.contents('openedx.yaml')
     if raw_contents is None:
         return None

@@ -1,3 +1,8 @@
+"""
+``oep2 explode``: Split out edx/repo-tools-data:repos.yaml into individual
+openedx.yaml files in specific repos.
+"""
+
 import click
 import yaml
 
@@ -8,7 +13,11 @@ BRANCH_NAME = 'add-openedx-yaml'
 
 @click.command()
 @pass_github
-@click.option('--dry/--yes', help='Actually create the pull requests', default=True)
+@click.option(
+    '--dry/--yes',
+    default=True,
+    help='Actually create the pull requests',
+)
 def cli(hub, dry):
     """
     Explode the repos.yaml file out into pull requests for all of the
@@ -36,8 +45,14 @@ def cli(hub, dry):
         file_contents = yaml.safe_dump(repo_data, indent=4)
 
         if dry:
-            click.secho('Against {}/{}'.format(user, repo_name), fg='yellow', bold=True)
-            click.secho('Would have created openedx.yaml file:', fg='yellow', bold=True)
+            click.secho(
+                'Against {}/{}'.format(user, repo_name),
+                fg='yellow', bold=True
+            )
+            click.secho(
+                'Would have created openedx.yaml file:',
+                fg='yellow', bold=True
+            )
             click.secho(file_contents)
             continue
 
