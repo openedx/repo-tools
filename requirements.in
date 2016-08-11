@@ -11,7 +11,6 @@ iso8601
 lockfile==0.9.1
 more_itertools
 psycopg2==2.5.4
-pylint
 python-dateutil
 requests
 statistics

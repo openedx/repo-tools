@@ -3,3 +3,6 @@ pytest-mock
 pytest-xdist
 responses
 pip-tools
+pep8
+pylint
+edx-lint

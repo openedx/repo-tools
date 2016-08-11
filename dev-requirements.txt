@@ -5,18 +5,32 @@
 #    pip-compile --output-file dev-requirements.txt dev-requirements.in
 #
 apipkg==1.4               # via execnet
+astroid==1.4.8            # via pylint, pylint-celery, pylint-plugin-utils
+backports.functools-lru-cache==1.2.1
 click==6.6                # via pip-tools
+colorama==0.3.7           # via pylint
+configparser==3.5.0
 cookies==2.2.1            # via responses
+edx-lint==0.5.1
 execnet==1.4.1            # via pytest-xdist
 first==2.0.1              # via pip-tools
 funcsigs==1.0.2           # via mock
+isort==4.2.5
+lazy-object-proxy==1.2.2  # via astroid
+mccabe==0.5.2
 mock==2.0.0               # via pytest-mock, responses
 pbr==1.10.0               # via mock
+pep8==1.7.0
 pip-tools==1.7.0
 py==1.4.31                # via pytest, pytest-xdist
+pylint-celery==0.3        # via edx-lint
+pylint-django==0.7.2      # via edx-lint
+pylint-plugin-utils==0.2.4  # via pylint-celery, pylint-django
+pylint==1.5.4
 pytest-mock==1.2
 pytest-xdist==1.15.0
 pytest==2.9.2
 requests==2.11.0          # via responses
 responses==0.5.1
-six==1.10.0               # via mock, pip-tools, responses
+six==1.10.0               # via astroid, edx-lint, mock, pip-tools, pylint, responses
+wrapt==1.10.8             # via astroid

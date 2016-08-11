@@ -1,4 +1,4 @@
-.PHONY: test dev-install install upgrade install-pip-tools
+.PHONY: test dev-install install upgrade install-pip-tools lint
 
 test:
 	py.test
@@ -17,3 +17,7 @@ install: install-pip-tools
 upgrade:
 	pip-compile --upgrade dev-requirements.in
 	pip-compile --upgrade requirements.in
+
+lint:
+	pep8 || true
+	pylint *.py edx_repo_tools age tests || true
