@@ -6,13 +6,25 @@ setup(
     packages=[
         'edx_repo_tools',
         'edx_repo_tools.oep2',
+        'edx_repo_tools.oep2.checks',
     ],
     install_requires=[
         'click',
+        'appdirs',
+        'github3.py',
+        'pytest',
+        'pytest-xdist',
+        'pyyaml',
     ],
     entry_points={
         'console_scripts': [
             'oep2=edx_repo_tools.oep2:cli',
-        ]
+        ],
+        'pytest11': [
+            'oep2-report = edx_repo_tools.oep2.report',
+        ],
     },
+    package_data={
+        'edx_repo_tools.oep2': ['oep2-report.ini'],
+    }
 )

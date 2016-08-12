@@ -1,6 +1,6 @@
 import pytest
 
-def test_explicit(openedx_yaml, oep):
+def check_explicit(openedx_yaml, oep):
 
     if openedx_yaml is None:
         pytest.skip("No openedx.yaml found")

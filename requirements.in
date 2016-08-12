@@ -23,3 +23,4 @@ path.py
 gitpython
 python-dotenv
 pytest
+pytest-xdist

@@ -1,29 +1,28 @@
 import pytest
 import re
 
-
-def test_openedx_yaml(openedx_yaml):
+def check_openedx_yaml(openedx_yaml):
     assert openedx_yaml is not None
 
-def test_owner(openedx_yaml):
+def check_owner(openedx_yaml):
     if openedx_yaml is None:
         pytest.skip("No openedx.yaml file found")
 
     assert openedx_yaml.get('owner') != "MUST FILL IN OWNER"
 
-def test_nick(openedx_yaml):
+def check_nick(openedx_yaml):
     if openedx_yaml is None:
         pytest.skip("No openedx.yaml file found")
 
     assert 'nick' in openedx_yaml
 
-def test_tags(openedx_yaml):
+def check_tags(openedx_yaml):
     if openedx_yaml is None:
         pytest.skip("No openedx.yaml file found")
 
     assert 'tags' in openedx_yaml
 
-def test_oeps(openedx_yaml):
+def check_oeps(openedx_yaml):
     if openedx_yaml is None:
         pytest.skip("No openedx.yaml file found")
 
