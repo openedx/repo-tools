@@ -44,7 +44,7 @@ def cli(org, repo, oep, num_processes):
     Command-line interface specification for ``oep2 report``.
     """
     args = [
-        '-rxs',
+        '-q',
         '--pyargs', 'edx_repo_tools.oep2.checks',
         '-c', pkg_resources.resource_filename(__name__, 'oep2-report.ini')
     ]

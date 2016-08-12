@@ -6,25 +6,25 @@ def check_openedx_yaml(openedx_yaml):
 
 def check_owner(openedx_yaml):
     if openedx_yaml is None:
-        pytest.skip("No openedx.yaml file found")
+        pytest.xfail("No openedx.yaml file found")
 
     assert openedx_yaml.get('owner') != "MUST FILL IN OWNER"
 
 def check_nick(openedx_yaml):
     if openedx_yaml is None:
-        pytest.skip("No openedx.yaml file found")
+        pytest.xfail("No openedx.yaml file found")
 
     assert 'nick' in openedx_yaml
 
 def check_tags(openedx_yaml):
     if openedx_yaml is None:
-        pytest.skip("No openedx.yaml file found")
+        pytest.xfail("No openedx.yaml file found")
 
     assert 'tags' in openedx_yaml
 
 def check_oeps(openedx_yaml):
     if openedx_yaml is None:
-        pytest.skip("No openedx.yaml file found")
+        pytest.xfail("No openedx.yaml file found")
 
     assert 'oeps' in openedx_yaml
 
