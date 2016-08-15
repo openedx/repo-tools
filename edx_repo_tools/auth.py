@@ -119,6 +119,8 @@ def login_github(username=None, password=None, token=None):
                 'token': token.token,
             }, auth_config)
 
+    LOGGER.debug('Rate limit remaining: %d', hub.ratelimit_remaining)
+
     return hub
 
 

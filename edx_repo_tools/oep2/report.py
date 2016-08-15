@@ -5,8 +5,10 @@
 import logging
 import os.path
 import pkg_resources
+import tempfile
 
 import click
+from git.repo.base import Repo
 import pytest
 import yaml
 from edx_repo_tools.auth import login_github
@@ -112,14 +114,14 @@ def pytest_generate_tests(metafunc):
     if 'github_repo' in metafunc.fixturenames:
         if not metafunc.config.option.org and not metafunc.config.option.repo:
             metafunc.parametrize(
-                "github_repo",
-                [None],
+                "git_repo",
+                [Repo('.')],
                 scope="session",
             )
 
             metafunc.parametrize(
-                "local_repo",
-                ['.'],
+                "github_repo",
+                [None],
                 scope="session",
             )
         else:
@@ -144,12 +146,6 @@ def pytest_generate_tests(metafunc):
                 scope="session",
             )
 
-            metafunc.parametrize(
-                "local_repo",
-                [None],
-                scope="session",
-            )
-
     if 'oep' in metafunc.fixturenames:
         metafunc.parametrize(
             "oep",
@@ -158,7 +154,61 @@ def pytest_generate_tests(metafunc):
 
 
 @pytest.fixture(scope="session")
-def openedx_yaml(github_repo, local_repo):
+def git_repo(github_repo, branch="master", checkout_root=None):
+    """
+    py.test fixture to clone a GitHub based repo onto the local disk.
+
+    Arguments:
+        github_repo (:class:`~github3.GitHub`): The repo to read from
+        branch (str): The branch to check out
+
+    Returns:
+        A :class:`~git.repo.base.Repo` object, with the master branch checked out
+        and up to date with the remote.
+    """
+    if checkout_root is None:
+        checkout_root = os.path.join(tempfile.gettempdir(), '.oep2-workspace')
+
+    if not os.path.exists(checkout_root):
+        os.makedirs(checkout_root)
+
+    repo_dir = os.path.join(
+        os.path.join(checkout_root, github_repo.owner.name),
+        github_repo.name
+    )
+
+    if not os.path.exists(repo_dir):
+        repo = Repo.clone_from(github_repo.git_url, repo_dir)
+    else:
+        repo = Repo(repo_dir)
+
+    if repo.is_dirty():
+        raise Exception("Can't update a dirty repository from github")
+   
+    try:
+        origin = repo.remote('origin')
+    except ValueError:
+        repo.create_remote('origin', github_repo.git_url)
+        origin = repo.remote('origin')
+
+    if origin.fetch != github_repo.git_url:
+        origin.set_url(github_repo.git_url)
+
+    origin.fetch()
+
+    head = repo.create_head(
+        'refs/heads/{}'.format(branch),
+        '{}/{}'.format(origin.name, branch)
+    )
+
+    head.checkout(force=True)
+
+    return repo
+
+
+
+@pytest.fixture(scope="session")
+def openedx_yaml(git_repo):
     """
     py.test fixture to read the openedx.yaml file from the supplied github_repo.
 
@@ -168,18 +218,8 @@ def openedx_yaml(github_repo, local_repo):
     Returns:
         A dictionary with the parsed contents of openedx.yaml.
     """
-    if local_repo is not None:
-        try:
-            with open(os.path.join(local_repo, "openedx.yaml")) as openedx_yaml_file:
-                return yaml.safe_load(openedx_yaml_file)
-        except IOError:
-            return None
-    elif github_repo is not None:
-        raw_contents = github_repo.contents('openedx.yaml')
-        if raw_contents is None:
-            return None
-        else:
-            yaml_contents = yaml.safe_load(raw_contents.decoded)
-            return yaml_contents
-    else:
+    try:
+        with open(os.path.join(git_repo.working_tree_dir, "openedx.yaml")) as openedx_yaml_file:
+            return yaml.safe_load(openedx_yaml_file)
+    except IOError:
         return None
