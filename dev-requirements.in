@@ -1,8 +1,7 @@
+edx-lint
+pep8
+pip-tools
+pylint
 pytest
 pytest-mock
 responses
-pip-tools
-pep8
-pylint
-edx-lint
-
