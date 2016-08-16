@@ -23,4 +23,5 @@ path.py
 gitpython
 python-dotenv
 pytest
+pytest-logging
 pytest-xdist

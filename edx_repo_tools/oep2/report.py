@@ -8,7 +8,10 @@ import pkg_resources
 import tempfile
 
 import click
-from git.repo.base import Repo
+from git.repo.base import Repo, Head
+from git.refs.remote import RemoteReference
+from git.exc import BadName
+from git.cmd import Git
 import pytest
 import yaml
 from edx_repo_tools.auth import login_github
@@ -41,15 +44,30 @@ LOGGER = logging.getLogger(__name__)
     default=1,
     help="How many procesess to use while checking repositories",
 )
-def cli(org, repo, oep, num_processes):
+@click.option(
+    '--trace/--no-trace', default=False,
+    help="Trace git and github interactions during reporting",
+)
+@click.option(
+    "--checkout-root",
+    default=".oep2-workspace",
+    help="Where to check out repos that are being checked for oep2 compliance",
+)
+def cli(org, repo, oep, num_processes, trace, checkout_root):
     """
     Command-line interface specification for ``oep2 report``.
     """
     args = [
-        '-q',
         '--pyargs', 'edx_repo_tools.oep2.checks',
-        '-c', pkg_resources.resource_filename(__name__, 'oep2-report.ini')
+        '-c', pkg_resources.resource_filename(__name__, 'oep2-report.ini'),
+        '--checkout-root', checkout_root,
     ]
+
+    if trace:
+        args.extend(['-s', '-vvv'])
+        Git.GIT_PYTHON_TRACE = True
+    else:
+        args.append('-q')
 
     if num_processes != 1:
         args.extend(['-n', num_processes])
@@ -100,61 +118,73 @@ def pytest_addoption(parser):
         help="List of OEPs to check for explicit specification of compliance"
     )
 
-
-def pytest_generate_tests(metafunc):
-    """
-    Generate test instances for all repositories to be checked.
-    """
-    hub = login_github(
-        metafunc.config.option.username,
-        metafunc.config.option.password,
-        metafunc.config.option.token,
+    group.addoption(
+        "--checkout-root", action="store", default=".oep2-workspace",
+        help="Where to check out repos that are being checked for oep2 compliance",
     )
 
-    if 'github_repo' in metafunc.fixturenames:
-        if not metafunc.config.option.org and not metafunc.config.option.repo:
-            metafunc.parametrize(
-                "git_repo",
-                [Repo('.')],
-                scope="session",
-            )
 
-            metafunc.parametrize(
-                "github_repo",
-                [None],
-                scope="session",
-            )
-        else:
-            repos = []
-            if metafunc.config.option.repo:
-                repos = [
-                    hub.repository(*repo.split('/'))
-                    for repo in metafunc.config.option.repo
-                ]
-            elif metafunc.config.option.org:
-                repos = [
-                    repo
-                    for org in metafunc.config.option.org
-                    for repo in hub.organization(org).iter_repos()
-                ]
-                repos = [repo for repo in repos if not repo.fork]
+def pytest_configure(config):
+    config.pluginmanager.register(Oep2ReportPlugin(config))
 
-            metafunc.parametrize(
-                "github_repo",
-                repos,
-                ids=[repo.full_name for repo in repos],
-                scope="session",
-            )
 
-    if 'oep' in metafunc.fixturenames:
-        metafunc.parametrize(
-            "oep",
-            metafunc.config.option.oep
+class Oep2ReportPlugin(object):
+
+    def __init__(self, config):
+        self.hub = login_github(
+            config.option.username,
+            config.option.password,
+            config.option.token,
         )
 
+        if config.option.repo:
+            self.repos = [
+                self.hub.repository(*repo.split('/'))
+                for repo in config.option.repo
+            ]
+        elif config.option.org:
+            self.repos = [
+                repo
+                for org in config.option.org
+                for repo in self.hub.organization(org).iter_repos()
+                if not repo.fork
+            ]
 
-@pytest.fixture(scope="session")
-def git_repo(github_repo, branch="master", checkout_root=None):
+    def pytest_generate_tests(self, metafunc):
+        """
+        Generate test instances for all repositories to be checked.
+        """
+        if 'github_repo' in metafunc.fixturenames:
+            if not metafunc.config.option.org and not metafunc.config.option.repo:
+                metafunc.parametrize(
+                    "git_repo",
+                    [Repo('.')],
+                )
+
+                metafunc.parametrize(
+                    "github_repo",
+                    [None],
+                )
+            else:
+                metafunc.parametrize(
+                    "github_repo",
+                    self.repos,
+                    ids=[repo.full_name for repo in self.repos],
+                )
+
+        if 'oep' in metafunc.fixturenames:
+            metafunc.parametrize(
+                "oep",
+                metafunc.config.option.oep,
+                ids=["OEP-{}".format(oep) for oep in metafunc.config.option.oep],
+            )
+
+
+SYNCED = set()
+
+
+@pytest.fixture()
+def git_repo(request, github_repo, branch=None, remote='origin', checkout_root=None):
     """
     py.test fixture to clone a GitHub based repo onto the local disk.
 
@@ -167,7 +197,7 @@ def git_repo(github_repo, branch="master", checkout_root=None):
         and up to date with the remote.
     """
     if checkout_root is None:
-        checkout_root = os.path.join(tempfile.gettempdir(), '.oep2-workspace')
+        checkout_root = request.config.option.checkout_root
 
     if not os.path.exists(checkout_root):
         os.makedirs(checkout_root)
@@ -177,37 +207,47 @@ def git_repo(github_repo, branch="master", checkout_root=None):
         github_repo.name
     )
 
+    if github_repo.private:
+        repo_url = github_repo.ssh_url
+    else:
+        repo_url = github_repo.clone_url
+
     if not os.path.exists(repo_dir):
-        repo = Repo.clone_from(github_repo.git_url, repo_dir)
+        repo = Repo.clone_from(repo_url, repo_dir)
     else:
         repo = Repo(repo_dir)
 
-    if repo.is_dirty():
-        raise Exception("Can't update a dirty repository from github")
-   
+    if github_repo not in SYNCED:
+
+        try:
+            remote_obj = repo.remote(remote)
+        except ValueError:
+            repo.create_remote(remote, repo_url)
+            remote_obj = repo.remote(remote)
+
+        if remote_obj.fetch != repo_url:
+            remote_obj.set_url(repo_url)
+
+        remote_obj.fetch()
+        SYNCED.add(github_repo)
+
+    if branch is None:
+        branch = github_repo.default_branch
+
+    head = repo.head
+    target = RemoteReference(repo, 'refs/remotes/{}/{}'.format(remote, branch))
+
     try:
-        origin = repo.remote('origin')
+        if head.commit != target.commit:
+            target.checkout()
     except ValueError:
-        repo.create_remote('origin', github_repo.git_url)
-        origin = repo.remote('origin')
-
-    if origin.fetch != github_repo.git_url:
-        origin.set_url(github_repo.git_url)
-
-    origin.fetch()
-
-    head = repo.create_head(
-        'refs/heads/{}'.format(branch),
-        '{}/{}'.format(origin.name, branch)
-    )
-
-    head.checkout(force=True)
+        pytest.xfail("Branch {} is empty".format(branch))
 
     return repo
 
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def openedx_yaml(git_repo):
     """
     py.test fixture to read the openedx.yaml file from the supplied github_repo.

@@ -12,9 +12,7 @@ import click
 from github3 import login, GitHubError
 import yaml
 
-logging.basicConfig()
 LOGGER = logging.getLogger(__name__)
-
 
 CONFIG_DIR = user_config_dir('edx-repo-tools', 'edx')
 AUTH_CONFIG_FILE = os.path.join(CONFIG_DIR, 'auth.yaml')
@@ -152,6 +150,7 @@ def pass_github(f):
     @functools.wraps(f)
     def wrapped(ctx, username, password, token, debug, *args, **kwargs):
         if debug:
+            logging.basicConfig()
             logging.getLogger().setLevel(logging.DEBUG)
 
         hub = login_github(username, password, token)
