@@ -12,9 +12,10 @@ from git.repo.base import Repo, Head
 from git.refs.remote import RemoteReference
 from git.exc import BadName
 from git.cmd import Git
+from lazy import lazy
 import pytest
 import yaml
-from edx_repo_tools.auth import login_github
+from edx_repo_tools.auth import login_github, AUTH_SETTINGS
 
 LOGGER = logging.getLogger(__name__)
 
@@ -53,7 +54,16 @@ LOGGER = logging.getLogger(__name__)
     default=".oep2-workspace",
     help="Where to check out repos that are being checked for oep2 compliance",
 )
-def cli(org, repo, oep, num_processes, trace, checkout_root):
+@click.option(
+    '--username',
+    help='Specify the user to log in to GitHub with',
+)
+@click.option('--password', help='Password to log in to GitHub with')
+@click.option(
+    '--token',
+    help='Personal access token to log in to GitHub with',
+)
+def cli(org, repo, oep, num_processes, trace, checkout_root, username, password, token):
     """
     Command-line interface specification for ``oep2 report``.
     """
@@ -68,6 +78,15 @@ def cli(org, repo, oep, num_processes, trace, checkout_root):
         Git.GIT_PYTHON_TRACE = True
     else:
         args.append('-q')
+
+    if username is not None:
+        args.extend(['--username', username])
+
+    if token is not None:
+        args.extend(['--token', token])
+
+    if password is not None:
+        args.extend(['--password', password])
 
     if num_processes != 1:
         args.extend(['-n', num_processes])
@@ -131,24 +150,37 @@ def pytest_configure(config):
 class Oep2ReportPlugin(object):
 
     def __init__(self, config):
-        self.hub = login_github(
-            config.option.username,
-            config.option.password,
-            config.option.token,
-        )
+        self.config = config
+        self._repos = None
 
-        if config.option.repo:
-            self.repos = [
+    def get_repos(self):
+        if self._repos is not None:
+            return self._repos
+
+        capman = self.config.pluginmanager.getplugin('capturemanager')
+
+        capman.suspendcapture(in_=True)
+        self.hub = login_github(
+            self.config.option.username,
+            self.config.option.password,
+            self.config.option.token,
+        )
+        capman.resumecapture()
+
+        if self.config.option.repo:
+            self._repos = [
                 self.hub.repository(*repo.split('/'))
-                for repo in config.option.repo
+                for repo in self.config.option.repo
             ]
-        elif config.option.org:
-            self.repos = [
+        elif self.config.option.org:
+            self._repos = [
                 repo
-                for org in config.option.org
+                for org in self.config.option.org
                 for repo in self.hub.organization(org).iter_repos()
                 if not repo.fork
             ]
+
+        return self._repos
 
     def pytest_generate_tests(self, metafunc):
         """
@@ -168,8 +200,8 @@ class Oep2ReportPlugin(object):
             else:
                 metafunc.parametrize(
                     "github_repo",
-                    self.repos,
-                    ids=[repo.full_name for repo in self.repos],
+                    self.get_repos(),
+                    ids=[repo.full_name for repo in self.get_repos()],
                 )
 
         if 'oep' in metafunc.fixturenames:
