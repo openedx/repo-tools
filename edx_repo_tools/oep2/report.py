@@ -5,17 +5,14 @@
 import logging
 import os.path
 import pkg_resources
-import tempfile
 
 import click
-from git.repo.base import Repo, Head
+from git.repo.base import Repo
 from git.refs.remote import RemoteReference
-from git.exc import BadName
 from git.cmd import Git
-from lazy import lazy
 import pytest
 import yaml
-from edx_repo_tools.auth import login_github, AUTH_SETTINGS
+from edx_repo_tools.auth import login_github
 
 LOGGER = logging.getLogger(__name__)
 
@@ -148,12 +145,18 @@ def pytest_configure(config):
 
 
 class Oep2ReportPlugin(object):
+    """
+    A py.test plugin that wires together the fixtures needed to run the reports.
+    """
 
     def __init__(self, config):
         self.config = config
         self._repos = None
 
     def get_repos(self):
+        """
+        Log in to GitHub and retrieve all of the repos specified on the commandline.
+        """
         if self._repos is not None:
             return self._repos
 
@@ -278,9 +281,8 @@ def git_repo(request, github_repo, branch=None, remote='origin', checkout_root=N
     return repo
 
 
-
 @pytest.fixture()
-def openedx_yaml(git_repo):
+def openedx_yaml(git_repo):  # pylint: disable=redefined-outer-name
     """
     py.test fixture to read the openedx.yaml file from the supplied github_repo.
 
