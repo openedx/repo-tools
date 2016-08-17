@@ -7,6 +7,7 @@ setup(
         'edx_repo_tools',
         'edx_repo_tools.oep2',
         'edx_repo_tools.oep2.checks',
+        'edx_repo_tools.oep2.report',
     ],
     install_requires=[
         'click',
@@ -22,10 +23,10 @@ setup(
         ],
         # Register the oep2.report module as a pytest plugin
         'pytest11': [
-            'oep2-report = edx_repo_tools.oep2.report',
+            'oep2-report = edx_repo_tools.oep2.report.plugin',
         ],
     },
     package_data={
-        'edx_repo_tools.oep2': ['oep2-report.ini'],
+        'edx_repo_tools.oep2.report': ['oep2-report.ini'],
     }
 )
