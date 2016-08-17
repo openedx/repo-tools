@@ -10,5 +10,6 @@ def cli():
     """
     pass
 
-cli.add_command(explode_repos_yaml.cli, 'explode')
+cli.add_command(explode_repos_yaml.explode)
+cli.add_command(explode_repos_yaml.implode)
 cli.add_command(report.cli, 'report')

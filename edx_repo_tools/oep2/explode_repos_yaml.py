@@ -4,11 +4,15 @@ openedx.yaml files in specific repos.
 """
 
 import click
+import logging
 import yaml
 
 from edx_repo_tools.auth import pass_github
 
+LOGGER = logging.getLogger(__name__)
+
 BRANCH_NAME = 'add-openedx-yaml'
+OPEN_EDX_YAML = 'openedx.yaml'
 
 
 @click.command()
@@ -18,7 +22,7 @@ BRANCH_NAME = 'add-openedx-yaml'
     default=True,
     help='Actually create the pull requests',
 )
-def cli(hub, dry):
+def explode(hub, dry):
     """
     Explode the repos.yaml file out into pull requests for all of the
     repositories specified in that file.
@@ -63,7 +67,7 @@ def cli(hub, dry):
             gh_repo.branch('master').commit.sha,
         )
         gh_repo.create_file(
-            path='openedx.yaml',
+            path=OPEN_EDX_YAML,
             message='Add an OEP-2 compliant openedx.yaml file',
             content=file_contents,
             branch=BRANCH_NAME,
@@ -77,3 +81,29 @@ def cli(hub, dry):
             pull.html_url,
             repo,
         ), fg='green')
+
+
+@click.command()
+@pass_github
+@click.option('--org', multiple=True, default=['edx', 'edx-ops'])
+def implode(hub, org):
+    """
+    Implode all openedx.yaml files, and print the results as formatted output.
+    """
+    data = dict(iter_openedx_yaml(hub, org))
+    click.echo(yaml.safe_dump(data, encoding=None, indent=4))
+
+
+def iter_openedx_yaml(hub, orgs):
+    for org in orgs:
+        for repo in hub.organization(org).iter_repos():
+            if repo.fork:
+                LOGGER.debug("Skipping %s because it is a fork", repo.full_name)
+                continue
+
+            contents = repo.contents(OPEN_EDX_YAML)
+            if contents is None:
+                LOGGER.debug("Skipping %s because there is no %s", repo.full_name, OPEN_EDX_YAML)
+                continue
+
+            yield repo.full_name, yaml.safe_load(contents.decoded)
