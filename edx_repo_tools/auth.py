@@ -127,6 +127,18 @@ def pass_github(f):
     A click decorator that passes a logged-in GitHub instance to a click
     interface (and exposes the appropriate arguments to configure that
     instance).
+
+    For example:
+
+        @click.command()
+        @pass_github
+        @click.option(
+            '--dry/--yes',
+            default=True,
+            help='Actually create the pull requests',
+        )
+        def explode(hub, dry):
+            hub.organization('edx').iter_repos()
     """
 
     # pylint: disable=missing-docstring
