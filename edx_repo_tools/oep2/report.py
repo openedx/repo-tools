@@ -46,6 +46,9 @@ LOGGER = logging.getLogger(__name__)
     '--trace/--no-trace', default=False,
     help="Trace git and github interactions during reporting",
 )
+
+# N.B. We don't use @pass_github here because there isn't a nice way to pass
+# the resulting `hub` object into the pytest tests.
 @click.option(
     "--checkout-root",
     default=".oep2-workspace",
@@ -141,6 +144,9 @@ def pytest_addoption(parser):
 
 
 def pytest_configure(config):
+    # Load the Oep2ReportPlugin into pytest. We use a separate object so that we
+    # have a place to stash intermediate data (like the list of repos that we're
+    # going to test).
     config.pluginmanager.register(Oep2ReportPlugin(config))
 
 
@@ -157,6 +163,16 @@ class Oep2ReportPlugin(object):
         """
         Log in to GitHub and retrieve all of the repos specified on the commandline.
         """
+
+        # N.B. This is a separate function because pytest_generate_tests is called
+        # for every check_* function found by py.test, and we don't want to
+        # ping github for every checker to find out the list of repos that we're
+        # going to test.
+
+        # It's separate from __init__ because we don't want to attempt to login
+        # whenever this plugin is loaded, just when it's asked to get a list of
+        # repos to pass to a checker function.
+
         if self._repos is not None:
             return self._repos
 

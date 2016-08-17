@@ -20,6 +20,7 @@ setup(
         'console_scripts': [
             'oep2=edx_repo_tools.oep2:cli',
         ],
+        # Register the oep2.report module as a pytest plugin
         'pytest11': [
             'oep2-report = edx_repo_tools.oep2.report',
         ],
