@@ -9,62 +9,30 @@ import click
 from git.cmd import Git
 import pytest
 
+from edx_repo_tools.auth import pass_github
+from .plugin import Oep2ReportPlugin
+
 LOGGER = logging.getLogger(__name__)
 
 
-@click.command()
-@click.option(
-    '-o', '--org',
-    multiple=True,
-    show_default=True,
-    default=[],
-    help="Specify an org to check all of that orgs non-fork "
-         "repositories for OEP-2 compliance",
-)
-@click.option(
-    '-r', '--repo',
-    multiple=True,
-    default=None,
-    help="Specify a repository to check it for OEP-2 compliance",
-)
-@click.option(
-    '--oep',
-    multiple=True, default=None,
-    help="List of OEPs to check for explicit specification of compliance",
-)
-@click.option(
-    '-n', '--num-processes',
-    default=1,
-    help="How many procesess to use while checking repositories",
-)
+@click.command(context_settings={'ignore_unknown_options': True})
 @click.option(
     '--trace/--no-trace', default=False,
     help="Trace git and github interactions during reporting",
 )
-@click.option(
-    "--checkout-root",
-    default=".oep2-workspace",
-    help="Where to check out repos that are being checked for oep2 compliance",
+@click.argument(
+    'pytest_args',
+    nargs=-1,
+    type=click.UNPROCESSED,
 )
-# N.B. We don't use @pass_github here because there isn't a nice way to pass
-# the resulting `hub` object into the pytest tests.
-@click.option(
-    '--username',
-    help='Specify the user to log in to GitHub with',
-)
-@click.option('--password', help='Password to log in to GitHub with')
-@click.option(
-    '--token',
-    help='Personal access token to log in to GitHub with',
-)
-def cli(org, repo, oep, num_processes, trace, checkout_root, username, password, token):
+@pass_github
+def cli(hub, trace, pytest_args):
     """
     Command-line interface specification for ``oep2 report``.
     """
     args = [
         '--pyargs', 'edx_repo_tools.oep2.checks',
         '-c', pkg_resources.resource_filename(__name__, 'oep2-report.ini'),
-        '--checkout-root', checkout_root,
     ]
 
     if trace:
@@ -73,27 +41,10 @@ def cli(org, repo, oep, num_processes, trace, checkout_root, username, password,
     else:
         args.append('-q')
 
-    if username is not None:
-        args.extend(['--username', username])
+    args.extend(pytest_args)
 
-    if token is not None:
-        args.extend(['--token', token])
+    plugins = [
+        Oep2ReportPlugin(hub),
+    ]
 
-    if password is not None:
-        args.extend(['--password', password])
-
-    if num_processes != 1:
-        args.extend(['-n', num_processes])
-
-    for _org in org:
-        args.extend(['--org', _org])
-
-    for _repo in repo:
-        args.extend(['--repo', _repo])
-
-    for _oep in oep:
-        args.extend(['--oep', _oep])
-
-    click.secho("py.test " + " ".join(args))
-
-    pytest.main(args)
+    pytest.main(args=args, plugins=plugins)
