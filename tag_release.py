@@ -24,15 +24,12 @@ import sys
 
 try:
     from path import Path as path
-    from git import Repo, Commit
-    from git.refs.symbolic import SymbolicReference
-    from git.exc import GitCommandError
     import requests
     from requests.exceptions import RequestException
     import yaml
 except ImportError:
     print("Error: missing dependencies! Please run this command to install them:")
-    print("pip install path.py requests GitPython PyYAML")
+    print("make install")
     sys.exit(1)
 
 log = logging.getLogger(__name__)
@@ -103,7 +100,7 @@ def make_parser():
     parser.add_argument(
         '--skip-invalid', action="store_true", default=False,
         help="if the repos.yaml file points to an invalid repo, skip it "
-            "instead of throwing an error"
+             "instead of throwing an error"
     )
 
     return parser
@@ -192,7 +189,7 @@ def get_github_auth_id(username, password, note):
         raise requests.exceptions.RequestException(message)
 
     for auth_token in response.json():
-        if auth_token["note"] == TOKEN_NAME:
+        if auth_token["note"] == note:
             return auth_token["id"]
     return None
 

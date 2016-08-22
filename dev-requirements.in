@@ -1,0 +1,7 @@
+edx-lint
+pep8
+pip-tools
+pylint
+pytest
+pytest-mock
+responses
