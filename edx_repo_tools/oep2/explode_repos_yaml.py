@@ -5,14 +5,23 @@ openedx.yaml files in specific repos.
 
 import click
 import logging
+import textwrap
 import yaml
 
 from edx_repo_tools.auth import pass_github
 
+logging.basicConfig()
 LOGGER = logging.getLogger(__name__)
 
 BRANCH_NAME = 'add-openedx-yaml'
 OPEN_EDX_YAML = 'openedx.yaml'
+
+
+def dry_echo(dry, message, *args, **kwargs):
+    click.echo("{dry}{message}".format(
+        dry=click.style("DRY RUN - SKIPPED: ", fg='yellow', bold=True) if dry else "",
+        message=click.style(message, *args, **kwargs)
+    ))
 
 
 @click.command()
@@ -48,39 +57,142 @@ def explode(hub, dry):
 
         file_contents = yaml.safe_dump(repo_data, indent=4)
 
-        if dry:
-            click.secho(
-                'Against {}/{}'.format(user, repo_name),
-                fg='yellow', bold=True
-            )
-            click.secho(
-                'Would have created openedx.yaml file:',
-                fg='yellow', bold=True
-            )
-            click.secho(file_contents)
-            continue
+        file_contents = textwrap.dedent("""
+            # This file describes this Open edX repo, as described in OEP-2:
+            # http://open-edx-proposals.readthedocs.io/en/latest/oeps/oep-0002.html#specification
+
+            {}
+        """).format(file_contents).strip() + "\n"
 
         gh_repo = hub.repository(user, repo_name)
 
-        gh_repo.create_ref(
-            'refs/heads/{}'.format(BRANCH_NAME),
-            gh_repo.branch('master').commit.sha,
-        )
-        gh_repo.create_file(
-            path=OPEN_EDX_YAML,
-            message='Add an OEP-2 compliant openedx.yaml file',
-            content=file_contents,
-            branch=BRANCH_NAME,
-        )
-        pull = gh_repo.create_pull(
-            title='Add an OEP-2 compliant openedx.yaml file',
-            base='master',
-            head=BRANCH_NAME,
-        )
-        click.secho('Created pull request {} against {}'.format(
-            pull.html_url,
-            repo,
-        ), fg='green')
+        if gh_repo.fork:
+            LOGGER.info("Skipping %s because it is a fork", gh_repo.full_name)
+            continue
+
+        try:
+            parent_commit = gh_repo.branch(gh_repo.default_branch).commit.sha
+        except:
+            LOGGER.warning(
+                "No commit on default branch %s in repo %s",
+                gh_repo.default_branch,
+                gh_repo.full_name
+            )
+            continue
+
+        if not dry:
+            if gh_repo.branch(BRANCH_NAME) is None:
+                gh_repo.create_ref(
+                    'refs/heads/{}'.format(BRANCH_NAME),
+                    parent_commit
+                )
+
+        contents = gh_repo.contents(OPEN_EDX_YAML, ref=BRANCH_NAME)
+
+        if contents is None:
+            dry_echo(
+                dry,
+                "Creating openedx.yaml file on branch {repo}:{branch}".format(
+                    repo=gh_repo.full_name,
+                    branch=BRANCH_NAME,
+                ),
+                fg='green',
+            )
+            click.secho(file_contents, fg='blue')
+            if not dry:
+                try:
+                    gh_repo.create_file(
+                        path=OPEN_EDX_YAML,
+                        message='Add an OEP-2 compliant openedx.yaml file',
+                        content=file_contents,
+                        branch=BRANCH_NAME,
+                    )
+                except TypeError:
+                    # Sadly, TypeError means there was a permissions issue...
+                    LOGGER.exception("Unable to create openedx.yaml")
+                    continue
+        else:
+            if contents.decoded != file_contents:
+                dry_echo(
+                    dry,
+                    "Updated openedx.yaml file on branch {repo}:{branch}".format(
+                        repo=gh_repo.full_name,
+                        branch=BRANCH_NAME,
+                    ),
+                    fg='green',
+                )
+                click.secho(file_contents, fg='blue')
+                if not dry:
+                    gh_repo.update_file(
+                        path=OPEN_EDX_YAML,
+                        message='Update the OEP-2 openedx.yaml file',
+                        content=file_contents,
+                        branch=BRANCH_NAME,
+                        sha=contents.sha if contents is not None else None,
+                    )
+
+        pr_body = textwrap.dedent("""
+            This adds an `openedx.yaml` file, as described by OEP-2:
+            http://open-edx-proposals.readthedocs.io/en/latest/oeps/oep-0002.html
+
+            The data in this file was transformed from the contents of
+            edx/repo-tools-data:repos.yaml
+        """)
+        pr_title = 'Add an OEP-2 compliant openedx.yaml file'
+
+        existing_pr = [
+            pr
+            for pr
+            in gh_repo.iter_pulls(
+                head='edx:{}'.format(BRANCH_NAME),
+                state='open'
+            )
+        ]
+
+        if existing_pr:
+            pull = existing_pr[0]
+            if pull.title != pr_title or pull.body != pr_body:
+                dry_echo(
+                    dry,
+                    textwrap.dedent("""\
+                        Updated pull request {repo}#{number}: {title}
+                            URL: {url}
+                    """).format(
+                        url=pull.html_url,
+                        repo=gh_repo.full_name,
+                        number=pull.number,
+                        title=pull.title,
+                    ),
+                    fg='green'
+                )
+
+                if not dry:
+                    pull.update(
+                        title=pr_title,
+                        body=pr_body,
+                    )
+        else:
+            dry_echo(
+                dry,
+                textwrap.dedent("""\
+                    Created pull request {repo}#{number}: {title}
+                        URL: {url}
+                """).format(
+                    url=pull.html_url if not dry else "N/A",
+                    repo=gh_repo.full_name,
+                    number=pull.number if not dry else "XXXX",
+                    title=pull.title if not dry else pr_title,
+                ),
+                fg='green'
+            )
+
+            if not dry:
+                pull = gh_repo.create_pull(
+                    title=pr_title,
+                    base=gh_repo.default_branch,
+                    head=BRANCH_NAME,
+                    body=pr_body
+                )
 
 
 @click.command()
