@@ -198,24 +198,40 @@ def explode(hub, dry):
 @click.command()
 @pass_github
 @click.option('--org', multiple=True, default=['edx', 'edx-ops'])
-def implode(hub, org):
+@click.option(
+    '--branch',
+    multiple=True,
+    default=None,
+    help="Which branches to look at for openedx.yaml contents. Earlier branches will get priority"
+)
+def implode(hub, org, branch):
     """
     Implode all openedx.yaml files, and print the results as formatted output.
     """
-    data = dict(iter_openedx_yaml(hub, org))
+    data = dict(iter_openedx_yaml(hub, org, branch))
     click.echo(yaml.safe_dump(data, encoding=None, indent=4))
 
 
-def iter_openedx_yaml(hub, orgs):
+def iter_openedx_yaml(hub, orgs, branches=None):
+    if branches is None:
+        branches = []
+
     for org in orgs:
         for repo in hub.organization(org).iter_repos():
             if repo.fork:
                 LOGGER.debug("Skipping %s because it is a fork", repo.full_name)
                 continue
 
-            contents = repo.contents(OPEN_EDX_YAML)
-            if contents is None:
-                LOGGER.debug("Skipping %s because there is no %s", repo.full_name, OPEN_EDX_YAML)
-                continue
+            for branch in branches:
+                contents = repo.contents(OPEN_EDX_YAML, ref=branch)
+                if contents is not None:
+                    LOGGER.debug("Found openedx.yaml at %s:%s", repo.full_name, branch)
+                    yield repo.full_name, yaml.safe_load(contents.decoded)
+                    break
+            else:
+                contents = repo.contents(OPEN_EDX_YAML, ref=repo.default_branch)
+                if contents is not None:
+                    yield repo.full_name, yaml.safe_load(contents.decoded)
+                else:
+                    LOGGER.warning("Skipping %s because no openedx.yaml could be found", repo.full_name)
 
-            yield repo.full_name, yaml.safe_load(contents.decoded)
