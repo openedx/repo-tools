@@ -3,6 +3,6 @@
 
 nick: rept
 oeps: {}
-owner: MUST FILL IN OWNER
+owner: edx/openedx-tooling
 tags: [tools]
 track-pulls: true
