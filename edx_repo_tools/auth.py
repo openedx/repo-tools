@@ -12,6 +12,8 @@ import click
 from github3 import login, GitHubError
 import yaml
 
+
+logging.basicConfig()
 LOGGER = logging.getLogger(__name__)
 
 CONFIG_DIR = user_config_dir('edx-repo-tools', 'edx')
