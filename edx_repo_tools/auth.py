@@ -143,6 +143,10 @@ def pass_github(f):
             hub.organization('edx').iter_repos()
     """
 
+    if getattr(f, '__pass_github_applied', False):
+        return f
+    f.__pass_github_applied = True
+
     # pylint: disable=missing-docstring
     @click.option(
         '--username',
@@ -160,13 +164,15 @@ def pass_github(f):
         help='Enable debug logging',
         default=False
     )
-    @click.pass_context
     @functools.wraps(f)
-    def wrapped(ctx, username, password, token, debug, *args, **kwargs):
+    def wrapped(username, password, token, debug, *args, **kwargs):
+
         if debug:
             logging.basicConfig()
             logging.getLogger().setLevel(logging.DEBUG)
 
         hub = login_github(username, password, token)
-        ctx.invoke(f, hub, *args, **kwargs)
+
+        f(hub=hub, *args, **kwargs)
+
     return wrapped
