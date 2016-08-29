@@ -8,6 +8,7 @@ setup(
         'edx_repo_tools.oep2',
         'edx_repo_tools.oep2.checks',
         'edx_repo_tools.oep2.report',
+        'edx_repo_tools.ospr',
     ],
     install_requires=[
         'click',
@@ -19,7 +20,8 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'oep2=edx_repo_tools.oep2:cli',
+            'oep2 = edx_repo_tools.oep2:cli',
+            'sync_labels = edx_repo_tools.ospr.sync_labels:sync_labels'
         ],
     },
     package_data={

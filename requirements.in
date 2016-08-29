@@ -10,6 +10,7 @@ gitpython
 gunicorn==18.0
 iso8601
 jira
+lazy
 lockfile==0.9.1
 more_itertools
 path.py

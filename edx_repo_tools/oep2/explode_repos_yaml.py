@@ -9,34 +9,14 @@ import textwrap
 import yaml
 
 from edx_repo_tools.auth import pass_github
+from edx_repo_tools.data import iter_openedx_yaml, OPEN_EDX_YAML
+from edx_repo_tools.utils import dry_echo
+
 
 logging.basicConfig()
 LOGGER = logging.getLogger(__name__)
 
 BRANCH_NAME = 'add-openedx-yaml'
-OPEN_EDX_YAML = 'openedx.yaml'
-
-
-def dry_echo(dry, message, *args, **kwargs):
-    """
-    Print a command to the console (like :func:`click.echo`), but if ``dry`` is True,
-    then prefix the message with a warning message stating that the action was
-    skipped. All unknown args and kwargs are passed to :func:`click.echo`
-
-    Example usage:
-
-        dry_echo(dry, "Firing ze missiles!", fg='red')
-        if not dry:
-            fire_ze_missiles()
-
-    Arguments:
-        dry (bool): Whether to prefix the dry-run notification
-        message: The message to print
-    """
-    click.echo("{dry}{message}".format(
-        dry=click.style("DRY RUN - SKIPPED: ", fg='yellow', bold=True) if dry else "",
-        message=click.style(message, *args, **kwargs)
-    ))
 
 
 @click.command()
@@ -226,36 +206,3 @@ def implode(hub, org, branch):
     """
     data = dict(iter_openedx_yaml(hub, org, branch))
     click.echo(yaml.safe_dump(data, encoding=None, indent=4))
-
-
-def iter_openedx_yaml(hub, orgs, branches=None):
-    """
-    Yield the data from all openedx.yaml files found in repositories in ``orgs``
-    on any of ``branches``.
-
-    Arguments:
-        hub (GitHub): A connection to GitHub.
-        orgs: A list of github orgs to search for openedx.yaml files.
-        branches: A list of branches to search for openedx.yaml files. If
-            that file exists on multiple branches, then only the contents
-            of the first will be yielded. The repository's default branch will
-            always be searched (but will be lower priority than any supplied branch).
-            (optional)
-    """
-    if branches is None:
-        branches = []
-
-
-    for org in orgs:
-        for repo in hub.organization(org).iter_repos():
-            if repo.fork:
-                LOGGER.debug("Skipping %s because it is a fork", repo.full_name)
-                continue
-
-            for branch in branches + [repo.default_branch]:
-                contents = repo.contents(OPEN_EDX_YAML, ref=branch)
-                if contents is not None:
-                    LOGGER.debug("Found openedx.yaml at %s:%s", repo.full_name, branch)
-                    yield repo.full_name, yaml.safe_load(contents.decoded)
-                    break
-
