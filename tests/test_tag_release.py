@@ -4,7 +4,7 @@ import json
 import pytest
 import requests
 
-from tag_release import (
+from edx_repo_tools.release.tag_release import (
     openedx_release_repos, get_ref_for_repos, commit_ref_info,
     create_ref_for_repos, remove_ref_for_repos, override_repo_refs
 )

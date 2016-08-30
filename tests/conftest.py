@@ -23,7 +23,7 @@ def responses(request):
 
 @pytest.fixture
 def common_mocks(mocker, responses):
-    mocker.patch("tag_release.get_github_creds", return_value=("user", "pass"))
+    mocker.patch("edx_repo_tools.release.tag_release.get_github_creds", return_value=("user", "pass"))
 
     fake_repos = textwrap.dedent("""
         edx/edx-platform:
