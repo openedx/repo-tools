@@ -22,15 +22,11 @@ import logging
 import re
 import sys
 
-try:
-    from path import Path as path
-    import requests
-    from requests.exceptions import RequestException
-    import yaml
-except ImportError:
-    print("Error: missing dependencies! Please run this command to install them:")
-    print("make install")
-    sys.exit(1)
+import click
+from path import Path as path
+import requests
+from requests.exceptions import RequestException
+import yaml
 
 log = logging.getLogger(__name__)
 
@@ -48,62 +44,6 @@ REQUIREMENT_RE = re.compile(r"""
     (\#egg=(?P<egg>[a-zA-Z0-9_.-]+))?   # egg name (optional)
     (==(?P<version>[a-zA-Z0-9_.-]+))?   # version (optional)
 """, re.VERBOSE)
-
-
-def make_parser():
-    parser = argparse.ArgumentParser(
-        description="Create/remove tags & branches on GitHub repos for Open edX releases",
-    )
-    parser.add_argument(
-        'ref', metavar="REFNAME",
-        help="The name of the ref to create in the repos",
-    )
-
-    refgroup = parser.add_argument_group(
-        "arguments for git refs",
-    )
-    reftype = refgroup.add_mutually_exclusive_group()
-    reftype.add_argument(
-        '--tag', action="store_true", default=True, dest="use_tag",
-        help="Create tags in repos [default]"
-    )
-    reftype.add_argument(
-        '--branch', action="store_false", default=True, dest="use_tag",
-        help="Create branches in repos"
-    )
-    refgroup.add_argument(
-        '--override-ref', action="store", metavar="REF",
-        help="A reference to use that overrides the references from the "
-            "repos.yaml file in *ALL* repos. This might be a release candidate "
-            "branch, for example."
-    )
-    refgroup.add_argument(
-        '--override', nargs=2, metavar=("REPO", "REF"),
-        action="append", dest="overrides",
-        help="Override a reference for a specific repo. The repo must be "
-            "specified using the full name of the repo, like 'edx/edx-platform'. "
-            "This option can be provided multiple times."
-    )
-
-    parser.add_argument(
-        '-y', '--yes', action="store_false", default=True, dest="interactive",
-        help="non-interactive mode: answer yes to all questions",
-    )
-    parser.add_argument(
-        '-q', '--quiet', action="store_true", default=False,
-        help="don't print any unnecessary output"
-    )
-    parser.add_argument(
-        '-R', '--reverse', action="store_true", default=False,
-        help="delete ref instead of creating it"
-    )
-    parser.add_argument(
-        '--skip-invalid', action="store_true", default=False,
-        help="if the repos.yaml file points to an invalid repo, skip it "
-             "instead of throwing an error"
-    )
-
-    return parser
 
 
 def get_github_creds():
@@ -773,9 +713,47 @@ def remove_ref_for_repos(repo_names, ref, session, use_tag=True):
     return modified
 
 
-def main():
-    parser = make_parser()
-    args = parser.parse_args()
+@click.command()
+@click.argument(
+    'ref', metavar="REF",
+)
+@click.option(
+    '--tag/--branch', "use_tag", is_flag=True,
+    help="Whether to create branches or tags in the repo"
+)
+@click.option(
+    '--override-ref', metavar="REF",
+    help="A reference to use that overrides the references from the "
+        "repos.yaml file in *ALL* repos. This might be a release candidate "
+        "branch, for example."
+)
+@click.option(
+    '--override', 'overrides',
+    nargs=2, metavar="REPO REF",
+    multiple=True,
+    help="Override a reference for a specific repo. The repo must be "
+         "specified using the full name of the repo, like 'edx/edx-platform'. "
+         "This option can be provided multiple times."
+)
+@click.option(
+    '-y', '--yes', 'interactive', is_flag=True, default=True,
+    help="non-interactive mode: answer yes to all questions"
+)
+@click.option(
+    '-q', '--quiet', is_flag=True, default=False,
+    help="don't print any unnecessary output"
+)
+@click.option(
+    '-R', '--reverse', is_flag=True, default=False,
+    help="delete ref instead of creating it"
+)
+@click.option(
+    '--skip-invalid', is_flag=True, default=False,
+    help="if the repos.yaml file points to an invalid repo, skip it "
+         "instead of throwing an error"
+)
+def main(ref, use_tag, override_ref, overrides, interactive, quiet, reverse, skip_invalid):
+    """Create/remove tags & branches on GitHub repos for Open edX releases."""
 
     ensure_github_creds()
     username, token = get_github_creds()
@@ -789,30 +767,30 @@ def main():
 
     repos = override_repo_refs(
         repos,
-        override_ref=args.override_ref,
-        overrides=dict(args.overrides or ()),
+        override_ref=override_ref,
+        overrides=dict(overrides or ()),
     )
 
-    existing_refs = get_ref_for_repos(repos, args.ref, session, use_tag=args.use_tag)
+    existing_refs = get_ref_for_repos(repos, ref, session, use_tag=use_tag)
 
-    if args.reverse:
+    if reverse:
         if not existing_refs:
             msg = (
                 "Ref {ref} is not present in any repos, cannot remove it"
             ).format(
-                ref=args.ref,
+                ref=ref,
             )
             print(msg)
             return False
-        if args.interactive or not args.quiet:
+        if interactive or not quiet:
             print(todo_list(existing_refs))
-        if args.interactive:
+        if interactive:
             response = raw_input("Remove these refs? [y/N] ")
             if response.lower() not in ("y", "yes", "1"):
                 return
 
-        modified = remove_ref_for_repos(repos, args.ref, session, use_tag=args.use_tag)
-        if not args.quiet:
+        modified = remove_ref_for_repos(repos, ref, session, use_tag=use_tag)
+        if not quiet:
             if modified:
                 print("Success!")
             else:
@@ -824,27 +802,23 @@ def main():
             msg = (
                 "The {ref} ref already exists in the following repos: {repos}"
             ).format(
-                ref=args.ref,
+                ref=ref,
                 repos=", ".join(existing_refs.keys()),
             )
             raise ValueError(msg)
 
-        ref_info = commit_ref_info(repos, session, skip_invalid=args.skip_invalid)
-        if args.interactive or not args.quiet:
+        ref_info = commit_ref_info(repos, session, skip_invalid=skip_invalid)
+        if interactive or not quiet:
             print(todo_list(ref_info))
-        if args.interactive:
+        if interactive:
             response = raw_input("Is this correct? [y/N] ")
             if response.lower() not in ("y", "yes", "1"):
                 return
 
-        result = create_ref_for_repos(ref_info, args.ref, session, use_tag=args.use_tag)
-        if not args.quiet:
+        result = create_ref_for_repos(ref_info, ref, session, use_tag=use_tag)
+        if not quiet:
             if result:
                 print("Success!")
             else:
                 print("Failed to create refs, but rolled back successfully")
         return result
-
-
-if __name__ == "__main__":
-    main()
