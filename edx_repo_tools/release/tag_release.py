@@ -13,28 +13,22 @@ Tag repos for an Open edX release. When run, this script will:
 """
 from __future__ import unicode_literals, print_function
 
-import argparse
 import copy
 import datetime
-import getpass
-import json
 import logging
 import re
-import sys
 
 import click
-from path import Path as path
-import requests
-from requests.exceptions import RequestException
-import yaml
+from edx_repo_tools.auth import pass_github
+from edx_repo_tools.data import iter_openedx_yaml
+from edx_repo_tools.utils import dry, dry_echo
+from github3 import GitHubError
 
 log = logging.getLogger(__name__)
 
 
 # Name used for fetching/storing GitHub OAuth tokens on disk
 TOKEN_NAME = "openedx-release"
-# URL to the source of truth about our repositories
-REPOS_YAML = "https://raw.githubusercontent.com/edx/repo-tools-data/master/repos.yaml"
 # Regular expression for parsing out the parts of a pip requirement line
 REQUIREMENT_RE = re.compile(r"""
     git\+https?://github\.com/          # prefix
@@ -46,172 +40,16 @@ REQUIREMENT_RE = re.compile(r"""
 """, re.VERBOSE)
 
 
-def get_github_creds():
-    """
-    Returns GitHub credentials if they exist, as a two-tuple of (username, token).
-    Otherwise, return None.
-    """
-    netrc_auth = requests.utils.get_netrc_auth("https://api.github.com")
-    if netrc_auth:
-        return netrc_auth
-    config_file = (path("~/.config") / TOKEN_NAME).expand()
-    if config_file.isfile():
-        with open(config_file) as f:
-            config = json.load(f)
-        github_creds = config.get("credentials", {}).get("api.github.com", {})
-        username = github_creds.get("username", "")
-        token = github_creds.get("token", "")
-        if username and token:
-            return (username, token)
-    return None
-
-
-def create_github_creds():
-    """
-    https://developer.github.com/v3/oauth_authorizations/#create-a-new-authorization
-    """
-    headers = {"User-Agent": TOKEN_NAME}
-    payload = {
-        "note": TOKEN_NAME,
-        "scopes": ["repo"],
-    }
-    username = raw_input("GitHub username: ")
-    password = getpass.getpass("GitHub password: ")
-    response = requests.post(
-        "https://api.github.com/authorizations",
-        auth=(username, password),
-        headers=headers, json=payload,
-    )
-    # is the user using two-factor authentication?
-    otp_header = response.headers.get("X-GitHub-OTP")
-    if not response.ok and otp_header and otp_header.startswith("required;"):
-        # get two-factor code, redo the request
-        headers["X-GitHub-OTP"] = raw_input("Two-factor authentication code: ")
-        response = requests.post(
-            "https://api.github.com/authorizations",
-            auth=(username, password),
-            headers=headers, json=payload,
-        )
-    if not response.ok:
-        message = response.json()["message"]
-        if message != "Validation Failed":
-            raise requests.exceptions.RequestException(message)
-        else:
-            # A token with this TOKEN_NAME already exists on GitHub.
-            # Delete it, and try again.
-            token_id = get_github_auth_id(username, password, TOKEN_NAME)
-            if token_id:
-                delete_github_auth_token(username, password, token_id)
-            response = requests.post(
-                "https://api.github.com/authorizations",
-                auth=(username, password),
-                headers=headers, json=payload,
-            )
-    if not response.ok:
-        message = response.json()["message"]
-        raise requests.exceptions.RequestException(message)
-
-    return (username, response.json()["token"])
-
-
-def get_github_auth_id(username, password, note):
-    """
-    Return the ID associated with the GitHub auth token with the given note.
-    If no such auth token exists, return None.
-    """
-    response = requests.get(
-        "https://api.github.com/authorizations",
-        auth=(username, password),
-        headers={"User-Agent": TOKEN_NAME},
-    )
-    if not response.ok:
-        message = response.json()["message"]
-        raise requests.exceptions.RequestException(message)
-
-    for auth_token in response.json():
-        if auth_token["note"] == note:
-            return auth_token["id"]
-    return None
-
-
-def delete_github_auth_token(username, password, token_id):
-    response = requests.delete(
-        "https://api.github.com/authorizations/{id}".format(id=token_id),
-        auth=(username, password),
-        headers={"User-Agent": TOKEN_NAME},
-    )
-    if not response.ok:
-        message = response.json()["message"]
-        raise requests.exceptions.RequestException(message)
-
-
-def ensure_github_creds(attempts=3):
-    """
-    Make sure that we have GitHub OAuth credentials. This will check the user's
-    .netrc file, as well as the ~/.config/openedx-release file. If no credentials
-    exist in either place, it will prompt the user to create OAuth credentials,
-    and store them in ~/.config/openedx-release.
-
-    Returns False if we found credentials, True if we had to create them.
-    """
-    if get_github_creds():
-        return False
-
-    # Looks like we need to create the OAuth creds
-    print("We need to set up OAuth authentication with GitHub's API. "
-          "Your password will not be stored.", file=sys.stderr)
-    token = None
-    for _ in range(attempts):
-        try:
-            username, token = create_github_creds()
-        except requests.exceptions.RequestException as e:
-            print(
-                "Invalid authentication: {}".format(e.message),
-                file=sys.stderr,
-            )
-            continue
-        else:
-            break
-    if token:
-        print("Successfully authenticated to GitHub", file=sys.stderr)
-    if not token:
-        print("Too many invalid authentication attempts.", file=sys.stderr)
-        return False
-
-    config_file = (path("~/.config") / TOKEN_NAME).expand()
-    # make sure parent directory exists
-    config_file.parent.makedirs_p()
-    # read existing config if it exists
-    if config_file.isfile():
-        with open(config_file) as f:
-            config = json.load(f)
-    else:
-        config = {}
-    # update config
-    if 'credentials' not in config:
-        config["credentials"] = {}
-    if 'api.github.com' not in config['credentials']:
-        config["credentials"]["api.github.com"] = {}
-    config["credentials"]["api.github.com"]["username"] = username
-    config["credentials"]["api.github.com"]["token"] = token
-    # write it back out
-    with open(config_file, "w") as f:
-        json.dump(config, f)
-
-    return True
-
-
-def openedx_release_repos(session):
+def openedx_release_repos(hub):
     """
     Return a subset of the repos listed in the repos.yaml file: the repos
     with an `openedx-release` section.
     """
-    repos_resp = session.get(REPOS_YAML)
-    repos_resp.raise_for_status()
-    all_repos = yaml.safe_load(repos_resp.text)
-    repos = {name: data for name, data in all_repos.items()
-             if data and data.get("openedx-release")}
-    return repos
+    return {
+        repo: data
+        for repo, data in iter_openedx_yaml(hub, orgs=['edx', 'edx-ops', 'edx-solutions'])
+        if data.get('openedx-release')
+    }
 
 
 def override_repo_refs(repos, override_ref=None, overrides=None):
@@ -238,14 +76,14 @@ def override_repo_refs(repos, override_ref=None, overrides=None):
     return repos_copy
 
 
-def commit_ref_info(repos, session, skip_invalid=False):
+def commit_ref_info(repos, hub, skip_invalid=False):
     """
     Returns a dictionary of information about what commit should be tagged
     for each repository passed into this function. The return type is as
     follows:
 
     {
-        "full_repo_name": {
+        Repository(<full_repo_name>): {
             "ref": "name of tag or branch"
             "ref_type": "tag", # or "branch"
             "sha": "1234566789abcdef",
@@ -259,39 +97,35 @@ def commit_ref_info(repos, session, skip_invalid=False):
                 "email": "committer's email",
             }
         },
-        "next_repo_name": {...}
+        Repository(<next_repo_name>): {...}
     }
 
     If the information in the passed-in dictionary is invalid in any way,
     this function will throw an error unless `skip_invalid` is set to True,
     in which case the invalid information will simply be logged and ignored.
     """
+
+    repos_by_name = {
+        repo.full_name: repo_info
+        for repo, repo_info
+        in repos.items()
+    }
+
     ref_info = {}
-    for repo_name, repo_data in repos.items():
-        # make sure the repo exists
-        repo_url = "https://api.github.com/repos/{repo}".format(repo=repo_name)
-        repo_resp = session.get(repo_url)
-        if not repo_resp.ok:
-            msg = "Invalid repo {repo}".format(repo=repo_name)
-            if skip_invalid:
-                log.error(msg)
-                continue
-            else:
-                raise RuntimeError(msg)
+    for repo, repo_data in repos.items():
         # are we specifying a ref?
         ref = repo_data["openedx-release"].get("ref")
         if ref:
             try:
-                ref_info[repo_name] = get_latest_commit_for_ref(
-                    repo_name,
+                ref_info[repo] = get_latest_commit_for_ref(
+                    repo,
                     ref,
-                    session=session,
                 )
-            except RequestException, ValueError:
+            except (GitHubError, ValueError):
                 if skip_invalid:
                     msg = "Invalid ref {ref} in repo {repo}".format(
                         ref=ref,
-                        repo=repo_name,
+                        repo=repo.full_name
                     )
                     log.error(msg)
                     continue
@@ -301,22 +135,22 @@ def commit_ref_info(repos, session, skip_invalid=False):
         parent_repo_name = repo_data["openedx-release"].get("parent-repo")
         if parent_repo_name:
             # we need the ref for the parent repo
-            parent_release_data = repos[parent_repo_name]["openedx-release"]
+            parent_release_data = repos_by_name[parent_repo_name]["openedx-release"]
             parent_ref = parent_release_data["ref"]
             requirements_file = parent_release_data.get("requirements", "requirements.txt")
 
             try:
-                ref_info[repo_name] = get_latest_commit_for_parent_repo(
-                    repo_name,
+                ref_info[repo] = get_latest_commit_for_parent_repo(
+                    hub,
+                    repo,
                     parent_repo_name,
                     parent_ref,
                     requirements_file,
-                    session=session,
                 )
-            except RequestException, ValueError:
+            except (GitHubError, ValueError):
                 if skip_invalid:
                     msg = "Problem getting parent ref for repo {repo}".format(
-                        repo=repo_name,
+                        repo=repo.full_name,
                     )
                     log.error(msg)
                     continue
@@ -325,75 +159,50 @@ def commit_ref_info(repos, session, skip_invalid=False):
     return ref_info
 
 
-def get_latest_commit_for_ref(repo_name, ref, session):
+def get_latest_commit_for_ref(repo, ref):
     """
     Given a repo name and a ref in that repo, return some information about
     the commit that the ref refers to. This function is called by
     commit_ref_info(), and it returns information in the same structure.
     """
     # is it a branch?
-    branch_url = "https://api.github.com/repos/{repo}/branches/{branch}".format(
-        repo=repo_name,
-        branch=ref,
-    )
-    branch_resp = session.get(branch_url)
-    if branch_resp.ok:
-        branch = branch_resp.json()
-        commit = branch["commit"]["commit"]
+    branch = repo.branch(ref)
+    if branch:
+        commit = branch.commit.commit
         return {
             "ref": ref,
             "ref_type": "branch",
-            "sha": branch["commit"]["sha"],
-            "message": commit["message"],
-            "author": commit["author"],
-            "committer": commit["committer"],
+            "sha": branch.commit.sha,
+            "message": commit.message,
+            "author": commit.author,
+            "committer": commit.committer,
         }
 
-    if branch_resp.status_code != 404:
-        # This is not a simple "branch not found" error, it's something
-        # worse, like a 500 Server Error or a flaky network. Raise the error.
-        branch_resp.raise_for_status()
-
-    # is it a tag?
-    tag_url = "https://api.github.com/repos/{repo}/git/refs/tags/{tag}".format(
-        repo=repo_name,
-        tag=ref,
-    )
-    tag_resp = session.get(tag_url)
-    if tag_resp.ok:
-        tag = tag_resp.json()
-        if tag["object"]["type"] == "tag":
+    tag = repo.ref('tags/{}'.format(ref))
+    if tag:
+        if tag.object.type == "tag":
             # An annotated tag, one more level of indirection.
-            tag_resp = session.get(tag["object"]["url"])
-            tag_resp.raise_for_status()
-            tag = tag_resp.json()
+            tag = repo.tag(tag.object.sha)
         # need to do a subsequent API call to get the tagged commit
-        commit_url = tag["object"]["url"]
-        commit_resp = session.get(commit_url)
-        if commit_resp.ok:
-            commit = commit_resp.json()
+        commit = repo.commit(tag.object.sha)
+        if commit:
             return {
                 "ref": ref,
                 "ref_type": "tag",
-                "sha": commit["sha"],
-                "message": commit["message"],
-                "author": commit["author"],
-                "committer": commit["committer"],
+                "sha": commit.sha,
+                "message": commit.commit.message,
+                "author": commit.commit.author,
+                "committer": commit.commit.committer,
             }
 
-    if tag_resp.status_code != 404:
-        # This is not a simple "tag not found" error, it's something
-        # worse, like a 500 Server Error or a flaky network. Raise the error.
-        tag_resp.raise_for_status()
-
     msg = "No commit for {ref} in {repo}".format(
-        ref=ref, repo=repo_name,
+        ref=ref, repo=repo.full_name,
     )
     raise ValueError(msg)
 
 
 def get_latest_commit_for_parent_repo(
-        repo_name, parent_repo_name, parent_ref, requirements_file, session,
+        hub, repo, parent_repo_name, parent_ref, requirements_file,
     ):
     """
     Some repos point to other repos via requirements files. For example,
@@ -407,15 +216,18 @@ def get_latest_commit_for_parent_repo(
     This function is called by commit_ref_info(),
     and it returns information in the same structure.
     """
-    req_file_url = "https://raw.githubusercontent.com/{parent_repo}/{ref}/{req_file}".format(
-        parent_repo=parent_repo_name,
-        ref=parent_ref,
-        req_file=requirements_file,
+
+    file_contents = hub.repository(
+        *parent_repo_name.split('/')
+    ).contents(requirements_file, ref=parent_ref)
+
+    ref = get_ref_for_dependency(
+        file_contents.decoded,
+        repo.full_name,
+        parent_repo_name
     )
-    req_file_resp = session.get(req_file_url)
-    req_file_resp.raise_for_status()
-    ref = get_ref_for_dependency(req_file_resp.text, repo_name, parent_repo_name)
-    return get_latest_commit_for_ref(repo_name, ref, session=session)
+
+    return get_latest_commit_for_ref(repo, ref)
 
 
 def get_ref_for_dependency(requirements_text, repo_name, parent_repo_name=None):
@@ -452,7 +264,7 @@ def get_ref_for_dependency(requirements_text, repo_name, parent_repo_name=None):
     return ref
 
 
-def get_ref_for_repos(repos, ref, session, use_tag=True):
+def get_ref_for_repos(repos, ref, use_tag=True):
     """
     Returns a dictionary with a key-value pairing for each repo in the given
     list of repos where the given ref exists in that repo. The key is the
@@ -469,44 +281,31 @@ def get_ref_for_repos(repos, ref, session, use_tag=True):
             name=ref,
         )
     return_value = {}
-    ref_url_tpl = "https://api.github.com/repos/{repo}/git/{ref}"
-    for repo_name in repos:
-        ref_url = ref_url_tpl.format(repo=repo_name, ref=ref)
-        ref_resp = session.get(ref_url)
-        if ref_resp.status_code != 404:
-            ref_resp.raise_for_status()
-
-        found = ref_resp.ok
-        if found:
-            ref_obj = ref_resp.json()
-            if isinstance(ref_obj, list):
-                # If the ref isn't found, GitHub uses the ref as a substring,
-                # and returns all the refs that start with that string as an
-                # array.  So array means not found.
-                found = False
+    for repo in repos:
+        try:
+            ref_obj = repo.ref(ref)
+            found = ref_obj is not None
+        except TypeError:
+            # If the ref isn't found, GitHub uses the ref as a substring,
+            # and returns all the refs that start with that string as an
+            # array. That causes github3 to throw a type error when it
+            # tries to pop a dict key from a list
+            found = False
 
         if found:
-            if ref_obj["object"]["type"] == "tag":
+            if ref_obj.object.type == "tag":
                 # this is an annotated tag -- fetch the actual commit
-                tag_resp = session.get(ref_obj["object"]["url"])
-                tag_resp.raise_for_status()
-                ref_obj = tag_resp.json()
-            commit_resp = session.get(ref_obj["object"]["url"])
-            commit_resp.raise_for_status()
-            commit = commit_resp.json()
+                ref_obj = repo.tag(ref_obj.object.sha)
+            commit = repo.commit(ref_obj.object.sha)
 
             # save the sha value for the commit into the returned dict
-            if ref.startswith("refs/heads/"):
-                ref_type = "branch"
-            else:
-                ref_type = "tag"
-            return_value[repo_name] = {
+            return_value[repo.full_name] = {
                 "ref": ref,
-                "ref_type": ref_type,
-                "sha": commit["sha"],
-                "message": commit["message"],
-                "author": commit["author"],
-                "committer": commit["committer"],
+                "ref_type": ref_obj.type,
+                "sha": commit.commit.sha,
+                "message": commit.commit.message,
+                "author": commit.commit.author,
+                "committer": commit.commit.committer,
             }
 
     return return_value
@@ -538,7 +337,7 @@ def todo_list(ref_info):
     return "\n".join(lines)
 
 
-def create_ref_for_repos(ref_info, ref, session, use_tag=True, rollback_on_fail=True):
+def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry=True):
     """
     Actually create refs on the given repos.
     If `rollback_on_fail` is True, then on any failure, try to delete the refs
@@ -565,18 +364,21 @@ def create_ref_for_repos(ref_info, ref, session, use_tag=True, rollback_on_fail=
     succeeded = []
     failed_resp = None
     failed_repo = None
-    for repo_name, commit_info in ref_info.items():
-        ref_url = "https://api.github.com/repos/{repo}/git/refs".format(repo=repo_name)
-        payload = {
-            "ref": ref,
-            "sha": commit_info['sha'],
-        }
-        resp = session.post(ref_url, json=payload)
-        if resp.ok:
-            succeeded.append(repo_name)
-        else:
-            failed_resp = resp
-            failed_repo = repo_name
+    for repo, commit_info in ref_info.items():
+        try:
+            dry_echo(
+                dry,
+                'Creating ref {} with sha {} in repo {}'.format(
+                    ref, commit_info['sha'], repo.full_name
+                ),
+                fg='green'
+            )
+            if not dry:
+                created_ref = repo.create_ref(ref=ref, sha=commit_info['sha'])
+                succeeded.append((repo, created_ref))
+        except GitHubError as exc:
+            failed_resp = exc.response
+            failed_repo = repo
             # don't try to tag any others, just stop
             break
 
@@ -595,7 +397,7 @@ def create_ref_for_repos(ref_info, ref, session, use_tag=True, rollback_on_fail=
             "Error was {orig_err}. No refs have been created on any repos."
         ).format(
             ref=ref,
-            failed_repo=failed_repo,
+            failed_repo=failed_repo.full_name,
             orig_err=original_err_msg,
         )
         log.error(msg)
@@ -603,14 +405,19 @@ def create_ref_for_repos(ref_info, ref, session, use_tag=True, rollback_on_fail=
 
     if rollback_on_fail:
         rollback_failures = []
-        for repo_name in succeeded:
-            ref_url = "https://api.github.com/repos/{repo}/git/{ref}".format(
-                repo=repo_name,
-                ref=ref,
-            )
-            resp = session.delete(ref_url)
-            if not resp.ok:
-                rollback_failures.append(repo_name)
+        for repo, created_ref in succeeded:
+            try:
+                dry_echo(
+                    dry,
+                    'Deleting ref {} from repo {}'.format(
+                        created_ref.ref, repo.full_name
+                    ),
+                    fg='red'
+                )
+                if not dry:
+                    created_ref.delete()
+            except GitHubError as exc:
+                rollback_failures.append(repo.full_name)
 
         if rollback_failures:
             msg = (
@@ -620,7 +427,7 @@ def create_ref_for_repos(ref_info, ref, session, use_tag=True, rollback_on_fail=
                 "the following repos: {rollback_failures}"
             ).format(
                 ref=ref,
-                failed_repo=failed_repo,
+                failed_repo=failed_repo.full_name,
                 orig_err=original_err_msg,
                 rollback_failures=", ".join(rollback_failures)
             )
@@ -635,7 +442,7 @@ def create_ref_for_repos(ref_info, ref, session, use_tag=True, rollback_on_fail=
                 "rolled back."
             ).format(
                 ref=ref,
-                failed_repo=failed_repo,
+                failed_repo=failed_repo.full_name,
                 orig_err=original_err_msg,
             )
             log.error(msg)
@@ -648,9 +455,9 @@ def create_ref_for_repos(ref_info, ref, session, use_tag=True, rollback_on_fail=
             "the following repos: {tagged_repos}"
         ).format(
             ref=ref,
-            failed_repo=failed_repo,
+            failed_repo=failed_repo.full_name,
             orig_err=original_err_msg,
-            tagged_repos=", ".join(succeeded)
+            tagged_repos=", ".join(repo.full_name for repo, _ in succeeded)
         )
         err = RuntimeError(msg)
         err.response = failed_resp
@@ -658,7 +465,7 @@ def create_ref_for_repos(ref_info, ref, session, use_tag=True, rollback_on_fail=
         raise err
 
 
-def remove_ref_for_repos(repo_names, ref, session, use_tag=True):
+def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
     """
     Given an iterable of repository full names (like "edx/edx-platform") and
     a tag name, this function attempts to delete the named ref from each
@@ -674,31 +481,37 @@ def remove_ref_for_repos(repo_names, ref, session, use_tag=True):
     Trying to remove a ref from a repo that does not have that ref
     to begin with is *not* treated as an error.
     """
-    if not ref.startswith("refs/"):
-        ref = "refs/{type}/{name}".format(
+    if ref.startswith('refs/'):
+        ref = ref[len('refs/'):]
+
+    if not (ref.startswith("heads/") or ref.startswith('tags/')):
+        ref = "{type}/{name}".format(
             type="tags" if use_tag else "heads",
             name=ref,
         )
+
     failures = {}
     modified = False
-    for repo_name in repo_names:
-        ref_url = "https://api.github.com/repos/{repo}/git/{ref}".format(
-            repo=repo_name,
-            ref=ref,
-        )
-        resp = session.delete(ref_url)
-        if resp.ok:
-            # successfully deleted -- we modified a repo
+    for repo in repos:
+        try:
+            ref_obj = repo.ref(ref)
+            if ref_obj is None:
+                # tag didn't exist to begin with; not an error
+                continue
+
+            dry_echo(
+                dry,
+                'Deleting ref {} from repo {}'.format(
+                    ref_obj.ref, repo.full_name
+                ),
+                fg='red'
+            )
+            if not dry:
+                ref_obj.delete()
             modified = True
-
-        elif resp.status_code == 422:
-            # error message: "Reference does not exist"
-            # tag didn't exist to begin with; not an error
-            pass
-
-        else:
+        except GitHubError as err:
             # Oops, we got a failure. Record it and move on.
-            failures[repo_name] = resp
+            failures[repo.full_name] = err
 
     if failures:
         msg = (
@@ -724,8 +537,8 @@ def remove_ref_for_repos(repo_names, ref, session, use_tag=True):
 @click.option(
     '--override-ref', metavar="REF",
     help="A reference to use that overrides the references from the "
-        "repos.yaml file in *ALL* repos. This might be a release candidate "
-        "branch, for example."
+         "repos.yaml file in *ALL* repos. This might be a release candidate "
+         "branch, for example."
 )
 @click.option(
     '--override', 'overrides',
@@ -752,16 +565,12 @@ def remove_ref_for_repos(repo_names, ref, session, use_tag=True):
     help="if the repos.yaml file points to an invalid repo, skip it "
          "instead of throwing an error"
 )
-def main(ref, use_tag, override_ref, overrides, interactive, quiet, reverse, skip_invalid):
+@dry
+@pass_github
+def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet, reverse, skip_invalid, dry):
     """Create/remove tags & branches on GitHub repos for Open edX releases."""
 
-    ensure_github_creds()
-    username, token = get_github_creds()
-    session = requests.Session()
-    session.headers["Authorization"] = "token {}".format(token)
-    session.headers["User-Agent"] = TOKEN_NAME
-
-    repos = openedx_release_repos(session)
+    repos = openedx_release_repos(hub)
     if not repos:
         raise ValueError("No repos marked for openedx-release in repos.yaml!")
 
@@ -771,7 +580,7 @@ def main(ref, use_tag, override_ref, overrides, interactive, quiet, reverse, ski
         overrides=dict(overrides or ()),
     )
 
-    existing_refs = get_ref_for_repos(repos, ref, session, use_tag=use_tag)
+    existing_refs = get_ref_for_repos(repos, ref, use_tag=use_tag)
 
     if reverse:
         if not existing_refs:
@@ -789,7 +598,7 @@ def main(ref, use_tag, override_ref, overrides, interactive, quiet, reverse, ski
             if response.lower() not in ("y", "yes", "1"):
                 return
 
-        modified = remove_ref_for_repos(repos, ref, session, use_tag=use_tag)
+        modified = remove_ref_for_repos(repos, ref, use_tag=use_tag, dry=dry)
         if not quiet:
             if modified:
                 print("Success!")
@@ -807,7 +616,7 @@ def main(ref, use_tag, override_ref, overrides, interactive, quiet, reverse, ski
             )
             raise ValueError(msg)
 
-        ref_info = commit_ref_info(repos, session, skip_invalid=skip_invalid)
+        ref_info = commit_ref_info(repos, hub, skip_invalid=skip_invalid)
         if interactive or not quiet:
             print(todo_list(ref_info))
         if interactive:
@@ -815,7 +624,7 @@ def main(ref, use_tag, override_ref, overrides, interactive, quiet, reverse, ski
             if response.lower() not in ("y", "yes", "1"):
                 return
 
-        result = create_ref_for_repos(ref_info, ref, session, use_tag=use_tag)
+        result = create_ref_for_repos(ref_info, ref, use_tag=use_tag, dry=dry)
         if not quiet:
             if result:
                 print("Success!")
