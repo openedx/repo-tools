@@ -39,7 +39,7 @@ def iter_openedx_yaml(hub, orgs, branches=None):
                 contents = repo.contents(OPEN_EDX_YAML, ref=branch)
                 if contents is not None:
                     LOGGER.debug("Found openedx.yaml at %s:%s", repo.full_name, branch)
-                    yield repo.full_name, yaml.safe_load(contents.decoded)
+                    yield repo, yaml.safe_load(contents.decoded)
                     break
 
 

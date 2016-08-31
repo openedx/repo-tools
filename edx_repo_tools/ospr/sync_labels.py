@@ -65,6 +65,6 @@ def sync_labels(hub, repo_tools_data, org, dry):
         print("Copying labels into {}".format(repo))
         set_or_delete_labels(
             dry,
-            hub.repository(*repo.split('/')),
+            repo,
             repo_tools_data.labels
         )
