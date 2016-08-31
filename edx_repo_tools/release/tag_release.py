@@ -4,7 +4,7 @@ Tag repos for an Open edX release. When run, this script will:
 
 1. Make sure we have an OAuth token for the GitHub API, and help the user
    create one if we don't already have one
-2. Fetch the repos.yaml file from the repo-tools-data repo
+2. Fetch the openedx.yaml files from all repos covered by the Open edX release.
 3. Identify the repos in that file that are tagged in the Open edX release
 4. Identify the commit that needs to be tagged in each repo, tracing cross-repo
    dependencies as necessary
@@ -42,7 +42,7 @@ REQUIREMENT_RE = re.compile(r"""
 
 def openedx_release_repos(hub):
     """
-    Return a subset of the repos listed in the repos.yaml file: the repos
+    Return a subset of the repos with openedx.yaml files: the repos
     with an `openedx-release` section.
     """
     return {
@@ -537,7 +537,7 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
 @click.option(
     '--override-ref', metavar="REF",
     help="A reference to use that overrides the references from the "
-         "repos.yaml file in *ALL* repos. This might be a release candidate "
+         "openedx.yaml file in *ALL* repos. This might be a release candidate "
          "branch, for example."
 )
 @click.option(
@@ -562,7 +562,7 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
 )
 @click.option(
     '--skip-invalid', is_flag=True, default=False,
-    help="if the repos.yaml file points to an invalid repo, skip it "
+    help="if the openedx.yaml file points to an invalid repo, skip it "
          "instead of throwing an error"
 )
 @dry
@@ -572,7 +572,7 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet, reverse
 
     repos = openedx_release_repos(hub)
     if not repos:
-        raise ValueError("No repos marked for openedx-release in repos.yaml!")
+        raise ValueError("No repos marked for openedx-release in their openedx.yaml files!")
 
     repos = override_repo_refs(
         repos,
