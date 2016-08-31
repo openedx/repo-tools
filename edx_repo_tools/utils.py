@@ -23,3 +23,11 @@ def dry_echo(dry, message, *args, **kwargs):
     ))
 
 
+def dry(f, help='Enable/disable actions taken by the script'):
+    return click.option(
+        '--dry/--yes',
+        is_flag=True,
+        default=True,
+        help=help,
+    )(f)
+

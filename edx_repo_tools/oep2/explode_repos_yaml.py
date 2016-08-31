@@ -10,7 +10,7 @@ import yaml
 
 from edx_repo_tools.auth import pass_github
 from edx_repo_tools.data import iter_openedx_yaml, OPEN_EDX_YAML
-from edx_repo_tools.utils import dry_echo
+from edx_repo_tools.utils import dry_echo, dry
 
 
 logging.basicConfig()
@@ -21,11 +21,7 @@ BRANCH_NAME = 'add-openedx-yaml'
 
 @click.command()
 @pass_github
-@click.option(
-    '--dry/--yes',
-    default=True,
-    help='Actually create the pull requests',
-)
+@dry
 def explode(hub, dry):
     """
     Explode the repos.yaml file out into pull requests for all of the
