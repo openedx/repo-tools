@@ -107,9 +107,13 @@ def pass_repo_tools_data(f):
             print repo_tools_data.labels
     """
 
-    if getattr(f, '__pass_repo_tools_data_applied', False):
+    # Mark that pass_repo_tools_data has been applied already to
+    # `f`, so that if the decorator is applied multiple times,
+    # it won't pass the `hub` argument multiple times, and
+    # so that multiple copies of the click arguments won't be added.
+    if getattr(f, '_pass_repo_tools_data_applied', False):
         return f
-    f.__pass_repo_tools_data_applied = True
+    f._pass_repo_tools_data_applied = True
 
     # pylint: disable=missing-docstring
     @click.option(

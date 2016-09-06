@@ -143,9 +143,13 @@ def pass_github(f):
             hub.organization('edx').iter_repos()
     """
 
-    if getattr(f, '__pass_github_applied', False):
+    # Mark that pass_github has been applied already to
+    # `f`, so that if the decorator is applied multiple times,
+    # it won't pass the `hub` argument multiple times, and
+    # so that multiple copies of the click arguments won't be added.
+    if getattr(f, '_pass_github_applied', False):
         return f
-    f.__pass_github_applied = True
+    f._pass_github_applied = True
 
     # pylint: disable=missing-docstring
     @click.option(
