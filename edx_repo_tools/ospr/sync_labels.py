@@ -54,14 +54,14 @@ def set_or_delete_labels(dry, repo, new_labels):
 @click.command()
 @pass_github
 @pass_repo_tools_data
-@click.option('--branch', multiple=True, default=['edx', 'edx-ops'])
+@click.option('--org', multiple=True, default=['edx', 'edx-ops'])
 @click.option(
     '--dry/--yes',
     default=True,
     help='Actually create the pull requests',
 )
-def sync_labels(hub, repo_tools_data, branch, dry):
-    for repo, openedx_yaml in sorted(iter_openedx_yaml(hub, branch)):
+def sync_labels(hub, repo_tools_data, org, dry):
+    for repo, openedx_yaml in sorted(iter_openedx_yaml(hub, org)):
         print("Copying labels into {}".format(repo))
         set_or_delete_labels(
             dry,
