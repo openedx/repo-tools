@@ -12,6 +12,8 @@ import click
 from github3 import login, GitHubError
 import yaml
 
+
+logging.basicConfig()
 LOGGER = logging.getLogger(__name__)
 
 CONFIG_DIR = user_config_dir('edx-repo-tools', 'edx')
@@ -141,6 +143,14 @@ def pass_github(f):
             hub.organization('edx').iter_repos()
     """
 
+    # Mark that pass_github has been applied already to
+    # `f`, so that if the decorator is applied multiple times,
+    # it won't pass the `hub` argument multiple times, and
+    # so that multiple copies of the click arguments won't be added.
+    if getattr(f, '_pass_github_applied', False):
+        return f
+    f._pass_github_applied = True
+
     # pylint: disable=missing-docstring
     @click.option(
         '--username',
@@ -158,13 +168,15 @@ def pass_github(f):
         help='Enable debug logging',
         default=False
     )
-    @click.pass_context
     @functools.wraps(f)
-    def wrapped(ctx, username, password, token, debug, *args, **kwargs):
+    def wrapped(username, password, token, debug, *args, **kwargs):
+
         if debug:
             logging.basicConfig()
             logging.getLogger().setLevel(logging.DEBUG)
 
         hub = login_github(username, password, token)
-        ctx.invoke(f, hub, *args, **kwargs)
+
+        f(hub=hub, *args, **kwargs)
+
     return wrapped
