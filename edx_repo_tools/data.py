@@ -1,4 +1,5 @@
 import functools
+import itertools
 import logging
 import os.path
 
@@ -35,7 +36,7 @@ def iter_openedx_yaml(hub, orgs, branches=None):
                 LOGGER.debug("Skipping %s because it is a fork", repo.full_name)
                 continue
 
-            for branch in branches + [repo.default_branch]:
+            for branch in itertools.chain(branches, [repo.default_branch]):
                 contents = repo.contents(OPEN_EDX_YAML, ref=branch)
                 if contents is not None:
                     LOGGER.debug("Found openedx.yaml at %s:%s", repo.full_name, branch)
