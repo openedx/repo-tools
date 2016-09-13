@@ -619,21 +619,20 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
             ).format(
                 ref=ref,
             )
-            print(msg)
+            click.echo(msg)
             return False
         if interactive or not quiet:
-            print(todo_list(existing_refs))
+            click.echo(todo_list(existing_refs))
         if interactive:
-            response = raw_input(u"Remove these refs? [y/N] ")
-            if response.lower() not in ("y", "yes", "1"):
+            if not click.confirm(u"Remove these refs?"):
                 return
 
         modified = remove_ref_for_repos(repos, ref, use_tag=use_tag, dry=dry)
         if not quiet:
             if modified:
-                print(u"Success!")
+                click.echo(u"Success!")
             else:
-                print(u"No refs modified")
+                click.echo(u"No refs modified")
         return modified
 
     else:
@@ -648,16 +647,15 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
 
         ref_info = commit_ref_info(repos, hub, skip_invalid=skip_invalid)
         if interactive or not quiet:
-            print(todo_list(ref_info))
+            click.echo(todo_list(ref_info))
         if interactive:
-            response = raw_input(u"Is this correct? [y/N] ")
-            if response.lower() not in ("y", "yes", "1"):
+            if not click.confirm(u"Is this correct?"):
                 return
 
         result = create_ref_for_repos(ref_info, ref, use_tag=use_tag, dry=dry)
         if not quiet:
             if result:
-                print(u"Success!")
+                click.echo(u"Success!")
             else:
-                print(u"Failed to create refs, but rolled back successfully")
+                click.echo(u"Failed to create refs, but rolled back successfully")
         return result
