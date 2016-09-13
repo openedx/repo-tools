@@ -3,9 +3,10 @@ Tools for managing drip-style surveys.
 
 Currently, this only supports translating people.yaml into a Qualtrics CSV.
 """
-import csv
+from backports import csv
 from datetime import date
 import hashlib
+import io
 import sys
 
 import click
@@ -33,24 +34,25 @@ def associated_with(person):
 @click.command()
 @pass_repo_tools_data
 @click.option('--frequency', help="The number of weeks between surveys for each contributor", type=int, default=12)
-@click.option('--update', help="A Qualtrics Contact list export to update", type=click.File())
+@click.option('--update', help="A Qualtrics Contact list export to update", type=click.Path(exists=True, dir_okay=False))
 def people_to_qualtrics_csv(hub, repo_tools_data, frequency, update):
     """
     Print out a formatted file as expected by Qualtrics import.
     """
 
     if update is not None:
-        reader = csv.DictReader(update)
-        initial = {
-            row[EMAIL]: row
-            for row in reader
-        }
-        fields = reader.fieldnames
+        with io.open(update, newline='', encoding='utf-8') as update_data:
+            reader = csv.DictReader(update_data)
+            initial = {
+                row[EMAIL]: row
+                for row in reader
+            }
+        fields = [field for field in reader.fieldnames if field]
     else:
         initial = {}
         fields = [NAME, EMAIL, WEEK, ASSOCIATED_WITH, UNSUBSCRIBED]
 
-    csv_writer = csv.DictWriter(sys.stdout, fieldnames=fields)
+    csv_writer = csv.DictWriter(click.get_text_stream('stdout'), fieldnames=fields, extrasaction='ignore')
     csv_writer.writeheader()
     for username, person in repo_tools_data.people.iteritems():
         if person.get('email') is None:
@@ -62,8 +64,8 @@ def people_to_qualtrics_csv(hub, repo_tools_data, frequency, update):
 
         row = initial.get(email, {})
         row.update({
-            NAME: person['name'].encode('utf-8'),
-            EMAIL: email.encode('utf-8'),
+            NAME: person['name'],
+            EMAIL: email,
             WEEK: int(hashdigest, 16) % frequency + 1,
             ASSOCIATED_WITH: associated_with(person),
         })
