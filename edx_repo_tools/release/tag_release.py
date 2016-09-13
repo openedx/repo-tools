@@ -40,14 +40,33 @@ REQUIREMENT_RE = re.compile(r"""
 """, re.VERBOSE)
 
 
-def openedx_release_repos(hub):
+def openedx_release_repos(hub, orgs=None, branches=None):
     """
     Return a subset of the repos with openedx.yaml files: the repos
     with an `openedx-release` section.
+
+
+    Arguments:
+        hub (GitHub): an authenticated GitHub instance.
+        orgs: The list of GitHub orgs to scan. Defaults to edx, edx-ops, and
+              edx-solutions.
+        branches: The list of branches to scan in all repos in the selected
+                  orgs.
+
+    Returns:
+        A dict from Repository objects to openedx.yaml data for all of the
+        repos with an ``openedx-release`` key specified.
     """
+    if not orgs:
+        orgs = ['edx', 'edx-ops', 'edx-solutions']
+
     return {
         repo: data
-        for repo, data in iter_openedx_yaml(hub, orgs=['edx', 'edx-ops', 'edx-solutions'])
+        for repo, data in iter_openedx_yaml(
+            hub,
+            orgs=orgs,
+            branches=branches,
+        )
         if data.get('openedx-release')
     }
 
@@ -565,12 +584,23 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
     help=u"if the openedx.yaml file points to an invalid repo, skip it "
          u"instead of throwing an error"
 )
+@click.option(
+    '--search-branch', 'branches', multiple=True,
+    help="Specify a branch to search for the openedx.yaml file. If specified "
+         "multiple times, the first openedx.yaml file found will be used.",
+)
+@click.option(
+    '--org', 'orgs', multiple=True, default=['edx', 'edx-ops', 'edx-solutions'],
+    help="Specify a GitHub organization to search for openedx release data. "
+         "May be specified multiple times.",
+)
 @dry
 @pass_github
-def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet, reverse, skip_invalid, dry):
+def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
+         reverse, skip_invalid, dry, orgs, branches):
     """Create/remove tags & branches on GitHub repos for Open edX releases."""
 
-    repos = openedx_release_repos(hub)
+    repos = openedx_release_repos(hub, orgs, branches)
     if not repos:
         raise ValueError(u"No repos marked for openedx-release in their openedx.yaml files!")
 
