@@ -122,11 +122,18 @@ def pass_repo_tools_data(f):
         default='../repo-tools-data',
         help='Specify the path to a local checkout of edx/repo-tools-data to use',
     )
+    @click.option(
+        '--remote',
+        is_flag=True,
+        default=False,
+        envvar='REPO_TOOLS_LATEST_PEOPLE',
+        help="Use data from edx/repo-tools-data, rather than a local checkout",
+    )
     @pass_github
     @functools.wraps(f)
-    def wrapped(hub, local, *args, **kwargs):
+    def wrapped(hub, local, remote, *args, **kwargs):
 
-        if int(os.environ.get('REPO_TOOLS_LATEST_PEOPLE', '0')):
+        if remote:
             repo_tools_data = RemoteRepoToolsData(hub.repository('edx', 'repo-tools-data'))
         else:
             repo_tools_data = LocalRepoToolsData(local)
