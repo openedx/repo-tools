@@ -3,5 +3,7 @@ pep8
 pip-tools
 pylint
 pytest
+pytest-logging
 pytest-mock
+pytest-xdist
 responses
