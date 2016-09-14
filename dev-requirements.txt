@@ -26,8 +26,8 @@ pylint-django==0.7.2      # via edx-lint
 pylint-plugin-utils==0.2.4  # via pylint-celery, pylint-django
 pylint==1.5.4
 pytest-mock==1.2
-pytest==2.9.2
-requests==2.11.0          # via responses
+pytest==3.0.2
+requests==2.11.1          # via responses
 responses==0.5.1
 six==1.10.0               # via astroid, edx-lint, mock, pip-tools, pylint, responses
 wrapt==1.10.8             # via astroid
