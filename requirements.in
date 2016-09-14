@@ -1,5 +1,4 @@
 CacheControl==0.10.7
-Flask==0.10.1
 PyYAML==3.11
 SQLAlchemy==0.9.8
 ansicolors==1.0.2
@@ -7,7 +6,6 @@ appdirs
 click
 github3.py
 gitpython
-gunicorn==18.0
 iso8601
 jira
 lazy
