@@ -4,7 +4,6 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-apipkg==1.4               # via execnet
 appdirs==1.4.0
 attrs==16.1.0             # via service-identity
 CacheControl==0.11.7
@@ -14,7 +13,6 @@ cryptography==1.5         # via pyopenssl
 cssselect==0.9.2          # via parsel, scrapy
 docutils==0.12            # via statistics
 enum34==1.1.6             # via cryptography
-execnet==1.4.1            # via pytest-xdist
 gitdb==0.6.4              # via gitpython
 github3.py==0.9.5
 gitpython==2.0.8
@@ -27,15 +25,11 @@ more-itertools==2.2
 oauthlib==2.0.0           # via requests-oauthlib
 parsel==1.0.3             # via scrapy
 path.py==8.2.1
-py==1.4.31                # via pytest, pytest-xdist
 pyasn1-modules==0.0.8     # via service-identity
 pyasn1==0.1.9             # via cryptography, pyasn1-modules, service-identity
 pycparser==2.14           # via cffi
 PyDispatcher==2.0.5       # via scrapy
 pyOpenSSL==16.1.0         # via scrapy, service-identity
-pytest-logging==2015.11.4
-pytest-xdist==1.15.0
-pytest==3.0.2
 python-dateutil==2.5.3
 python-dotenv==0.6.0
 PyYAML==3.12
@@ -49,7 +43,7 @@ six==1.10.0               # via cryptography, jira, parsel, pyopenssl, python-da
 smmap==0.9.0              # via gitdb
 statistics==1.0.3.5
 tlslite==0.4.9            # via jira
-Twisted==16.4.0           # via scrapy
+Twisted==16.4.1           # via scrapy
 uritemplate.py==3.0.2     # via github3.py
 uritemplate==3.0.0
 urlobject==2.4.2
