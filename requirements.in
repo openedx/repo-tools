@@ -1,14 +1,11 @@
 CacheControl==0.10.7
 PyYAML==3.11
-ansicolors==1.0.2
 appdirs
 click
 github3.py
 gitpython
-iso8601
 jira
 lazy
-lockfile==0.9.1
 more_itertools
 path.py
 pytest
@@ -21,4 +18,3 @@ scrapy
 statistics
 uritemplate.py==0.2.0
 urlobject
-wsgiref==0.1.2

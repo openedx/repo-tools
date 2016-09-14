@@ -4,7 +4,6 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-ansicolors==1.0.2
 apipkg==1.4               # via execnet
 appdirs==1.4.0
 attrs==16.1.0             # via service-identity
@@ -21,10 +20,8 @@ github3.py==0.9.5
 gitpython==2.0.8
 idna==2.1                 # via cryptography
 ipaddress==1.0.17         # via cryptography
-iso8601==0.1.11
 jira==1.0.7
 lazy==1.2
-lockfile==0.9.1
 lxml==3.6.4               # via parsel, scrapy
 more-itertools==2.2
 oauthlib==2.0.0           # via requests-oauthlib
@@ -56,7 +53,6 @@ Twisted==16.4.0           # via scrapy
 uritemplate.py==0.2.0
 urlobject==2.4.2
 w3lib==1.15.0             # via parsel, scrapy
-wsgiref==0.1.2
 zope.interface==4.3.2     # via twisted
 
 # The following packages are commented out because they are
