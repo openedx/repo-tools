@@ -8,9 +8,6 @@ jira
 lazy
 more_itertools
 path.py
-pytest
-pytest-logging
-pytest-xdist
 python-dateutil
 python-dotenv
 requests
