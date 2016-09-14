@@ -8,6 +8,7 @@ jira
 lazy
 more_itertools
 path.py
+# pytest is used by `edx_report_tools.oep2` directly
 pytest
 pytest-logging
 pytest-xdist
