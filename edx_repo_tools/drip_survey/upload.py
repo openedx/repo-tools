@@ -19,17 +19,6 @@ ASSOCIATED_WITH = 'AssociatedWith'
 UNSUBSCRIBED = 'Unsubscribed'
 RECIPIENT_ID = 'RecipientID'
 
-def associated_with(person):
-    if person.get('agreement') != 'institution':
-        return 'other'
-
-    if 'expires_on' in person and person['expires_on'] < date.today():
-        return 'other'
-
-    if person.get('institution', '').lower() in ('edx', 'arbisoft'):
-        return 'edX'
-
-    return 'other'
 
 @click.command()
 @pass_repo_tools_data
@@ -55,22 +44,21 @@ def people_to_qualtrics_csv(hub, repo_tools_data, frequency, update):
     csv_writer = csv.DictWriter(click.get_text_stream('stdout'), fieldnames=fields, extrasaction='ignore')
     csv_writer.writeheader()
     for username, person in repo_tools_data.people.iteritems():
-        if person.get('email') is None:
+        if person.email is None:
             continue
 
-        email = person['email']
 
-        hashdigest = hashlib.md5(email.lower()).hexdigest()
+        hashdigest = hashlib.md5(person.email.lower()).hexdigest()
 
-        row = initial.get(email, {})
+        row = initial.get(person.email, {})
         row.update({
-            NAME: person['name'],
-            EMAIL: email,
+            NAME: person.name,
+            EMAIL: person.email,
             WEEK: int(hashdigest, 16) % frequency + 1,
-            ASSOCIATED_WITH: associated_with(person),
+            ASSOCIATED_WITH: 'edX' if person.associated_with('edX', 'ArbiSoft') else 'other',
         })
 
-        if not person.get('email_ok', True):
+        if not person.email_ok:
             row[UNSUBSCRIBED] = 'true'
 
         csv_writer.writerow(row)
