@@ -114,7 +114,7 @@ class Oep2ReportPlugin(object):
                 metafunc.parametrize(
                     "github_repo",
                     self.get_repos(),
-                    ids=[repo.full_name for repo in self.get_repos()],
+                    ids=[repo.full_name.encode('utf-8') for repo in self.get_repos()],
                 )
 
         if 'oep' in metafunc.fixturenames:
