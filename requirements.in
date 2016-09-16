@@ -1,5 +1,6 @@
 CacheControl
 PyYAML
+SQLAlchemy==0.9.8
 appdirs
 click
 github3.py
@@ -8,6 +9,7 @@ jira
 lazy
 more_itertools
 path.py
+psycopg2==2.5.4
 # pytest is used by `edx_report_tools.oep2` directly
 pytest
 pytest-logging
