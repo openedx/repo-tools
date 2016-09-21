@@ -12,3 +12,9 @@ states.json
 .cache
 
 .env
+
+# The locally checked out repos
+.oep2-workspace
+
+# Ourselves, installed
+edx_repo_tools.egg-info
