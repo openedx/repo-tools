@@ -1,3 +1,4 @@
+from datetime import date
 import functools
 import itertools
 import logging
@@ -12,6 +13,7 @@ import yaml
 logging.basicConfig()
 LOGGER = logging.getLogger(__name__)
 OPEN_EDX_YAML = 'openedx.yaml'
+
 
 def iter_openedx_yaml(hub, orgs, branches=None):
     """
@@ -44,6 +46,57 @@ def iter_openedx_yaml(hub, orgs, branches=None):
                     break
 
 
+class Person(object):
+    """
+    A wrapper object around data parsed from people.yaml.
+    """
+    def __init__(self, username, name, email, agreement, email_ok=True,
+                 other_emails=None, institution=None, committer=None, jira=None,
+                 comment=None, expires_on=None, before=None, beta=None,
+                ):
+        self.username = username
+        self.name = name
+        self.email = email
+        self.email_ok = email_ok
+        self.other_emails = other_emails
+        self.agreement = agreement
+        self.institution = institution
+        self.committer = committer
+        self.jira = jira
+        self.comment = comment
+        self.expires_on = expires_on
+        self.before = before
+        self.beta = beta
+
+    @classmethod
+    def from_yaml(cls, username, yaml_data):
+        """
+        Create a Person object from parsed yaml data.
+        """
+        return cls(username=username, **yaml_data)
+
+    def associated_with(self, *institutions):
+        """
+        Return True if this Person is associated with an institution in
+        ``institutions``.
+
+        Arguments:
+            *institutions: The institutions to check against
+        """
+        if self.agreement != 'institution':
+            return False
+
+        if self.expires_on and self.expires_on < date.today():
+            return False
+
+        institutions = [inst.lower() for inst in institutions]
+
+        if self.institution and self.institution.lower() in institutions:
+            return True
+
+        return False
+
+
 class RepoToolsData(object):
 
     def _read_file(self, filename):
@@ -68,7 +121,11 @@ class RepoToolsData(object):
         """
         The parsed contents of ``people.yaml``.
         """
-        return self._read_file('people.yaml')
+        return {
+            username: Person.from_yaml(username, data)
+            for username, data
+            in self._read_file('people.yaml').iteritems()
+        }
 
 
 class LocalRepoToolsData(RepoToolsData):
@@ -122,11 +179,18 @@ def pass_repo_tools_data(f):
         default='../repo-tools-data',
         help='Specify the path to a local checkout of edx/repo-tools-data to use',
     )
+    @click.option(
+        '--remote',
+        is_flag=True,
+        default=False,
+        envvar='REPO_TOOLS_LATEST_PEOPLE',
+        help="Use data from edx/repo-tools-data, rather than a local checkout",
+    )
     @pass_github
     @functools.wraps(f)
-    def wrapped(hub, local, *args, **kwargs):
+    def wrapped(hub, local, remote, *args, **kwargs):
 
-        if int(os.environ.get('REPO_TOOLS_LATEST_PEOPLE', '0')):
+        if remote:
             repo_tools_data = RemoteRepoToolsData(hub.repository('edx', 'repo-tools-data'))
         else:
             repo_tools_data = LocalRepoToolsData(local)
