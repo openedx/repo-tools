@@ -13,6 +13,10 @@ states.json
 
 .env
 
+# Coverage data
+.coverage
+htmlcov
+
 # The locally checked out repos
 .oep2-workspace
 
