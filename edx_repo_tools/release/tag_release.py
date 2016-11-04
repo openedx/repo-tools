@@ -11,7 +11,6 @@ Tag repos for an Open edX release. When run, this script will:
 5. Show the identified repos and commits, and ask for confirmation from the user
 6. Upon confirmation, create Git tags for the repos using the GitHub API
 """
-from __future__ import print_function
 
 import copy
 import datetime
@@ -29,15 +28,6 @@ log = logging.getLogger(__name__)
 
 # Name used for fetching/storing GitHub OAuth tokens on disk
 TOKEN_NAME = "openedx-release"
-# Regular expression for parsing out the parts of a pip requirement line
-REQUIREMENT_RE = re.compile(r"""
-    git\+https?://github\.com/          # prefix
-    (?P<owner>[a-zA-Z0-9_.-]+)/         # repo owner
-    (?P<repo>[a-zA-Z0-9_.-]+).git       # repo name
-    (@(?P<ref>[a-zA-Z0-9_.-]+))?        # git ref (tag, branch, or commit hash) (optional)
-    (\#egg=(?P<egg>[a-zA-Z0-9_.-]+))?   # egg name (optional)
-    (==(?P<version>[a-zA-Z0-9_.-]+))?   # version (optional)
-""", re.VERBOSE)
 
 
 def openedx_release_repos(hub, orgs=None, branches=None):
@@ -71,6 +61,25 @@ def openedx_release_repos(hub, orgs=None, branches=None):
     }
 
 
+def trim_dependent_repos(repos):
+    """Remove dependent repos (an obsolete feature of this program).
+
+    Repos with 'parent-repo' in their 'openedx-release' data are removed from
+    the `repos` dict.  A new dict of repos is returned.
+
+    """
+    trimmed = {}
+
+    for r, data in repos.items():
+        if 'parent-repo' in data['openedx-release']:
+            msg = u"Repo {repo} is dependent: you can remove openedx-release from its openedx.yaml file".format(repo=r)
+            click.secho(msg, fg='yellow')
+        else:
+            trimmed[r] = data
+
+    return trimmed
+
+
 def override_repo_refs(repos, override_ref=None, overrides=None):
     """
     Returns a new `repos` dictionary with the CLI overrides applied.
@@ -89,8 +98,6 @@ def override_repo_refs(repos, override_ref=None, overrides=None):
         local_override = overrides.get(repo_name, override_ref)
         if local_override:
             repos_copy[repo_name]["openedx-release"]["ref"] = local_override
-            if "parent-repo" in repos_copy[repo_name]["openedx-release"]:
-                del repos_copy[repo_name]["openedx-release"]["parent-repo"]
 
     return repos_copy
 
@@ -150,31 +157,6 @@ def commit_ref_info(repos, hub, skip_invalid=False):
                     continue
                 else:
                     raise
-        # are we specifying a parent repo?
-        parent_repo_name = repo_data["openedx-release"].get("parent-repo")
-        if parent_repo_name:
-            # we need the ref for the parent repo
-            parent_release_data = repos_by_name[parent_repo_name]["openedx-release"]
-            parent_ref = parent_release_data["ref"]
-            requirements_file = parent_release_data.get("requirements", "requirements.txt")
-
-            try:
-                ref_info[repo] = get_latest_commit_for_parent_repo(
-                    hub,
-                    repo,
-                    parent_repo_name,
-                    parent_ref,
-                    requirements_file,
-                )
-            except (GitHubError, ValueError):
-                if skip_invalid:
-                    msg = u"Problem getting parent ref for repo {repo}".format(
-                        repo=repo.full_name,
-                    )
-                    log.error(msg)
-                    continue
-                else:
-                    raise
     return ref_info
 
 
@@ -218,69 +200,6 @@ def get_latest_commit_for_ref(repo, ref):
         ref=ref, repo=repo.full_name,
     )
     raise ValueError(msg)
-
-
-def get_latest_commit_for_parent_repo(
-        hub, repo, parent_repo_name, parent_ref, requirements_file,
-    ):
-    """
-    Some repos point to other repos via requirements files. For example,
-    edx/edx-platform points to edx/XBlock and edx/edx-ora2 via the github.txt
-    requirement file. This function takes two repo names: the target, and the
-    target's parent. (In this case, "edx/XBlock" could be the target, and
-    "edx/edx-platform" would be its parent.) This function looks up what
-    reference the parent uses to point at the target, and looks up the commit
-    that the reference points to in the target repo.
-
-    This function is called by commit_ref_info(),
-    and it returns information in the same structure.
-    """
-
-    file_contents = hub.repository(
-        *parent_repo_name.split('/')
-    ).contents(requirements_file, ref=parent_ref)
-
-    ref = get_ref_for_dependency(
-        file_contents.decoded,
-        repo.full_name,
-        parent_repo_name
-    )
-
-    return get_latest_commit_for_ref(repo, ref)
-
-
-def get_ref_for_dependency(requirements_text, repo_name, parent_repo_name=None):
-    requirements_lines = requirements_text.splitlines()
-    # strip lines that are empty, or start with comments
-    relevant_lines = [line for line in requirements_lines
-                      if line and not line.isspace() and not line.startswith("#")]
-
-    # find the line that corresponds to this repo
-    repo_lines = [line for line in relevant_lines if repo_name in line]
-    if not repo_lines:
-        msg = u"{repo_name} dependency not found in {parent} repo".format(
-            repo_name=repo_name, parent=parent_repo_name,
-        )
-        raise ValueError(msg)
-    if len(repo_lines) > 1:
-        msg = u"multiple {repo_name} dependencies found in {parent} repo".format(
-            repo_name=repo_name, parent=parent_repo_name,
-        )
-        raise ValueError(msg)
-
-    dependency_line = repo_lines[0]
-    # parse out the branch/tag
-    match = REQUIREMENT_RE.search(dependency_line)
-    if match:
-        ref = match.group('ref')
-    else:
-        ref = None
-    if not ref:
-        msg = u"no reference found for {repo_name} dependency in {parent} repo".format(
-            repo_name=repo_name, parent=parent_repo_name,
-        )
-        raise ValueError(msg)
-    return ref
 
 
 def get_ref_for_repos(repos, ref, use_tag=True):
@@ -603,6 +522,8 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
     repos = openedx_release_repos(hub, orgs, branches)
     if not repos:
         raise ValueError(u"No repos marked for openedx-release in their openedx.yaml files!")
+
+    repos = trim_dependent_repos(repos)
 
     repos = override_repo_refs(
         repos,

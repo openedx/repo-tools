@@ -17,7 +17,6 @@ expected_repos = {
     'edx/edx-platform': {
         'openedx-release': {
             'ref': 'release',
-            'requirements': 'requirements/edx/github.txt',
         }
     },
     'edx/configuration': {
@@ -107,12 +106,6 @@ def test_commit_ref_info():
         for repo_name in expected_repos
     }
 
-    repo_objs['edx/edx-platform'].contents.return_value.decoded = textwrap.dedent("""
-        git+https://github.com/edx/XBlock.git@0.4.4#egg=XBlock==0.4.4
-    """)
-
-    repo_objs['edx/XBlock'].branch.return_value = None
-
     repos = {
         repo_objs[repo_name]: repo_info
         for repo_name, repo_info
@@ -128,9 +121,9 @@ def test_commit_ref_info():
     assert not repo_objs['edx/edx-platform'].ref.called
     repo_objs['edx/configuration'].branch.assert_called_once_with('master')
     assert not repo_objs['edx/configuration'].ref.called
-    repo_objs['edx/XBlock'].branch.assert_called_once_with('0.4.4')
-    repo_objs['edx/XBlock'].ref.assert_called_once_with('tags/0.4.4')
-    repo_objs['edx/XBlock'].commit.assert_called_once_with(repo_objs['edx/XBlock'].ref.return_value.object.sha)
+
+    # The XBlock repo shouldn't have been examined at all.
+    assert not repo_objs['edx/XBlock'].branch.called
 
     expected_commits = {
         repo_objs['edx/edx-platform']: {
@@ -149,14 +142,6 @@ def test_commit_ref_info():
             'ref': 'master',
             'message': repo_objs['edx/configuration'].branch.return_value.commit.commit.message,
         },
-        repo_objs['edx/XBlock']: {
-            'committer': repo_objs['edx/XBlock'].commit.return_value.commit.committer,
-            'author': repo_objs['edx/XBlock'].commit.return_value.commit.author,
-            'sha': repo_objs['edx/XBlock'].commit.return_value.sha,
-            'ref_type': 'tag',
-            'ref': '0.4.4',
-            'message': repo_objs['edx/XBlock'].commit.return_value.commit.message,
-        }
     }
 
     assert result == expected_commits
@@ -171,8 +156,6 @@ def test_overrides_global_ref():
     result = override_repo_refs(expected_repos, override_ref="abcdef")
     assert result["edx/edx-platform"]["openedx-release"]["ref"] == "abcdef"
     assert result["edx/configuration"]["openedx-release"]["ref"] == "abcdef"
-    assert result["edx/XBlock"]["openedx-release"]["ref"] == "abcdef"
-    assert "parent-repo" not in result["edx/XBlock"]["openedx-release"]
 
 
 def test_overrides_dict():
@@ -184,8 +167,6 @@ def test_overrides_dict():
     result = override_repo_refs(expected_repos, overrides=overrides)
     assert result["edx/edx-platform"]["openedx-release"]["ref"] == "xyz"
     assert result["edx/configuration"]["openedx-release"]["ref"] == "refs/branch/no-way"
-    assert result["edx/XBlock"]["openedx-release"]["parent-repo"] == "edx/edx-platform"
-    assert "ref" not in result["edx/XBlock"]["openedx-release"]
 
 
 def test_overrides_global_ref_and_dict():
@@ -201,8 +182,6 @@ def test_overrides_global_ref_and_dict():
     )
     assert result["edx/edx-platform"]["openedx-release"]["ref"] == "xyz"
     assert result["edx/configuration"]["openedx-release"]["ref"] == "fakie-mcfakerson"
-    assert result["edx/XBlock"]["openedx-release"]["ref"] == "fakie-mcfakerson"
-    assert "parent-repo" not in result["edx/XBlock"]["openedx-release"]
 
 
 def test_create_happy_path():
@@ -253,7 +232,7 @@ def test_create_existing_tag():
     ordered_commits = OrderedDict(
         (repo_objs[repo_name], expected_commits[repo_name])
         for repo_name
-        in ('edx/edx-platform', 'edx/configuration', 'edx/XBlock')
+        in ('edx/edx-platform', 'edx/configuration')
     )
 
     # creating a tag that does not already exist anywhere
@@ -270,7 +249,6 @@ def test_create_existing_tag():
     )
 
     assert not repo_objs['edx/configuration'].create_ref.called
-    assert not repo_objs['edx/XBlock'].create_ref.called
 
 
 def test_create_existing_tag_at_end():
@@ -287,7 +265,7 @@ def test_create_existing_tag_at_end():
     ordered_commits = OrderedDict(
         (repo_objs[repo_name], expected_commits[repo_name])
         for repo_name
-        in ('edx/configuration', 'edx/XBlock', 'edx/edx-platform')
+        in ('edx/configuration', 'edx/edx-platform')
     )
 
     result = create_ref_for_repos(
@@ -307,14 +285,8 @@ def test_create_existing_tag_at_end():
         ref="refs/tags/tag-exists-some-repos",
     )
 
-    repo_objs['edx/XBlock'].create_ref.assert_called_once_with(
-        sha="1a2b3c4d5e6f",
-        ref="refs/tags/tag-exists-some-repos",
-    )
-
-    # third request failed, so rollback the other two
+    # second request failed, so rollback the first.
     repo_objs['edx/configuration'].create_ref.return_value.delete.assert_called_once_with()
-    repo_objs['edx/XBlock'].create_ref.return_value.delete.assert_called_once_with()
 
 
 def test_create_existing_tag_at_end_no_rollback():
@@ -331,7 +303,7 @@ def test_create_existing_tag_at_end_no_rollback():
     ordered_commits = OrderedDict(
         (repo_objs[repo_name], expected_commits[repo_name])
         for repo_name
-        in ('edx/configuration', 'edx/XBlock', 'edx/edx-platform')
+        in ('edx/configuration', 'edx/edx-platform')
     )
 
     with pytest.raises(RuntimeError) as excinfo:
@@ -352,19 +324,12 @@ def test_create_existing_tag_at_end_no_rollback():
         ref="refs/tags/tag-exists-some-repos",
     )
 
-    repo_objs['edx/XBlock'].create_ref.assert_called_once_with(
-        sha="1a2b3c4d5e6f",
-        ref="refs/tags/tag-exists-some-repos",
-    )
-
-    # third request failed, no rollback of the other two
+    # second request failed, no rollback of the first.
     assert not repo_objs['edx/configuration'].create_ref.return_value.delete.called
-    assert not repo_objs['edx/XBlock'].create_ref.return_value.delete.called
 
     assert "No rollback attempted" in str(excinfo.value)
     assert "Reference already exists" in str(excinfo.value)
     assert "Refs exist on the following repos: " in str(excinfo.value)
-    assert "edx/XBlock" in str(excinfo.value)
     assert "edx/configuration" in str(excinfo.value)
 
 
@@ -384,7 +349,7 @@ def test_create_existing_tag_at_end_rollback_failure():
     ordered_commits = OrderedDict(
         (repo_objs[repo_name], expected_commits[repo_name])
         for repo_name
-        in ('edx/configuration', 'edx/XBlock', 'edx/edx-platform')
+        in ('edx/configuration', 'edx/edx-platform')
     )
 
     with pytest.raises(RuntimeError) as excinfo:
@@ -404,13 +369,7 @@ def test_create_existing_tag_at_end_rollback_failure():
         ref="refs/tags/tag-exists-some-repos",
     )
 
-    repo_objs['edx/XBlock'].create_ref.assert_called_once_with(
-        sha="1a2b3c4d5e6f",
-        ref="refs/tags/tag-exists-some-repos",
-    )
-
-    # third response failed, so try to rollback. XBlock succeeds...
-    repo_objs['edx/XBlock'].create_ref.return_value.delete.assert_called_once_with()
+    # second response failed, so try to rollback. 
     # ... but configuration fails, so we get an exception
     repo_objs['edx/configuration'].create_ref.return_value.delete.assert_called_once_with()
     assert "failed to delete ref on the following repos: edx/configuration" in str(excinfo)
@@ -420,7 +379,6 @@ def test_remove_all():
     repos = [
         mock_repository('edx/edx-platform'),
         mock_repository('edx/configuration'),
-        mock_repository('edx/XBlock'),
     ]
     result = remove_ref_for_repos(repos, "tag-exists-all-repos", dry=False)
     assert result is True
@@ -434,7 +392,6 @@ def test_remove_some():
     repos = [
         mock_repository('edx/edx-platform'),
         mock_repository('edx/configuration'),
-        mock_repository('edx/XBlock'),
     ]
     repos[0].ref.return_value = None
 
@@ -451,7 +408,6 @@ def test_remove_none():
     repos = [
         mock_repository('edx/edx-platform'),
         mock_repository('edx/configuration'),
-        mock_repository('edx/XBlock'),
     ]
 
     for repo in repos:
@@ -468,7 +424,6 @@ def test_remove_with_errors():
     repos = [
         Mock(spec=Repository, full_name="edx/edx-platform"),
         Mock(spec=Repository, full_name="edx/configuration"),
-        Mock(spec=Repository, full_name="edx/XBlock"),
     ]
 
     # when we try to get the edx-platform tag, it will fail with a 500 error
@@ -503,7 +458,6 @@ def test_remove_ref_formatting(ref_prefix, use_tag, call_prefix):
     repos = [
         Mock(spec=Repository, full_name="edx/edx-platform"),
         Mock(spec=Repository, full_name="edx/configuration"),
-        Mock(spec=Repository, full_name="edx/XBlock"),
     ]
     result = remove_ref_for_repos(repos, "{}tag-exists-all-repos".format(ref_prefix), use_tag=use_tag, dry=False)
     assert result is True
@@ -511,4 +465,3 @@ def test_remove_ref_formatting(ref_prefix, use_tag, call_prefix):
         repo.ref.assert_called_once_with('{}tag-exists-all-repos'.format(call_prefix))
         ref = repo.ref.return_value
         ref.delete.assert_called_once_with()
-
