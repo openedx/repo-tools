@@ -130,12 +130,6 @@ def commit_ref_info(repos, hub, skip_invalid=False):
     in which case the invalid information will simply be logged and ignored.
     """
 
-    repos_by_name = {
-        repo.full_name: repo_info
-        for repo, repo_info
-        in repos.items()
-    }
-
     ref_info = {}
     for repo, repo_data in repos.items():
         # are we specifying a ref?
