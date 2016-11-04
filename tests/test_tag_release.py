@@ -1,15 +1,12 @@
 from collections import OrderedDict
-import json
-import textwrap
 
 from github3.repos.repo import Repository
 from github3 import GitHubError, GitHub
 from mock import Mock
 import pytest
-import requests
 
 from edx_repo_tools.release.tag_release import (
-    openedx_release_repos, get_ref_for_repos, commit_ref_info,
+    get_ref_for_repos, commit_ref_info,
     create_ref_for_repos, remove_ref_for_repos, override_repo_refs
 )
 
@@ -369,7 +366,7 @@ def test_create_existing_tag_at_end_rollback_failure():
         ref="refs/tags/tag-exists-some-repos",
     )
 
-    # second response failed, so try to rollback. 
+    # second response failed, so try to rollback.
     # ... but configuration fails, so we get an exception
     repo_objs['edx/configuration'].create_ref.return_value.delete.assert_called_once_with()
     assert "failed to delete ref on the following repos: edx/configuration" in str(excinfo)

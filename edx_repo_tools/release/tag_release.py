@@ -15,7 +15,6 @@ Tag repos for an Open edX release. When run, this script will:
 import copy
 import datetime
 import logging
-import re
 
 import click
 from edx_repo_tools.auth import pass_github
