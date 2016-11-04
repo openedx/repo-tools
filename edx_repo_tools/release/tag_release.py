@@ -568,7 +568,7 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
          u"This option can be provided multiple times."
 )
 @click.option(
-    '-y', '--yes', 'interactive', is_flag=True, default=True,
+    '-y', '--yes', 'interactive', is_flag=True, default=True, flag_value=False,
     help=u"non-interactive mode: answer yes to all questions"
 )
 @click.option(

@@ -23,15 +23,14 @@ def dry_echo(dry, message, *args, **kwargs):
     ))
 
 
-def dry(f, help='Enable/disable actions taken by the script'):
+def dry(f, help='Disable or enable actions taken by the script'):
     """
-    A click decorator that adds a ``--dry/--yes`` flag. It is passed to the
+    A click decorator that adds a ``--dry/--doit`` flag. It is passed to the
     command as ``dry``, and defaults to True.
     """
     return click.option(
-        '--dry/--yes',
+        '--dry/--doit',
         is_flag=True,
         default=True,
         help=help,
     )(f)
-
