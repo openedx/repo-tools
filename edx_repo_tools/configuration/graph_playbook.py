@@ -11,6 +11,28 @@ import yaml
 
 click.disable_unicode_literals_warning = True
 
+SERVICES = (
+    'analytics_api',
+    'certs',
+    'ecommerce',
+    'ecomworker',
+    'edxapp',
+    'elasticsearch',
+    'forum',
+    'insights',
+    'memcache',
+    'mongo',
+    'mysql',
+    'nginx',
+    'notifier',
+    'programs',
+    'rabbitmq',
+    'supervisor',
+    'xqueue',
+)
+SERVICE_COLOR = 'cornflowerblue'
+OPTIONAL_SERVICE_COLOR = 'darkolivegreen1'
+
 
 class Role:
     def __init__(self, name, is_optional=False):
@@ -20,14 +42,20 @@ class Role:
 
     @property
     def color(self):
+        color = 'transparent'
         if self.is_optional:
-            return 'darkolivegreen1'
-        else:
-            return 'transparent'
+            color = OPTIONAL_SERVICE_COLOR
+        elif self.is_service:
+            color = SERVICE_COLOR
+        return color
+
+    @property
+    def is_service(self):
+        return self.name in SERVICES
 
     @property
     def style(self):
-        if self.is_optional:
+        if self.is_service:
             return 'filled'
         else:
             return ''
@@ -88,7 +116,12 @@ def expand_roles(raw_list, role_dir):
 
 def graph_roles(roles, outfile, name):
     label = Path(name).basename()
-    g = AGraph(directed=True, label=label, outputMode='nodefirst')
+    g = AGraph(directed=True, label=label)
+    for legend, color in (
+            ('Service', SERVICE_COLOR),
+            ('Optional Service', OPTIONAL_SERVICE_COLOR)
+    ):
+        g.add_node(legend, style='filled', fillcolor=color)
     for k, role in roles.items():
         _graph_role(g, role)
     g.draw(outfile, prog='dot')
