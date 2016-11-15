@@ -11,6 +11,7 @@ lazy
 more_itertools
 path.py
 psycopg2==2.5.4
+pygraphviz
 python-dateutil
 python-dotenv
 requests

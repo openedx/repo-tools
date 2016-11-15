@@ -4,7 +4,7 @@ test:
 	py.test
 
 install-pip-tools:
-	@pip install -U pip-tools
+	pip install -U pip-tools
 
 dev-install: install-pip-tools
 	pip-sync dev-requirements.txt requirements.txt
