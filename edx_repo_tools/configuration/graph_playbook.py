@@ -34,7 +34,7 @@ SERVICE_COLOR = 'cornflowerblue'
 OPTIONAL_SERVICE_COLOR = 'darkolivegreen1'
 
 
-class Role:
+class Role(object):
     def __init__(self, name, is_optional=False):
         self.name = name
         self.is_optional = is_optional
