@@ -116,15 +116,15 @@ def expand_roles(raw_list, role_dir):
 
 def graph_roles(roles, outfile, name):
     label = Path(name).basename()
-    g = AGraph(directed=True, label=label)
+    graph = AGraph(directed=True, label=label)
     for legend, color in (
             ('Service', SERVICE_COLOR),
             ('Optional Service', OPTIONAL_SERVICE_COLOR)
     ):
-        g.add_node(legend, style='filled', fillcolor=color)
+        graph.add_node(legend, style='filled', fillcolor=color)
     for k, role in roles.items():
-        _graph_role(g, role)
-    g.draw(outfile, prog='dot')
+        _graph_role(graph, role)
+    graph.draw(outfile, prog='dot')
 
 
 @click.command()
@@ -132,6 +132,9 @@ def graph_roles(roles, outfile, name):
 @click.argument('role-dir', type=click.Path(exists=True))
 @click.argument('output-file')
 def cli(yaml_file, role_dir, output_file):
+    """
+    Graph role dependencies for an Ansible playbook.
+    """
     playbook = yaml.safe_load(yaml_file.read())
     role_list = playbook[0]['roles']
     roles = expand_roles(role_list, role_dir)
