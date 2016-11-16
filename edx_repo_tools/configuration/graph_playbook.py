@@ -30,8 +30,17 @@ SERVICES = (
     'supervisor',
     'xqueue',
 )
-SERVICE_COLOR = 'cornflowerblue'
+EDGE_OPTIONS = dict(
+    arrowsize=.5,
+    dir='back',
+    style='dashed',
+)
+FONT_NAME = 'helvetical'
+LABEL_SIZE = 20
+LAYOUT = 'dot'
+NODE_OPTIONS = dict(fontname=FONT_NAME)
 OPTIONAL_SERVICE_COLOR = 'darkolivegreen1'
+SERVICE_COLOR = 'cornflowerblue'
 
 
 class Role(object):
@@ -61,18 +70,17 @@ class Role(object):
             return ''
 
 
-def _parse_raw_list(raw_list):
-    roles = []
+def _add_node(graph, *args, **kwargs):
+    options = NODE_OPTIONS.copy()
+    options.update(kwargs)
+    graph.add_node(*args, **options)
 
-    for r in raw_list:
-        if isinstance(r, basestring):
-            roles.append(Role(r))
-        if isinstance(r, dict):
-            is_optional = False
-            if 'when' in r:
-                is_optional = True
-            roles.append(Role(r['role'], is_optional))
-    return roles
+
+def _generate_graph_label(text):
+    label = '<<FONT FACE="{}" POINT-SIZE="{}">{}</FONT>>'.format(
+        FONT_NAME, LABEL_SIZE, text
+    )
+    return label
 
 
 def _get_role_dependencies(role, role_dir):
@@ -89,16 +97,33 @@ def _get_role_dependencies(role, role_dir):
     return deps
 
 
+def _graph_legend(graph):
+    for entry, color in (
+            ('Service', SERVICE_COLOR),
+            ('Optional Service', OPTIONAL_SERVICE_COLOR)
+    ):
+        _add_node(graph, entry, style='filled', fillcolor=color)
+
+
 def _graph_role(graph, role):
-    graph.add_node(role.name, style=role.style, fillcolor=role.color)
-    edge_options = dict(
-        arrowsize=.5,
-        dir='back',
-        style='dashed',
-    )
+    _add_node(graph, role.name, style=role.style, fillcolor=role.color)
     for dep in role.dependencies:
-        graph.add_node(dep.name, style=dep.style, fillcolor=dep.color)
-        graph.add_edge(dep.name, role.name, **edge_options)
+        _add_node(graph, dep.name, style=dep.style, fillcolor=dep.color)
+        graph.add_edge(dep.name, role.name, **EDGE_OPTIONS)
+
+
+def _parse_raw_list(raw_list):
+    roles = []
+
+    for r in raw_list:
+        if isinstance(r, basestring):
+            roles.append(Role(r))
+        if isinstance(r, dict):
+            is_optional = False
+            if 'when' in r:
+                is_optional = True
+            roles.append(Role(r['role'], is_optional))
+    return roles
 
 
 def expand_roles(raw_list, role_dir):
@@ -115,16 +140,12 @@ def expand_roles(raw_list, role_dir):
 
 
 def graph_roles(roles, outfile, name):
-    label = Path(name).basename()
+    label = _generate_graph_label(Path(name).basename())
     graph = AGraph(directed=True, label=label)
-    for legend, color in (
-            ('Service', SERVICE_COLOR),
-            ('Optional Service', OPTIONAL_SERVICE_COLOR)
-    ):
-        graph.add_node(legend, style='filled', fillcolor=color)
+    _graph_legend(graph)
     for k, role in roles.items():
         _graph_role(graph, role)
-    graph.draw(outfile, prog='dot')
+    graph.draw(outfile, prog=LAYOUT)
 
 
 @click.command()
