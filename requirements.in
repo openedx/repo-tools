@@ -11,7 +11,6 @@ lockfile
 more_itertools
 numpy
 path.py
-psycopg2==2.5.4
 python-dateutil
 python-dotenv
 requests
