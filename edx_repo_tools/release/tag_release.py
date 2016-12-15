@@ -88,15 +88,15 @@ def override_repo_refs(repos, override_ref=None, overrides=None):
         return repos
 
     repos_copy = copy.deepcopy(repos)
-    for repo_name, repo_data in repos.items():
+    for repo, repo_data in repos.items():
         if not repo_data:
             continue
         release_data = repo_data.get("openedx-release")
         if not release_data:
             continue
-        local_override = overrides.get(repo_name, override_ref)
+        local_override = overrides.get(str(repo), override_ref)
         if local_override:
-            repos_copy[repo_name]["openedx-release"]["ref"] = local_override
+            repos_copy[repo]["openedx-release"]["ref"] = local_override
 
     return repos_copy
 
@@ -251,21 +251,19 @@ def todo_list(ref_info):
     if not ref_info:
         return None
 
-    lines = []
-    for repo_name, commit_info in ref_info.items():
-        lines.append(u"{repo}: {ref} ({type}) {sha}".format(
-            repo=repo_name,
+    entries = []
+    for repo, commit_info in ref_info.items():
+        when = datetime.datetime.strptime(commit_info['committer']['date'], "%Y-%m-%dT%H:%M:%SZ")
+        entries.append(u"{repo}: {ref} ({type}) {sha}\n  {when:%Y-%m-%d} {who}: {msg}".format(
+            repo=repo,
             ref=commit_info['ref'],
             type=commit_info['ref_type'],
             sha=commit_info['sha'][0:7],
-        ))
-        when = datetime.datetime.strptime(commit_info['committer']['date'], "%Y-%m-%dT%H:%M:%SZ")
-        lines.append(u"  {when:%Y-%m-%d} {who}: {msg}".format(
             msg=commit_info["message"].splitlines()[0],
             when=when,
             who=commit_info['committer']['name'],
         ))
-    return "\n".join(lines)
+    return "\n".join(sorted(entries))
 
 
 def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry=True):
