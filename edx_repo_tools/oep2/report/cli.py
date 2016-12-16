@@ -4,6 +4,7 @@
 
 import logging
 import pkg_resources
+import sys
 
 import click
 from git.cmd import Git
@@ -47,4 +48,4 @@ def cli(hub, trace, pytest_args):
         Oep2ReportPlugin(hub),
     ]
 
-    pytest.main(args=args, plugins=plugins)
+    sys.exit(pytest.main(args=args, plugins=plugins))
