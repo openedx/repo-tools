@@ -206,8 +206,13 @@ def get_ref_for_repos(repos, ref, use_tag=True):
     if the ref exists in any repos, just by coercing the return value
     to a boolean. (Empty dicts are falsy, populated dicts are truthy.)
     """
-    if not ref.startswith("refs/"):
-        ref = "refs/{type}/{name}".format(
+
+    # Github3's repo.ref function wants a ref without a leading "refs/", even
+    # though the create_ref function wants one *with* a leading "refs/". :(
+    if ref.startswith("refs/"):
+        ref = ref[5:]
+    elif not ref.startswith(("heads", "tags")):
+        ref = "{type}/{name}".format(
             type="tags" if use_tag else "heads",
             name=ref,
         )
@@ -232,7 +237,7 @@ def get_ref_for_repos(repos, ref, use_tag=True):
             # save the sha value for the commit into the returned dict
             return_value[repo.full_name] = {
                 "ref": ref,
-                "ref_type": ref_obj.type,
+                "ref_type": "tag" if use_tag else "branch",
                 "sha": commit.commit.sha,
                 "message": commit.commit.message,
                 "author": commit.commit.author,
