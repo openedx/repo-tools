@@ -242,7 +242,7 @@ def get_ref_for_repos(repos, ref, use_tag=True):
 
             # save the sha value for the commit into the returned dict
             return_value[repo.full_name] = {
-                "ref": ref,
+                "ref": "refs/" + ref,
                 "ref_type": "tag" if use_tag else "branch",
                 "sha": commit.commit.sha,
                 "message": commit.commit.message,

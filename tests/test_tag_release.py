@@ -1,3 +1,19 @@
+"""
+   _   _  ____ _______ ______
+  | \ | |/ __ \__   __|  ____|_
+  |  \| | |  | | | |  | |__  (_)
+  | . ` | |  | | | |  |  __|
+  | |\  | |__| | | |  | |____ _
+  |_| \_|\____/  |_|  |______(_)
+
+The tests in this file are broken: they use strings as keys in the repos dict,
+which is the old format for the data.  The code uses github3.Repository objects
+as the keys, so these tests don't match reality any more.
+
+"""
+
+
+
 from collections import OrderedDict
 
 from github3.repos.repo import Repository
@@ -78,7 +94,7 @@ def test_get_ref_for_repos():
             'committer': repos[0].commit.return_value.commit.committer,
             'message': repos[0].commit.return_value.commit.message,
             'ref': 'refs/tags/tag-exists-some-repos',
-            'ref_type': repos[0].ref.return_value.type,
+            'ref_type': 'tag',
             'sha': repos[0].commit.return_value.commit.sha,
         }
     }
