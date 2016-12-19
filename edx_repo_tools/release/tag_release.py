@@ -12,6 +12,7 @@ Tag repos for an Open edX release. When run, this script will:
 6. Upon confirmation, create Git tags for the repos using the GitHub API
 """
 
+import collections
 import copy
 import datetime
 import logging
@@ -27,6 +28,11 @@ log = logging.getLogger(__name__)
 
 # Name used for fetching/storing GitHub OAuth tokens on disk
 TOKEN_NAME = "openedx-release"
+
+
+# An object to act like a response (with a .text attribute) in the case that
+# create_ref uselessly returns us None on failure.
+FakeResponse = collections.namedtuple("FakeResponse", "text")
 
 
 def openedx_release_repos(hub, orgs=None, branches=None):
@@ -309,6 +315,10 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
             )
             if not dry:
                 created_ref = repo.create_ref(ref=ref, sha=commit_info['sha'])
+                if created_ref is None:
+                    failed_resp = FakeResponse(text="Something went terribly wrong, not sure what")
+                    failed_repo = repo
+                    break
                 succeeded.append((repo, created_ref))
         except GitHubError as exc:
             failed_resp = exc.response
