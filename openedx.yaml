@@ -3,6 +3,7 @@
 
 nick: rept
 oeps: {}
+openedx-release: {ref: master}
 owner: edx/openedx-tooling
 tags: [tools]
 track-pulls: true
