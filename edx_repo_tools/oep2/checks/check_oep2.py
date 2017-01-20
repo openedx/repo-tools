@@ -8,7 +8,8 @@ def check_owner(openedx_yaml):
     if openedx_yaml is None:
         pytest.xfail("No openedx.yaml file found")
 
-    assert openedx_yaml.get('owner') != "MUST FILL IN OWNER"
+    if not openedx_yaml.get('archived', False) == True:
+        assert 'owner' in openedx_yaml and openedx_yaml.get('owner') != "MUST FILL IN OWNER"
 
 def check_nick(openedx_yaml):
     if openedx_yaml is None:
