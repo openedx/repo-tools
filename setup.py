@@ -22,10 +22,11 @@ setup(
     ],
     entry_points={
         'console_scripts': [
+            'drip = edx_repo_tools.drip_survey:cli',
+            'graph-playbook = edx_repo_tools.configuration.graph_playbook:cli',
             'oep2 = edx_repo_tools.oep2:cli',
             'sync_labels = edx_repo_tools.ospr.sync_labels:sync_labels',
             'tag_release = edx_repo_tools.release.tag_release:main',
-            'drip = edx_repo_tools.drip_survey:cli',
         ],
     },
     package_data={
