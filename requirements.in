@@ -1,20 +1,17 @@
-backports.csv
 CacheControl
 PyYAML
 SQLAlchemy==0.9.8
 appdirs
+backports.csv
 click
 github3.py
 gitpython
-jira
 lazy
+lockfile
 more_itertools
+numpy
 path.py
 psycopg2==2.5.4
-# pytest is used by `edx_report_tools.oep2` directly
-pytest
-pytest-logging
-pytest-xdist
 python-dateutil
 python-dotenv
 requests
@@ -22,3 +19,11 @@ scrapy
 statistics
 uritemplate
 urlobject
+
+# pytest is used by `edx_report_tools.oep2` directly
+pytest
+pytest-logging
+pytest-xdist
+
+# See https://github.com/pycontribs/jira/issues/325
+jira==1.0.3
