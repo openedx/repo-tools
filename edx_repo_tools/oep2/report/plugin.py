@@ -55,7 +55,7 @@ class Oep2ReportPlugin(object):
             help="personal access token to long into github with"
         )
         group.addoption(
-            "--oep", action="append", default=[3, 4, 5],
+            "--oep", action="append", default=[3, 4, 5, 6, 7, 9, 10, 11, 12, 14],
             help="List of OEPs to check for explicit specification of compliance"
         )
         group.addoption(
