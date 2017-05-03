@@ -1,6 +1,6 @@
 import pytest
 
-def check_explicit(openedx_yaml, oep):
+def check_is_oep_explicitly_satisfied(openedx_yaml, oep):
 
     if openedx_yaml is None:
         pytest.xfail("No openedx.yaml found")
