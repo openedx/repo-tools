@@ -15,6 +15,10 @@ def check_is_oep_explicitly_satisfied(openedx_yaml, oep):
     oep_value = openedx_yaml['oeps'][oep_key]
 
     if isinstance(oep_value, dict):
+        if not oep_value.get('applicable', True):
+            pytest.xfail('OEP is not applicable')
+            return
+
         if not oep_value['state']:
             pytest.xfail(oep_value['reason'])
     else:
