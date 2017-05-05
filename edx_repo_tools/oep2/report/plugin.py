@@ -3,12 +3,17 @@ py.test plugin to support ``oep2 report``. Adds arguments to py.test,
 and creates fixtures for loading git repos.
 """
 
-import os.path
-from git.repo.base import Repo, Head
+from collections import defaultdict
 from git.refs.remote import RemoteReference
+from git.repo.base import Repo, Head
+from github3.repos.repo import Repository
+import cgi
+import os.path
 import pytest
+import textwrap
 import yaml
 
+from _pytest.terminal import pytest_report_teststatus
 from edx_repo_tools.auth import login_github
 
 
@@ -24,6 +29,9 @@ class Oep2ReportPlugin(object):
         self.hub = hub
         self.config = None
         self._repos = None
+        self.tests_run = set()
+        self.results = defaultdict(dict)
+        self.ids_used = []
 
     def pytest_configure(self, config):
         self.config = config
@@ -114,7 +122,6 @@ class Oep2ReportPlugin(object):
                 metafunc.parametrize(
                     "github_repo",
                     self.get_repos(),
-                    ids=[repo.full_name.encode('utf-8') for repo in self.get_repos()],
                 )
 
         if 'oep' in metafunc.fixturenames:
@@ -123,6 +130,18 @@ class Oep2ReportPlugin(object):
                 metafunc.config.option.oep,
                 ids=["OEP-{}".format(oep) for oep in metafunc.config.option.oep],
             )
+
+    def pytest_make_parametrize_id(self, config, val):
+        if isinstance(val, Repo):
+            test_id = "local"
+        elif isinstance(val, Repository):
+            test_id = "{}/{}".format(val.owner, val.name)
+        else:
+            test_id = None
+
+        if test_id:
+            self.ids_used.append(test_id)
+        return test_id
 
     @pytest.fixture()
     def git_repo(self, request, github_repo, branch=None, remote='origin', checkout_root=None):
@@ -205,3 +224,90 @@ class Oep2ReportPlugin(object):
                 return yaml.safe_load(openedx_yaml_file)
         except IOError:
             return None
+
+    def pytest_runtest_logreport(self, report):
+        if report.when != 'call':
+            return
+
+        name, _, args = report.nodeid.partition('[')
+        args = args.strip(']')
+        repo = 'N/A'
+
+        for test_id in sorted(self.ids_used, key=len, reverse=True):
+            if test_id in args:
+                args = args.replace(test_id, '').strip('-')
+                repo = test_id
+                break
+
+        name = name.replace('edx_repo_tools/oep2/checks/', '')
+
+        self.tests_run.add((name, args))
+        self.results[repo][(name, args)] = report
+
+    def pytest_sessionfinish(self, exitstatus):
+
+        test_order = sorted(self.tests_run)
+
+        def format_report(report, test_key):
+            title = cgi.escape("{}[{}]".format(test_key[0], test_key[1]))
+            if report is None:
+                return '<td class="skipped" title="{}"/>'.format(title)
+            else:
+                return '<td class="{css_class}" title="{title}">{passed}</td>'.format(
+                    css_class=cgi.escape(report.outcome, quote=True),
+                    title=title,
+                    passed=cgi.escape(pytest_report_teststatus(report)[1]),
+                )
+
+        check_results = "\n".join(
+            "<tr><th>{}</th>{}</tr>".format(
+                repo,
+                "\n".join(format_report(tests.get(test_key), test_key) for test_key in test_order)
+            ) for repo, tests in sorted(self.results.items(), key=lambda (repo, _): repo.lower())
+        )
+
+        with open('oep2.report.html', 'w') as report:
+            report.write(textwrap.dedent("""\
+                <html>
+                    <head>
+                        <style>
+                            thead > tr > th  {{
+                                text-align: left;
+                                padding: 4px;
+                            }}
+                            tbody > tr > td {{
+                                text-align: center;
+                                border: 1px solid #ccc;
+                                padding: 0;
+                                margin: 0;
+                                width: 20px;
+                            }}
+                            tbody > tr > th {{
+                                padding-right: 10px;
+                                border-bottom: 1px solid #ccc;
+                            }}
+
+                            table {{
+                                border-collapse: collapse;
+                            }}
+
+                            .passed {{
+                                background-color: #cfffa0;
+                            }}
+                            .failed {{
+                                background-color: #ffa293;
+                            }}
+                            .skipped {{
+                                background-color: #cccccc;
+                            }}
+                        </style>
+                    </head>
+                    <body>
+                        <table>
+                            <tbody>
+                                {check_results}
+                            </tbody>
+                        </table>
+                    </body>
+                </html>
+            """.format(check_results=check_results)))
