@@ -22,3 +22,6 @@ htmlcov
 
 # Ourselves, installed
 edx_repo_tools.egg-info
+
+# PyCharm files
+.idea/

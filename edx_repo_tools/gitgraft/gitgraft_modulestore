@@ -1,0 +1,17 @@
+[repositories]
+original_repository_name = edx-platform
+original_repository = /Users/brianmesick/Dev/edx-platform/edx-platform-head/edx-platform
+branched_repository = /Users/brianmesick/Dev/modulestore/modulestore
+original_branch = master
+branched_branch = master
+
+[tracked_paths]
+tracked =
+    common/lib/xmodule/xmodule > xmodule
+
+original_ignored =
+    common/lib/xmodule/xmodule/js
+
+branched_ignored =
+    xmodule/tests
+    xmodule/modulestore/tests
