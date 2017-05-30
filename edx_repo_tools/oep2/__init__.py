@@ -8,6 +8,10 @@ from . import explode_repos_yaml
 from .report import cli
 
 
+def _cli():
+    cli(auto_envvar_prefix="OEP2")
+
+
 @click.group()
 def cli():
     """

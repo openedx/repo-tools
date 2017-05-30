@@ -72,7 +72,7 @@ def login_github(username=None, password=None, token=None):
         hub = login(username, password, two_factor_callback=do_two_factor)
 
     # Otherwise, log in with the stored token
-    elif token is not None and username == AUTH_SETTINGS.get('username'):
+    elif token is not None:
         hub = login(username, token)
 
     # If no password or token, prompt for a password

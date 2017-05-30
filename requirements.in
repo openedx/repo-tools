@@ -11,7 +11,6 @@ lockfile
 more_itertools
 numpy
 path.py
-psycopg2==2.5.4
 python-dateutil
 python-dotenv
 requests
@@ -24,6 +23,9 @@ urlobject
 pytest
 pytest-logging
 pytest-xdist
+
+# tox is used by the OEP10 checker
+tox
 
 # See https://github.com/pycontribs/jira/issues/325
 jira==1.0.3
