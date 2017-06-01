@@ -1,0 +1,19 @@
+[repositories]
+original_repository_name = platform-core
+original_repository = /Users/brianmesick/Dev/edx-platform/edx-platform-head/edx-platform
+branched_repository = /Users/brianmesick/Dev/platform-core/platform-core
+original_branch = master
+branched_branch = bmedx/dogstats-and-markup
+
+[tracked_paths]
+tracked =
+    openedx/core/lib/api/plugins.py > platform_core/lib/api/plugins.py
+    common/lib/dogstats/dogstats_wrapper > platform_core/lib/dogstats_wrapper
+    openedx/core/lib/cache_utils.py > platform_core/lib/cache_utils.py
+    openedx/core/lib/course_tabs.py > platform_core/lib/course_tabs.py
+    openedx/core/lib/tempdir.py > platform_core/lib/tempdir.py
+
+original_ignored =
+
+branched_ignored =
+
