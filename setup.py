@@ -13,8 +13,9 @@ setup(
         'edx_repo_tools.drip_survey',
     ],
     install_requires=[
-        'click',
         'appdirs',
+        'click',
+        'lazy',
         'github3.py',
         'pytest',
         'pytest-xdist',

@@ -52,7 +52,8 @@ class Person(object):
     """
     def __init__(self, username, name, email, agreement, email_ok=True,
                  other_emails=None, institution=None, committer=None, jira=None,
-                 comment=None, expires_on=None, before=None, beta=None,
+                 comments=None, expires_on=None, before=None, beta=None,
+                 is_robot=None,
                 ):
         self.username = username
         self.name = name
@@ -63,10 +64,11 @@ class Person(object):
         self.institution = institution
         self.committer = committer
         self.jira = jira
-        self.comment = comment
+        self.comments = comments
         self.expires_on = expires_on
         self.before = before
         self.beta = beta
+        self.is_robot = is_robot
 
     @classmethod
     def from_yaml(cls, username, yaml_data):
@@ -124,7 +126,7 @@ class RepoToolsData(object):
         return {
             username: Person.from_yaml(username, data)
             for username, data
-            in self._read_file('people.yaml').iteritems()
+            in self._read_file('people.yaml').items()
         }
 
 
