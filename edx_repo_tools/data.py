@@ -15,6 +15,15 @@ LOGGER = logging.getLogger(__name__)
 OPEN_EDX_YAML = 'openedx.yaml'
 
 
+def iter_nonforks(hub, orgs):
+    for org in orgs:
+        for repo in hub.organization(org).iter_repos():
+            if repo.fork:
+                LOGGER.debug("Skipping %s because it is a fork", repo.full_name)
+            else:
+                yield repo
+
+
 def iter_openedx_yaml(hub, orgs, branches=None):
     """
     Yield the data from all openedx.yaml files found in repositories in ``orgs``
@@ -32,18 +41,13 @@ def iter_openedx_yaml(hub, orgs, branches=None):
     if branches is None:
         branches = []
 
-    for org in orgs:
-        for repo in hub.organization(org).iter_repos():
-            if repo.fork:
-                LOGGER.debug("Skipping %s because it is a fork", repo.full_name)
-                continue
-
-            for branch in itertools.chain(branches, [repo.default_branch]):
-                contents = repo.contents(OPEN_EDX_YAML, ref=branch)
-                if contents is not None:
-                    LOGGER.debug("Found openedx.yaml at %s:%s", repo.full_name, branch)
-                    yield repo, yaml.safe_load(contents.decoded)
-                    break
+    for repo in iter_nonforks(hub, orgs):
+        for branch in itertools.chain(branches, [repo.default_branch]):
+            contents = repo.contents(OPEN_EDX_YAML, ref=branch)
+            if contents is not None:
+                LOGGER.debug("Found openedx.yaml at %s:%s", repo.full_name, branch)
+                yield repo, yaml.safe_load(contents.decoded)
+                break
 
 
 class Person(object):
