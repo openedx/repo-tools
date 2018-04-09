@@ -17,31 +17,32 @@ from edx_repo_tools.utils import dry_echo, dry
 
 def set_or_delete_labels(dry, repo, new_labels):
 
-    new_labels = {label: data['color'] for label, data in new_labels.items()}
+    desired_colors = {label: data['color'] for label, data in new_labels.items() if 'color' in data}
+    undesired_names = {label for label, data in new_labels.items() if data.get('delete', False)}
     existing_labels = {label.name: label for label in repo.iter_labels()}
     existing_names = set(existing_labels.keys())
-    desired_names = set(new_labels.keys())
+    desired_names = set(desired_colors.keys())
 
     for label in desired_names - existing_names:
         dry_echo(
             dry,
-            "Creating label '{}' ({})".format(label, new_labels[label]),
+            "Creating label '{}' ({})".format(label, desired_colors[label]),
             fg="green"
         )
         if not dry:
-            repo.create_label(label, new_labels[label])
+            repo.create_label(label, desired_colors[label])
 
     for label in desired_names & existing_names:
-        if existing_labels[label].color.lower() != new_labels[label].lower():
+        if existing_labels[label].color.lower() != desired_colors[label].lower():
             dry_echo(
                 dry,
-                "Updating label '{}' to {}".format(label, new_labels[label]),
+                "Updating label '{}' to {}".format(label, desired_colors[label]),
                 fg="yellow"
             )
             if not dry:
-                existing_labels[label].update(label, new_labels[label])
+                existing_labels[label].update(label, desired_colors[label])
 
-    for label in existing_names - desired_names:
+    for label in undesired_names & existing_names:
         dry_echo(
             dry,
             "Deleting label '{}'".format(label),
@@ -63,7 +64,7 @@ def sync_labels(hub, repo_tools_data, org, repo, dry):
     else:
         repos = sorted(iter_openedx_yaml(hub, org))
     for repo, _ in repos:
-        print("Copying labels into {}".format(repo))
+        print("Updating labels in {}".format(repo))
         set_or_delete_labels(
             dry,
             repo,
