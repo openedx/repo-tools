@@ -55,9 +55,14 @@ def set_or_delete_labels(dry, repo, new_labels):
 @pass_github
 @pass_repo_tools_data
 @click.option('--org', multiple=True, default=['edx', 'edx-ops'])
+@click.option('--repo')
 @dry
-def sync_labels(hub, repo_tools_data, org, dry):
-    for repo, openedx_yaml in sorted(iter_openedx_yaml(hub, org)):
+def sync_labels(hub, repo_tools_data, org, repo, dry):
+    if repo is not None:
+        repos = [(hub.repository(*repo.split('/')), None)]
+    else:
+        repos = sorted(iter_openedx_yaml(hub, org))
+    for repo, _ in repos:
         print("Copying labels into {}".format(repo))
         set_or_delete_labels(
             dry,
