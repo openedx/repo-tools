@@ -30,7 +30,9 @@ def set_or_delete_labels(dry, repo, new_labels):
             fg="green"
         )
         if not dry:
-            repo.create_label(label, desired_colors[label])
+            new_label = repo.create_label(label, desired_colors[label])
+            if new_label is None:
+                click.secho("Couldn't create label!", fg='red', bold=True)
 
     for label in desired_names & existing_names:
         if existing_labels[label].color.lower() != desired_colors[label].lower():
@@ -40,7 +42,9 @@ def set_or_delete_labels(dry, repo, new_labels):
                 fg="yellow"
             )
             if not dry:
-                existing_labels[label].update(label, desired_colors[label])
+                ret = existing_labels[label].update(label, desired_colors[label])
+                if not ret:
+                    click.secho("Couldn't update label!", fg='red', bold=True)
 
     for label in undesired_names & existing_names:
         dry_echo(
@@ -49,7 +53,9 @@ def set_or_delete_labels(dry, repo, new_labels):
             fg="red"
         )
         if not dry:
-            existing_labels[label].delete()
+            ret = existing_labels[label].delete()
+            if not ret:
+                click.secho("Couldn't delete label!", fg='red', bold=True)
 
 
 @click.command()
