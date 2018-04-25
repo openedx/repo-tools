@@ -22,9 +22,9 @@ has an entry like this::
       password ddf9079e12042ac022c101c61c0235965851e209
 
 Change the login to your GitHub user name.  You'll get the password value from
-https://github.com/settings/applications.  Visit that page, and in the
-section called "Personal access tokens," click "Generate new token."  It will
-prompt you for your password, then you'll see a scary list of scopes. Leave
+https://github.com/settings/applications.  Visit that page, click on Developer
+Settings and in the section called "Personal access tokens," click "Generate new token."  
+It will prompt you for your password, then you'll see a scary list of scopes. Leave
 them at their defaults, and click "Generate token." Copy the password that
 appears. Paste it into your ~/.netrc.
 
