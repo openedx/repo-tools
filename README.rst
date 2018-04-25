@@ -24,8 +24,8 @@ has an entry like this::
 Change the login to your GitHub user name.  You'll get the password value from
 https://github.com/settings/applications.  Visit that page, click on Developer
 Settings and in the section called "Personal access tokens," click "Generate new token."  
-It will prompt you for your password, then you'll see a scary list of scopes. Leave
-them at their defaults, and click "Generate token." Copy the password that
+It will prompt you for your password, then you'll see a scary list of scopes. Check 
+the "repo" option and click "Generate token." Copy the password that
 appears. Paste it into your ~/.netrc.
 
 
