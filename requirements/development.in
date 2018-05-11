@@ -1,6 +1,5 @@
 edx-lint
 pep8
 pip-tools
-pylint
 pytest-mock
 responses
