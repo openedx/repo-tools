@@ -4,7 +4,7 @@ SQLAlchemy==0.9.8
 appdirs
 backports.csv
 click
-github3.py
+github3.py==0.9.6
 gitpython
 lazy
 lockfile
