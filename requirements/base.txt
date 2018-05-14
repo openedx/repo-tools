@@ -23,7 +23,7 @@ enum34==1.1.6             # via cryptography
 execnet==1.5.0            # via pytest-xdist
 funcsigs==1.0.2           # via pytest
 gitdb2==2.0.3             # via gitpython
-github3.py==1.1.0
+github3.py==0.9.6
 gitpython==2.1.9
 hyperlink==18.0.0         # via twisted
 idna==2.6                 # via cryptography, hyperlink, requests
@@ -35,7 +35,6 @@ lockfile==0.12.2
 lxml==4.2.1               # via parsel, scrapy
 more-itertools==4.1.0
 msgpack-python==0.5.6     # via cachecontrol
-ndg-httpsclient==0.5.0    # via github3.py
 numpy==1.14.3
 oauthlib==2.0.7           # via requests-oauthlib
 parsel==1.4.0             # via scrapy
@@ -43,10 +42,10 @@ path.py==11.0.1
 pluggy==0.6.0             # via pytest, tox
 py==1.5.3                 # via pytest, tox
 pyasn1-modules==0.2.1     # via service-identity
-pyasn1==0.4.2             # via github3.py, ndg-httpsclient, pyasn1-modules, service-identity
+pyasn1==0.4.2             # via pyasn1-modules, service-identity
 pycparser==2.18           # via cffi
 pydispatcher==2.0.5       # via scrapy
-pyopenssl==17.5.0         # via github3.py, ndg-httpsclient, scrapy, service-identity
+pyopenssl==17.5.0         # via scrapy, service-identity
 pytest-forked==0.2        # via pytest-xdist
 pytest-logging==2015.11.4
 pytest-xdist==1.22.2
@@ -67,6 +66,7 @@ statistics==1.0.3.5
 tlslite==0.4.9            # via jira
 tox==3.0.0
 twisted==18.4.0           # via scrapy
+uritemplate.py==3.0.2     # via github3.py
 uritemplate==3.0.0
 urllib3==1.22             # via requests
 urlobject==2.4.3

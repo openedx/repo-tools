@@ -1,1 +1,4 @@
+# This is a stub file to prevent any external calls to this file from breaking.
+# This should be removed when we are sure that nothing references this
+# original requirements location.
 -r requirements/development.txt
