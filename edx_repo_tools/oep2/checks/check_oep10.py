@@ -143,7 +143,7 @@ class OEP10(object):
 
         setup_py = working_dir / 'setup.py'
         setup_cfg = working_dir / 'setup.cfg'
-        requirements_txt = working_dir / 'requirements.txt'
+        requirements_txt = working_dir / 'requirements/base.txt'
         manage_py = working_dir / 'manage.py'
         tox_ini = working_dir / 'tox.ini'
 
