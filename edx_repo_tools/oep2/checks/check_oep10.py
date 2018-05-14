@@ -136,7 +136,8 @@ class OEP10(object):
         tox.ini file that runs its tests with at least django 1.8 and django 1.11, if
         its setup.py lists Django as a dependency.
 
-        If it's a repository, then it should have a requirements.txt, and that should pin
+        If it's a repository, then it should have a requirements/base.txt
+        (or at least a requirements.txt) and that should pin
         either Django==1.8 or Django==1.11, if it specifies Django as a dependency.
         """
         working_dir = Path(git_repo.working_tree_dir)
