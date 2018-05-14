@@ -1,3 +1,5 @@
+-r base.txt
+
 edx-lint
 pep8
 pip-tools

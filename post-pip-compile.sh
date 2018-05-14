@@ -7,9 +7,7 @@ function show_help {
     echo "Usage: post-pip-compile.sh file ..."
     echo "Remove any cruft left behind by pip-compile in the given requirements file(s)."
     echo ""
-    echo "Updates the instructions for re-generating each requirements file, and removes"
-    echo "\"-e\" prefixes which were added to GitHub URLs only so that pip-compile could"
-    echo "process them correctly."
+    echo "Updates the instructions for re-generating each requirements file"
 }
 
 function clean_file {
