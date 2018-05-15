@@ -136,13 +136,15 @@ class OEP10(object):
         tox.ini file that runs its tests with at least django 1.8 and django 1.11, if
         its setup.py lists Django as a dependency.
 
-        If it's a repository, then it should have a requirements.txt, and that should pin
+        If it's a repository, then it should have a requirements/base.txt
+        (or at least a requirements.txt) and that should pin
         either Django==1.8 or Django==1.11, if it specifies Django as a dependency.
         """
         working_dir = Path(git_repo.working_tree_dir)
 
         setup_py = working_dir / 'setup.py'
         setup_cfg = working_dir / 'setup.cfg'
+        requirements_base_txt = working_dir / 'requirements/base.txt'
         requirements_txt = working_dir / 'requirements.txt'
         manage_py = working_dir / 'manage.py'
         tox_ini = working_dir / 'tox.ini'
@@ -151,13 +153,19 @@ class OEP10(object):
 
         print is_django_application
         print setup_py.exists()
-        print requirements_txt.exists()
+
+        if requirements_base_txt.exists():
+            requirements_file = reqirements_base_txt
+        else:
+            requirements_file = requirements_txt
+
+        print requirements_file.exists()
 
         if not is_django_application and setup_py.exists():
             parsed_setup_py = ast.parse(setup_py.bytes(), 'setup.py')
 
             if uses_pbr(parsed_setup_py):
-                has_django = requirements_txt_has_django(requirements_txt)
+                has_django = requirements_txt_has_django(requirements_file)
             else:
                 has_django = setup_py_has_django(parsed_setup_py)
 
@@ -167,10 +175,10 @@ class OEP10(object):
             tested_versions = tox_tested_django_versions(tox_ini)
             assert LIBRARY_REQUIRED_DJANGO_VERSIONS in tested_versions
 
-        elif requirements_txt.exists():
+        elif requirements_file.exists():
             django_specifier = None
 
-            for req in parsed_requirements_txt(requirements_txt):
+            for req in parsed_requirements_txt(requirements_file):
                 if requirement_is_django(req):
                     if django_specifier is None:
                         django_specifier = req.specifier
@@ -196,5 +204,3 @@ class OEP10(object):
             assert False, msg
         else:
             assert False, "Couldn't determine if repo is an application or a library"
-
-
