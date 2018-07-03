@@ -178,7 +178,19 @@ def get_latest_commit_for_ref(repo, ref):
             "committer": commit.committer,
         }
 
-    tag = repo.ref('tags/{}'.format(ref))
+    try:
+        tag = repo.ref('tags/{}'.format(ref))
+    except TypeError as err:
+        # GitHub unfortunately returns a list of partial matches if you ask for
+        # a ref that doesn't exist.  This means the code in github3 that
+        # expects a dict (the ref that matches) actually gets a list instead.
+        # Then it tries to pop, and a TypeError occurs
+        # https://github.com/sigmavirus24/github3.py/issues/310
+        # We'll catch the error and make the problem clearer.
+        if "pop() takes at most 1 argument (2 given)" in str(err):
+            raise Exception("In repo {}, ref {!r} doesn't exist.".format(repo, ref))
+        else:
+            raise
     if tag:
         if tag.object.type == "tag":
             # An annotated tag, one more level of indirection.
