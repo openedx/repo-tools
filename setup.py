@@ -5,6 +5,7 @@ setup(
     version='0.1',
     packages=[
         'edx_repo_tools',
+        'edx_repo_tools.dev',
         'edx_repo_tools.oep2',
         'edx_repo_tools.oep2.checks',
         'edx_repo_tools.oep2.report',
@@ -23,6 +24,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
+            'clone_org = edx_repo_tools.dev.clone_org:main',
             'oep2 = edx_repo_tools.oep2:_cli',
             'sync_labels = edx_repo_tools.ospr.sync_labels:sync_labels',
             'no_yaml = edx_repo_tools.ospr.no_yaml:no_yaml',
