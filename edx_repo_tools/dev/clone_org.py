@@ -10,14 +10,18 @@ from edx_repo_tools.auth import pass_github
 
 @click.command()
 @click.option(
-    '--forks/--no-forks', 'forks', is_flag=True, default=False,
+    '--forks/--no-forks', is_flag=True, default=False,
     help="Should forks be included?"
+)
+@click.option(
+    '--depth', type=int, default=0,
+    help="Depth argument for git clone",
 )
 @click.argument(
     'org'
 )
 @pass_github
-def main(hub, forks, org):
+def main(hub, forks, depth, org):
     for repo in hub.organization(org).iter_repos():
         if repo.fork and not forks:
             continue
@@ -26,4 +30,7 @@ def main(hub, forks, org):
             continue
 
         print(repo.full_name)
-        Repo.clone_from(repo.ssh_url, dir_name)
+        clone_args = {}
+        if depth:
+            clone_args['depth'] = depth
+        Repo.clone_from(repo.ssh_url, dir_name, **clone_args)
