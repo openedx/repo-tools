@@ -590,11 +590,11 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
         if interactive:
             if not click.confirm(u"Is this correct?"):
                 return
-
         result = create_ref_for_repos(ref_info, ref, use_tag=use_tag, dry=dry)
+
         if not quiet:
             if result:
                 click.echo(u"Success!")
             else:
-                click.echo(u"Failed to create refs, but rolled back successfully")
+                raise ValueError(u"Failed to create refs, but rolled back successfully")
         return result
