@@ -1,0 +1,45 @@
+pipeline {
+    agent { label "jenkins-worker" }
+    options {
+        timestamps()
+        timeout(60)
+    }
+    environment {
+        GITHUB_CREDS = credentials('EDX_STATUS_BOT_CREDENTIALS')
+    }
+    stages {
+        stage('Git checkout') {
+            steps {
+                sshagent(credentials: ['jenkins-worker'], ignoreMissing: true) {
+                    checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'master']],
+                        doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [],
+                        userRemoteConfigs: [[credentialsId: 'jenkins-worker', url: 'git@github.com:edx/repo-tools.git']]]
+                }
+            }
+        }
+        stage('Create virtualenv and install') {
+            steps {
+                sh '''virtualenv openedx_release_venv -q
+                    source openedx_release_venv/bin/activate
+                    make install'''
+            }
+        }
+        stage('Create release branches') {
+            steps {
+            sh '''source openedx_release_venv/bin/activate
+                tag_release --doit --branch open-release/${OPENEDX_RELEASE_NAME} -y --username ${GITHUB_CREDS_USR} --token ${GITHUB_CREDS_PSW}'''
+            }
+        }
+        stage('Delete release branches') {
+            when {
+                expression {
+                    return env.DELETE_OR_KEEP == 'delete';
+                }
+            }
+            steps {
+                sh '''source openedx_release_venv/bin/activate
+                    tag_release --doit -R --branch open-release/${OPENEDX_RELEASE_NAME} -y --username ${GITHUB_CREDS_USR} --token ${GITHUB_CREDS_PSW}'''
+            }
+        }
+    }
+}
