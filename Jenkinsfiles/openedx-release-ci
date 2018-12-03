@@ -5,7 +5,7 @@ pipeline {
         timeout(60)
     }
     environment {
-        GITHUB_CREDS = credentials('EDX_STATUS_BOT_CREDENTIALS')
+        GITHUB_CREDS = credentials('OPENEDX_RELEASE_BOT_CREDENTIALS')
     }
     stages {
         stage('Create virtualenv and install') {
