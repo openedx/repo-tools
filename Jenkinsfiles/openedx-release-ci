@@ -7,6 +7,7 @@ pipeline {
     environment {
         GITHUB_CREDS = credentials('EDX_STATUS_BOT_CREDENTIALS')
     }
+    stages {
         stage('Create virtualenv and install') {
             steps {
                 sh '''virtualenv openedx_release_venv -q
