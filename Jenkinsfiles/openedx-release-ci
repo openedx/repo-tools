@@ -7,16 +7,6 @@ pipeline {
     environment {
         GITHUB_CREDS = credentials('EDX_STATUS_BOT_CREDENTIALS')
     }
-    stages {
-        stage('Git checkout') {
-            steps {
-                sshagent(credentials: ['jenkins-worker'], ignoreMissing: true) {
-                    checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'master']],
-                        doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [],
-                        userRemoteConfigs: [[credentialsId: 'jenkins-worker', url: 'git@github.com:edx/repo-tools.git']]]
-                }
-            }
-        }
         stage('Create virtualenv and install') {
             steps {
                 sh '''virtualenv openedx_release_venv -q
