@@ -5,6 +5,7 @@ consistent handling of passwords and tokens).
 
 import functools
 import logging
+import netrc
 import os.path
 
 from appdirs import user_config_dir
@@ -14,6 +15,7 @@ import yaml
 
 
 logging.basicConfig()
+logging.getLogger().setLevel(logging.INFO)
 LOGGER = logging.getLogger(__name__)
 
 CONFIG_DIR = user_config_dir('edx-repo-tools', 'edx')
@@ -25,6 +27,7 @@ AUTHORIZATION_NOTE = 'edx-repo-tools'
 try:
     with open(AUTH_CONFIG_FILE) as auth_config:
         AUTH_SETTINGS = yaml.safe_load(auth_config)
+    LOGGER.info("Read auth from {!r}".format(AUTH_CONFIG_FILE))
 except:  # pylint: disable=bare-except
     LOGGER.debug('Unable to load auth settings', exc_info=True)
     AUTH_SETTINGS = {}
@@ -47,6 +50,11 @@ def do_two_factor():
 def login_github(username=None, password=None, token=None):
     """
     Log in to GitHub using the specified username, password, and token.
+    
+    If not specified, read from an auth.yaml file in the user settings
+    directory.  if that doesn't exist, read ~/.netrc.  If that doesn't exist,
+    prompt for username and password, create a token, and store it in the user
+    settings directory.
 
     Arguments:
         username (string):
@@ -58,9 +66,12 @@ def login_github(username=None, password=None, token=None):
         token (string):
             The personal access token to log in with. If not specified, checks
             the AUTH_SETTINGS dictionary.
+
     Returns: (:class:`~github3.GitHub`)
         A logged-in `~github3.GitHub` instance
     """
+    hub = None
+
     if username is None:
         username = AUTH_SETTINGS.get('username')
 
@@ -72,12 +83,25 @@ def login_github(username=None, password=None, token=None):
         hub = login(username, password, two_factor_callback=do_two_factor)
 
     # Otherwise, log in with the stored token
-    elif token is not None:
+    elif username is not None and token is not None:
         hub = login(username, token)
+
+    else:
+        # Try .netrc
+        try:
+            netrc_data = netrc.netrc()
+        except IOError:
+            # No .netrc file, that's fine.
+            pass
+        else:
+            authenticator = netrc_data.authenticators("api.github.com")
+            if authenticator is not None:
+                username, _, token = authenticator
+            hub = login(username, token)
 
     # If no password or token, prompt for a password
     # and generate a token, and then store the token
-    else:
+    if hub is None:
         if username is None:
             username = click.prompt('Username')
 
