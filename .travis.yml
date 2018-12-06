@@ -2,6 +2,9 @@ sudo: false
 language: python
 python:
   - "2.7"
+branches:
+  only:
+    - master
 cache: pip
 install:
   - travis_retry pip install --upgrade pip
