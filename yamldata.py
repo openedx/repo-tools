@@ -36,13 +36,13 @@ class YamlData(object):
             # get the data from GitHub instead of the local copy.
             if int(os.environ.get('REPO_TOOLS_LATEST_PEOPLE', '0')):
                 # Read from GitHub.
-                resp = requests.get("https://raw.githubusercontent.com/edx/repo-tools/master/" + filename)
+                resp = requests.get("https://raw.githubusercontent.com/edx/repo-tools-data/master/" + filename)
                 if not resp.ok:
                     resp.raise_for_status()
                 cls._the_data[filename] = cls.from_string(resp.text)
             else:
                 # Read from a file.
-                with open(filename) as f:
+                with open(os.path.join('../repo-tools-data', filename)) as f:
                     cls._the_data[filename] = cls.from_file(f)
 
         return cls._the_data[filename]

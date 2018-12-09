@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import argparse
 import itertools
@@ -16,7 +16,9 @@ DEBUG = False
 
 
 def get_all_orgs():
-    with open("people.yaml") as people_yaml:
+    # This is hacky; you need to have repo-tools-data cloned locally one dir up.
+    # To do this properly, you should use yamldata.py
+    with open("../repo-tools-data/people.yaml") as people_yaml:
         mapping = yaml.load(people_yaml)
 
     orgs = set(data.get('institution', 'other') for data in mapping.values())

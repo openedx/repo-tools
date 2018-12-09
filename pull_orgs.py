@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import argparse
 import collections
@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import sys
 
 from helpers import date_arg, make_timezone_aware
-from webhookdb import get_pulls
+from githubapi import get_pulls
 from repos import Repo
 
 
@@ -27,6 +27,10 @@ def main(argv):
         "--end", type=date_arg,
         help="Date to end collecting, format is flexible: "
         "25/Dec/2014, 12/25/2014, 2014-12-25, etc"
+    )
+    parser.add_argument(
+        "--short", action="store_true",
+        help="Only show the short summary"
     )
 
     args = parser.parse_args(argv[1:])
@@ -51,10 +55,14 @@ def main(argv):
             # We only want merged pull requests.
             if pull.combinedstate != "merged":
                 continue
+            # Pull requests can be recently modified even if they were merged
+            # long ago, so only take things merged since our since date.
+            merged = make_timezone_aware(pull.merged_at)
+            if merged < since:
+                continue
 
             if args.end is not None:
                 # We don't want to count things merged after our end date.
-                merged = make_timezone_aware(pull.merged_at)
                 if merged >= args.end:
                     continue
 
@@ -67,10 +75,16 @@ def main(argv):
 
     fmt = "{pull.repo:4s} {pull.number:5d} {pull.user_login:>17s} {pull.title}"
 
-    for key in keys:
-        print("\n-- {} -------".format(key))
-        for pull in by_org[key]:
-            print(fmt.format(pull=pull))
+    if args.short:
+        if 'unsigned' in keys:
+            print("\n-- {} -------".format('unsigned'))
+            for pull in by_org['unsigned']:
+                print(fmt.format(pull=pull))
+    else:
+        for key in keys:
+            print("\n-- {} -------".format(key))
+            for pull in by_org[key]:
+                print(fmt.format(pull=pull))
 
 
 if __name__ == "__main__":

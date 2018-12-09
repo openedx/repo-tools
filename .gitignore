@@ -2,8 +2,11 @@ auth.yaml
 db.url
 venv
 *.pyc
+*~
 
 age/age.json
+states.json
 
 .sass-cache
 .webcache
+.cache
