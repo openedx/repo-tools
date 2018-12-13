@@ -22,16 +22,6 @@ AUTH_CONFIG_FILE = os.path.join(CONFIG_DIR, 'auth.yaml')
 
 AUTHORIZATION_NOTE = 'edx-repo-tools'
 
-
-try:
-    with open(AUTH_CONFIG_FILE) as auth_config:
-        AUTH_SETTINGS = yaml.safe_load(auth_config)
-    LOGGER.info("Read auth from {!r}".format(AUTH_CONFIG_FILE))
-except:  # pylint: disable=bare-except
-    LOGGER.debug('Unable to load auth settings', exc_info=True)
-    AUTH_SETTINGS = {}
-
-
 TWO_FACTOR_CODE = None
 
 
@@ -71,6 +61,14 @@ def login_github(username=None, password=None, token=None):
     """
     hub = None
 
+    try:
+        with open(AUTH_CONFIG_FILE) as auth_config:
+            AUTH_SETTINGS = yaml.safe_load(auth_config)
+        LOGGER.info("Read auth from {!r}".format(AUTH_CONFIG_FILE))
+    except:  # pylint: disable=bare-except
+        LOGGER.debug('Unable to load auth settings', exc_info=True)
+        AUTH_SETTINGS = {}
+
     if username is None:
         username = AUTH_SETTINGS.get('username')
 
@@ -93,6 +91,7 @@ def login_github(username=None, password=None, token=None):
             # No .netrc file, that's fine.
             pass
         else:
+            LOGGER.info("Read .netrc for auth")
             authenticator = netrc_data.authenticators("api.github.com")
             if authenticator is not None:
                 username, _, token = authenticator
@@ -141,6 +140,7 @@ def login_github(username=None, password=None, token=None):
                 'username': username,
                 'token': token.token,
             }, auth_config)
+            LOGGER.info("Wrote credentials to {!r}".format(AUTH_CONFIG_FILE))
 
     hub.set_user_agent(AUTHORIZATION_NOTE)
 
@@ -180,13 +180,11 @@ def pass_github(f):
     @click.option(
         '--username',
         help='Specify the user to log in to GitHub with',
-        default=AUTH_SETTINGS.get('username'),
     )
     @click.option('--password', help='Password to log in to GitHub with')
     @click.option(
         '--token',
         help='Personal access token to log in to GitHub with',
-        default=AUTH_SETTINGS.get('token'),
     )
     @click.option(
         '--debug/--no-debug',
