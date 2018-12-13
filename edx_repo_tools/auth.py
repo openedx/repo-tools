@@ -15,7 +15,6 @@ import yaml
 
 
 logging.basicConfig()
-logging.getLogger().setLevel(logging.INFO)
 LOGGER = logging.getLogger(__name__)
 
 CONFIG_DIR = user_config_dir('edx-repo-tools', 'edx')
