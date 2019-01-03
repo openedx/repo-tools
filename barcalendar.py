@@ -132,6 +132,16 @@ for year, month in itertools.product(range(16, 23), [4, 10]):
     color = "#E95420" if lts else "#F4AA90"     # http://design.ubuntu.com/brand/colour-palette
     cal.bar(name, (2000+year, month), length=length, color=color)
 
+# Node releases: https://github.com/nodejs/Release
+node_releases = [
+    ('6.x', 2016, 4, 2019, 4),
+    ('8.x', 2017, 5, 2019, 12),
+    ('10.x', 2018, 4, 2021, 4),
+    ('12.x', 2019, 4, 2022, 4),
+]
+for name, syear, smonth, eyear, emonth in node_releases:
+    cal.bar(f"Node {name}", start=(syear, smonth), end=(eyear, emonth), color="#2f6c1b")
+
 
 cal.write(sys.stdout)
 
