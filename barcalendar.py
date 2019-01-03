@@ -15,6 +15,12 @@ import datetime
 import itertools
 import sys
 
+# Options
+START_YEAR = 2016
+END_YEAR = 2024
+LTS_ONLY = True
+
+
 EXTEND = '-'
 
 class Calendar:
@@ -58,18 +64,37 @@ class Calendar:
         for row in self.rows:
             writer.writerow(row)
 
-cal = Calendar(2016, 2024)
+cal = Calendar(START_YEAR, END_YEAR)
 
 # Open edX releases
-names = ["Dogwood", "Eucalyptus", "Ficus", "Ginkgo", "Hawthorn", "Ironwood"]
-letters = "JKLMNOPQRST"
-releases = itertools.chain(names, letters)
-for i, rel in enumerate(releases):
-    year = i // 2 + 2016
-    month = i % 2 * 6 + 1
-    cal.bar(rel, start=(year, month), length=6, color="#fce5cd")
+names = [
+    ('Aspen', 2014, 10),
+    ('Birch', 2015, 2),
+    ('Cypress', 2015, 8),
+    ('Dogwood', 2016, 2),
+    ('Eucalyptus', 2016, 8),
+    ('Ficus', 2017, 2),
+    ('Ginkgo', 2017, 8),
+    ('Hawthorn', 2018, 8),
+    ('Ironwood', 2019, 2),
+    ]
+future = ["Juniper", "Koa"] + list("LMNOPQRST")
+releases = list(itertools.chain(names, [(name, None, None) for name in future]))
+last = (None, None)
+for (name, year, month), (_, nextyear, nextmonth) in zip(releases, releases[1:]):
+    if year is None:
+        year, month = last
+        month += 6
+        yearplus, month = divmod(month, 12)
+        year += yearplus
+    if nextyear is None:
+        length = 6
+    else:
+        length = (nextyear * 12 + nextmonth) - (year * 12 + month)
+    cal.bar(name, start=(year, month), length=length, color="#fce5cd")
+    last = (year, month)
 
-# Django releases  dark: #0c48cc light: #44b78b lighter: #c9f0df
+# Django releases
 django_releases = [
     ('1.8', 2015, 4, True),
     ('1.9', 2016, 1, False),
@@ -81,6 +106,8 @@ django_releases = [
     ('3.0', 2020, 1, False),
 ]
 for name, year, month, lts in django_releases:
+    if LTS_ONLY and not lts:
+        continue
     length = 3*12 if lts else 16
     color = "#44b78b" if lts else "#c9f0df"
     cal.bar(f"Django {name}", start=(year, month), length=length, color=color)
@@ -88,19 +115,19 @@ for name, year, month, lts in django_releases:
 # Python releases
 python_releases = [
     ('2.7', 2010, 7, 2020, 1),
-    ('3.3', 2012, 9, 2017, 9),
-    ('3.4', 2014, 3, 2019, 3),
-    ('3.5', 2015, 9, 2020, 9),
-    ('3.6', 2016, 12, 2021, 12),
-    ('3.7', 2018, 6, 2023, 6),
+    ('3.6', 2016, 12, 2021, 12),        # https://www.python.org/dev/peps/pep-0494/
+    ('3.7', 2018, 6, 2023, 6),          # https://www.python.org/dev/peps/pep-0537/
+    ('3.8', 2019, 10, 2024, 10),        # https://www.python.org/dev/peps/pep-0569/
 ]
 for name, syear, smonth, eyear, emonth in python_releases:
     cal.bar(f"Python {name}", start=(syear, smonth), end=(eyear, emonth), color="#ffd545")
 
 # Ubuntu releases
-for year, month in itertools.product(range(12, 30), [4, 10]):
+for year, month in itertools.product(range(16, 23), [4, 10]):
     name = "Ubuntu {:d}.{:02d}".format(year, month)
     lts = (year % 2 == 0) and (month == 4)
+    if LTS_ONLY and not lts:
+        continue
     length = 5*12 if lts else 9
     color = "#E95420" if lts else "#F4AA90"     # http://design.ubuntu.com/brand/colour-palette
     cal.bar(name, (2000+year, month), length=length, color=color)
@@ -140,21 +167,18 @@ function mergeRangeBars(range) {
   }
 }
 
-function doActive() {
-  var range = SpreadsheetApp.getActiveSheet().getActiveRange();
+function makeBarCalendar() {
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var range = sheet.getDataRange();
+  sheet.setColumnWidths(range.getColumn(), range.getWidth(), 12);
+  sheet.setRowHeights(range.getRow(), range.getHeight(), 18);
+  range.setFontSize(9);
   mergeRangeBars(range);
-}
-
-function doAll() {
-  range = SpreadsheetApp.getActiveSheet().getDataRange();
-  mergeRangeBars(range);
-}
-
-function createHeaders() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheets()[0];
-
-  // Freezes the first two rows
   sheet.setFrozenRows(2);
 }
 """
+# Also in the sheet:
+# Conditional formatting for row 2:
+#   "Custom formula is:"
+#   =(year(now())-$A$1)*12 + (month(now())) = column()
+#   color red
