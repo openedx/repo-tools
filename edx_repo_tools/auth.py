@@ -11,7 +11,7 @@ import os.path
 from appdirs import user_config_dir
 import click
 from github3 import login, GitHubError
-from six import raw_input
+from six.moves import input
 import yaml
 
 
@@ -32,7 +32,7 @@ def do_two_factor():
     """
     global TWO_FACTOR_CODE  # pylint: disable=global-statement
     if TWO_FACTOR_CODE is None:
-        TWO_FACTOR_CODE = raw_input('Two-factor code: ')
+        TWO_FACTOR_CODE = input('Two-factor code: ')
 
     return TWO_FACTOR_CODE
 
