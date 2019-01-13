@@ -20,6 +20,7 @@ Each host shows how many hits there were (56148 in the first line) and
 from how many unique IP addresses (32736).
 
 """
+from __future__ import print_function
 
 import collections
 import glob
@@ -75,8 +76,8 @@ for line in all_gz_lines():
 
 hostinfos = sorted(hosts.iteritems(), key=lambda name_info: name_info[1].hits, reverse=True)
 for name, info in hostinfos:
-    print "{:>60}: {}, {} ips".format(name, info.hits, len(info.ips))
+    print("{:>60}: {}, {} ips".format(name, info.hits, len(info.ips)))
 
-print "-" * 50
+print("-" * 50)
 for uri, count in uris.most_common():
-    print "{:<50}: {}".format(uri, count)
+    print("{:<50}: {}".format(uri, count))

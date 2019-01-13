@@ -24,6 +24,7 @@ Suggested queries:
 select domain, min(date) from access_log_aggregate where domain not like '%.amazonaws.com' and domain not rlike '([[:digit:]]+\\.){3}[[:digit:]]+:?' and domain not rlike ':[[:digit:]]+' and domain not like '%.edx.org' group by domain order by min(date);
 
 """
+from __future__ import print_function
 
 import collections
 import glob
@@ -93,7 +94,7 @@ def add_to_filename_log(cur, log_name):
     cur.execute(insert_into_file_hist, [log_name])
 
 def process_log_file(cur, gz_file, log_name):
-    print "Processing %s ..." % log_name
+    print("Processing %s ..." % log_name)
     line_counter = {}
     for line in gz_file:
         if line.startswith('#'):
@@ -102,7 +103,7 @@ def process_log_file(cur, gz_file, log_name):
         logline = LogLine(line)
         if logline.uri.startswith("/openedx-logos"):
             line_key = "|".join((logline.host, logline.date, log_name))
-            if line_counter.has_key(line_key):
+            if line_key in line_counter:
                 line_counter[line_key] += 1
             else:
                 line_counter[line_key] = 1
@@ -112,16 +113,16 @@ def process_log_file(cur, gz_file, log_name):
         line_count = line_counter[aggregate_line_key]
         insert_stmt = "INSERT INTO access_log_aggregate (domain, date, filename, count) values (%s, %s, %s, %s)"
         cur.execute(insert_stmt,  (host, date, log_name, line_count))
-        print "Inserted %d rows" % cur.rowcount
+        print("Inserted %d rows" % cur.rowcount)
     db.commit()
 
 cur = db.cursor()
 
 for gz_name in glob.glob("*.gz"):
-    print gz_name
+    print(gz_name)
     with gzip.open(gz_name) as gz:
         if(not is_in_filename_log(cur, gz_name)):
-            print "%s not found, adding" % gz_name
+            print("%s not found, adding" % gz_name)
             add_to_filename_log(cur, gz_name)
             process_log_file(cur, gz, gz_name)
 db.close()

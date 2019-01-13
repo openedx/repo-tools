@@ -1,3 +1,4 @@
+from __future__ import print_function
 import ast
 import logging
 
@@ -66,7 +67,7 @@ def uses_pbr(parsed_setup_py):
 
 def parsed_requirements_txt(requirements_txt):
     if not requirements_txt.exists():
-        print "not exists"
+        print("not exists")
         return
 
     for line in requirements_txt.lines():
@@ -151,15 +152,15 @@ class OEP10(object):
 
         is_django_application = manage_py.exists()
 
-        print is_django_application
-        print setup_py.exists()
+        print(is_django_application)
+        print(setup_py.exists())
 
         if requirements_base_txt.exists():
             requirements_file = reqirements_base_txt
         else:
             requirements_file = requirements_txt
 
-        print requirements_file.exists()
+        print(requirements_file.exists())
 
         if not is_django_application and setup_py.exists():
             parsed_setup_py = ast.parse(setup_py.bytes(), 'setup.py')
