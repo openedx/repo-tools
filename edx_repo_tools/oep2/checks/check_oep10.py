@@ -7,7 +7,7 @@ import tox.config
 from packaging.requirements import Requirement, InvalidRequirement
 from packaging.specifiers import SpecifierSet, Specifier
 from packaging.version import Version
-
+import six
 
 LIBRARY_REQUIRED_DJANGO_VERSIONS = {'1.8', '1.11'}
 APPLICATION_ALLOWED_DJANGO_VERSIONS = {
@@ -84,7 +84,7 @@ def parsed_requirements_txt(requirements_txt):
 
 def requirement_is_django(req):
     try:
-        if isinstance(req, basestring):
+        if isinstance(req, six.string_types):
             req = Requirement(req)
         return req.name.lower() == 'django'
     except InvalidRequirement:
@@ -156,7 +156,7 @@ class OEP10(object):
         print(setup_py.exists())
 
         if requirements_base_txt.exists():
-            requirements_file = reqirements_base_txt
+            requirements_file = requirements_base_txt
         else:
             requirements_file = requirements_txt
 

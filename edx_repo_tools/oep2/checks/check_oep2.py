@@ -1,5 +1,6 @@
 import pytest
 import re
+import six
 
 class OEP2(object):
     def check_does_openedx_yaml_exist(self, openedx_yaml):
@@ -39,5 +40,4 @@ class OEP2(object):
                     assert 'state' in value
                     assert 'reason' in value
                     assert isinstance(value['state'], bool)
-                    assert isinstance(value['reason'], basestring)
-
+                    assert isinstance(value['reason'], six.string_types)

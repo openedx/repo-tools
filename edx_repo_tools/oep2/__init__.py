@@ -21,4 +21,4 @@ def cli():
 
 cli.add_command(explode_repos_yaml.explode)
 cli.add_command(explode_repos_yaml.implode)
-cli.add_command(report.cli.cli, 'report')
+cli.add_command(cli.cli, 'report')

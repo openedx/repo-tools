@@ -11,6 +11,7 @@ import os.path
 from appdirs import user_config_dir
 import click
 from github3 import login, GitHubError
+from six import raw_input
 import yaml
 
 
