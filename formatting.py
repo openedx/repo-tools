@@ -4,6 +4,8 @@ import datetime
 
 import colors
 
+import six
+
 
 def fformat(fmt, obj):
     return fmt.format(FormatObj(obj))
@@ -47,7 +49,7 @@ class Formattable(object):
             if spec.startswith("%"):
                 v = format(v, spec)
             elif spec in colors.COLORS:
-                v = colors.color(unicode(v), fg=spec)
+                v = colors.color(six.text_type(v), fg=spec)
             elif spec in colors.STYLES:
                 v = colors.color(v, style=spec)
             elif spec == "ago":

@@ -263,7 +263,7 @@ class Oep2ReportPlugin(object):
             "<tr><th>{}</th>{}</tr>".format(
                 repo,
                 "\n".join(format_report(tests.get(test_key), test_key) for test_key in test_order)
-            ) for repo, tests in sorted(self.results.items(), key=lambda (repo, _): repo.lower())
+            ) for repo, tests in sorted(self.results.items(), key=lambda repo__: repo__[0].lower())
         )
 
         with open('oep2.report.html', 'w') as report:

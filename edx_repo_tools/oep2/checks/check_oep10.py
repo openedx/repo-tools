@@ -1,3 +1,4 @@
+from __future__ import print_function
 import ast
 import logging
 
@@ -6,7 +7,7 @@ import tox.config
 from packaging.requirements import Requirement, InvalidRequirement
 from packaging.specifiers import SpecifierSet, Specifier
 from packaging.version import Version
-
+import six
 
 LIBRARY_REQUIRED_DJANGO_VERSIONS = {'1.8', '1.11'}
 APPLICATION_ALLOWED_DJANGO_VERSIONS = {
@@ -66,7 +67,7 @@ def uses_pbr(parsed_setup_py):
 
 def parsed_requirements_txt(requirements_txt):
     if not requirements_txt.exists():
-        print "not exists"
+        print("not exists")
         return
 
     for line in requirements_txt.lines():
@@ -83,7 +84,7 @@ def parsed_requirements_txt(requirements_txt):
 
 def requirement_is_django(req):
     try:
-        if isinstance(req, basestring):
+        if isinstance(req, six.string_types):
             req = Requirement(req)
         return req.name.lower() == 'django'
     except InvalidRequirement:
@@ -151,15 +152,15 @@ class OEP10(object):
 
         is_django_application = manage_py.exists()
 
-        print is_django_application
-        print setup_py.exists()
+        print(is_django_application)
+        print(setup_py.exists())
 
         if requirements_base_txt.exists():
-            requirements_file = reqirements_base_txt
+            requirements_file = requirements_base_txt
         else:
             requirements_file = requirements_txt
 
-        print requirements_file.exists()
+        print(requirements_file.exists())
 
         if not is_django_application and setup_py.exists():
             parsed_setup_py = ast.parse(setup_py.bytes(), 'setup.py')
