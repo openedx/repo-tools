@@ -66,6 +66,15 @@ def openedx_release_repos(hub, orgs=None, branches=None):
     }
 
 
+def trim_skipped_repos(repos, skip_repos):
+    """Remove repos we've been told to skip."""
+    trimmed = {}
+    for r, data in repos.items():
+        if any((r.full_name == sr or r.name == sr) for sr in skip_repos):
+            continue
+        trimmed[r] = data
+    return trimmed
+
 def trim_dependent_repos(repos):
     """Remove dependent repos (an obsolete feature of this program).
 
@@ -522,6 +531,10 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
          u"instead of throwing an error"
 )
 @click.option(
+    '--skip-repo', 'skip_repos', multiple=True,
+    help="Specify repos that should be ignored in spite of having an openedx.yaml file."
+)
+@click.option(
     '--search-branch', 'branches', multiple=True,
     help="Specify a branch to search for the openedx.yaml file. If specified "
          "multiple times, the first openedx.yaml file found will be used.",
@@ -534,13 +547,14 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
 @dry
 @pass_github
 def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
-         reverse, skip_invalid, dry, orgs, branches):
+         reverse, skip_invalid, skip_repos, dry, orgs, branches):
     """Create/remove tags & branches on GitHub repos for Open edX releases."""
 
     repos = openedx_release_repos(hub, orgs, branches)
     if not repos:
         raise ValueError(u"No repos marked for openedx-release in their openedx.yaml files!")
 
+    repos = trim_skipped_repos(repos, skip_repos)
     repos = trim_dependent_repos(repos)
 
     repos = override_repo_refs(
