@@ -61,10 +61,11 @@ def set_or_delete_labels(dry, repo, new_labels):
 @click.command()
 @pass_github
 @pass_repo_tools_data
-@click.option('--org', multiple=True, default=['edx', 'edx-ops'])
-@click.option('--repo')
+@click.option('--org', multiple=True, default=['edx', 'edx-ops'], help="Update all repos with openedx.yml in this organization")
+@click.option('--repo', help="Update this specific repo")
 @dry
 def sync_labels(hub, repo_tools_data, org, repo, dry):
+    """Update the labels in repos to have consistent text and colors."""
     if repo is not None:
         repos = [(hub.repository(*repo.split('/')), None)]
     else:
