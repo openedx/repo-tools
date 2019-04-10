@@ -192,3 +192,6 @@ function makeBarCalendar() {
 #   "Custom formula is:"
 #   =(year(now())-$A$1)*12 + (month(now())) = column()
 #   color red
+
+# for row 1:
+#   =(year(now())-$A$1)*12+1 = column()
