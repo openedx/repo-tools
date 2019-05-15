@@ -14,6 +14,50 @@ from github import Github
 ORGS = ['edx','edx-ops','edx-solutions']
 LANGUAGE = "Python"
 
+# Collected by running `get_edx_owned_requirements.py`
+REPOS_THAT_EDX_PLATFORM_DEPENDS_ON = [
+        "https://github.com/edx/edx-ora2",
+        "https://github.com/edx/edx-django-release-util",
+        "https://github.com/edx/edx-submissions",
+        "https://github.com/edx/edx-val",
+        "https://github.com/dementrock/pystache_custom",
+        "https://github.com/edx/acid-block",
+        "https://github.com/edx/ccx-keys",
+        "https://github.com/edx/codejail",
+        "https://github.com/edx/completion",
+        "https://github.com/edx/django-config-models",
+        "https://github.com/edx/django-oauth2-provider",
+        "https://github.com/edx/django-splash",
+        "https://github.com/edx/django-user-tasks",
+        "https://github.com/edx/DoneXBlock",
+        "https://github.com/edx/edx-ace",
+        "https://github.com/edx/edx-celeryutils",
+        "https://github.com/edx/edx-django-sites-extensions",
+        "https://github.com/edx/edx-django-utils",
+        "https://github.com/edx/edx-drf-extensions",
+        "https://github.com/edx/edx-enterprise",
+        "https://github.com/edx/edx-milestones",
+        "https://github.com/edx/edx-oauth2-provider",
+        "https://github.com/edx/edx-organizations",
+        "https://github.com/edx/edx-proctorin",
+        "https://github.com/edx/edx-rbac",
+        "https://github.com/edx/edx-rest-api-clien",
+        "https://github.com/edx/edx-search",
+        "https://github.com/edx/edx-when",
+        "https://github.com/edx/event-trackin",
+        "https://github.com/edx/help-tokens",
+        "https://github.com/edx/i18n-tools",
+        "https://github.com/edx/opaque-keys",
+        "https://github.com/edx/RateXBlock",
+        "https://github.com/edx-solutions/xblock-google-drive",
+        "https://github.com/edx/user-util",
+        "https://github.com/edx/web-fragments",
+        "https://github.com/edx/XBlock",
+        "https://github.com/edx/xblock-utils",
+        "https://github.com/jazkarta/edx-jsme",
+    ]
+
+
 g = Github(os.environ["GITHUB_TOKEN"])
 
 orgs = [g.get_organization(org) for org in ORGS]
@@ -196,13 +240,14 @@ def is_in_openedx(repo):
         openedx = get_remote_yaml(repo, "openedx.yaml")
         if openedx.get('openedx-release'):
             return True
+        elif repo.html_url in REPOS_THAT_EDX_PLATFORM_DEPENDS_ON:
+            return True
     except github.UnknownObjectException as e:
         return False
     except yaml.YAMLError as e:
         return False
 
     return False
-
 
 if __name__ == "__main__":
     with open('python_state.csv', 'w', newline='') as csvfile:
@@ -221,7 +266,8 @@ if __name__ == "__main__":
                       'oep7_compliant_reason',
                       'oep7_maybe',
                       'oep7_maybe_reason',
-                      'is_in_openedx'
+                      'is_in_openedx',
+                      'edx-platform dependency',
         ]
     
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -247,6 +293,7 @@ if __name__ == "__main__":
                 repo_data['oep7_maybe_reason'] = might_be_oep7_compliant(repo)[1]
                 repo_data['owner'] = get_repo_owner(repo)
                 repo_data['is_in_openedx'] = is_in_openedx(repo)
+                repo_data['edx-platform dependency'] = repo.html_url in REPOS_THAT_EDX_PLATFORM_DEPENDS_ON
         
                 print(repo_data)
                 writer.writerow(repo_data)
