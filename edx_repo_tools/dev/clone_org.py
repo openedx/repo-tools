@@ -26,6 +26,7 @@ def main(hub, forks, depth, org):
         if repo.fork and not forks:
             continue
         dir_name = repo.name
+        dir_name = dir_name.lstrip("-")     # avoid dirname/option confusion
         if os.path.exists(dir_name):
             continue
 
