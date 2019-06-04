@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-click==6.7
-gitdb2==2.0.3             # via gitpython
-gitpython==2.1.9
-smmap2==2.0.3             # via gitdb2
+click==7.0
+gitdb2==2.0.5             # via gitpython
+gitpython==2.1.11
+smmap2==2.0.5             # via gitdb2
