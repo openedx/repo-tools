@@ -210,7 +210,7 @@ class Grafter(object):
             commit_key = "{}_commit".format(repo_name)
             paths = list(paths)
 
-            for commit in repo.iter_commits(paths=paths):
+            for commit in repo.commits(paths=paths):
                 self.vprint("Processing commit: {}".format(commit.hexsha))
                 digest = self.get_hexdigest_from_commit(commit)
 

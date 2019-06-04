@@ -120,7 +120,7 @@ def login_github(username=None, password=None, token=None):
 
             LOGGER.debug('Attempting to delete existing authorization')
 
-            authorizations = hub.iter_authorizations()
+            authorizations = hub.authorizations()
             for authorization in authorizations:
                 if authorization.note == AUTHORIZATION_NOTE:
                     authorization.delete()
@@ -166,7 +166,7 @@ def pass_github(f):
             help='Actually create the pull requests',
         )
         def explode(hub, dry):
-            hub.organization('edx').iter_repos()
+            hub.organization('edx').repositories()
     """
 
     # Mark that pass_github has been applied already to

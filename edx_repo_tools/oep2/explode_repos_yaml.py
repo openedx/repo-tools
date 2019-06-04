@@ -4,6 +4,7 @@ openedx.yaml files in specific repos.
 """
 
 import click
+from github3.exceptions import NotFoundError
 import logging
 import textwrap
 import yaml
@@ -29,7 +30,7 @@ def explode(hub, dry):
     """
 
     repo_tools_data = hub.repository('edx', 'repo-tools-data')
-    repos_yaml = repo_tools_data.contents('repos.yaml').decoded
+    repos_yaml = repo_tools_data.file_contents('repos.yaml').decoded
 
     repos = yaml.safe_load(repos_yaml)
 
@@ -78,7 +79,10 @@ def explode(hub, dry):
                     parent_commit
                 )
 
-        contents = gh_repo.contents(OPEN_EDX_YAML, ref=BRANCH_NAME)
+        try:
+            contents = gh_repo.file_contents(OPEN_EDX_YAML, ref=BRANCH_NAME)
+        except NotFoundError:
+            contents = None
 
         if contents is None:
             dry_echo(
@@ -134,7 +138,7 @@ def explode(hub, dry):
         existing_pr = [
             pr
             for pr
-            in gh_repo.iter_pulls(
+            in gh_repo.pull_requests(
                 head='edx:{}'.format(BRANCH_NAME),
                 state='open'
             )

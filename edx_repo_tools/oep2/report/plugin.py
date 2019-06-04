@@ -97,7 +97,7 @@ class Oep2ReportPlugin(object):
             self._repos = [
                 repo
                 for org in self.config.option.org
-                for repo in self.hub.organization(org).iter_repos()
+                for repo in self.hub.organization(org).repositories()
                 if not repo.fork
             ]
 

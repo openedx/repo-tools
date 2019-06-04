@@ -19,7 +19,7 @@ def set_or_delete_labels(dry, repo, new_labels):
 
     desired_colors = {label: data['color'] for label, data in new_labels.items() if 'color' in data}
     undesired_names = {label for label, data in new_labels.items() if data.get('delete', False)}
-    existing_labels = {label.name: label for label in repo.iter_labels()}
+    existing_labels = {label.name: label for label in repo.labels()}
     existing_names = set(existing_labels.keys())
     desired_names = set(desired_colors.keys())
 

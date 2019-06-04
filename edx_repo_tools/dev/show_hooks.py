@@ -14,7 +14,7 @@ from helpers import paginated_get
 @click.argument('pattern', required=False)
 @pass_github
 def main(hub, org, pattern=None):
-    for repo in hub.organization(org).iter_repos():
+    for repo in hub.organization(org).repositories():
         printed_repo = False
         url = "https://api.github.com/repos/{name}/hooks".format(name=repo.full_name)
         for r in paginated_get(url):

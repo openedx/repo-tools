@@ -18,6 +18,9 @@ import datetime
 import logging
 
 import click
+from github3 import GitHubError
+from github3.exceptions import NotFoundError
+
 from edx_repo_tools.auth import pass_github
 from edx_repo_tools.data import iter_openedx_yaml
 from edx_repo_tools.utils import dry, dry_echo
@@ -177,11 +180,11 @@ def get_latest_commit_for_ref(repo, ref):
     # is it a branch?
     branch = repo.branch(ref)
     if branch:
-        commit = branch.commit.commit
+        commit = repo.git_commit(branch.commit.sha).refresh()
         return {
             "ref": ref,
             "ref_type": "branch",
-            "sha": branch.commit.sha,
+            "sha": commit.sha,
             "message": commit.message,
             "author": commit.author,
             "committer": commit.committer,
@@ -205,15 +208,15 @@ def get_latest_commit_for_ref(repo, ref):
             # An annotated tag, one more level of indirection.
             tag = repo.tag(tag.object.sha)
         # need to do a subsequent API call to get the tagged commit
-        commit = repo.commit(tag.object.sha)
+        commit = repo.git_commit(tag.object.sha).refresh()
         if commit:
             return {
                 "ref": ref,
                 "ref_type": "tag",
                 "sha": commit.sha,
-                "message": commit.commit.message,
-                "author": commit.commit.author,
-                "committer": commit.commit.committer,
+                "message": commit.message,
+                "author": commit.author,
+                "committer": commit.committer,
             }
 
     msg = "No commit for {ref} in {repo}".format(
@@ -247,28 +250,27 @@ def get_ref_for_repos(repos, ref, use_tag=True):
     for repo in repos:
         try:
             ref_obj = repo.ref(ref)
-            found = ref_obj is not None
+        except NotFoundError:
+            pass
         except TypeError:
             # If the ref isn't found, GitHub uses the ref as a substring,
             # and returns all the refs that start with that string as an
             # array. That causes github3 to throw a type error when it
             # tries to pop a dict key from a list
-            found = False
-
-        if found:
+            pass
+        else:
             if ref_obj.object.type == "tag":
                 # this is an annotated tag -- fetch the actual commit
                 ref_obj = repo.tag(ref_obj.object.sha)
-            commit = repo.commit(ref_obj.object.sha)
-
+            commit = repo.git_commit(ref_obj.object.sha).refresh()
             # save the sha value for the commit into the returned dict
             return_value[repo.full_name] = {
                 "ref": "refs/" + ref,
                 "ref_type": "tag" if use_tag else "branch",
-                "sha": commit.commit.sha,
-                "message": commit.commit.message,
-                "author": commit.commit.author,
-                "committer": commit.commit.committer,
+                "sha": commit.sha,
+                "message": commit.message,
+                "author": commit.author,
+                "committer": commit.committer,
             }
 
     return return_value
