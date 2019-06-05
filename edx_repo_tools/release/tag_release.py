@@ -99,24 +99,14 @@ def trim_dependent_repos(repos):
 
 def override_repo_refs(repos, override_ref=None, overrides=None):
     """
-    Returns a new `repos` dictionary with the CLI overrides applied.
+    Update the `repos` dictionary with the CLI overrides applied.
     """
     overrides = overrides or {}
-    if not override_ref and not overrides:
-        return repos
-
-    repos_copy = copy.deepcopy(repos)
-    for repo, repo_data in repos.items():
-        if not repo_data:
-            continue
-        release_data = repo_data.get("openedx-release")
-        if not release_data:
-            continue
-        local_override = overrides.get(str(repo), override_ref)
-        if local_override:
-            repos_copy[repo]["openedx-release"]["ref"] = local_override
-
-    return repos_copy
+    if override_ref or overrides:
+        for repo, repo_data in repos.items():
+            local_override = overrides.get(str(repo), override_ref)
+            if local_override:
+                repo_data["openedx-release"]["ref"] = local_override
 
 
 def commit_ref_info(repos, hub, skip_invalid=False):
@@ -559,7 +549,7 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
     repos = trim_skipped_repos(repos, skip_repos)
     repos = trim_dependent_repos(repos)
 
-    repos = override_repo_refs(
+    override_repo_refs(
         repos,
         override_ref=override_ref,
         overrides=dict(overrides or ()),
