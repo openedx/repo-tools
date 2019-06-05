@@ -58,15 +58,14 @@ def openedx_release_repos(hub, orgs=None, branches=None):
     if not orgs:
         orgs = ['edx', 'edx-ops', 'edx-solutions']
 
-    return {
-        repo: data
-        for repo, data in iter_openedx_yaml(
-            hub,
-            orgs=orgs,
-            branches=branches,
-        )
-        if data.get('openedx-release')
-    }
+    repos = {}
+
+    for repo, data in iter_openedx_yaml(hub, orgs=orgs, branches=branches):
+        if data.get('openedx-release'):
+            repo = repo.refresh()
+            repos[repo] = data
+
+    return repos
 
 
 def trim_skipped_repos(repos, skip_repos):
