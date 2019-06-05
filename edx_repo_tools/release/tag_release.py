@@ -18,6 +18,9 @@ import datetime
 import logging
 
 import click
+from github3 import GitHubError
+from github3.exceptions import NotFoundError
+
 from edx_repo_tools.auth import pass_github
 from edx_repo_tools.data import iter_openedx_yaml
 from edx_repo_tools.utils import dry, dry_echo
@@ -55,15 +58,14 @@ def openedx_release_repos(hub, orgs=None, branches=None):
     if not orgs:
         orgs = ['edx', 'edx-ops', 'edx-solutions']
 
-    return {
-        repo: data
-        for repo, data in iter_openedx_yaml(
-            hub,
-            orgs=orgs,
-            branches=branches,
-        )
-        if data.get('openedx-release')
-    }
+    repos = {}
+
+    for repo, data in iter_openedx_yaml(hub, orgs=orgs, branches=branches):
+        if data.get('openedx-release'):
+            repo = repo.refresh()
+            repos[repo] = data
+
+    return repos
 
 
 def trim_skipped_repos(repos, skip_repos):
@@ -96,24 +98,14 @@ def trim_dependent_repos(repos):
 
 def override_repo_refs(repos, override_ref=None, overrides=None):
     """
-    Returns a new `repos` dictionary with the CLI overrides applied.
+    Update the `repos` dictionary with the CLI overrides applied.
     """
     overrides = overrides or {}
-    if not override_ref and not overrides:
-        return repos
-
-    repos_copy = copy.deepcopy(repos)
-    for repo, repo_data in repos.items():
-        if not repo_data:
-            continue
-        release_data = repo_data.get("openedx-release")
-        if not release_data:
-            continue
-        local_override = overrides.get(str(repo), override_ref)
-        if local_override:
-            repos_copy[repo]["openedx-release"]["ref"] = local_override
-
-    return repos_copy
+    if override_ref or overrides:
+        for repo, repo_data in repos.items():
+            local_override = overrides.get(str(repo), override_ref)
+            if local_override:
+                repo_data["openedx-release"]["ref"] = local_override
 
 
 def commit_ref_info(repos, hub, skip_invalid=False):
@@ -177,11 +169,11 @@ def get_latest_commit_for_ref(repo, ref):
     # is it a branch?
     branch = repo.branch(ref)
     if branch:
-        commit = branch.commit.commit
+        commit = repo.git_commit(branch.commit.sha).refresh()
         return {
             "ref": ref,
             "ref_type": "branch",
-            "sha": branch.commit.sha,
+            "sha": commit.sha,
             "message": commit.message,
             "author": commit.author,
             "committer": commit.committer,
@@ -205,15 +197,15 @@ def get_latest_commit_for_ref(repo, ref):
             # An annotated tag, one more level of indirection.
             tag = repo.tag(tag.object.sha)
         # need to do a subsequent API call to get the tagged commit
-        commit = repo.commit(tag.object.sha)
+        commit = repo.git_commit(tag.object.sha).refresh()
         if commit:
             return {
                 "ref": ref,
                 "ref_type": "tag",
                 "sha": commit.sha,
-                "message": commit.commit.message,
-                "author": commit.commit.author,
-                "committer": commit.commit.committer,
+                "message": commit.message,
+                "author": commit.author,
+                "committer": commit.committer,
             }
 
     msg = "No commit for {ref} in {repo}".format(
@@ -247,28 +239,27 @@ def get_ref_for_repos(repos, ref, use_tag=True):
     for repo in repos:
         try:
             ref_obj = repo.ref(ref)
-            found = ref_obj is not None
+        except NotFoundError:
+            pass
         except TypeError:
             # If the ref isn't found, GitHub uses the ref as a substring,
             # and returns all the refs that start with that string as an
             # array. That causes github3 to throw a type error when it
             # tries to pop a dict key from a list
-            found = False
-
-        if found:
+            pass
+        else:
             if ref_obj.object.type == "tag":
                 # this is an annotated tag -- fetch the actual commit
                 ref_obj = repo.tag(ref_obj.object.sha)
-            commit = repo.commit(ref_obj.object.sha)
-
+            commit = repo.git_commit(ref_obj.object.sha).refresh()
             # save the sha value for the commit into the returned dict
             return_value[repo.full_name] = {
                 "ref": "refs/" + ref,
                 "ref_type": "tag" if use_tag else "branch",
-                "sha": commit.commit.sha,
-                "message": commit.commit.message,
-                "author": commit.commit.author,
-                "committer": commit.commit.committer,
+                "sha": commit.sha,
+                "message": commit.message,
+                "author": commit.author,
+                "committer": commit.committer,
             }
 
     return return_value
@@ -491,6 +482,35 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
     return modified
 
 
+def archived_repos(repos):
+    """
+    Check `repos`, and return the subset that are archived.
+    """
+    archived = []
+    for repo in repos:
+        repo = repo.refresh()
+        if repo.archived:
+            archived.append(repo)
+    return archived
+
+
+def ensure_writable(repos):
+    """
+    Prompt the user, and wait until these repos are all unarchived.
+
+    Arguments:
+        repos: a list of Repository objects.
+    """
+    while repos:
+        click.secho(u"The following repos need to be unarchived to continue:", fg='red', bold=True)
+        for repo in repos:
+            click.echo("  {}: https://github.com/{}/settings".format(repo.full_name, repo.full_name))
+        while not click.confirm("Are they all unarchived?"):
+            pass
+        repos = archived_repos(repos)
+    click.echo(u"Thanks, they will be re-archived automatically")
+
+
 @click.command()
 @click.argument(
     'ref', metavar="REF",
@@ -557,12 +577,36 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
     repos = trim_skipped_repos(repos, skip_repos)
     repos = trim_dependent_repos(repos)
 
-    repos = override_repo_refs(
+    override_repo_refs(
         repos,
         override_ref=override_ref,
         overrides=dict(overrides or ()),
     )
 
+    archived = archived_repos(repos.keys())
+    if archived:
+        if dry:
+            dry_echo(dry, u"Will need to unarchive these repos: {}".format(
+                ", ".join(repo.full_name for repo in archived)
+                ))
+        else:
+            ensure_writable(archived)
+
+    try:
+        ret = do_the_work(hub, repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry)
+    finally:
+        for repo in archived:
+            dry_echo(dry, u"Re-archiving {}".format(repo.full_name))
+            if not dry:
+                repo.edit(repo.name, archived=True)
+
+    return ret
+
+
+def do_the_work(hub, repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry):
+    """
+    The meat of the work for tag_release.
+    """
     existing_refs = get_ref_for_repos(repos, ref, use_tag=use_tag)
 
     if reverse:

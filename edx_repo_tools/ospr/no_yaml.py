@@ -6,6 +6,8 @@ from __future__ import print_function
 import itertools
 
 import click
+from github3.exceptions import NotFoundError
+
 from edx_repo_tools.auth import pass_github
 from edx_repo_tools.data import pass_repo_tools_data, iter_nonforks
 from edx_repo_tools.utils import dry_echo, dry
@@ -23,11 +25,15 @@ def no_yaml(hub, repo_tools_data, org, dry):
     for repo in repos:
         if repo.private:
             continue
-        contents = repo.contents('openedx.yaml')
+        try:
+            contents = repo.file_contents('openedx.yaml')
+        except NotFoundError:
+            contents = None
+
         if contents is None:
             print("{}: {:%Y-%m-%d}".format(repo.full_name, repo.pushed_at))
             try:
-                commits = list(itertools.islice(repo.iter_commits(), 5))
+                commits = list(itertools.islice(repo.commits(), 5))
             except Exception as exc:
                 print("  Error: {}".format(exc))
                 continue

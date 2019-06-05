@@ -1,13 +1,14 @@
 from datetime import date
 import functools
-import itertools
 import logging
 import os.path
 
 import click
-from edx_repo_tools.auth import pass_github
+from github3.exceptions import NotFoundError
 from lazy import lazy
 import yaml
+
+from edx_repo_tools.auth import pass_github
 
 
 logging.basicConfig()
@@ -17,7 +18,7 @@ OPEN_EDX_YAML = 'openedx.yaml'
 
 def iter_nonforks(hub, orgs):
     for org in orgs:
-        for repo in hub.organization(org).iter_repos():
+        for repo in hub.organization(org).repositories():
             if repo.fork:
                 LOGGER.debug("Skipping %s because it is a fork", repo.full_name)
             else:
@@ -34,16 +35,16 @@ def iter_openedx_yaml(hub, orgs, branches=None):
         orgs: A list of github orgs to search for openedx.yaml files.
         branches: A list of branches to search for openedx.yaml files. If
             that file exists on multiple branches, then only the contents
-            of the first will be yielded. The repository's default branch will
-            always be searched (but will be lower priority than any supplied branch).
-            (optional)
+            of the first will be yielded.  (optional, defaults to the default
+            branch in the repo).
     """
-    if branches is None:
-        branches = []
-
     for repo in iter_nonforks(hub, orgs):
-        for branch in itertools.chain(branches, [repo.default_branch]):
-            contents = repo.contents(OPEN_EDX_YAML, ref=branch)
+        for branch in (branches or [repo.default_branch]):
+            try:
+                contents = repo.file_contents(OPEN_EDX_YAML, ref=branch)
+            except NotFoundError:
+                contents = None
+
             if contents is not None:
                 LOGGER.debug("Found openedx.yaml at %s:%s", repo.full_name, branch)
                 yield repo, yaml.safe_load(contents.decoded)
@@ -149,7 +150,7 @@ class RemoteRepoToolsData(RepoToolsData):
         self.repo = repo
 
     def _read_file(self, filename):
-        return yaml.safe_load(self.repo.contents(filename).decoded)
+        return yaml.safe_load(self.repo.file_contents(filename).decoded)
 
 
 def pass_repo_tools_data(f):
