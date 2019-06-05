@@ -482,6 +482,35 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
     return modified
 
 
+def archived_repos(repos):
+    """
+    Check `repos`, and return the subset that are archived.
+    """
+    archived = []
+    for repo in repos:
+        repo = repo.refresh()
+        if repo.archived:
+            archived.append(repo)
+    return archived
+
+
+def ensure_writable(repos):
+    """
+    Prompt the user, and wait until these repos are all unarchived.
+
+    Arguments:
+        repos: a list of Repository objects.
+    """
+    while repos:
+        click.secho(u"The following repos need to be unarchived to continue:", fg='red', bold=True)
+        for repo in repos:
+            click.echo("  {}: https://github.com/{}/settings".format(repo.full_name, repo.full_name))
+        while not click.confirm("Are they all unarchived?"):
+            pass
+        repos = archived_repos(repos)
+    click.echo(u"Thanks, they will be re-archived automatically")
+
+
 @click.command()
 @click.argument(
     'ref', metavar="REF",
@@ -554,6 +583,30 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
         overrides=dict(overrides or ()),
     )
 
+    archived = archived_repos(repos.keys())
+    if archived:
+        if dry:
+            dry_echo(dry, u"Will need to unarchive these repos: {}".format(
+                ", ".join(repo.full_name for repo in archived)
+                ))
+        else:
+            ensure_writable(archived)
+
+    try:
+        ret = do_the_work(hub, repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry)
+    finally:
+        for repo in archived:
+            dry_echo(dry, u"Re-archiving {}".format(repo.full_name))
+            if not dry:
+                repo.edit(repo.name, archived=True)
+
+    return ret
+
+
+def do_the_work(hub, repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry):
+    """
+    The meat of the work for tag_release.
+    """
     existing_refs = get_ref_for_repos(repos, ref, use_tag=use_tag)
 
     if reverse:
