@@ -1,6 +1,5 @@
 from datetime import date
 import functools
-import itertools
 import logging
 import os.path
 
@@ -36,15 +35,11 @@ def iter_openedx_yaml(hub, orgs, branches=None):
         orgs: A list of github orgs to search for openedx.yaml files.
         branches: A list of branches to search for openedx.yaml files. If
             that file exists on multiple branches, then only the contents
-            of the first will be yielded. The repository's default branch will
-            always be searched (but will be lower priority than any supplied branch).
-            (optional)
+            of the first will be yielded.  (optional, defaults to the default
+            branch in the repo).
     """
-    if branches is None:
-        branches = []
-
     for repo in iter_nonforks(hub, orgs):
-        for branch in itertools.chain(branches, [repo.default_branch]):
+        for branch in (branches or [repo.default_branch]):
             try:
                 contents = repo.file_contents(OPEN_EDX_YAML, ref=branch)
             except NotFoundError:
