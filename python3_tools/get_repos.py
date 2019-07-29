@@ -7,6 +7,7 @@ from collections import OrderedDict
 from pprint import pprint
 
 import yaml
+import re
 
 from cache_to_disk import cache_to_disk
 from github import Github
@@ -158,6 +159,32 @@ def is_oep7_compliant(repo):
     # Check to see if openedx.yaml has an oeps section
     return is_oep_compliant(repo, "oep-7")
 
+@cache_to_disk(1)
+def is_oep18_compliant(repo):
+    """
+    OEP-18 is the one about Python Dependency Management
+        -mainly includes implementing make upgrade and placing all the dependencies in requirement directory
+    returns (bool,str): whether it's compliant and reason it's not if bool is false.
+    """
+    return is_oep_compliant(repo, "oep-18")
+
+@cache_to_disk(1)
+def might_be_oep18_compliant(repo):
+    """
+    Use alternate indicators to see if a repo is oep18 complaint. Checks to see if upgrade target is in Makefile
+    
+    returns (bool,str): whether it might compliant and reason we think so if it's true.
+    """
+    try:
+        makefile_contentfile= repo.get_contents("Makefile")
+        makefile_content_file_string = makefile_contentfile.decoded_content.decode('utf-8')
+        search_output = re.search("^upgrade:", makefile_content_file_string)
+        if search_output:
+            return (True, "upgrade target exists in Makefile")
+        return (False, "upgrade target does not exist in makefile")
+    except github.UnknownObjectException as e:
+        return (False, "Makefile does not exit in repo")
+
 def filter_valid_pythons(version_list):
     """
     Yield versions of python3 that we currently consider valid.
@@ -268,6 +295,10 @@ if __name__ == "__main__":
                       'oep7_maybe_reason',
                       'is_in_openedx',
                       'edx-platform dependency',
+                      'oep18_compliant',
+                      'oep18_compliant_reason',
+                      'oep18_maybe',
+                      'oep18_maybe_reason'
         ]
     
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -281,6 +312,8 @@ if __name__ == "__main__":
                 oep2_compliance = is_oep2_compliant(repo)
                 oep7_compliance = is_oep7_compliant(repo)
                 oep7_maybe = might_be_oep7_compliant(repo)
+                oep18_compliance = is_oep18_compliant(repo)
+                oep18_maybe = might_be_oep18_compliant(repo)
         
                 repo_data['html_url'] = repo.html_url
                 repo_data['is_archived'] = repo.archived
@@ -291,6 +324,10 @@ if __name__ == "__main__":
                 repo_data['oep7_compliant_reason'] = is_oep7_compliant(repo)[1]
                 repo_data['oep7_maybe'] = might_be_oep7_compliant(repo)[0]
                 repo_data['oep7_maybe_reason'] = might_be_oep7_compliant(repo)[1]
+                repo_data['oep18_compliant'] = oep18_compliance[0]
+                repo_data['oep18_compliant_reason'] = oep18_compliance[1]
+                repo_data['oep18_maybe'] = oep18_maybe[0]
+                repo_data['oep18_maybe_reason'] = oep18_maybe[1]
                 repo_data['owner'] = get_repo_owner(repo)
                 repo_data['is_in_openedx'] = is_in_openedx(repo)
                 repo_data['edx-platform dependency'] = repo.html_url in REPOS_THAT_EDX_PLATFORM_DEPENDS_ON
