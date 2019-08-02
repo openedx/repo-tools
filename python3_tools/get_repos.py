@@ -347,7 +347,7 @@ if __name__ == "__main__":
                       'oep7_maybe_reason',
                       'is_in_openedx',
                       'edx-platform dependency',
-                      'python_3_milestone'
+                      'python_3_milestone',
                       'oep18_compliant',
                       'oep18_compliant_reason',
                       'oep18_maybe',
