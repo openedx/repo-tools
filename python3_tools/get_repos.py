@@ -63,9 +63,6 @@ g = Github(os.environ["GITHUB_TOKEN"])
 
 orgs = [g.get_organization(org) for org in ORGS]
 
-# Get a list of all repos across both orgs.
-repo_lists = [ org.get_repos() for org in orgs]
-
 @cache_to_disk(1)
 def has_python_code(repo: github.Repository.Repository):
     return LANGUAGE in repo.get_languages()
@@ -125,8 +122,17 @@ def is_oep_compliant(repo, oep_name):
     # check to see if oep is compliant within oeps dict.
     if 'oeps' in metadata:
         if oep_name in metadata['oeps']:
-            if metadata['oeps'][oep_name] == True:
+            oep_data = metadata['oeps'][oep_name]
+            if oep_data == True:
                 return (True, "")
+            elif isinstance(oep_data, dict):
+                if "applicable" not in oep_data or oep_data["applicable"] == "True":
+                    if "state" in oep_data and oep_data['state'] == True:
+                        return (True, "")
+                    else:
+                        return (False, oep_data["reason"])
+                else:
+                    return (False, oep_data["reason"])
             else:
                 return (False, "Stated in openedx.yaml")
         else:
@@ -134,7 +140,6 @@ def is_oep_compliant(repo, oep_name):
     else:
         return (False, "No oeps dictionary to indicate oep compliance status.")
 
-@cache_to_disk(1)
 def is_oep2_compliant(repo):
     """
     OEP-2 is the one that says all our repos need a metadata file with useful information.
@@ -145,7 +150,6 @@ def is_oep2_compliant(repo):
 
     return is_oep_compliant(repo, "oep-2")
 
-@cache_to_disk(1)
 def is_oep7_compliant(repo):
     """
     OEP-7 is the OEP about migrating to python3.  If we are compliant with it, it means that
@@ -172,7 +176,7 @@ def is_oep18_compliant(repo):
 def might_be_oep18_compliant(repo):
     """
     Use alternate indicators to see if a repo is oep18 complaint. Checks to see if upgrade target is in Makefile
-    
+
     returns (bool,str): whether it might compliant and reason we think so if it's true.
     """
     try:
@@ -209,7 +213,7 @@ def filter_valid_pythons(version_list):
 def might_be_oep7_compliant(repo):
     """
     Use alternate indicators to see if a repo supports python3
-    
+
     returns (bool,str): whether it might compliant and reason we think so if it's true.
     """
 
@@ -276,6 +280,54 @@ def is_in_openedx(repo):
 
     return False
 
+def get_openedx_tags(repo):
+    try:
+        openedx = get_remote_yaml(repo, "openedx.yaml")
+        return openedx.get("tags", [])
+
+    except github.UnknownObjectException as e:
+        return []
+    except yaml.YAMLError as e:
+        return []
+
+    return []
+
+class Milestones:
+    M2 = "M2: OpenedX Libraries"
+    M3 = "M3: edX Owned Forks"
+    M4 = "M4: OpenedX Webservices"
+    M7 = "M7: edX Webservices"
+    M9 = "M9: Non-public edX services"
+    OPENEDX_OTHER = "M4: OpenedX Other"
+    EDX_OTHER = "M9: edX Other"
+
+def bin_repo_to_milestone(repo):
+    """
+    Given a repo figure out which python 3 conversion milestone it should be done by.
+    per: https://openedx.atlassian.net/wiki/spaces/AC/pages/997818579/WIP+Project+Plan+Python3
+    """
+
+    # Assume all forks are part of milestone 3
+    if repo.fork:
+        return Milestones.M3
+
+    tags = get_openedx_tags(repo)
+    if is_in_openedx(repo):
+        if "library" in tags:
+            return Milestones.M2
+        if "webservice" in tags:
+            return Milestones.M4
+
+        return Milestones.OPENEDX_OTHER
+    else:
+        if "webservice" in tags:
+            return Milestones.M7
+        if "backend-service" in tags:
+            return Milestones.M9
+
+        return Milestones.EDX_OTHER
+
+
 if __name__ == "__main__":
     with open('python_state.csv', 'w', newline='') as csvfile:
 
@@ -295,26 +347,27 @@ if __name__ == "__main__":
                       'oep7_maybe_reason',
                       'is_in_openedx',
                       'edx-platform dependency',
+                      'python_3_milestone'
                       'oep18_compliant',
                       'oep18_compliant_reason',
                       'oep18_maybe',
                       'oep18_maybe_reason'
         ]
-    
+
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
-    
+
         for repo in expanded_repos_list(orgs):
             repo_data = {}
             repo_data['python_bytes'] = python_bytes(repo)
-        
+
             if repo_data['python_bytes'] > 0:
                 oep2_compliance = is_oep2_compliant(repo)
                 oep7_compliance = is_oep7_compliant(repo)
                 oep7_maybe = might_be_oep7_compliant(repo)
                 oep18_compliance = is_oep18_compliant(repo)
                 oep18_maybe = might_be_oep18_compliant(repo)
-        
+
                 repo_data['html_url'] = repo.html_url
                 repo_data['is_archived'] = repo.archived
                 repo_data['is_fork'] = repo.fork
@@ -331,6 +384,10 @@ if __name__ == "__main__":
                 repo_data['owner'] = get_repo_owner(repo)
                 repo_data['is_in_openedx'] = is_in_openedx(repo)
                 repo_data['edx-platform dependency'] = repo.html_url in REPOS_THAT_EDX_PLATFORM_DEPENDS_ON
-        
+                repo_data['python_3_milestone'] = bin_repo_to_milestone(repo)
+
+                if repo_data['is_archived']:
+                    continue
+
                 print(repo_data)
                 writer.writerow(repo_data)
