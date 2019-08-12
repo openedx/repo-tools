@@ -77,8 +77,9 @@ names = [
     ('Ginkgo', 2017, 8),
     ('Hawthorn', 2018, 8),
     ('Ironwood', 2019, 3),
+    ('Juniper', 2019, 10),
     ]
-future = ["Juniper", "Koa"] + list("LMNOPQRST")
+future = ['Koa', 'Lilac', 'Maple'] + list('NOPQRST')
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
 last = (None, None)
 for (name, year, month), (_, nextyear, nextmonth) in zip(releases, releases[1:]):
@@ -104,6 +105,9 @@ django_releases = [
     ('2.1', 2018, 8, False),
     ('2.2', 2019, 4, True),
     ('3.0', 2020, 1, False),
+    ('3.1', 2020, 8, False),
+    ('3.2', 2021, 4, True),
+    ('4.0', 2022, 1, False),
 ]
 for name, year, month, lts in django_releases:
     if LTS_ONLY and not lts:
@@ -115,6 +119,7 @@ for name, year, month, lts in django_releases:
 # Python releases
 python_releases = [
     ('2.7', 2010, 7, 2020, 1),
+    ('3.5', 2015, 9, 2020, 9),          # https://www.python.org/dev/peps/pep-0478/
     ('3.6', 2016, 12, 2021, 12),        # https://www.python.org/dev/peps/pep-0494/
     ('3.7', 2018, 6, 2023, 6),          # https://www.python.org/dev/peps/pep-0537/
     ('3.8', 2019, 10, 2024, 10),        # https://www.python.org/dev/peps/pep-0569/
@@ -188,6 +193,10 @@ function makeBarCalendar() {
 }
 """
 # Also in the sheet:
+# Columns width 12
+# Open Script Editor. Select makeBarCalendar. Click the Run button. It's slow, be patient.
+# Turn off gridlines
+# Row 1: center and bold.
 # Conditional formatting for row 2:
 #   "Custom formula is:"
 #   =(year(now())-$A$1)*12 + (month(now())) = column()
@@ -195,3 +204,5 @@ function makeBarCalendar() {
 
 # for row 1:
 #   =(year(now())-$A$1)*12+1 = column()
+#
+# Put a dark outline around the current boxes by hand.
