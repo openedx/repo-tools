@@ -118,7 +118,7 @@ for name, year, month, lts in django_releases:
 
 # Python releases
 python_releases = [
-    ('2.7', 2010, 7, 2020, 1),
+    ('2.7', 2010, 7, 2019, 12),
     ('3.5', 2015, 9, 2020, 9),          # https://www.python.org/dev/peps/pep-0478/
     ('3.6', 2016, 12, 2021, 12),        # https://www.python.org/dev/peps/pep-0494/
     ('3.7', 2018, 6, 2023, 6),          # https://www.python.org/dev/peps/pep-0537/
@@ -193,7 +193,6 @@ function makeBarCalendar() {
 }
 """
 # Also in the sheet:
-# Columns width 12
 # Open Script Editor. Select makeBarCalendar. Click the Run button. It's slow, be patient.
 # Turn off gridlines
 # Row 1: center and bold.
