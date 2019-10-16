@@ -18,7 +18,7 @@ class BaseCalendar:
     def column(self, year, month):
         return (year - self.start) * 12 + month - 1
 
-    def bar(self, name, start, end=None, length=None, color=None, text_color="black"):
+    def bar(self, name, start, end=None, length=None, **kwargs):
         istart = self.column(*start)
         if length is None:
             iend = self.column(*end)
@@ -30,7 +30,7 @@ class BaseCalendar:
             return  # bar is entirely in the past.
         istart = max(0, istart)
         iend = min(self.width - 1, iend)
-        self.rawbar(istart, iend, name, color, text_color)
+        self.rawbar(istart, iend, name, **kwargs)
 
 
 class GsheetCalendar(BaseCalendar):
@@ -119,12 +119,19 @@ class GsheetCalendar(BaseCalendar):
             sheet.setConditionalFormatRules(rules);
             """)
 
-    def rawbar(self, istart, iend, name, color, text_color):
+    def rawbar(self, istart, iend, name, color=None, text_color=None, current=False):
+        formatting = ""
+        if color:
+            formatting += f""".setBackground({color!r})"""
+        if text_color:
+            formatting += f""".setFontColor({text_color!r})"""
+        if current:
+            formatting += f""".setBorder(true, true, true, true, null, null, "black", SpreadsheetApp.BorderStyle.SOLID_MEDIUM)"""
+            formatting += f""".setFontWeight("bold")"""
         print(f"""\
             sheet.getRange({self.currow}, {istart + 1}, 1, {iend - istart + 1})
                 .merge()
-                .setBackground({color!r})
-                .setFontColor({text_color!r})
+                {formatting}
                 .setValue({name!r});
             """)
         self.next_bar()
@@ -162,6 +169,13 @@ START_YEAR = 2016
 END_YEAR = 2024
 LTS_ONLY = True
 
+CURRENT = {
+    "Open edX": "Ironwood",
+    "Python": "2.7",
+    "Django": "1.11",
+    "Ubuntu": "16.04",
+    "Node": "10.x",
+}
 
 cal = GsheetCalendar(START_YEAR, END_YEAR)
 cal.years_months()
@@ -181,7 +195,7 @@ names = [
     ('Ironwood', 2019, 3),
     ('Juniper', 2019, 10),
     ]
-future = ['Koa', 'Lilac', 'Maple'] + list('NOPQRST')
+future = ['Koa', 'Lilac', 'Maple'] + list('NOPQRSTUVWXYZ')
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
 last = (None, None)
 for (name, year, month), (_, nextyear, nextmonth) in zip(releases, releases[1:]):
@@ -194,7 +208,7 @@ for (name, year, month), (_, nextyear, nextmonth) in zip(releases, releases[1:])
         length = 6
     else:
         length = (nextyear * 12 + nextmonth) - (year * 12 + month)
-    cal.bar(name, start=(year, month), length=length, color="#fce5cd")
+    cal.bar(name, start=(year, month), length=length, color="#fce5cd", current=(name==CURRENT["Open edX"]))
     last = (year, month)
 
 cal.set_cycling(None)
@@ -220,7 +234,7 @@ for name, year, month, lts in django_releases:
         continue
     length = 3*12 if lts else 16
     color = "#44b78b" if lts else "#c9f0df"
-    cal.bar(f"Django {name}", start=(year, month), length=length, color=color)
+    cal.bar(f"Django {name}", start=(year, month), length=length, color=color, current=(name==CURRENT["Django"]))
 
 # Python releases
 python_releases = [
@@ -232,17 +246,17 @@ python_releases = [
     ('3.9', 2020, 10, 2025, 10),        # https://www.python.org/dev/peps/pep-0596/
 ]
 for name, syear, smonth, eyear, emonth in python_releases:
-    cal.bar(f"Python {name}", start=(syear, smonth), end=(eyear, emonth), color="#ffd545")
+    cal.bar(f"Python {name}", start=(syear, smonth), end=(eyear, emonth), color="#ffd545", current=(name==CURRENT["Python"]))
 
 # Ubuntu releases
 for year, month in itertools.product(range(16, 23), [4, 10]):
-    name = "Ubuntu {:d}.{:02d}".format(year, month)
+    name = "{:d}.{:02d}".format(year, month)
     lts = (year % 2 == 0) and (month == 4)
     if LTS_ONLY and not lts:
         continue
     length = 5*12 if lts else 9
     color = "#E95420" if lts else "#F4AA90"     # http://design.ubuntu.com/brand/colour-palette
-    cal.bar(name, (2000+year, month), length=length, color=color, text_color="white")
+    cal.bar(f"Ubuntu {name}", (2000+year, month), length=length, color=color, text_color="white", current=(name==CURRENT["Ubuntu"]))
 
 # Node releases: https://github.com/nodejs/Release
 node_releases = [
@@ -253,7 +267,7 @@ node_releases = [
     ('14.x', 2020, 4, 2023, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
-    cal.bar(f"Node {name}", start=(syear, smonth), end=(eyear, emonth), color="#2f6c1b", text_color="white")
+    cal.bar(f"Node {name}", start=(syear, smonth), end=(eyear, emonth), color="#2f6c1b", text_color="white", current=(name==CURRENT["Node"]))
 
 
 cal.write()
