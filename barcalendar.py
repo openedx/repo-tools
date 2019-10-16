@@ -3,10 +3,24 @@
 Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
 """
 
+import colorsys
 import csv
 import datetime
 import itertools
 import sys
+
+def css_to_rgb(hex):
+    assert hex[0] == "#"
+    return [int(h, 16)/255 for h in [hex[1:3], hex[3:5], hex[5:7]]]
+
+def rgb_to_css(r, g, b):
+    return "#" + "".join(f"{int(v*255):02x}" for v in (r, g, b))
+
+def lighten(css, amount=0.5):
+    """Make a CSS color some amount lighter."""
+    h, l, s = colorsys.rgb_to_hls(*css_to_rgb(css))
+    lighter = colorsys.hls_to_rgb(h, l + (1 - l) * amount, s)
+    return rgb_to_css(*lighter)
 
 
 class BaseCalendar:
@@ -30,6 +44,8 @@ class BaseCalendar:
             return  # bar is entirely in the past.
         istart = max(0, istart)
         iend = min(self.width - 1, iend)
+        if end and end[0] == 3000:
+            kwargs.update(indefinite=True)
         self.rawbar(istart, iend, name, **kwargs)
 
 
@@ -119,7 +135,7 @@ class GsheetCalendar(BaseCalendar):
             sheet.setConditionalFormatRules(rules);
             """)
 
-    def rawbar(self, istart, iend, name, color=None, text_color=None, current=False):
+    def rawbar(self, istart, iend, name, color=None, text_color=None, current=False, indefinite=False):
         formatting = ""
         if color:
             formatting += f""".setBackground({color!r})"""
@@ -128,12 +144,26 @@ class GsheetCalendar(BaseCalendar):
         if current:
             formatting += f""".setBorder(true, true, true, true, null, null, "black", SpreadsheetApp.BorderStyle.SOLID_MEDIUM)"""
             formatting += f""".setFontWeight("bold")"""
+        if indefinite:
+            iend = self.width - 24
         print(f"""\
             sheet.getRange({self.currow}, {istart + 1}, 1, {iend - istart + 1})
                 .merge()
                 {formatting}
                 .setValue({name!r});
             """)
+        if indefinite:
+            for i in range(4):
+                bg = lighten(color, amount=(i+1)/5)
+                print(f"""\
+                    sheet.getRange({self.currow}, {self.width - 22 + i * 3}, 1, 3)
+                        .merge()
+                        .setBackground({bg!r});
+                    """)
+            print(f"""\
+                sheet.getRange({self.currow}, {self.width - 10}, 1, 1)
+                    .setValue("(indefinite end)");
+                """)
         self.next_bar()
 
     def set_cycling(self, cycling):
