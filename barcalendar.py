@@ -1,13 +1,6 @@
 #!/usr/bin/env python3.6
 """
-Make a csv file that can be imported into Google Sheets, and then manipulated
-with the Javascript code at the end of this file.  The result is a calendar
-with bars indicating support windows of various pieces of software.
-
-It's kind of silly how it works now, with a csv file output.  It would make
-more sense to just output a list of bars to draw, and then use the Javascript
-to draw them.
-
+Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
 """
 
 import csv
@@ -15,7 +8,6 @@ import datetime
 import itertools
 import sys
 
-EXTEND = '-'
 
 class BaseCalendar:
     def __init__(self, start, end):
@@ -41,37 +33,7 @@ class BaseCalendar:
         self.rawbar(istart, iend, name, color, text_color)
 
 
-class CsvCalendar(BaseCalendar):
-    def __init__(self, start, end):
-        super().__init__(start, end)
-        self.rows = []
-
-    def years_months(self):
-        years = []
-        months = []
-        for year in range(self.start, self.end+1):
-            years.append(year)
-            years.extend([EXTEND]*11)
-            months.extend("JFMAMJJASOND")
-        self.rows.append(years)
-        self.rows.append(months)
-
-    def rawbar(self, istart, iend, name, color, text_color):
-        row = [''] * self.width
-        if color is not None:
-            name += "|" + color
-        row[istart] = name
-        for ii in range(istart+1, iend+1):
-            row[ii] = EXTEND
-        self.rows.append(row)
-
-    def write(self):
-        writer = csv.writer(sys.stdout)
-        for row in self.rows:
-            writer.writerow(row)
-
-
-class NewCalendar(BaseCalendar):
+class GsheetCalendar(BaseCalendar):
     def __init__(self, start, end):
         super().__init__(start, end)
         self.currow = 1
@@ -201,11 +163,7 @@ END_YEAR = 2024
 LTS_ONLY = True
 
 
-
-if sys.argv[1] == "new":
-    cal = NewCalendar(START_YEAR, END_YEAR)
-else:
-    cal = CsvCalendar(START_YEAR, END_YEAR)
+cal = GsheetCalendar(START_YEAR, END_YEAR)
 cal.years_months()
 
 
@@ -299,59 +257,3 @@ for name, syear, smonth, eyear, emonth in node_releases:
 
 
 cal.write()
-
-
-# The code for Google Sheets to turn this output into something nice.
-"""
-function mergeRangeBars(range) {
-  var sheet = range.getSheet();
-  for (var r = range.getRow(); r <= range.getLastRow(); r++) {
-    for (var c = range.getColumn(); c <= range.getLastColumn(); c++) {
-      var firstValue = sheet.getRange(r, c).getValue();
-      if (firstValue !== "") {
-        // Start of a range, look for dashes
-        cend = c+1;
-        while (sheet.getRange(r, cend).getValue() === "-") {
-          cend++;
-        }
-        cend--;
-        var fullRange = sheet.getRange(r, c, 1, cend-c+1);
-        if (cend != c) {
-          fullRange.merge();
-        }
-        // Apply colors
-        if (typeof firstValue === 'string') {
-          var parts = firstValue.split('|');
-          fullRange.setValue(parts[0]);
-          if (parts.length > 1) {
-            fullRange.setBackground(parts[1]);
-          }
-        }
-      }
-    }
-  }
-}
-
-function makeBarCalendar() {
-  var sheet = SpreadsheetApp.getActiveSheet();
-  var range = sheet.getDataRange();
-  sheet.setColumnWidths(range.getColumn(), range.getWidth(), 12);
-  sheet.setRowHeights(range.getRow(), range.getHeight(), 18);
-  range.setFontSize(9);
-  mergeRangeBars(range);
-  sheet.setFrozenRows(2);
-}
-"""
-# Also in the sheet:
-# Open Script Editor. Select makeBarCalendar. Click the Run button. It's slow, be patient.
-# Turn off gridlines
-# Row 1: center and bold.
-# Conditional formatting for row 2:
-#   "Custom formula is:"
-#   =(year(now())-$A$1)*12 + (month(now())) = column()
-#   color red
-
-# for row 1:
-#   =(year(now())-$A$1)*12+1 = column()
-#
-# Put a dark outline around the current boxes by hand.
