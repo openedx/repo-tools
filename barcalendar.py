@@ -1,6 +1,19 @@
 #!/usr/bin/env python3.6
 """
 Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
+
+1. Run this program.  It prints JavaScript code. Copy it.
+2. Open a Google Sheet, either the existing Support Windows spreadsheet
+    (https://docs.google.com/spreadsheets/d/11DheEtMDGrbA9hsUvZ2SEd4Cc8CaC4mAfoV8SVaLBGI)
+    or a new spreadsheet.
+3. If the current tab isn't empty, open a new tab (Add Sheet).
+4. Open the script editor (Tools - Script Editor).
+5. If there's any code there, delete it.
+6. Paste the JavaScript code this program wrote.
+7. Save the code.  The function picker at the top should select makeBarCalendar.
+8. Click the Run tool on the toolbar.
+9. Your sheet should now be populated with a beautiful calendar.
+
 """
 
 import colorsys
@@ -311,5 +324,8 @@ mongo_releases = [
 ]
 for name, syear, smonth, eyear, emonth in mongo_releases:
     cal.bar(f"Mongo {name}", start=(syear, smonth), end=(eyear, emonth), color="#4da65a", current=(name==CURRENT["Mongo"]))
+
+cal.text_line("")
+cal.text_line("(created by https://github.com/edx/repo-tools/blob/master/barcalendar.py)")
 
 cal.write()
