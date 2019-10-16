@@ -123,6 +123,7 @@ python_releases = [
     ('3.6', 2016, 12, 2021, 12),        # https://www.python.org/dev/peps/pep-0494/
     ('3.7', 2018, 6, 2023, 6),          # https://www.python.org/dev/peps/pep-0537/
     ('3.8', 2019, 10, 2024, 10),        # https://www.python.org/dev/peps/pep-0569/
+    ('3.9', 2020, 10, 2025, 10),        # https://www.python.org/dev/peps/pep-0596/
 ]
 for name, syear, smonth, eyear, emonth in python_releases:
     cal.bar(f"Python {name}", start=(syear, smonth), end=(eyear, emonth), color="#ffd545")
@@ -143,6 +144,7 @@ node_releases = [
     ('8.x', 2017, 5, 2019, 12),
     ('10.x', 2018, 4, 2021, 4),
     ('12.x', 2019, 4, 2022, 4),
+    ('14.x', 2020, 4, 2023, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
     cal.bar(f"Node {name}", start=(syear, smonth), end=(eyear, emonth), color="#2f6c1b")
