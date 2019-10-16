@@ -198,6 +198,11 @@ class GsheetCalendar(BaseCalendar):
             """)
         self.currow += 1
 
+    def section_note(self, text):
+        print(f"""\
+            sheet.getRange({self.currow}, {self.width - 10}).setValue({text!r});
+            """)
+
     def freeze_here(self):
         print(f"""\
             sheet.setFrozenRows({self.currow - 1});
@@ -226,6 +231,7 @@ cal.years_months()
 
 
 # Open edX releases
+cal.section_note("https://edx.readthedocs.io/projects/edx-developer-docs/en/latest/named_releases.html")
 cal.set_cycling(3)
 names = [
     ('Aspen', 2014, 10),
@@ -260,6 +266,7 @@ cal.freeze_here()
 cal.text_line("(this calendar is part of OEP-10, please don't change it without considering the impact there.)")
 
 # Django releases
+cal.section_note("https://www.djangoproject.com/download/#supported-versions")
 django_releases = [
     ('1.8', 2015, 4, True),
     ('1.9', 2016, 1, False),
@@ -302,7 +309,8 @@ for year, month in itertools.product(range(16, 23), [4, 10]):
     color = "#E95420" if lts else "#F4AA90"     # http://design.ubuntu.com/brand/colour-palette
     cal.bar(f"Ubuntu {name}", (2000+year, month), length=length, color=color, text_color="white", current=(name==CURRENT["Ubuntu"]))
 
-# Node releases: https://github.com/nodejs/Release
+# Node releases
+cal.section_note("https://github.com/nodejs/Release")
 node_releases = [
     ('6.x', 2016, 4, 2019, 4),
     ('8.x', 2017, 5, 2019, 12),
@@ -313,7 +321,8 @@ node_releases = [
 for name, syear, smonth, eyear, emonth in node_releases:
     cal.bar(f"Node {name}", start=(syear, smonth), end=(eyear, emonth), color="#2f6c1b", text_color="white", current=(name==CURRENT["Node"]))
 
-# Mongo releases: https://www.mongodb.com/support-policy (search for MongoDB Server)
+# Mongo releases
+cal.section_note("https://www.mongodb.com/support-policy")      # search for MongoDB Server
 mongo_releases = [
     #('3.0', 2015, 3, 2018, 2),
     ('3.2', 2015, 12, 2018, 9),
