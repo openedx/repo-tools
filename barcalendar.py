@@ -1,72 +1,238 @@
 #!/usr/bin/env python3.6
 """
-Make a csv file that can be imported into Google Sheets, and then manipulated
-with the Javascript code at the end of this file.  The result is a calendar
-with bars indicating support windows of various pieces of software.
+Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
 
-It's kind of silly how it works now, with a csv file output.  It would make
-more sense to just output a list of bars to draw, and then use the Javascript
-to draw them.
+1. Run this program.  It prints JavaScript code. Copy it.
+2. Open a Google Sheet, either the existing Support Windows spreadsheet
+    (https://docs.google.com/spreadsheets/d/11DheEtMDGrbA9hsUvZ2SEd4Cc8CaC4mAfoV8SVaLBGI)
+    or a new spreadsheet.
+3. If the current tab isn't empty, open a new tab (Add Sheet).
+4. Open the script editor (Tools - Script Editor).
+5. If there's any code there, delete it.
+6. Paste the JavaScript code this program wrote.
+7. Save the code.  The function picker at the top should select makeBarCalendar.
+8. Click the Run tool on the toolbar.
+9. Your sheet should now be populated with a beautiful calendar.
 
 """
 
+import colorsys
 import csv
 import datetime
 import itertools
 import sys
+
+def css_to_rgb(hex):
+    assert hex[0] == "#"
+    return [int(h, 16)/255 for h in [hex[1:3], hex[3:5], hex[5:7]]]
+
+def rgb_to_css(r, g, b):
+    return "#" + "".join(f"{int(v*255):02x}" for v in (r, g, b))
+
+def lighten(css, amount=0.5):
+    """Make a CSS color some amount lighter."""
+    h, l, s = colorsys.rgb_to_hls(*css_to_rgb(css))
+    lighter = colorsys.hls_to_rgb(h, l + (1 - l) * amount, s)
+    return rgb_to_css(*lighter)
+
+
+class BaseCalendar:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+        self.width = 12 * (end - start + 1)
+
+    def column(self, year, month):
+        return (year - self.start) * 12 + month - 1
+
+    def bar(self, name, start, end=None, length=None, **kwargs):
+        istart = self.column(*start)
+        if length is None:
+            iend = self.column(*end)
+        else:
+            iend = istart + length - 1
+        if istart >= self.width:
+            return  # bar is entirely in the future.
+        if iend < 0:
+            return  # bar is entirely in the past.
+        istart = max(0, istart)
+        iend = min(self.width - 1, iend)
+        if end and end[0] == 3000:
+            kwargs.update(indefinite=True)
+        self.rawbar(istart, iend, name, **kwargs)
+
+
+class GsheetCalendar(BaseCalendar):
+    def __init__(self, start, end):
+        super().__init__(start, end)
+        self.currow = 1
+        self.cycling = None
+        self.prologue()
+
+    def prologue(self):
+        print(f"""\
+            function makeBarCalendar() {{
+            var sheet = SpreadsheetApp.getActiveSheet();
+            sheet.getDataRange().deleteCells(SpreadsheetApp.Dimension.ROWS);
+            """)
+
+    def epilog(self):
+        print(f"""\
+            range = sheet.getDataRange();
+            sheet.setColumnWidths(range.getColumn(), range.getWidth(), 12);
+            sheet.setRowHeights(range.getRow(), range.getHeight(), 18);
+            range.setFontSize(9);
+
+            var keepRows = 10;
+            var tooMany = sheet.getMaxRows() - range.getLastRow() - keepRows;
+            if (tooMany > 0) {{
+                sheet.deleteRows(range.getLastRow() + keepRows + 1, tooMany);
+            }}
+            var keepCols = 1;
+            var tooMany = sheet.getMaxColumns() - range.getLastColumn() - keepCols;
+            if (tooMany > 0) {{
+                sheet.deleteColumns(range.getLastColumn() + keepCols + 1, tooMany);
+            }}
+
+            for (var c = 12; c <= range.getLastColumn(); c += 12) {{
+                sheet.getRange(1, c, sheet.getMaxRows(), 1)
+                    .setBorder(null, null, null, true, null, null, "black", null);
+            }}
+
+            }}
+            """)
+
+    def years_months(self):
+        yearrow = self.currow
+        monthrow = self.currow + 1
+        self.currow += 2
+
+        print(f"""\
+            sheet.insertColumns(1, {(self.end - self.start + 1) * 12});
+            """)
+
+        for year in range(self.start, self.end+1):
+            iyear = self.column(year, 1) + 1
+            print(f"""\
+                sheet.getRange({yearrow}, {iyear}, 1, 12)
+                    .merge()
+                    .setBorder(null, null, null, true, null, null, "black", null)
+                    .setValue("{year}");
+                for (m = 0; m < 12; m++) {{
+                    sheet.getRange({monthrow}, {iyear}+m).setValue("JFMAMJJASOND"[m]);
+                }}
+                """);
+        print(f"""\
+            sheet.getRange({yearrow}, 1, 1, {self.width})
+                .setFontWeight("bold")
+                .setHorizontalAlignment("center");
+            sheet.getRange({monthrow}, 1, 1, {self.width})
+                .setHorizontalAlignment("center");
+            """);
+        print(f"""\
+            var rules = sheet.getConditionalFormatRules();
+            rules.push(
+            SpreadsheetApp.newConditionalFormatRule()
+                .whenFormulaSatisfied("=(year(now())-$A$1)*12+1 = column()")
+                .setBackground("#E9CECE")
+                .setRanges([sheet.getRange({yearrow}, 1, 1, {self.width})])
+                .build()
+            );
+            rules.push(
+            SpreadsheetApp.newConditionalFormatRule()
+                .whenFormulaSatisfied("=(year(now())-$A$1)*12 + (month(now())) = column()")
+                .setBackground("#E9CECE")
+                .setRanges([sheet.getRange({monthrow}, 1, 1, {self.width})])
+                .build()
+            );
+            sheet.setConditionalFormatRules(rules);
+            """)
+
+    def rawbar(self, istart, iend, name, color=None, text_color=None, current=False, indefinite=False):
+        formatting = ""
+        if color:
+            formatting += f""".setBackground({color!r})"""
+        if text_color:
+            formatting += f""".setFontColor({text_color!r})"""
+        if current:
+            formatting += f""".setBorder(true, true, true, true, null, null, "black", SpreadsheetApp.BorderStyle.SOLID_MEDIUM)"""
+            formatting += f""".setFontWeight("bold")"""
+        if indefinite:
+            iend = self.width - 24
+        print(f"""\
+            sheet.getRange({self.currow}, {istart + 1}, 1, {iend - istart + 1})
+                .merge()
+                {formatting}
+                .setValue({name!r});
+            """)
+        if indefinite:
+            for i in range(4):
+                bg = lighten(color, amount=(i+1)/5)
+                print(f"""\
+                    sheet.getRange({self.currow}, {self.width - 22 + i * 3}, 1, 3)
+                        .merge()
+                        .setBackground({bg!r});
+                    """)
+            print(f"""\
+                sheet.getRange({self.currow}, {self.width - 10}, 1, 1)
+                    .setValue("(indefinite end)");
+                """)
+        self.next_bar()
+
+    def set_cycling(self, cycling):
+        if cycling:
+            self.top_cycling_row = self.currow
+        else:
+            self.currow = self.top_cycling_row + self.cycling
+        self.cycling = cycling
+
+    def next_bar(self):
+        self.currow += 1
+        if self.cycling:
+            if self.currow >= self.top_cycling_row + self.cycling:
+                self.currow = self.top_cycling_row
+
+    def text_line(self, text=""):
+        print(f"""\
+            sheet.getRange({self.currow}, 1).setValue({text!r})
+            """)
+        self.currow += 1
+
+    def section_note(self, text):
+        print(f"""\
+            sheet.getRange({self.currow}, {self.width - 10}).setValue({text!r});
+            """)
+
+    def freeze_here(self):
+        print(f"""\
+            sheet.setFrozenRows({self.currow - 1});
+            """)
+
+    def write(self):
+        self.epilog()
+
 
 # Options
 START_YEAR = 2016
 END_YEAR = 2024
 LTS_ONLY = True
 
+CURRENT = {
+    "Open edX": "Ironwood",
+    "Python": "2.7",
+    "Django": "1.11",
+    "Ubuntu": "16.04",
+    "Node": "10.x",
+    "Mongo": "3.2",
+}
 
-EXTEND = '-'
+cal = GsheetCalendar(START_YEAR, END_YEAR)
+cal.years_months()
 
-class Calendar:
-    def __init__(self, start, end):
-        self.start = start
-        self.blanks = [''] * 12 * (end - start + 1)
-        self.rows = []
-        years = []
-        months = []
-        for year in range(start, end+1):
-            years.append(year)
-            years.extend([EXTEND]*11)
-            months.extend("JFMAMJJASOND")
-        self.rows.append(years)
-        self.rows.append(months)
-
-    def bar(self, name, start, end=None, length=None, color=None):
-        row = list(self.blanks)
-        year, month = start
-        istart = (year - self.start) * 12 + month - 1
-        if length is None:
-            eyear, emonth = end
-            iend = (eyear - self.start) * 12 + emonth - 1
-        else:
-            iend = istart + length - 1
-        if istart >= len(row):
-            return  # bar is entirely in the future.
-        if iend < 0:
-            return  # bar is entirely in the past.
-        istart = max(0, istart)
-        iend = min(len(row)-1, iend)
-        if color is not None:
-            name += "|" + color
-        row[istart] = name
-        for ii in range(istart+1, iend+1):
-            row[ii] = EXTEND
-        self.rows.append(row)
-
-    def write(self, outfile):
-        writer = csv.writer(outfile)
-        for row in self.rows:
-            writer.writerow(row)
-
-cal = Calendar(START_YEAR, END_YEAR)
 
 # Open edX releases
+cal.section_note("https://edx.readthedocs.io/projects/edx-developer-docs/en/latest/named_releases.html")
+cal.set_cycling(3)
 names = [
     ('Aspen', 2014, 10),
     ('Birch', 2015, 2),
@@ -79,7 +245,7 @@ names = [
     ('Ironwood', 2019, 3),
     ('Juniper', 2019, 10),
     ]
-future = ['Koa', 'Lilac', 'Maple'] + list('NOPQRST')
+future = ['Koa', 'Lilac', 'Maple'] + list('NOPQRSTUVWXYZ')
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
 last = (None, None)
 for (name, year, month), (_, nextyear, nextmonth) in zip(releases, releases[1:]):
@@ -92,10 +258,15 @@ for (name, year, month), (_, nextyear, nextmonth) in zip(releases, releases[1:])
         length = 6
     else:
         length = (nextyear * 12 + nextmonth) - (year * 12 + month)
-    cal.bar(name, start=(year, month), length=length, color="#fce5cd")
+    cal.bar(name, start=(year, month), length=length, color="#fce5cd", current=(name==CURRENT["Open edX"]))
     last = (year, month)
 
+cal.set_cycling(None)
+cal.freeze_here()
+cal.text_line("(this calendar is part of OEP-10, please don't change it without considering the impact there.)")
+
 # Django releases
+cal.section_note("https://www.djangoproject.com/download/#supported-versions")
 django_releases = [
     ('1.8', 2015, 4, True),
     ('1.9', 2016, 1, False),
@@ -114,7 +285,7 @@ for name, year, month, lts in django_releases:
         continue
     length = 3*12 if lts else 16
     color = "#44b78b" if lts else "#c9f0df"
-    cal.bar(f"Django {name}", start=(year, month), length=length, color=color)
+    cal.bar(f"Django {name}", start=(year, month), length=length, color=color, current=(name==CURRENT["Django"]))
 
 # Python releases
 python_releases = [
@@ -123,85 +294,47 @@ python_releases = [
     ('3.6', 2016, 12, 2021, 12),        # https://www.python.org/dev/peps/pep-0494/
     ('3.7', 2018, 6, 2023, 6),          # https://www.python.org/dev/peps/pep-0537/
     ('3.8', 2019, 10, 2024, 10),        # https://www.python.org/dev/peps/pep-0569/
+    ('3.9', 2020, 10, 2025, 10),        # https://www.python.org/dev/peps/pep-0596/
 ]
 for name, syear, smonth, eyear, emonth in python_releases:
-    cal.bar(f"Python {name}", start=(syear, smonth), end=(eyear, emonth), color="#ffd545")
+    cal.bar(f"Python {name}", start=(syear, smonth), end=(eyear, emonth), color="#ffd545", current=(name==CURRENT["Python"]))
 
 # Ubuntu releases
 for year, month in itertools.product(range(16, 23), [4, 10]):
-    name = "Ubuntu {:d}.{:02d}".format(year, month)
+    name = "{:d}.{:02d}".format(year, month)
     lts = (year % 2 == 0) and (month == 4)
     if LTS_ONLY and not lts:
         continue
     length = 5*12 if lts else 9
     color = "#E95420" if lts else "#F4AA90"     # http://design.ubuntu.com/brand/colour-palette
-    cal.bar(name, (2000+year, month), length=length, color=color)
+    cal.bar(f"Ubuntu {name}", (2000+year, month), length=length, color=color, text_color="white", current=(name==CURRENT["Ubuntu"]))
 
-# Node releases: https://github.com/nodejs/Release
+# Node releases
+cal.section_note("https://github.com/nodejs/Release")
 node_releases = [
     ('6.x', 2016, 4, 2019, 4),
     ('8.x', 2017, 5, 2019, 12),
     ('10.x', 2018, 4, 2021, 4),
     ('12.x', 2019, 4, 2022, 4),
+    ('14.x', 2020, 4, 2023, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
-    cal.bar(f"Node {name}", start=(syear, smonth), end=(eyear, emonth), color="#2f6c1b")
+    cal.bar(f"Node {name}", start=(syear, smonth), end=(eyear, emonth), color="#2f6c1b", text_color="white", current=(name==CURRENT["Node"]))
 
+# Mongo releases
+cal.section_note("https://www.mongodb.com/support-policy")      # search for MongoDB Server
+mongo_releases = [
+    #('3.0', 2015, 3, 2018, 2),
+    ('3.2', 2015, 12, 2018, 9),
+    ('3.4', 2016, 11, 2020, 1),
+    ('3.6', 2017, 11, 3000, 1),
+    ('4.0', 2018, 6, 3000, 1),
+    #('4.2', 2019, 8, 3000, 1),
+]
+for name, syear, smonth, eyear, emonth in mongo_releases:
+    cal.bar(f"Mongo {name}", start=(syear, smonth), end=(eyear, emonth), color="#4da65a", current=(name==CURRENT["Mongo"]))
 
-cal.write(sys.stdout)
+cal.text_line("")
+cal.text_line("(created by https://github.com/edx/repo-tools/blob/master/barcalendar.py)")
 
-
-# The code for Google Sheets to turn this output into something nice.
-"""
-function mergeRangeBars(range) {
-  var sheet = range.getSheet();
-  for (var r = range.getRow(); r <= range.getLastRow(); r++) {
-    for (var c = range.getColumn(); c <= range.getLastColumn(); c++) {
-      var firstValue = sheet.getRange(r, c).getValue();
-      if (firstValue !== "") {
-        // Start of a range, look for dashes
-        cend = c+1;
-        while (sheet.getRange(r, cend).getValue() === "-") {
-          cend++;
-        }
-        cend--;
-        var fullRange = sheet.getRange(r, c, 1, cend-c+1);
-        if (cend != c) {
-          fullRange.merge();
-        }
-        // Apply colors
-        if (typeof firstValue === 'string') {
-          var parts = firstValue.split('|');
-          fullRange.setValue(parts[0]);
-          if (parts.length > 1) {
-            fullRange.setBackground(parts[1]);
-          }
-        }
-      }
-    }
-  }
-}
-
-function makeBarCalendar() {
-  var sheet = SpreadsheetApp.getActiveSheet();
-  var range = sheet.getDataRange();
-  sheet.setColumnWidths(range.getColumn(), range.getWidth(), 12);
-  sheet.setRowHeights(range.getRow(), range.getHeight(), 18);
-  range.setFontSize(9);
-  mergeRangeBars(range);
-  sheet.setFrozenRows(2);
-}
-"""
-# Also in the sheet:
-# Open Script Editor. Select makeBarCalendar. Click the Run button. It's slow, be patient.
-# Turn off gridlines
-# Row 1: center and bold.
-# Conditional formatting for row 2:
-#   "Custom formula is:"
-#   =(year(now())-$A$1)*12 + (month(now())) = column()
-#   color red
-
-# for row 1:
-#   =(year(now())-$A$1)*12+1 = column()
-#
-# Put a dark outline around the current boxes by hand.
+cal.write()
