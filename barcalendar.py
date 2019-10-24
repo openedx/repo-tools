@@ -300,7 +300,7 @@ for name, syear, smonth, eyear, emonth in python_releases:
     cal.bar(f"Python {name}", start=(syear, smonth), end=(eyear, emonth), color="#ffd545", current=(name==CURRENT["Python"]))
 
 # Ubuntu releases
-ubuntu_nicks = {
+ubuntu_nicks = {                        # https://wiki.ubuntu.com/Releases
     '16.04': 'Xenial Xerus',
     '18.04': 'Bionic Beaver',
     '20.04': 'Focal Fossa',
