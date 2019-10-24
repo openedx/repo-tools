@@ -300,6 +300,12 @@ for name, syear, smonth, eyear, emonth in python_releases:
     cal.bar(f"Python {name}", start=(syear, smonth), end=(eyear, emonth), color="#ffd545", current=(name==CURRENT["Python"]))
 
 # Ubuntu releases
+ubuntu_nicks = {
+    '16.04': 'Xenial Xerus',
+    '18.04': 'Bionic Beaver',
+    '20.04': 'Focal Fossa',
+}
+
 for year, month in itertools.product(range(16, 23), [4, 10]):
     name = "{:d}.{:02d}".format(year, month)
     lts = (year % 2 == 0) and (month == 4)
@@ -307,7 +313,10 @@ for year, month in itertools.product(range(16, 23), [4, 10]):
         continue
     length = 5*12 if lts else 9
     color = "#E95420" if lts else "#F4AA90"     # http://design.ubuntu.com/brand/colour-palette
-    cal.bar(f"Ubuntu {name}", (2000+year, month), length=length, color=color, text_color="white", current=(name==CURRENT["Ubuntu"]))
+    nick = ubuntu_nicks.get(name, '')
+    if nick:
+        nick = f" {nick}"
+    cal.bar(f"Ubuntu {name}{nick}", (2000+year, month), length=length, color=color, text_color="white", current=(name==CURRENT["Ubuntu"]))
 
 # Node releases
 cal.section_note("https://github.com/nodejs/Release")
