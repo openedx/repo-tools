@@ -2,7 +2,7 @@
 
 from collections import OrderedDict
 
-from github3 import GitHubError, GitHub
+from github3 import GitHubError
 from github3.exceptions import NotFoundError
 from github3.repos.repo import Repository
 from mock import Mock
@@ -18,6 +18,7 @@ ALREADY_EXISTS = GitHubError(Mock(status_code=422, json=Mock(return_value={"mess
 
 
 class FakeNotFoundError(NotFoundError):
+    """A NotFoundError with enough content to please the code."""
     status_code = 404
     content = "A fake response"
 
@@ -167,10 +168,7 @@ def test_get_ref_for_repos_not_exist():
 
 
 def test_commit_ref_info(expected_repos):
-
-    mock_hub = Mock(spec=GitHub, repository=lambda org, repo: expected_repos.get("{}/{}".format(org, repo)))
-
-    result = commit_ref_info(mock_hub, expected_repos)
+    result = commit_ref_info(expected_repos)
 
     edx_edx_platform = find_repo(expected_repos, 'edx/edx-platform')
     edx_configuration = find_repo(expected_repos, 'edx/configuration')
@@ -340,7 +338,7 @@ def test_create_existing_tag_at_end_no_rollback(expected_commits):
     find_repo(ordered_commits, 'edx/edx-platform').create_ref.side_effect = ALREADY_EXISTS
 
     with pytest.raises(TagReleaseError) as excinfo:
-        result = create_ref_for_repos(
+        create_ref_for_repos(
             ordered_commits,
             "tag-exists-some-repos",
             rollback_on_fail=False,
@@ -375,30 +373,32 @@ def test_create_existing_tag_at_end_rollback_failure(expected_commits):
         find_repo_item(expected_commits, 'edx/edx-platform'),
     ])
 
-    find_repo(ordered_commits, 'edx/edx-platform').create_ref.side_effect = ALREADY_EXISTS
+    edx_edx_platform = find_repo(ordered_commits, 'edx/edx-platform')
+    edx_edx_platform.create_ref.side_effect = ALREADY_EXISTS
     # When we try to delete the configuration tag, it will fail with a 500 error
-    find_repo(ordered_commits, 'edx/configuration').create_ref.return_value.delete.side_effect = GitHubError(Mock(status_code=500))
+    edx_configuration = find_repo(ordered_commits, 'edx/configuration')
+    edx_configuration.create_ref.return_value.delete.side_effect = GitHubError(Mock(status_code=500))
 
     with pytest.raises(TagReleaseError) as excinfo:
-        result = create_ref_for_repos(
+        create_ref_for_repos(
             ordered_commits,
             "tag-exists-some-repos",
             dry=False,
         )
 
-    find_repo(ordered_commits, 'edx/edx-platform').create_ref.assert_called_once_with(
+    edx_edx_platform.create_ref.assert_called_once_with(
         sha="deadbeef12345",
         ref="refs/tags/tag-exists-some-repos",
     )
 
-    find_repo(ordered_commits, 'edx/configuration').create_ref.assert_called_once_with(
+    edx_configuration.create_ref.assert_called_once_with(
         sha="12345deadbeef",
         ref="refs/tags/tag-exists-some-repos",
     )
 
     # Second response failed, so try to rollback.
     # ... but configuration fails, so we get an exception
-    find_repo(ordered_commits, 'edx/configuration').create_ref.return_value.delete.assert_called_once_with()
+    edx_configuration.create_ref.return_value.delete.assert_called_once_with()
     assert "failed to delete ref on the following repos: edx/configuration" in str(excinfo)
 
 

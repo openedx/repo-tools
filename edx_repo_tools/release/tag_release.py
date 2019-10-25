@@ -25,7 +25,6 @@ from tqdm import tqdm
 from edx_repo_tools.auth import pass_github
 from edx_repo_tools.data import iter_openedx_yaml
 from edx_repo_tools.utils import dry, dry_echo
-from github3 import GitHubError
 
 log = logging.getLogger(__name__)
 
@@ -124,7 +123,7 @@ def override_repo_refs(repos, override_ref=None, overrides=None):
         A new dict mapping Repository objects to openedx.yaml data, with refs overridden.
 
     """
-    repos = { r: copy.deepcopy(data) for r, data in repos.items() }
+    repos = {r: copy.deepcopy(data) for r, data in repos.items()}
     overrides = overrides or {}
     if override_ref or overrides:
         for repo, repo_data in repos.items():
@@ -134,7 +133,7 @@ def override_repo_refs(repos, override_ref=None, overrides=None):
     return repos
 
 
-def commit_ref_info(hub, repos, skip_invalid=False):
+def commit_ref_info(repos, skip_invalid=False):
     """
     Returns a dict of information about what commit should be tagged in each repo.
 
@@ -143,7 +142,6 @@ def commit_ref_info(hub, repos, skip_invalid=False):
     in which case the invalid information will simply be logged and ignored.
 
     Arguments:
-        hub (:class:`~github3.GitHub`): an authenticated GitHub instance.
         repos (dict): A dict mapping Repository objects to openedx.yaml data.
         skip_invalid (bool): if true, log invalid data in `repos`, but keep going.
 
@@ -229,11 +227,11 @@ def get_latest_commit_for_ref(repo, ref):
         # https://github.com/sigmavirus24/github3.py/issues/310
         # We'll catch the error and make the problem clearer.
         if "pop() takes at most 1 argument (2 given)" in str(err):
-            raise ValueError("In repo {}, ref {!r} doesn't exist.".format(repo, ref))
+            raise ValueError(u"In repo {}, ref {!r} doesn't exist.".format(repo, ref))
         else:
             raise
     except NotFoundError:
-        raise ValueError("In repo {}, ref {!r} doesn't exist.".format(repo, ref))
+        raise ValueError(u"In repo {}, ref {!r} doesn't exist.".format(repo, ref))
 
     if tag.object.type == "tag":
         # An annotated tag, one more level of indirection.
@@ -250,10 +248,7 @@ def get_latest_commit_for_ref(repo, ref):
             "committer": commit.committer,
         }
 
-    msg = "No commit for {ref} in {repo}".format(
-        ref=ref, repo=repo.full_name,
-    )
-    raise ValueError(msg)
+    raise ValueError(u"No commit for {ref} in {repo}".format(ref=ref, repo=repo.full_name))
 
 
 
@@ -576,8 +571,8 @@ def ensure_writable(repos):
     while repos:
         click.secho(u"The following repos need to be unarchived to continue:", fg='red', bold=True)
         for repo in repos:
-            click.echo("  {}: https://github.com/{}/settings".format(repo.full_name, repo.full_name))
-        while not click.confirm("Are they all unarchived?"):
+            click.echo(u"  {}: https://github.com/{}/settings".format(repo.full_name, repo.full_name))
+        while not click.confirm(u"Are they all unarchived?"):
             pass
         repos = archived_repos(repos)
     click.echo(u"Thanks, they will be re-archived automatically")
@@ -664,7 +659,7 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
             ensure_writable(archived)
 
     try:
-        ret = do_the_work(hub, repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry)
+        ret = do_the_work(repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry)
     finally:
         for repo in archived:
             dry_echo(dry, u"Re-archiving {}".format(repo.full_name))
@@ -674,12 +669,11 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
     return ret
 
 
-def do_the_work(hub, repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry):
+def do_the_work(repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry):
     """
     The meat of the work for tag_release.
 
     Arguments:
-        hub (:class:`~github3.GitHub`): an authenticated GitHub instance.
         repos (dict): A dict mapping Repository objects to openedx.yaml data.
         ref (str): the ref to create.
 
@@ -719,7 +713,7 @@ def do_the_work(hub, repos, ref, use_tag, reverse, skip_invalid, interactive, qu
             )
             raise ValueError(msg)
 
-        ref_info = commit_ref_info(hub, repos, skip_invalid=skip_invalid)
+        ref_info = commit_ref_info(repos, skip_invalid=skip_invalid)
         if interactive or not quiet:
             click.echo(todo_list(ref_info))
         if interactive:
