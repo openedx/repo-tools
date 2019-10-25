@@ -78,6 +78,7 @@ statistics==1.0.3.5
 tlslite==0.4.9            # via jira
 toml==0.10.0              # via tox
 tox==3.12.1
+tqdm==4.36.1
 twisted==19.2.0           # via scrapy
 typing==3.6.6             # via python-dotenv
 uritemplate==3.0.0

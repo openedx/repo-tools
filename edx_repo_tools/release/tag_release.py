@@ -20,6 +20,7 @@ import logging
 import click
 from github3 import GitHubError
 from github3.exceptions import NotFoundError
+from tqdm import tqdm
 
 from edx_repo_tools.auth import pass_github
 from edx_repo_tools.data import iter_openedx_yaml
@@ -65,7 +66,7 @@ def openedx_release_repos(hub, orgs=None, branches=None):
 
     repos = {}
 
-    for repo, data in iter_openedx_yaml(hub, orgs=orgs, branches=branches):
+    for repo, data in tqdm(iter_openedx_yaml(hub, orgs=orgs, branches=branches), desc='Find repos'):
         if data.get('openedx-release'):
             repo = repo.refresh()
             repos[repo] = data
@@ -171,7 +172,7 @@ def commit_ref_info(hub, repos, skip_invalid=False):
     """
 
     ref_info = {}
-    for repo, repo_data in repos.items():
+    for repo, repo_data in tqdm(repos.items(), desc='Find commits'):
         # are we specifying a ref?
         ref = repo_data["openedx-release"].get("ref")
         if ref:
@@ -278,7 +279,7 @@ def get_ref_for_repos(repos, ref, use_tag=True):
             name=ref,
         )
     return_value = {}
-    for repo in repos:
+    for repo in tqdm(repos, desc='Get refs'):
         try:
             ref_obj = repo.ref(ref)
         except NotFoundError:
@@ -558,7 +559,7 @@ def archived_repos(repos):
 
     """
     archived = []
-    for repo in repos:
+    for repo in tqdm(repos, desc='Check for archived repos'):
         repo = repo.refresh()
         if repo.archived:
             archived.append(repo)

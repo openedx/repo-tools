@@ -16,6 +16,7 @@ python-dotenv
 requests
 scrapy
 statistics
+tqdm
 uritemplate
 urlobject
 
