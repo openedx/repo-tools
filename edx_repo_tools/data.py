@@ -17,6 +17,16 @@ OPEN_EDX_YAML = 'openedx.yaml'
 
 
 def iter_nonforks(hub, orgs):
+    """Yield all the non-fork repos in a GitHub organization.
+
+    Arguments:
+        hub (:class:`~github3.GitHub`): A connection to GitHub.
+        orgs (list of str): the GitHub organizations to search.
+
+    Yields:
+        Repositories (:class:`~github3.Repository`)
+
+    """
     for org in orgs:
         for repo in hub.organization(org).repositories():
             if repo.fork:
@@ -31,12 +41,16 @@ def iter_openedx_yaml(hub, orgs, branches=None):
     on any of ``branches``.
 
     Arguments:
-        hub (GitHub): A connection to GitHub.
-        orgs: A list of github orgs to search for openedx.yaml files.
-        branches: A list of branches to search for openedx.yaml files. If
+        hub (:class:`~github3.GitHub`): A connection to GitHub.
+        orgs (list of str): A GitHub organizations to search for openedx.yaml files.
+        branches (list of str): Branches to search for openedx.yaml files. If
             that file exists on multiple branches, then only the contents
             of the first will be yielded.  (optional, defaults to the default
             branch in the repo).
+
+    Yields:
+        Repositories (:class:`~github3.Repository)
+
     """
     for repo in iter_nonforks(hub, orgs):
         for branch in (branches or [repo.default_branch]):

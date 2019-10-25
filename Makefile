@@ -1,7 +1,7 @@
 .PHONY: test dev-install install upgrade lint
 
 test:
-	py.test
+	pytest
 
 dev-install:
 	pip install -r requirements/development.txt
