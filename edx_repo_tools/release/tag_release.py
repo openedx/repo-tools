@@ -203,8 +203,11 @@ def get_latest_commit_for_ref(repo, ref):
 
     """
     # is it a branch?
-    branch = repo.branch(ref)
-    if branch:
+    try:
+        branch = repo.branch(ref)
+    except NotFoundError:
+        pass
+    else:
         commit = repo.git_commit(branch.commit.sha).refresh()
         return {
             "ref": ref,
@@ -225,29 +228,32 @@ def get_latest_commit_for_ref(repo, ref):
         # https://github.com/sigmavirus24/github3.py/issues/310
         # We'll catch the error and make the problem clearer.
         if "pop() takes at most 1 argument (2 given)" in str(err):
-            raise Exception("In repo {}, ref {!r} doesn't exist.".format(repo, ref))
+            raise ValueError("In repo {}, ref {!r} doesn't exist.".format(repo, ref))
         else:
             raise
-    if tag:
-        if tag.object.type == "tag":
-            # An annotated tag, one more level of indirection.
-            tag = repo.tag(tag.object.sha)
-        # need to do a subsequent API call to get the tagged commit
-        commit = repo.git_commit(tag.object.sha).refresh()
-        if commit:
-            return {
-                "ref": ref,
-                "ref_type": "tag",
-                "sha": commit.sha,
-                "message": commit.message,
-                "author": commit.author,
-                "committer": commit.committer,
-            }
+    except NotFoundError:
+        raise ValueError("In repo {}, ref {!r} doesn't exist.".format(repo, ref))
+
+    if tag.object.type == "tag":
+        # An annotated tag, one more level of indirection.
+        tag = repo.tag(tag.object.sha)
+    # need to do a subsequent API call to get the tagged commit
+    commit = repo.git_commit(tag.object.sha).refresh()
+    if commit:
+        return {
+            "ref": ref,
+            "ref_type": "tag",
+            "sha": commit.sha,
+            "message": commit.message,
+            "author": commit.author,
+            "committer": commit.committer,
+        }
 
     msg = "No commit for {ref} in {repo}".format(
         ref=ref, repo=repo.full_name,
     )
     raise ValueError(msg)
+
 
 
 def get_ref_for_repos(repos, ref, use_tag=True):
@@ -507,8 +513,9 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
     modified = False
     for repo in repos:
         try:
-            ref_obj = repo.ref(ref)
-            if ref_obj is None:
+            try:
+                ref_obj = repo.ref(ref)
+            except NotFoundError:
                 # tag didn't exist to begin with; not an error
                 continue
 
