@@ -40,7 +40,7 @@ def do_two_factor():
 def login_github(username=None, password=None, token=None):
     """
     Log in to GitHub using the specified username, password, and token.
-    
+
     If not specified, read from an auth.yaml file in the user settings
     directory.  if that doesn't exist, read ~/.netrc.  If that doesn't exist,
     prompt for username and password, create a token, and store it in the user

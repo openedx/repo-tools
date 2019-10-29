@@ -20,11 +20,11 @@ import logging
 import click
 from github3 import GitHubError
 from github3.exceptions import NotFoundError
+from tqdm import tqdm
 
 from edx_repo_tools.auth import pass_github
 from edx_repo_tools.data import iter_openedx_yaml
 from edx_repo_tools.utils import dry, dry_echo
-from github3 import GitHubError
 
 log = logging.getLogger(__name__)
 
@@ -38,29 +38,34 @@ TOKEN_NAME = "openedx-release"
 FakeResponse = collections.namedtuple("FakeResponse", "text")
 
 
+class TagReleaseError(Exception):
+    """Something went wrong..."""
+    pass
+
+
 def openedx_release_repos(hub, orgs=None, branches=None):
     """
     Return a subset of the repos with openedx.yaml files: the repos
     with an `openedx-release` section.
 
-
     Arguments:
-        hub (GitHub): an authenticated GitHub instance.
-        orgs: The list of GitHub orgs to scan. Defaults to edx, edx-ops, and
+        hub (:class:`~github3.GitHub`): an authenticated GitHub instance.
+        orgs (list of str): The GitHub organizations to scan. Defaults to edx, edx-ops, and
               edx-solutions.
-        branches: The list of branches to scan in all repos in the selected
-                  orgs.
+        branches (list of str): The branches to scan in all repos in the selected
+                  orgs, defaulting to the repo's default branch.
 
     Returns:
-        A dict from Repository objects to openedx.yaml data for all of the
+        A dict from :class:`~github3.Repository` objects to openedx.yaml data for all of the
         repos with an ``openedx-release`` key specified.
+
     """
     if not orgs:
         orgs = ['edx', 'edx-ops', 'edx-solutions']
 
     repos = {}
 
-    for repo, data in iter_openedx_yaml(hub, orgs=orgs, branches=branches):
+    for repo, data in tqdm(iter_openedx_yaml(hub, orgs=orgs, branches=branches), desc='Find repos'):
         if data.get('openedx-release'):
             repo = repo.refresh()
             repos[repo] = data
@@ -69,7 +74,16 @@ def openedx_release_repos(hub, orgs=None, branches=None):
 
 
 def trim_skipped_repos(repos, skip_repos):
-    """Remove repos we've been told to skip."""
+    """Remove repos we've been told to skip.
+
+    Arguments:
+        repos (dict): A dict mapping Repository objects to openedx.yaml data.
+        skip_repos (list of str): The names or full_names of repos we don't want.
+
+    Returns:
+        A dict similar to `repos`, but without the skipped repos.
+
+    """
     trimmed = {}
     for r, data in repos.items():
         if any((r.full_name == sr or r.name == sr) for sr in skip_repos):
@@ -98,55 +112,70 @@ def trim_dependent_repos(repos):
 
 def override_repo_refs(repos, override_ref=None, overrides=None):
     """
-    Update the `repos` dictionary with the CLI overrides applied.
+    Apply ref overrides to the `repos` dictionary.
+
+    Arguments:
+        repos (dict): A dict mapping Repository objects to openedx.yaml data.
+        override_ref (str): a ref to use in all repos.
+        overrides (dict mapping repo names to refs): refs to use in specific repos.
+
+    Returns:
+        A new dict mapping Repository objects to openedx.yaml data, with refs overridden.
+
     """
+    repos = {r: copy.deepcopy(data) for r, data in repos.items()}
     overrides = overrides or {}
     if override_ref or overrides:
         for repo, repo_data in repos.items():
-            local_override = overrides.get(str(repo), override_ref)
+            local_override = overrides.get(repo.full_name, override_ref)
             if local_override:
                 repo_data["openedx-release"]["ref"] = local_override
+    return repos
 
 
-def commit_ref_info(repos, hub, skip_invalid=False):
+def commit_ref_info(repos, skip_invalid=False):
     """
-    Returns a dictionary of information about what commit should be tagged
-    for each repository passed into this function. The return type is as
-    follows:
-
-    {
-        Repository(<full_repo_name>): {
-            "ref": "name of tag or branch"
-            "ref_type": "tag", # or "branch"
-            "sha": "1234566789abcdef",
-            "message": "The commit message"
-            "author": {
-                "name": "author's name",
-                "email": "author's email"
-            }
-            "committer": {
-                "name": "committer's name",
-                "email": "committer's email",
-            }
-        },
-        Repository(<next_repo_name>): {...}
-    }
+    Returns a dict of information about what commit should be tagged in each repo.
 
     If the information in the passed-in dictionary is invalid in any way,
     this function will throw an error unless `skip_invalid` is set to True,
     in which case the invalid information will simply be logged and ignored.
+
+    Arguments:
+        repos (dict): A dict mapping Repository objects to openedx.yaml data.
+        skip_invalid (bool): if true, log invalid data in `repos`, but keep going.
+
+    Returns:
+        A dict mapping Repositories to a dict about the ref to tag, like this::
+
+        {
+            Repository(<full_repo_name>): {
+                "ref": "name of tag or branch"
+                "ref_type": "tag", # or "branch"
+                "sha": "1234566789abcdef",
+                "message": "The commit message"
+                "author": {
+                    "name": "author's name",
+                    "email": "author's email"
+                }
+                "committer": {
+                    "name": "committer's name",
+                    "email": "committer's email",
+                }
+            },
+            Repository(<next_repo_name>): {...},
+            ...
+        }
+
     """
 
     ref_info = {}
-    for repo, repo_data in repos.items():
+    for repo, repo_data in tqdm(repos.items(), desc='Find commits'):
         # are we specifying a ref?
         ref = repo_data["openedx-release"].get("ref")
         if ref:
             try:
-                ref_info[repo] = get_latest_commit_for_ref(
-                    repo,
-                    ref,
-                )
+                ref_info[repo] = get_latest_commit_for_ref(repo, ref)
             except (GitHubError, ValueError):
                 if skip_invalid:
                     msg = u"Invalid ref {ref} in repo {repo}".format(
@@ -162,13 +191,22 @@ def commit_ref_info(repos, hub, skip_invalid=False):
 
 def get_latest_commit_for_ref(repo, ref):
     """
-    Given a repo name and a ref in that repo, return some information about
-    the commit that the ref refers to. This function is called by
-    commit_ref_info(), and it returns information in the same structure.
+    Get information about the latest commit on a ref.
+
+    Arguments:
+        repo (Repository): the repo to examine.
+        ref (str): the git ref to get information about.
+
+    Returns:
+        A dict with information about the commit.
+
     """
     # is it a branch?
-    branch = repo.branch(ref)
-    if branch:
+    try:
+        branch = repo.branch(ref)
+    except NotFoundError:
+        pass
+    else:
         commit = repo.git_commit(branch.commit.sha).refresh()
         return {
             "ref": ref,
@@ -189,29 +227,29 @@ def get_latest_commit_for_ref(repo, ref):
         # https://github.com/sigmavirus24/github3.py/issues/310
         # We'll catch the error and make the problem clearer.
         if "pop() takes at most 1 argument (2 given)" in str(err):
-            raise Exception("In repo {}, ref {!r} doesn't exist.".format(repo, ref))
+            raise ValueError(u"In repo {}, ref {!r} doesn't exist.".format(repo, ref))
         else:
             raise
-    if tag:
-        if tag.object.type == "tag":
-            # An annotated tag, one more level of indirection.
-            tag = repo.tag(tag.object.sha)
-        # need to do a subsequent API call to get the tagged commit
-        commit = repo.git_commit(tag.object.sha).refresh()
-        if commit:
-            return {
-                "ref": ref,
-                "ref_type": "tag",
-                "sha": commit.sha,
-                "message": commit.message,
-                "author": commit.author,
-                "committer": commit.committer,
-            }
+    except NotFoundError:
+        raise ValueError(u"In repo {}, ref {!r} doesn't exist.".format(repo, ref))
 
-    msg = "No commit for {ref} in {repo}".format(
-        ref=ref, repo=repo.full_name,
-    )
-    raise ValueError(msg)
+    if tag.object.type == "tag":
+        # An annotated tag, one more level of indirection.
+        tag = repo.tag(tag.object.sha)
+    # need to do a subsequent API call to get the tagged commit
+    commit = repo.git_commit(tag.object.sha).refresh()
+    if commit:
+        return {
+            "ref": ref,
+            "ref_type": "tag",
+            "sha": commit.sha,
+            "message": commit.message,
+            "author": commit.author,
+            "committer": commit.committer,
+        }
+
+    raise ValueError(u"No commit for {ref} in {repo}".format(ref=ref, repo=repo.full_name))
+
 
 
 def get_ref_for_repos(repos, ref, use_tag=True):
@@ -230,13 +268,13 @@ def get_ref_for_repos(repos, ref, use_tag=True):
     # though the create_ref function wants one *with* a leading "refs/". :(
     if ref.startswith("refs/"):
         ref = ref[5:]
-    elif not ref.startswith(("heads", "tags")):
+    elif not ref.startswith(("heads/", "tags/")):
         ref = "{type}/{name}".format(
             type="tags" if use_tag else "heads",
             name=ref,
         )
     return_value = {}
-    for repo in repos:
+    for repo in tqdm(repos, desc='Get refs'):
         try:
             ref_obj = repo.ref(ref)
         except NotFoundError:
@@ -291,7 +329,8 @@ def todo_list(ref_info):
 
 def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry=True):
     """
-    Actually create refs on the given repos.
+    Create refs on the given repos.
+
     If `rollback_on_fail` is True, then on any failure, try to delete the refs
     that we're just created, so that we don't fail in a partially-completed
     state. (Note that this is *not* a reliable rollback -- other people could
@@ -304,14 +343,25 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
     place, or all created refs were were successfully rolled
     back (because `rollback_on_fail` is set to True). If this function fails,
     and the world is in an inconsistent state, this function will raise a
-    RuntimeError. This could happen if some (but not all) of the refs are created,
+    TagReleaseError. This could happen if some (but not all) of the refs are created,
     and either rollback is not attempted (because `rollback_on_fail` is set to
     False), or rollback fails.
+
+    Arguments:
+        ref_info (dict mapping Repositories to commit info dicts)
+        ref (str): the ref to create.
+        use_tag (bool): make a tag (True) or a branch (False).
+        rollback_on_fail (bool)
+        dry (bool): if True, don't do anything, but print what would be done.
+
+    Returns
+        True on success, False otherwise.
+
     """
     if not ref.startswith("refs/"):
-        ref = u"refs/{type}/{name}".format(
+        ref = u"refs/{type}/{ref}".format(
             type="tags" if use_tag else "heads",
-            name=ref,
+            ref=ref,
         )
     succeeded = []
     failed_resp = None
@@ -387,7 +437,7 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
                 orig_err=original_err_msg,
                 rollback_failures=", ".join(rollback_failures)
             )
-            err = RuntimeError(msg)
+            err = TagReleaseError(msg)
             err.response = failed_resp
             err.repos = rollback_failures
             raise err
@@ -415,7 +465,7 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
             orig_err=original_err_msg,
             tagged_repos=", ".join(repo.full_name for repo, _ in succeeded)
         )
-        err = RuntimeError(msg)
+        err = TagReleaseError(msg)
         err.response = failed_resp
         err.repos = succeeded
         raise err
@@ -423,35 +473,45 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
 
 def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
     """
-    Given an iterable of repository full names (like "edx/edx-platform") and
-    a tag name, this function attempts to delete the named ref from each
-    GitHub repository listed in the iterable. If the ref does not exist on
-    the repo, it is skipped.
+    Delete the ref `ref` from each repository in `repos`.
+
+    If the ref does not exist on the repo, it is skipped.
 
     This function returns True if any repos had the reference removed,
     or False if no repos were modified. If an error occurs while trying
     to remove a ref from a repo, the function will continue trying to
     remove refs from all the other repos in the iterable -- but after all repos
-    have been attempted, this function will raise a RuntimeError with
+    have been attempted, this function will raise a TagReleaseError with
     a list of all the repos that did not have the ref removed.
     Trying to remove a ref from a repo that does not have that ref
     to begin with is *not* treated as an error.
+
+    Arguments:
+        repos: An iterable of Repository objects.
+        ref (str): the ref to remove.
+        use_tag (bool): ref is a tag (True) or a branch (False).
+        dry (bool): if True, don't do anything, but print what would be done.
+
+    Returns:
+        True if any repos had the ref removed, False if no repos were modified.
+
     """
     if ref.startswith('refs/'):
         ref = ref[len('refs/'):]
 
     if not (ref.startswith("heads/") or ref.startswith('tags/')):
-        ref = "{type}/{name}".format(
+        ref = "{type}/{ref}".format(
             type="tags" if use_tag else "heads",
-            name=ref,
+            ref=ref,
         )
 
     failures = {}
     modified = False
     for repo in repos:
         try:
-            ref_obj = repo.ref(ref)
-            if ref_obj is None:
+            try:
+                ref_obj = repo.ref(ref)
+            except NotFoundError:
                 # tag didn't exist to begin with; not an error
                 continue
 
@@ -475,7 +535,7 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
         ).format(
             repos=", ".join(failures.keys())
         )
-        err = RuntimeError(msg)
+        err = TagReleaseError(msg)
         err.failures = failures
         raise err
 
@@ -485,9 +545,16 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
 def archived_repos(repos):
     """
     Check `repos`, and return the subset that are archived.
+
+    Arguments:
+        repos (dict): A dict mapping Repository objects to openedx.yaml data.
+
+    Returns:
+        A list of Repository objects that are archived.
+
     """
     archived = []
-    for repo in repos:
+    for repo in tqdm(repos, desc='Check for archived repos'):
         repo = repo.refresh()
         if repo.archived:
             archived.append(repo)
@@ -504,8 +571,8 @@ def ensure_writable(repos):
     while repos:
         click.secho(u"The following repos need to be unarchived to continue:", fg='red', bold=True)
         for repo in repos:
-            click.echo("  {}: https://github.com/{}/settings".format(repo.full_name, repo.full_name))
-        while not click.confirm("Are they all unarchived?"):
+            click.echo(u"  {}: https://github.com/{}/settings".format(repo.full_name, repo.full_name))
+        while not click.confirm(u"Are they all unarchived?"):
             pass
         repos = archived_repos(repos)
     click.echo(u"Thanks, they will be re-archived automatically")
@@ -576,8 +643,7 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
 
     repos = trim_skipped_repos(repos, skip_repos)
     repos = trim_dependent_repos(repos)
-
-    override_repo_refs(
+    repos = override_repo_refs(
         repos,
         override_ref=override_ref,
         overrides=dict(overrides or ()),
@@ -593,7 +659,7 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
             ensure_writable(archived)
 
     try:
-        ret = do_the_work(hub, repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry)
+        ret = do_the_work(repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry)
     finally:
         for repo in archived:
             dry_echo(dry, u"Re-archiving {}".format(repo.full_name))
@@ -603,9 +669,14 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
     return ret
 
 
-def do_the_work(hub, repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry):
+def do_the_work(repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry):
     """
     The meat of the work for tag_release.
+
+    Arguments:
+        repos (dict): A dict mapping Repository objects to openedx.yaml data.
+        ref (str): the ref to create.
+
     """
     existing_refs = get_ref_for_repos(repos, ref, use_tag=use_tag)
 
@@ -642,7 +713,7 @@ def do_the_work(hub, repos, ref, use_tag, reverse, skip_invalid, interactive, qu
             )
             raise ValueError(msg)
 
-        ref_info = commit_ref_info(repos, hub, skip_invalid=skip_invalid)
+        ref_info = commit_ref_info(repos, skip_invalid=skip_invalid)
         if interactive or not quiet:
             click.echo(todo_list(ref_info))
         if interactive:
