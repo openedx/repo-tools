@@ -1,5 +1,5 @@
 # This file describes this Open edX repo, as described in OEP-2:
-# http://open-edx-proposals.readthedocs.io/en/latest/oeps/oep-0002.html#specification
+# https://open-edx-proposals.readthedocs.io/en/latest/oep-0002-bp-repo-metadata.html
 
 nick: rept
 openedx-release: {ref: master}
@@ -13,7 +13,8 @@ oeps:
   oep-11: {applicable: false}
   oep-12: {applicable: false}
   oep-14: {applicable: false}
+  oep-18: false
 
-owner: edx/openedx-tooling
+owner: nedbat
+supporting_teams: edx/openedx-tooling
 tags: [tools]
-track-pulls: true
