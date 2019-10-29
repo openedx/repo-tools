@@ -25,21 +25,24 @@ def no_yaml(hub, repo_tools_data, org, dry):
     for repo in repos:
         if repo.private:
             continue
+        if repo.archived:
+            continue
         try:
             contents = repo.file_contents('openedx.yaml')
         except NotFoundError:
             contents = None
 
         if contents is None:
-            print("{}: {:%Y-%m-%d}".format(repo.full_name, repo.pushed_at))
+            print(u"{}: {}".format(repo.full_name, repo.pushed_at))
             try:
                 commits = list(itertools.islice(repo.commits(), 5))
             except Exception as exc:
                 print("  Error: {}".format(exc))
                 continue
             for commit in commits:
-                commit.refresh()
+                commit = commit.refresh()
                 # last_modified is a string?? 'Fri, 06 Apr 2018 19:48:42 GMT'
                 when = " ".join(commit.last_modified.split()[1:4])
-                message = commit.commit.message.splitlines()[0]
-                print("  {}: {} ({})".format(commit.author, message, when))
+                message = commit.commit['message'].splitlines()[0]
+                who = commit.commit['author']['name']
+                print(u"  {}: {} ({})".format(who, message, when))
