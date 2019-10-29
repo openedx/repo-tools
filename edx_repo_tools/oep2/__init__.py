@@ -5,7 +5,7 @@ Top-level definition of the ``oep2`` commandline tool.
 import click
 
 from . import explode_repos_yaml
-from .report import cli
+from .report.cli import cli as report_cli
 
 
 def _cli():
@@ -21,4 +21,4 @@ def cli():
 
 cli.add_command(explode_repos_yaml.explode)
 cli.add_command(explode_repos_yaml.implode)
-cli.add_command(cli.cli, 'report')
+cli.add_command(report_cli, 'report')
