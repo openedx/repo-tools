@@ -225,6 +225,7 @@ CURRENT = {
     "Node": "10.x",
     "Mongo": "3.2",
     "MySQL": "5.6",
+    "elasticsearch": "1.5",
 }
 
 cal = GsheetCalendar(START_YEAR, END_YEAR)
@@ -353,6 +354,20 @@ mysql_releases = [
 ]
 for name, syear, smonth, eyear, emonth in mysql_releases:
     cal.bar(f"MySQL {name}", start=(syear, smonth), end=(eyear, emonth), color="#b9dc48", current=(name==CURRENT["MySQL"]))
+
+# elasticsearch releases
+cal.section_note("https://www.elastic.co/support/eol")
+es_releases = [
+    ('1.5', 2015, 3, 2016, 9),
+    ('1.7', 2015, 7, 2017, 1),
+    ('2.4', 2016, 8, 2018, 2),
+    ('5.6', 2017, 9, 2019, 3),
+    ('6.8', 2019, 5, 2020, 11),
+    ('7.3', 2019, 8, 2021, 1),
+]
+for name, syear, smonth, eyear, emonth in es_releases:
+    cal.bar(f"elasticsearch {name}", start=(syear, smonth), end=(eyear, emonth), color="#4595ba", current=(name==CURRENT["elasticsearch"]))
+
 
 cal.text_line("")
 cal.text_line("(created by https://github.com/edx/repo-tools/blob/master/barcalendar.py)")
