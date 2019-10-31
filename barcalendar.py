@@ -224,6 +224,7 @@ CURRENT = {
     "Ubuntu": "16.04",
     "Node": "10.x",
     "Mongo": "3.2",
+    "MySQL": "5.6",
 }
 
 cal = GsheetCalendar(START_YEAR, END_YEAR)
@@ -342,6 +343,16 @@ mongo_releases = [
 ]
 for name, syear, smonth, eyear, emonth in mongo_releases:
     cal.bar(f"Mongo {name}", start=(syear, smonth), end=(eyear, emonth), color="#4da65a", current=(name==CURRENT["Mongo"]))
+
+# MySQL releases
+cal.section_note("https://endoflife.software/applications/databases/mysql")
+mysql_releases = [
+    ('5.6', 2013, 2, 2021, 2),
+    ('5.7', 2015, 10, 2023, 10),
+    ('8.0', 2018, 4, 3000, 1),
+]
+for name, syear, smonth, eyear, emonth in mysql_releases:
+    cal.bar(f"MySQL {name}", start=(syear, smonth), end=(eyear, emonth), color="#b9dc48", current=(name==CURRENT["MySQL"]))
 
 cal.text_line("")
 cal.text_line("(created by https://github.com/edx/repo-tools/blob/master/barcalendar.py)")
