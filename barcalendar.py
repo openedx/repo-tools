@@ -36,6 +36,13 @@ def lighten(css, amount=0.5):
     return rgb_to_css(*lighter)
 
 
+def darken(css, amount=0.5):
+    """Make a CSS color some amount darker."""
+    h, l, s = colorsys.rgb_to_hls(*css_to_rgb(css))
+    lighter = colorsys.hls_to_rgb(h, l - l * amount, s)
+    return rgb_to_css(*lighter)
+
+
 class BaseCalendar:
     def __init__(self, start, end):
         self.start = start
@@ -151,6 +158,8 @@ class GsheetCalendar(BaseCalendar):
     def rawbar(self, istart, iend, name, color=None, text_color=None, current=False, indefinite=False):
         formatting = ""
         if color:
+            if current:
+                color = darken(color, .15)
             formatting += f""".setBackground({color!r})"""
         if text_color:
             formatting += f""".setFontColor({text_color!r})"""
