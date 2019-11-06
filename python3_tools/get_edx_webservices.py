@@ -1,5 +1,5 @@
 import github
-from get_repos import *
+from get_repos import orgs, expanded_repos_list, get_remote_yaml
 
 
 webservices = []
