@@ -25,4 +25,4 @@ upgrade: ## Upgrade requirements with pip-tools
 
 lint:
 	pep8 || true
-	pylint *.py edx_repo_tools age tests || true
+	pylint *.py edx_repo_tools tests || true
