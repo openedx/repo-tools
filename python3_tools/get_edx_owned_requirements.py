@@ -66,7 +66,10 @@ def get_edx_owned_requirements(repo, requirements_files):
                 home_page = pypi_data['info']['home_page']
     
                 if author.lower() == "edx":
-                    print(home_page.rstrip(".git"))
+                    if home_page.endswith('.git'):
+                        print(home_page[:-4])
+                    else:
+                        print(home_page)
 
 if __name__ == "__main__":
     g = github.Github(os.environ["GITHUB_TOKEN"])
