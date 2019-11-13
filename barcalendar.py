@@ -254,7 +254,7 @@ names = [
     ('Ginkgo', 2017, 8),
     ('Hawthorn', 2018, 8),
     ('Ironwood', 2019, 3),
-    ('Juniper', 2019, 10),
+    ('Juniper', 2020, 3),
     ]
 future = ['Koa', 'Lilac', 'Maple'] + list('NOPQRSTUVWXYZ')
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
