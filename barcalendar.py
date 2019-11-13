@@ -231,7 +231,7 @@ CURRENT = {
     "Python": "2.7",
     "Django": "1.11",
     "Ubuntu": "16.04",
-    "Node": "10.x",
+    "Node": "12.x",
     "Mongo": "3.2",
     "MySQL": "5.6",
     "elasticsearch": "1.5",
