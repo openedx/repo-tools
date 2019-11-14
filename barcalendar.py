@@ -17,10 +17,8 @@ Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
 """
 
 import colorsys
-import csv
-import datetime
 import itertools
-import sys
+
 
 def css_to_rgb(hex):
     assert hex[0] == "#"
@@ -201,7 +199,7 @@ class GsheetCalendar(BaseCalendar):
             if self.currow >= self.top_cycling_row + self.cycling:
                 self.currow = self.top_cycling_row
 
-    def text_line(self, text=""):
+    def text_line(self, text):
         print(f"""\
             sheet.getRange({self.currow}, 1).setValue({text!r})
             """)
