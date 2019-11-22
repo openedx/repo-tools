@@ -1,0 +1,19 @@
+Setup
+=====
+
+```
+pip install -r requirements.txt
+```
+
+Usage
+=====
+
+
+1. Run the code mod on what you want.
+```
+# bowler run <mod_script> <path_to_directory_or_file_to_modify>
+# For example
+bowler run foreignkey_on_delete_mod.py ~/src/edx-platform
+```
+
+2. Correct any formatting to match your formatting rules.
