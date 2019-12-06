@@ -233,6 +233,7 @@ CURRENT = {
     "Mongo": "3.2",
     "MySQL": "5.6",
     "elasticsearch": "1.5",
+    "ruby": "2.4",
 }
 
 cal = GsheetCalendar(START_YEAR, END_YEAR)
@@ -374,6 +375,18 @@ es_releases = [
 ]
 for name, syear, smonth, eyear, emonth in es_releases:
     cal.bar(f"elasticsearch {name}", start=(syear, smonth), end=(eyear, emonth), color="#4595ba", current=(name==CURRENT["elasticsearch"]))
+
+# ruby
+cal.section_note("https://www.ruby-lang.org/en/downloads/branches/")
+ruby_releases = [
+    ('2.3', 2015, 12, 2019, 3),
+    ('2.4', 2016, 12, 2020, 3),
+    ('2.5', 2017, 12, 3000, 1),
+    ('2.6', 2018, 12, 3000, 1),
+]
+for name, syear, smonth, eyear, emonth in ruby_releases:
+    cal.bar(f"ruby {name}", start=(syear, smonth), end=(eyear, emonth), color="#DE3F24", current=(name==CURRENT["ruby"]))
+
 
 
 cal.text_line("")
