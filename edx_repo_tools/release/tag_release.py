@@ -15,6 +15,7 @@ Tag repos for an Open edX release. When run, this script will:
 import collections
 import copy
 import datetime
+import fnmatch
 import logging
 
 import click
@@ -73,22 +74,34 @@ def openedx_release_repos(hub, orgs=None, branches=None):
     return repos
 
 
+def repo_matches(repo, pattern):
+    """Match a repo against a filename pattern.
+
+    True if either the name or the full_name of the repo matches.
+    """
+    return (
+        fnmatch.fnmatch(repo.full_name, pattern) or
+        fnmatch.fnmatch(repo.name, pattern)
+    )
+
 def trim_skipped_repos(repos, skip_repos):
     """Remove repos we've been told to skip.
 
     Arguments:
         repos (dict): A dict mapping Repository objects to openedx.yaml data.
-        skip_repos (list of str): The names or full_names of repos we don't want.
+        skip_repos (list of str): Filename wildcard patterns for the names or
+            full_names of repos we don't want.
 
     Returns:
         A dict similar to `repos`, but without the skipped repos.
 
     """
     trimmed = {}
-    for r, data in repos.items():
-        if any((r.full_name == sr or r.name == sr) for sr in skip_repos):
+    for repo, data in repos.items():
+        if any(repo_matches(repo, pat) for pat in skip_repos):
+            log.warning("Skipping {} by pattern".format(repo))
             continue
-        trimmed[r] = data
+        trimmed[repo] = data
     return trimmed
 
 def trim_dependent_repos(repos):
@@ -619,7 +632,7 @@ def ensure_writable(repos):
 )
 @click.option(
     '--skip-repo', 'skip_repos', multiple=True,
-    help="Specify repos that should be ignored in spite of having an openedx.yaml file."
+    help="Specify patterns of repos that should be ignored in spite of having an openedx.yaml file."
 )
 @click.option(
     '--search-branch', 'branches', multiple=True,
