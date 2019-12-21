@@ -16,4 +16,14 @@ Usage
 bowler run foreignkey_on_delete_mod.py ~/src/edx-platform
 ```
 
+```
+# PROMPT HELP
+"y": "apply this hunk",
+"n": "skip this hunk",
+"a": "apply this hunk and all remaining hunks for this file",
+"d": "skip this hunk and all remaining hunks for this file",
+"q": "quit; do not apply this hunk or any remaining hunks",
+"?": "show help",
+```
+
 2. Correct any formatting to match your formatting rules.

@@ -48,4 +48,13 @@ def add_on_delete_cascade(
     .filter(filter_has_no_on_delete)
     .modify(add_on_delete_cascade)
     .idiff()
+),
+(
+    Query(sys.argv[1])
+    .select_method("OneToOneField")
+    .is_call()
+    .filter(filter_has_no_on_delete)
+    .modify(add_on_delete_cascade)
+    .idiff()
 )
+
