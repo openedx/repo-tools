@@ -14,6 +14,9 @@ Usage
 # bowler run <mod_script> <path_to_directory_or_file_to_modify>
 # For example
 bowler run foreignkey_on_delete_mod.py ~/src/edx-platform
+
+# to update the User.is_authenticated and User.is_anonymous as properties
+bowler run auth_anonymous_update.py ~/src/edx-platform
 ```
 
 ```
