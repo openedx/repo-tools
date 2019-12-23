@@ -7,6 +7,7 @@ from git.repo.base import Repo
 
 from edx_repo_tools.auth import pass_github
 
+
 @click.command()
 @click.option(
     '--forks/--no-forks', is_flag=True, default=False,
@@ -21,7 +22,7 @@ from edx_repo_tools.auth import pass_github
 )
 @pass_github
 def main(hub, forks, depth, org):
-    for repo in hub.organization(org).iter_repos():
+    for repo in hub.organization(org).repositories():
         if repo.fork and not forks:
             continue
         dir_name = repo.name

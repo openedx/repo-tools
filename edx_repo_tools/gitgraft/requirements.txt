@@ -6,5 +6,5 @@
 #
 click==7.0
 gitdb2==2.0.6             # via gitpython
-gitpython==3.0.5
+gitpython==2.1.14
 smmap2==2.0.5             # via gitdb2
