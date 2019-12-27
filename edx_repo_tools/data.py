@@ -63,7 +63,7 @@ def iter_openedx_yaml(hub, orgs, branches=None):
                 LOGGER.debug("Found openedx.yaml at %s:%s", repo.full_name, branch)
                 try:
                     yield repo, yaml.safe_load(contents.decoded)
-                except Exception, exc:
+                except Exception as exc:
                     LOGGER.error("Couldn't parse openedx.yaml from %s:%s, skipping repo", repo.full_name, branch, exc_info=True)
                 break
 

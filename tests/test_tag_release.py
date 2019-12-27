@@ -5,7 +5,7 @@ from collections import OrderedDict
 from github3 import GitHubError
 from github3.exceptions import NotFoundError
 from github3.repos.repo import Repository
-from mock import Mock
+from unittest.mock import Mock
 import pytest
 
 from edx_repo_tools.release.tag_release import (
