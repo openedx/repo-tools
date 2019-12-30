@@ -75,6 +75,14 @@ def python_bytes(repo):
     else:
         return 0
 
+@cache_to_disk(1)
+def total_language_bytes(repo):
+    repo_langs = repo.get_languages()
+    total_bytes = 0
+    for language, lang_bytes in repo_langs.items():
+        total_bytes += lang_bytes
+
+    return total_bytes
 
 @cache_to_disk(1)
 def expanded_repos_list(orgs):
