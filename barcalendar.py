@@ -226,7 +226,7 @@ LTS_ONLY = True
 
 CURRENT = {
     "Open edX": "Ironwood",
-    "Python": "2.7",
+    "Python": "3.5",
     "Django": "1.11",
     "Ubuntu": "16.04",
     "Node": "12.x",
