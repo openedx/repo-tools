@@ -12,6 +12,11 @@ def render_has_no_renderer(node: LN, capture: Capture, filename: Filename) -> bo
         return False  # This is a function call, no need to add argument
 
     arguments = capture.get("function_arguments")[0].children
+
+    known_arguments = [arg.value for arg in arguments if arg.value in ['name', 'value', 'attrs']]
+    if len(known_arguments) != 3:
+        return False  # This render doesn't belong to widget
+
     for arg in arguments:
         if arg.type == TOKEN.NAME and arg.value == "renderer":
             return False  # This definition already has a renderer argument.
