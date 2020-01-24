@@ -8,8 +8,8 @@ from fissix.pytree import Leaf
 
 def render_has_no_renderer(node: LN, capture: Capture, filename: Filename) -> bool:
 
-    if 'function_call' in capture:
-        return False  # This is a function call, no need to add argument
+    if 'function_def' not in capture:
+        return False  # This is not a function definition, no need to add argument
 
     arguments = capture.get("function_arguments")[0].children
 
