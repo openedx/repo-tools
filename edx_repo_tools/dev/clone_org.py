@@ -1,4 +1,4 @@
-"""Clone an entire GitHub organization."""
+"""Clone an entire GitHub organization into current directory."""
 
 import os.path
 
