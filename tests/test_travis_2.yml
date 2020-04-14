@@ -1,0 +1,45 @@
+language: python
+
+branches:
+  only:
+    - master
+
+sudo: required
+
+cache:
+  - pip
+
+install:
+      pip install tox
+
+matrix:
+  include:
+    - python: 3.6
+      env:
+        DJANGO_ENV=django21
+        TESTNAME=quality-and-js
+        TARGETS="check_translations_up_to_date clean_static quality"
+    - python: 3.8
+      env:
+        DJANGO_ENV=django21
+        TESTNAME=quality-and-js
+        TARGETS="check_translations_up_to_date clean_static quality"
+    - python: 3.5
+      env:
+        DJANGO_ENV=django21
+        TESTNAME=quality-and-js
+        TARGETS="check_translations_up_to_date clean_static quality"
+    - python: 3.5
+      env:
+        TESTNAME=quality-and-js
+        TARGETS="check_translations_up_to_date clean_static quality"
+    - python: 3.5
+      env:
+        DJANGO_ENV=django22
+        TESTNAME=test-python
+        TARGETS="requirements.js clean_static static validate_python"
+
+after_success:
+  - pip install -U codecov
+  - docker exec ecommerce_testing /edx/app/ecommerce/ecommerce/.travis/run_coverage.sh
+  - codecov
