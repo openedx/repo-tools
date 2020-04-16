@@ -1,0 +1,27 @@
+language: python
+
+python:
+  - "3.5"
+  - "3.6"
+
+branches:
+  only:
+    - master
+
+sudo: required
+
+cache:
+  - pip
+
+env:
+  - TOXENV=django111
+  - TOXENV=django20
+  - TOXENV=django21
+  - TOXENV=django22
+  - TOXENV=quality-and-translations
+  - TOXENV=acceptance-tests
+
+after_success:
+    - pip install --upgrade codecov
+    - make exec-coverage
+    - codecov
