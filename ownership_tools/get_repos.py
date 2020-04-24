@@ -215,8 +215,10 @@ def filter_valid_pythons(version_list):
             yield version
 
         elif type(version) == str:
-            if float(version.rstrip('-dev')) >= 3.5:
-                yield version
+            parsed_version = re.search("^\d+(\.\d+)?", version)
+            if parsed_version:
+                if float(parsed_version.group(0)) >= 3.5:
+                    yield version
 
 def might_be_oep7_compliant(repo):
     """
