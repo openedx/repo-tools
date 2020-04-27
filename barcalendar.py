@@ -2,6 +2,7 @@
 """
 Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
 
+0. Update the data. Search for "Editable content" below.
 1. Run this program.  It prints JavaScript code. Copy it.
 2. Open a Google Sheet, either the existing Support Windows spreadsheet
     (https://docs.google.com/spreadsheets/d/11DheEtMDGrbA9hsUvZ2SEd4Cc8CaC4mAfoV8SVaLBGI)
@@ -219,11 +220,14 @@ class GsheetCalendar(BaseCalendar):
         self.epilog()
 
 
-# Options
+# ==== Editable content ====
+
+# Global Options
 START_YEAR = 2016
 END_YEAR = 2024
 LTS_ONLY = True
 
+# The current versions of everything.  Use the same strings as the keys in the various sections below.
 CURRENT = {
     "Open edX": "Ironwood",
     "Python": "3.5",
@@ -244,6 +248,7 @@ cal.years_months()
 cal.section_note("https://edx.readthedocs.io/projects/edx-developer-docs/en/latest/named_releases.html")
 cal.set_cycling(3)
 names = [
+    # (Name, Year, Month) when the release happened.
     ('Aspen', 2014, 10),
     ('Birch', 2015, 2),
     ('Cypress', 2015, 8),
@@ -256,6 +261,7 @@ names = [
     ('Juniper', 2020, 3),
     ]
 future = ['Koa', 'Lilac', 'Maple'] + list('NOPQRSTUVWXYZ')
+
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
 last = (None, None)
 for (name, year, month), (_, nextyear, nextmonth) in zip(releases, releases[1:]):
@@ -278,6 +284,7 @@ cal.text_line("(this calendar is part of OEP-10, please don't change it without 
 # Django releases
 cal.section_note("https://www.djangoproject.com/download/#supported-versions")
 django_releases = [
+    # (Version, Year, Month, Is_LTS) when the release happened.
     ('1.8', 2015, 4, True),
     ('1.9', 2016, 1, False),
     ('1.10', 2016, 8, False),
@@ -299,6 +306,7 @@ for name, year, month, lts in django_releases:
 
 # Python releases
 python_releases = [
+    # Version, and Year-Month for start and end of support.
     ('2.7', 2010, 7, 2019, 12),
     ('3.5', 2015, 9, 2020, 9),          # https://www.python.org/dev/peps/pep-0478/
     ('3.6', 2016, 12, 2021, 12),        # https://www.python.org/dev/peps/pep-0494/
