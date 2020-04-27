@@ -123,6 +123,27 @@ def trim_dependent_repos(repos):
     return trimmed
 
 
+def trim_indecisive_repos(repos):
+    """
+    Check the repos for a "maybe" value in the "openedx-release" key.
+
+    Arguments:
+        repos (dict): A dict mapping Repository objects to openedx.yaml data.
+
+    Returns:
+        A dict like its argument, but without the indecisive repos.
+
+    """
+    trimmed = {}
+    for repo, repo_data in repos.items():
+        maybe = repo_data["openedx-release"].get("maybe")
+        if maybe:
+            click.secho("*** {repo} has openedx-release 'maybe', skipped".format(repo=repo), fg="red")
+        else:
+            trimmed[repo] = repo_data
+    return trimmed
+
+
 def override_repo_refs(repos, override_ref=None, overrides=None):
     """
     Apply ref overrides to the `repos` dictionary.
@@ -656,6 +677,7 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
 
     repos = trim_skipped_repos(repos, skip_repos)
     repos = trim_dependent_repos(repos)
+    repos = trim_indecisive_repos(repos)
     repos = override_repo_refs(
         repos,
         override_ref=override_ref,
