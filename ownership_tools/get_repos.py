@@ -190,7 +190,7 @@ def might_be_oep18_compliant(repo):
     try:
         makefile_contentfile= repo.get_contents("Makefile")
         makefile_content_file_string = makefile_contentfile.decoded_content.decode('utf-8')
-        search_output = re.search("^upgrade:", makefile_content_file_string)
+        search_output = re.search("^upgrade:", makefile_content_file_string, re.MULTILINE)
         if search_output:
             return (True, "upgrade target exists in Makefile")
         return (False, "upgrade target does not exist in makefile")
