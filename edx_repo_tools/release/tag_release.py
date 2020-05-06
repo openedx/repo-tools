@@ -44,6 +44,10 @@ class TagReleaseError(Exception):
     pass
 
 
+def nice_tqdm(iterable, desc):
+    return tqdm(iterable, desc=desc.ljust(27))
+
+
 def openedx_release_repos(hub, orgs=None, branches=None):
     """
     Return a subset of the repos with openedx.yaml files: the repos
@@ -204,7 +208,7 @@ def commit_ref_info(repos, skip_invalid=False):
     """
 
     ref_info = {}
-    for repo, repo_data in tqdm(repos.items(), desc='Find commits'):
+    for repo, repo_data in nice_tqdm(repos.items(), desc='Find commits'):
         # are we specifying a ref?
         ref = repo_data["openedx-release"].get("ref")
         if ref:
@@ -308,7 +312,7 @@ def get_ref_for_repos(repos, ref, use_tag=True):
             name=ref,
         )
     return_value = {}
-    for repo in tqdm(repos, desc='Get refs'):
+    for repo in nice_tqdm(repos, desc='Get refs'):
         try:
             ref_obj = repo.ref(ref)
         except NotFoundError:
@@ -588,7 +592,7 @@ def archived_repos(repos):
 
     """
     archived = []
-    for repo in tqdm(repos, desc='Check for archived repos'):
+    for repo in nice_tqdm(repos, desc='Check for archived repos'):
         repo = repo.refresh()
         if repo.archived:
             archived.append(repo)
