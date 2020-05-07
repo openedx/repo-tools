@@ -28,7 +28,7 @@ def main(hub, forks, depth, org, output_file):
     for repo in hub.organization(org).repositories():
         if repo.fork and not forks:
             continue
-        repositories.append(repo.ssh_url)
+        repositories.append(repo.clone_url)
     with open(output_file, 'w') as filehandle:
         for repo_url in repositories:
             filehandle.write('%s\n' % repo_url)
