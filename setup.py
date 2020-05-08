@@ -31,6 +31,7 @@ setup(
             'no_yaml = edx_repo_tools.ospr.no_yaml:no_yaml',
             'tag_release = edx_repo_tools.release.tag_release:main',
             'drip = edx_repo_tools.drip_survey:cli',
+            'get_org_repo_urls = edx_repo_tools.dev.get_org_repo_urls:main',
         ],
     },
     package_data={
