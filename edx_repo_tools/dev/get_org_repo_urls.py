@@ -33,7 +33,7 @@ def main(hub, forks, org, url_type, output_file):
     for repo in hub.organization(org).repositories():
         if repo.fork and not forks:
             continue
-        if url_type = "ssh":
+        if url_type == "ssh":
             repositories.append(repo.ssh_url)
         else:
             repositories.append(repo.clone_url)
