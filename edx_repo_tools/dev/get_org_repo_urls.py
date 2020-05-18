@@ -24,14 +24,19 @@ from edx_repo_tools.auth import pass_github
     '--output_file', default="repositories.txt",
     help="where should script output urls"
 )
+@click.option(
+    '--add_archived', is_flag=True, default=False,
+    help="Do you want urls for archived repos?")
 @pass_github
-def main(hub, forks, org, url_type, output_file):
+def main(hub, forks, org, url_type, output_file, add_archived):
     """
     Used to get the urls for all the repositories in a github organization
     """
     repositories = []
     for repo in hub.organization(org).repositories():
         if repo.fork and not forks:
+            continue
+        if repo.archived and not add_archived:
             continue
         if url_type == "ssh":
             repositories.append(repo.ssh_url)
