@@ -18,6 +18,7 @@ Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
 """
 
 import colorsys
+import datetime
 import itertools
 
 
@@ -279,7 +280,10 @@ for (name, year, month), (_, nextyear, nextmonth) in zip(releases, releases[1:])
 
 cal.set_cycling(None)
 cal.freeze_here()
-cal.text_line("(this calendar is part of OEP-10, please don't change it without considering the impact there.)")
+cal.text_line(
+    "This calendar is part of OEP-10, please don't change it without considering the impact there." +
+    " Last updated {:%d-%b-%Y}".format(datetime.datetime.now())
+)
 
 # Django releases
 cal.section_note("https://www.djangoproject.com/download/#supported-versions")
@@ -398,6 +402,6 @@ for name, syear, smonth, eyear, emonth in ruby_releases:
 
 
 cal.text_line("")
-cal.text_line("(created by https://github.com/edx/repo-tools/blob/master/barcalendar.py)")
+cal.text_line("Created by https://github.com/edx/repo-tools/blob/master/barcalendar.py")
 
 cal.write()
