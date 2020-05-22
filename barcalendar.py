@@ -231,13 +231,13 @@ LTS_ONLY = True
 CURRENT = {
     "Open edX": "Ironwood",
     "Python": "3.5",
-    "Django": "1.11",
+    "Django": "2.2",
     "Ubuntu": "16.04",
     "Node": "12.x",
-    "Mongo": "3.2",
+    "Mongo": "3.6",
     "MySQL": "5.6",
     "elasticsearch": "1.5",
-    "ruby": "2.4",
+    "ruby": "2.5",
 }
 
 cal = GsheetCalendar(START_YEAR, END_YEAR)
@@ -258,7 +258,7 @@ names = [
     ('Ginkgo', 2017, 8),
     ('Hawthorn', 2018, 8),
     ('Ironwood', 2019, 3),
-    ('Juniper', 2020, 3),
+    ('Juniper', 2020, 6),
     ]
 future = ['Koa', 'Lilac', 'Maple'] + list('NOPQRSTUVWXYZ')
 
