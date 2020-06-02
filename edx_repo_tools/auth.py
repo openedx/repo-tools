@@ -37,10 +37,12 @@ def do_two_factor():
     return TWO_FACTOR_CODE
 
 
-def login_github(username=None, password=None, token=None):
+def login_github(username=None, password=None, token=None, token_file=None):
     """
-    Log in to GitHub using the specified username, password, and token.
+    Log in to GitHub using the specified username, password, token, or
+    token_file.
 
+    The token_file is used preferentially, containing a personal access token.
     If not specified, read from an auth.yaml file in the user settings
     directory.  if that doesn't exist, read ~/.netrc.  If that doesn't exist,
     prompt for username and password, create a token, and store it in the user
@@ -56,6 +58,10 @@ def login_github(username=None, password=None, token=None):
         token (string):
             The personal access token to log in with. If not specified, checks
             the AUTH_SETTINGS dictionary.
+        token_file (string):
+            File containing the personal access token to log in with. Overrides
+            token argument. File can be a named pipe (bash process
+            substitution) for increased security.
 
     Returns: (:class:`~github3.GitHub`)
         A logged-in `~github3.GitHub` instance
@@ -76,8 +82,17 @@ def login_github(username=None, password=None, token=None):
     if token is None:
         token = AUTH_SETTINGS.get('token')
 
-    # Log in with password, if it's supplied
-    if password is not None and username == AUTH_SETTINGS.get('username'):
+    # Log in with token from file, if it's supplied
+    if token_file is not None and username is not None:
+        with open(token_file, 'r') as tf:
+            token = tf.readline()[:-1]
+            if token:
+                hub = login(username, token)
+            else:
+                LOGGER.warn("No token in file")
+
+    # Otherwise, fall back to password, if supplied
+    elif password is not None and username == AUTH_SETTINGS.get('username'):
         hub = login(username, password, two_factor_callback=do_two_factor)
 
     # Otherwise, log in with the stored token
@@ -188,18 +203,22 @@ def pass_github(f):
         help='Personal access token to log in to GitHub with',
     )
     @click.option(
+        '--token-file',
+        help='File containing personal access token to log in to GitHub with',
+    )
+    @click.option(
         '--debug/--no-debug',
         help='Enable debug logging',
         default=False
     )
     @functools.wraps(f)
-    def wrapped(username, password, token, debug, *args, **kwargs):
+    def wrapped(username, password, token, token_file, debug, *args, **kwargs):
 
         if debug:
             logging.basicConfig()
             logging.getLogger().setLevel(logging.DEBUG)
 
-        hub = login_github(username, password, token)
+        hub = login_github(username, password, token, token_file)
 
         f(hub=hub, *args, **kwargs)
 
