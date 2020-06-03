@@ -5,81 +5,84 @@
 #    make upgrade
 #
 apipkg==1.5               # via execnet
-appdirs==1.4.3
+appdirs==1.4.4            # via -r requirements/base.in, virtualenv
 attrs==19.3.0             # via automat, pytest, service-identity, twisted
-automat==0.8.0            # via twisted
-backports.csv==1.0.7
-cachecontrol==0.12.6
-certifi==2019.11.28       # via requests
-cffi==1.13.2              # via cryptography
+automat==20.2.0           # via twisted
+backports.csv==1.0.7      # via -r requirements/base.in
+cachecontrol==0.12.6      # via -r requirements/base.in
+certifi==2020.4.5.1       # via requests
+cffi==1.14.0              # via cryptography
 chardet==3.0.4            # via requests
-click==7.0
+click==7.1.2              # via -r requirements/base.in
 constantly==15.1.0        # via twisted
-cryptography==2.8         # via jwcrypto, pyopenssl, scrapy, service-identity
+cryptography==2.9.2       # via jwcrypto, pyopenssl, scrapy, service-identity
 cssselect==1.1.0          # via parsel, scrapy
-docutils==0.15.2          # via statistics
+distlib==0.3.0            # via virtualenv
+docutils==0.16            # via statistics
 execnet==1.7.1            # via pytest-xdist
-filelock==3.0.12          # via tox
-gitdb2==2.0.6             # via gitpython
-github3.py==1.3.0
-gitpython==3.0.5
+filelock==3.0.12          # via tox, virtualenv
+gitdb==4.0.5              # via gitpython
+github3.py==1.3.0         # via -r requirements/base.in
+gitpython==3.1.3          # via -r requirements/base.in
 hyperlink==19.0.0         # via twisted
-idna==2.8                 # via hyperlink, requests
-importlib-metadata==1.3.0  # via path, pluggy, pytest, tox
+idna==2.9                 # via hyperlink, requests
+importlib-metadata==1.6.0  # via importlib-resources, path, pluggy, pytest, tox, virtualenv
+importlib-resources==1.5.0  # via virtualenv
 incremental==17.5.0       # via twisted
-jira==1.0.3
-jwcrypto==0.6.0           # via github3.py
-lazy==1.4
-lockfile==0.12.2
-lxml==4.4.2               # via parsel, scrapy
-more-itertools==8.0.2
-msgpack==0.6.2            # via cachecontrol
-numpy==1.18.0
+jira==1.0.3               # via -r requirements/base.in
+jwcrypto==0.7             # via github3.py
+lazy==1.4                 # via -r requirements/base.in
+lockfile==0.12.2          # via -r requirements/base.in
+lxml==4.5.1               # via parsel, scrapy
+more-itertools==8.3.0     # via -r requirements/base.in, pytest
+msgpack==1.0.0            # via cachecontrol
+numpy==1.18.4             # via -r requirements/base.in
 oauthlib==3.1.0           # via requests-oauthlib
-packaging==19.2           # via pytest, tox
-parsel==1.5.2             # via scrapy
-path.py==12.4.0
+packaging==20.4           # via pytest, tox
+parsel==1.6.0             # via scrapy
+path.py==12.4.0           # via -r requirements/base.in
 path==13.1.0              # via path.py
+pathlib2==2.3.5           # via pytest
 pluggy==0.13.1            # via pytest, tox
 protego==0.1.16           # via scrapy
 py==1.8.1                 # via pytest, tox
-pyasn1-modules==0.2.7     # via service-identity
+pyasn1-modules==0.2.8     # via service-identity
 pyasn1==0.4.8             # via pyasn1-modules, service-identity
-pycparser==2.19           # via cffi
+pycparser==2.20           # via cffi
 pydispatcher==2.0.5       # via scrapy
-pyhamcrest==1.9.0         # via twisted
+pyhamcrest==2.0.2         # via twisted
 pyopenssl==19.1.0         # via scrapy
-pyparsing==2.4.6          # via packaging
+pyparsing==2.4.7          # via packaging
 pytest-forked==1.1.3      # via pytest-xdist
-pytest-logging==2015.11.4
-pytest-xdist==1.31.0
-pytest==5.3.2
-python-dateutil==2.8.1
-python-dotenv==0.10.3
-pyyaml==5.2
+pytest-logging==2015.11.4  # via -r requirements/base.in
+pytest-xdist==1.32.0      # via -r requirements/base.in
+pytest==5.4.3             # via -r requirements/base.in, pytest-forked, pytest-logging, pytest-xdist
+python-dateutil==2.8.1    # via -r requirements/base.in, github3.py
+python-dotenv==0.13.0     # via -r requirements/base.in
+pyyaml==5.3.1             # via -r requirements/base.in
 queuelib==1.5.0           # via scrapy
 requests-oauthlib==1.3.0  # via jira
 requests-toolbelt==0.9.1  # via jira
-requests==2.22.0
-scrapy==1.8.0
+requests==2.23.0          # via -r requirements/base.in, cachecontrol, github3.py, jira, requests-oauthlib, requests-toolbelt
+scrapy==2.1.0             # via -r requirements/base.in
 service-identity==18.1.0  # via scrapy
-six==1.13.0               # via automat, cryptography, jira, packaging, parsel, protego, pyhamcrest, pyopenssl, pytest-xdist, python-dateutil, scrapy, tox, w3lib
-smmap2==2.0.5             # via gitdb2
-sqlalchemy==0.9.8
-statistics==1.0.3.5
+six==1.15.0               # via automat, cryptography, jira, packaging, parsel, pathlib2, protego, pyopenssl, pytest-xdist, python-dateutil, tox, virtualenv, w3lib
+smmap==3.0.4              # via gitdb
+sqlalchemy==0.9.8         # via -r requirements/base.in
+statistics==1.0.3.5       # via -r requirements/base.in
 tlslite==0.4.9            # via jira
-toml==0.10.0              # via tox
-tox==3.14.2
-tqdm==4.41.0
-twisted==19.10.0          # via scrapy
-uritemplate==3.0.1
-urllib3==1.25.7           # via requests
-urlobject==2.4.3
-virtualenv==16.7.9        # via tox
-w3lib==1.21.0             # via parsel, scrapy
-wcwidth==0.1.7            # via pytest
-zipp==0.6.0               # via importlib-metadata
-zope.interface==4.7.1     # via scrapy, twisted
+toml==0.10.1              # via tox
+tox==3.15.1               # via -r requirements/base.in
+tqdm==4.46.0              # via -r requirements/base.in
+twisted==20.3.0           # via scrapy
+uritemplate==3.0.1        # via -r requirements/base.in, github3.py
+urllib3==1.25.9           # via requests
+urlobject==2.4.3          # via -r requirements/base.in
+virtualenv==20.0.21       # via tox
+w3lib==1.22.0             # via parsel, scrapy
+wcwidth==0.2.3            # via pytest
+zipp==1.2.0               # via importlib-metadata, importlib-resources
+zope.interface==5.1.0     # via scrapy, twisted
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools==42.0.2        # via pyhamcrest, zope.interface
+# setuptools
