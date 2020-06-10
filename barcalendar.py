@@ -230,7 +230,7 @@ LTS_ONLY = True
 
 # The current versions of everything.  Use the same strings as the keys in the various sections below.
 CURRENT = {
-    "Open edX": "Ironwood",
+    "Open edX": "Juniper",
     "Python": "3.5",
     "Django": "2.2",
     "Ubuntu": "16.04",
