@@ -30,3 +30,5 @@ tox
 
 # See https://github.com/pycontribs/jira/issues/325
 jira==1.0.3
+
+gspread
