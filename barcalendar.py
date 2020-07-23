@@ -74,6 +74,7 @@ class GsheetCalendar(BaseCalendar):
         super().__init__(start, end)
         self.currow = 1
         self.cycling = None
+        self.gaps = []
         self.prologue()
 
     def prologue(self):
@@ -89,7 +90,12 @@ class GsheetCalendar(BaseCalendar):
             sheet.setColumnWidths(range.getColumn(), range.getWidth(), 12);
             sheet.setRowHeights(range.getRow(), range.getHeight(), 18);
             range.setFontSize(9);
-
+            """)
+        for gap_row in self.gaps:
+            print(f"""\
+                sheet.setRowHeight({gap_row}, 6);
+            """)
+        print(f"""\
             var keepRows = 10;
             var tooMany = sheet.getMaxRows() - range.getLastRow() - keepRows;
             if (tooMany > 0) {{
@@ -201,6 +207,10 @@ class GsheetCalendar(BaseCalendar):
             if self.currow >= self.top_cycling_row + self.cycling:
                 self.currow = self.top_cycling_row
 
+    def gap_line(self):
+        self.gaps.append(self.currow)
+        self.currow += 1
+
     def text_line(self, text):
         print(f"""\
             sheet.getRange({self.currow}, 1).setValue({text!r})
@@ -219,7 +229,7 @@ class GsheetCalendar(BaseCalendar):
 
     def column_marker(self, column):
         print(f"""\
-            sheet.getRange(1, {column}, 999, 1)
+            sheet.getRange(1, {column}, sheet.getMaxRows(), 1)
                 .setBorder(false, false, false, true, false, false, "black", SpreadsheetApp.BorderStyle.DASHED);
             """)
 
@@ -319,6 +329,7 @@ for name, year, month, lts in django_releases:
     length = 3*12 if lts else 16
     color = "#44b78b" if lts else "#c9f0df"
     cal.bar(f"Django {name}", start=(year, month), length=length, color=color, current=(name==CURRENT["Django"]))
+cal.gap_line()
 
 # Python releases
 python_releases = [
@@ -332,6 +343,7 @@ python_releases = [
 ]
 for name, syear, smonth, eyear, emonth in python_releases:
     cal.bar(f"Python {name}", start=(syear, smonth), end=(eyear, emonth), color="#ffd545", current=(name==CURRENT["Python"]))
+cal.gap_line()
 
 # Ubuntu releases
 ubuntu_nicks = {                        # https://wiki.ubuntu.com/Releases
@@ -351,6 +363,7 @@ for year, month in itertools.product(range(16, 23), [4, 10]):
     if nick:
         nick = f" {nick}"
     cal.bar(f"Ubuntu {name}{nick}", (2000+year, month), length=length, color=color, text_color="white", current=(name==CURRENT["Ubuntu"]))
+cal.gap_line()
 
 # Node releases
 cal.section_note("https://github.com/nodejs/Release")
@@ -363,6 +376,7 @@ node_releases = [
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
     cal.bar(f"Node {name}", start=(syear, smonth), end=(eyear, emonth), color="#2f6c1b", text_color="white", current=(name==CURRENT["Node"]))
+cal.gap_line()
 
 # Mongo releases
 cal.section_note("https://www.mongodb.com/support-policy")      # search for MongoDB Server
@@ -376,6 +390,7 @@ mongo_releases = [
 ]
 for name, syear, smonth, eyear, emonth in mongo_releases:
     cal.bar(f"Mongo {name}", start=(syear, smonth), end=(eyear, emonth), color="#4da65a", current=(name==CURRENT["Mongo"]))
+cal.gap_line()
 
 # MySQL releases
 cal.section_note("https://endoflife.software/applications/databases/mysql")
@@ -386,6 +401,7 @@ mysql_releases = [
 ]
 for name, syear, smonth, eyear, emonth in mysql_releases:
     cal.bar(f"MySQL {name}", start=(syear, smonth), end=(eyear, emonth), color="#b9dc48", current=(name==CURRENT["MySQL"]))
+cal.gap_line()
 
 # elasticsearch releases
 cal.section_note("https://www.elastic.co/support/eol")
@@ -399,6 +415,7 @@ es_releases = [
 ]
 for name, syear, smonth, eyear, emonth in es_releases:
     cal.bar(f"elasticsearch {name}", start=(syear, smonth), end=(eyear, emonth), color="#4595ba", current=(name==CURRENT["elasticsearch"]))
+cal.gap_line()
 
 # ruby
 cal.section_note("https://www.ruby-lang.org/en/downloads/branches/")
@@ -410,7 +427,7 @@ ruby_releases = [
 ]
 for name, syear, smonth, eyear, emonth in ruby_releases:
     cal.bar(f"ruby {name}", start=(syear, smonth), end=(eyear, emonth), color="#DE3F24", current=(name==CURRENT["ruby"]))
-
+cal.gap_line()
 
 
 cal.text_line("")
