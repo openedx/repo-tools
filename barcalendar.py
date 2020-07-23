@@ -217,6 +217,12 @@ class GsheetCalendar(BaseCalendar):
             sheet.setFrozenRows({self.currow - 1});
             """)
 
+    def column_marker(self, column):
+        print(f"""\
+            sheet.getRange(1, {column}, 999, 1)
+                .setBorder(false, false, false, true, false, false, "black", SpreadsheetApp.BorderStyle.DASHED);
+            """)
+
     def write(self):
         self.epilog()
 
@@ -265,6 +271,7 @@ future = ['Koa', 'Lilac', 'Maple'] + list('NOPQRSTUVWXYZ')
 
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
 last = (None, None)
+last_current = False
 for (name, year, month), (_, nextyear, nextmonth) in zip(releases, releases[1:]):
     if year is None:
         year, month = last
@@ -275,8 +282,12 @@ for (name, year, month), (_, nextyear, nextmonth) in zip(releases, releases[1:])
         length = 6
     else:
         length = (nextyear * 12 + nextmonth) - (year * 12 + month)
-    cal.bar(name, start=(year, month), length=length, color="#fce5cd", current=(name==CURRENT["Open edX"]))
+    current = (name==CURRENT["Open edX"])
+    cal.bar(name, start=(year, month), length=length, color="#fce5cd", current=current)
+    if last_current:
+        cal.column_marker(cal.column(year, month) + length)
     last = (year, month)
+    last_current = current
 
 cal.set_cycling(None)
 cal.freeze_here()
