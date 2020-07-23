@@ -267,7 +267,8 @@ names = [
     ('Ironwood', 2019, 3),
     ('Juniper', 2020, 6),
     ]
-future = ['Koa', 'Lilac', 'Maple'] + list('NOPQRSTUVWXYZ')
+future = ['Koa', 'Lilac', 'Maple', 'Nerium', 'Olive'] + list('PQRSTUVWXYZ')
+target_length = 4 # months per release
 
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
 last = (None, None)
@@ -275,11 +276,11 @@ last_current = False
 for (name, year, month), (_, nextyear, nextmonth) in zip(releases, releases[1:]):
     if year is None:
         year, month = last
-        month += 6
+        month += target_length
         yearplus, month = divmod(month, 12)
         year += yearplus
     if nextyear is None:
-        length = 6
+        length = target_length
     else:
         length = (nextyear * 12 + nextmonth) - (year * 12 + month)
     current = (name==CURRENT["Open edX"])
