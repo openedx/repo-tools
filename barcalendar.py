@@ -230,8 +230,8 @@ class GsheetCalendar(BaseCalendar):
 # ==== Editable content ====
 
 # Global Options
-START_YEAR = 2016
-END_YEAR = 2024
+START_YEAR = 2017
+END_YEAR = 2025
 LTS_ONLY = True
 
 # The current versions of everything.  Use the same strings as the keys in the various sections below.
@@ -301,7 +301,7 @@ cal.text_line(
 cal.section_note("https://www.djangoproject.com/download/#supported-versions")
 django_releases = [
     # (Version, Year, Month, Is_LTS) when the release happened.
-    ('1.8', 2015, 4, True),
+    #('1.8', 2015, 4, True),
     ('1.9', 2016, 1, False),
     ('1.10', 2016, 8, False),
     ('1.11', 2017, 4, True),
@@ -323,7 +323,7 @@ for name, year, month, lts in django_releases:
 # Python releases
 python_releases = [
     # Version, and Year-Month for start and end of support.
-    ('2.7', 2010, 7, 2019, 12),
+    #('2.7', 2010, 7, 2019, 12),
     ('3.5', 2015, 9, 2020, 9),          # https://www.python.org/dev/peps/pep-0478/
     ('3.6', 2016, 12, 2021, 12),        # https://www.python.org/dev/peps/pep-0494/
     ('3.7', 2018, 6, 2023, 6),          # https://www.python.org/dev/peps/pep-0537/
@@ -355,8 +355,8 @@ for year, month in itertools.product(range(16, 23), [4, 10]):
 # Node releases
 cal.section_note("https://github.com/nodejs/Release")
 node_releases = [
-    ('6.x', 2016, 4, 2019, 4),
-    ('8.x', 2017, 5, 2019, 12),
+    #('6.x', 2016, 4, 2019, 4),
+    #('8.x', 2017, 5, 2019, 12),
     ('10.x', 2018, 4, 2021, 4),
     ('12.x', 2019, 4, 2022, 4),
     ('14.x', 2020, 4, 2023, 4),
@@ -368,8 +368,8 @@ for name, syear, smonth, eyear, emonth in node_releases:
 cal.section_note("https://www.mongodb.com/support-policy")      # search for MongoDB Server
 mongo_releases = [
     #('3.0', 2015, 3, 2018, 2),
-    ('3.2', 2015, 12, 2018, 9),
-    ('3.4', 2016, 11, 2020, 1),
+    #('3.2', 2015, 12, 2018, 9),
+    #('3.4', 2016, 11, 2020, 1),
     ('3.6', 2017, 11, 3000, 1),
     ('4.0', 2018, 6, 3000, 1),
     #('4.2', 2019, 8, 3000, 1),
@@ -403,8 +403,8 @@ for name, syear, smonth, eyear, emonth in es_releases:
 # ruby
 cal.section_note("https://www.ruby-lang.org/en/downloads/branches/")
 ruby_releases = [
-    ('2.3', 2015, 12, 2019, 3),
-    ('2.4', 2016, 12, 2020, 3),
+    #('2.3', 2015, 12, 2019, 3),
+    #('2.4', 2016, 12, 2020, 3),
     ('2.5', 2017, 12, 3000, 1),
     ('2.6', 2018, 12, 3000, 1),
 ]
