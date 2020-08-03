@@ -279,7 +279,7 @@ names = [
     ]
 # https://www.treenames.net/common_tree_names.html
 future = ['Koa', 'Lilac', 'Maple', 'Nutmeg', 'Olive'] + list('PQRSTUVWXYZ')
-target_length = 4 # months per release
+target_length = 6 # months per release
 
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
 last = (None, None)
