@@ -21,6 +21,7 @@ setup(
         'pytest',
         'pytest-xdist',
         'pyyaml',
+        'ruamel.yaml'
     ],
     entry_points={
         'console_scripts': [
