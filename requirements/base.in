@@ -19,6 +19,7 @@ statistics
 tqdm
 uritemplate
 urlobject
+ruamel.yaml
 
 # pytest is used by `edx_report_tools.oep2` directly
 pytest
