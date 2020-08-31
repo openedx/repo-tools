@@ -12,3 +12,13 @@ install:
 - travis_retry make dev-install
 script:
 - make test
+
+deploy:
+  provider: pypi
+  user: edx
+  distributions: sdist bdist_wheel
+  on:
+    tags: true
+    python: 3.5
+  password:
+
