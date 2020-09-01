@@ -3,9 +3,6 @@ language: python
 python:
 - '3.5'
 - '3.8'
-branches:
-  only:
-  - master
 cache: pip
 install:
 - travis_retry pip install --upgrade pip
