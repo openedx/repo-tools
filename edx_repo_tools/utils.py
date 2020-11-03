@@ -1,4 +1,5 @@
 import click
+from ruamel.yaml import YAML
 
 
 def dry_echo(dry, message, *args, **kwargs):
@@ -34,3 +35,19 @@ def dry(f, help='Disable or enable actions taken by the script'):
         default=True,
         help=help,
     )(f)
+
+
+class YamlLoader:
+    def __init__(self, file_path):
+        self.file_path = file_path
+        self.yml_instance = YAML()
+        self.yml_instance.indent(mapping=2, sequence=4, offset=2)
+        self._load_file()
+
+    def _load_file(self):
+        with open(self.file_path, 'r') as file_stream:
+            self.elements = self.yml_instance.load(file_stream)
+
+    def update_yml_file(self):
+        with open(self.file_path, 'w') as file_stream:
+            self.yml_instance.dump(self.elements, file_stream)

@@ -47,7 +47,7 @@ class TestToxModernizer(TestCase):
         self.assertNotIn("py{27,35}", env_list)
         self.assertNotIn("py{27,35,36}", env_list)
         self.assertNotIn("py{27,35,36,37}", env_list)
-        self.assertIn("py{35,38}", env_list)
+        self.assertIn("py38", env_list)
 
     def _assert_replaces_django_runners(self, config_file):
         parser = TestToxModernizer._get_parser(config_file)
@@ -56,7 +56,7 @@ class TestToxModernizer(TestCase):
         self.assertNotIn("django{111}", env_list)
         self.assertNotIn("django{111,20}", env_list)
         self.assertNotIn("django{111,20,21}", env_list)
-        self.assertIn("django{22,30}", env_list)
+        self.assertIn("django{22,30,31}", env_list)
 
     def _assert_replaces_django_dependencies(self, config_file):
         self._assert_django_dependencies_replaced(config_file)
@@ -104,10 +104,3 @@ class TestToxModernizer(TestCase):
     def tearDown(self):
         os.remove(self.config_file1)
         os.remove(self.config_file2)
-
-
-
-
-
-
-
