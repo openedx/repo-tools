@@ -385,9 +385,9 @@ mongo_releases = [
     #('3.0', 2015, 3, 2018, 2),
     #('3.2', 2015, 12, 2018, 9),
     #('3.4', 2016, 11, 2020, 1),
-    ('3.6', 2017, 11, 3000, 1),
-    ('4.0', 2018, 6, 3000, 1),
-    #('4.2', 2019, 8, 3000, 1),
+    ('3.6', 2017, 11, 2021, 4),
+    ('4.0', 2018, 6, 2022, 1),
+    ('4.2', 2019, 8, 3000, 1),
 ]
 for name, syear, smonth, eyear, emonth in mongo_releases:
     cal.bar(f"Mongo {name}", start=(syear, smonth), end=(eyear, emonth), color="#4da65a", current=(name==CURRENT["Mongo"]))
