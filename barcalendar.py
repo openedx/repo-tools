@@ -337,8 +337,8 @@ python_releases = [
     # Version, and Year-Month for start and end of support.
     #('2.7', 2010, 7, 2019, 12),
     ('3.5', 2015, 9, 2020, 9),          # https://www.python.org/dev/peps/pep-0478/
-    ('3.6', 2016, 12, 2021, 12),        # https://www.python.org/dev/peps/pep-0494/
-    ('3.7', 2018, 6, 2023, 6),          # https://www.python.org/dev/peps/pep-0537/
+    #('3.6', 2016, 12, 2021, 12),        # https://www.python.org/dev/peps/pep-0494/
+    #('3.7', 2018, 6, 2023, 6),          # https://www.python.org/dev/peps/pep-0537/
     ('3.8', 2019, 10, 2024, 10),        # https://www.python.org/dev/peps/pep-0569/
     ('3.9', 2020, 10, 2025, 10),        # https://www.python.org/dev/peps/pep-0596/
 ]
