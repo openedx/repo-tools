@@ -269,7 +269,20 @@ def get_latest_commit_for_ref(repo, ref):
         else:
             raise
     except NotFoundError:
-        raise ValueError(u"In repo {}, ref {!r} doesn't exist.".format(repo, ref))
+        try:
+            # Maybe it's a commit sha?
+            commit = repo.git_commit(ref).refresh()
+        except NotFoundError:
+            raise ValueError(u"In repo {}, ref {!r} doesn't exist.".format(repo, ref))
+        else:
+            return {
+                "ref": ref,
+                "ref_type": "commit",
+                "sha": ref,
+                "message": commit.message,
+                "author": commit.author,
+                "committer": commit.committer,
+            }
 
     if tag.object.type == "tag":
         # An annotated tag, one more level of indirection.
