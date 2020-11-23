@@ -1,92 +1,104 @@
-import collections
-from copy import deepcopy
 import re
 import sys
-import yaml
+from copy import deepcopy
 
-MAPPING_TAG = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
+from edx_repo_tools.utils import YamlLoader
 
+ALLOWED_PYTHON_VERSIONS = '3.8'
 
-def dict_representer(dumper, data):
-    return dumper.represent_mapping(MAPPING_TAG, data.items())
+DEPRECATED_DJANGO_VERSIONS_PATTERN = r"django111|django20|django21"
+ALLOWED_DJANGO_VERSIONS_PATTERN = r"django22|django30|django31"
 
+DJANGO_PATTERN = r"django[0-3][0-2][0-2]?"
 
-def dict_constructor(loader, node):
-    return collections.OrderedDict(loader.construct_pairs(node))
-
-
-def setup_ordered_yaml_parser():
-    """
-    Default yaml parser does not maintains the order of elements.
-    This function overrides the default mapping to maintain
-    the original order of elements in the travis file.
-    """
-    yaml.add_representer(collections.OrderedDict, dict_representer)
-    yaml.add_constructor(MAPPING_TAG, dict_constructor)
+ALLOWED_DJANGO_VERSIONS = ['django22', 'django30', 'django31']
 
 
-class TravisModernizer:
+class TravisModernizer(YamlLoader):
     def __init__(self, file_path):
-        setup_ordered_yaml_parser()
-        self.file_path = file_path
-        self.travis_dict = None
-        self.DJANGO_PATTERN = re.compile("django[0-2][0-1]")  # creates regex to match django111, django20 && django21
+        super().__init__(file_path)
 
-    def remove_django_envs(self):
-        with open(self.file_path, 'r') as file:
-            self.travis_dict = yaml.load(file, Loader=yaml.FullLoader)
-            if 'matrix' in self.travis_dict.keys():
-                env_list = self.travis_dict['matrix']['include']
-                updated_list = [
-                    env for env in env_list if not self.DJANGO_PATTERN.search(env['env'])
-                ]
-                self.travis_dict['matrix']['include'] = updated_list
-            if 'env' in self.travis_dict.keys():
-                env_list = self.travis_dict['env']
-                updated_list = [
-                    env for env in env_list if not self.DJANGO_PATTERN.search(env)
-                ]
-                self.travis_dict['env'] = updated_list
-            return self.travis_dict
+    def _update_python_dict(self):
+        python_versions = self.elements.get('python', None)
+        if python_versions is None:
+            return
+        self.elements['python'] = [ALLOWED_PYTHON_VERSIONS]
 
-    def update_python_version(self):
-        """
-        Add py38, remove py36 if present.
-        """
-        with open(self.file_path, 'r') as file:
-            self.travis_dict = yaml.load(file, Loader=yaml.FullLoader)
-            if 'python' in self.travis_dict.keys():
-                self.travis_dict['python'].append('3.8')
-                if '3.6' in self.travis_dict['python']:
-                    self.travis_dict['python'].remove('3.6')
-            if 'matrix' in self.travis_dict.keys():
-                env_list = self.travis_dict['matrix']['include']
-                # remove python 3.6 if present
-                allowed_envs = []
-                for env in env_list:
-                    if 'python' in env.keys():
-                        if env['python'] != 3.6:
-                            allowed_envs.append(deepcopy(env))
-                # add python 3.8 in env_list
-                new_python_envs = []
-                for env in allowed_envs:
-                    if 'python' in env.keys():
-                        #  copy whole element and add it in env_list with python3.8 version.
-                        env_copy = deepcopy(env)
-                        env_copy['python'] = '3.8'
-                        new_python_envs.append(deepcopy(env_copy))
-                self.travis_dict['matrix']['include'] = allowed_envs + new_python_envs
-            return self.travis_dict
+    def _update_matrix_python_versions(self):
+        matrix_elements = self.elements.get("matrix", {}).get("include")
+        if matrix_elements is None:
+            return
+        has_python_matrix = any(matrix_item.get("python") is not None for matrix_item in matrix_elements)
+        if not has_python_matrix:
+            return
+        non_python_matrix_elements = []
+        python_matrix_items = []
+        for matrix_element in matrix_elements:
+            if 'python' not in matrix_element.keys():
+                non_python_matrix_elements.append(matrix_element)
+                continue
+            python_matrix_item = deepcopy(matrix_element)
+            python_matrix_item['python'] = ALLOWED_PYTHON_VERSIONS
+            python_matrix_items.append(python_matrix_item)
+            break
+        self.elements["matrix"]["include"] = non_python_matrix_elements + python_matrix_items
 
-    def write_updated_data(self):
-        with open(self.file_path, 'w') as file:
-            yaml.dump(self.travis_dict, file, default_flow_style=False, sort_keys=True)
+    @staticmethod
+    def _get_updated_django_matrix_items(django_matrix_item):
+        updated_django_matrix_items = []
+        for django_version in ALLOWED_DJANGO_VERSIONS:
+            django_matrix_item_clone = deepcopy(django_matrix_item)
+            django_matrix_item_clone["env"] = re.sub(DJANGO_PATTERN, django_version, django_matrix_item_clone["env"])
+            updated_django_matrix_items.append(django_matrix_item_clone)
+        return updated_django_matrix_items
+
+    @staticmethod
+    def _get_updated_django_envs(django_env_item):
+        updated_django_env_items = []
+        for django_version in ALLOWED_DJANGO_VERSIONS:
+            django_env_item = re.sub(DJANGO_PATTERN, django_version, django_env_item)
+            updated_django_env_items.append(django_env_item)
+        return updated_django_env_items
+
+    def _update_django_envs(self):
+        env_elements = self.elements.get("env")
+        if env_elements is None:
+            return
+        has_django_env = any(re.search(DJANGO_PATTERN, env_item) for env_item in env_elements)
+        if not has_django_env:
+            return
+        django_env_item = [django_env_item for django_env_item in env_elements
+                           if re.search(DJANGO_PATTERN, django_env_item)][0]
+        non_django_env_items = [env_item for env_item in env_elements
+                                if not re.search(DJANGO_PATTERN, env_item)]
+        self.elements["env"] = non_django_env_items + TravisModernizer._get_updated_django_envs(django_env_item)
+
+    def _update_django_matrix_envs(self):
+        matrix_items = self.elements.get("matrix", {}).get("include", [])
+        if not matrix_items:
+            return
+        has_django_env = any(re.search(DJANGO_PATTERN, matrix_item.get('env', '')) for matrix_item in matrix_items)
+        if not has_django_env:
+            return
+        django_matrix_element = [matrix_item for matrix_item in matrix_items
+                                 if re.search(DJANGO_PATTERN, matrix_item.get("env", ""))][0]
+        non_django_matrix_items = [matrix_item for matrix_item in matrix_items
+                                   if not re.search(DJANGO_PATTERN, matrix_item.get("env", ""))]
+        self.elements["matrix"]["include"] = (non_django_matrix_items +
+                                              TravisModernizer._get_updated_django_matrix_items(django_matrix_element))
+
+    def _update_python_versions(self):
+        self._update_python_dict()
+        self._update_matrix_python_versions()
+
+    def _update_django_versions(self):
+        self._update_django_envs()
+        self._update_django_matrix_envs()
 
     def modernize(self):
-        self.update_python_version()
-        self.write_updated_data()
-        self.remove_django_envs()
-        self.write_updated_data()
+        self._update_python_versions()
+        self._update_django_versions()
+        self.update_yml_file()
 
 
 if __name__ == '__main__':
