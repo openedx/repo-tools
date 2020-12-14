@@ -4,6 +4,8 @@ Modernizer for Github Actions CI
 from copy import deepcopy
 import sys
 
+import click
+
 from edx_repo_tools.utils import YamlLoader
 
 TO_BE_REMOVED_PYTHON = ['3.5']
@@ -45,6 +47,14 @@ class GithubCIModernizer(YamlLoader):
         self.update_yml_file()
 
 
-if __name__ == '__main__':
-    modernizer = GithubCIModernizer(file_path=sys.argv[1])
+@click.command()
+@click.option(
+    '--path', default='.github/workflows/ci.yml',
+    help="Path to default CI workflow file")
+def main(path):
+    modernizer = GithubCIModernizer(path)
     modernizer.modernize()
+
+
+if __name__ == '__main__':
+    main()

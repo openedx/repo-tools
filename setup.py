@@ -6,7 +6,7 @@ with open('README.rst') as readme:
 
 setup(
     name='edx-repo-tools',
-    version='0.2.3',
+    version='0.2.4',
     description="This repo contains a number of tools Open edX uses for working with GitHub repositories.",
     long_description=long_description,
     license='Apache',
@@ -52,6 +52,7 @@ setup(
             'modernize_travis = django3_codemods.config_tools.travis_modernizer:main',
             'modernize_tox = django3_codemods.config_tools.tox_modernizer:main',
             'modernize_openedx_yaml = edx_repo_tools.modernize_openedx_yaml:main',
+            'modernize_github_actions = django3_codemods.config_tools.github_actions_modernizer:main',
         ],
     },
     package_data={
