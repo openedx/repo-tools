@@ -1,6 +1,7 @@
 import re
-import sys
 from copy import deepcopy
+
+import click
 
 from edx_repo_tools.utils import YamlLoader
 
@@ -101,6 +102,14 @@ class TravisModernizer(YamlLoader):
         self.update_yml_file()
 
 
-if __name__ == '__main__':
-    modernizer = TravisModernizer(file_path=sys.argv[1])
+@click.command()
+@click.option(
+    '--path', default='.travis.yml',
+    help="Path to target travis config file")
+def main(path):
+    modernizer = TravisModernizer(path)
     modernizer.modernize()
+
+
+if __name__ == '__main__':
+    main()

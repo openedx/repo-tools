@@ -1,6 +1,7 @@
-import sys
 import re
 from configparser import ConfigParser, NoSectionError
+
+import click
 
 TOX_SECTION = "tox"
 ENVLIST = "envlist"
@@ -98,6 +99,14 @@ class ToxModernizer:
         self._update_config_file()
 
 
-if __name__ == '__main__':
-    modernizer = ConfigReader(file_path=sys.argv[1]).get_modernizer()
+@click.command()
+@click.option(
+    '--path', default='tox.ini',
+    help="Path to target tox config file")
+def main(path):
+    modernizer = ConfigReader(path).get_modernizer()
     modernizer.modernize()
+
+
+if __name__ == '__main__':
+    main()
