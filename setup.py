@@ -21,15 +21,6 @@ setup(
     ],
     packages=[
         'edx_repo_tools',
-        'django3_codemods',
-        'django2_codemods',
-        'edx_repo_tools.dev',
-        'edx_repo_tools.oep2',
-        'edx_repo_tools.oep2.checks',
-        'edx_repo_tools.oep2.report',
-        'edx_repo_tools.ospr',
-        'edx_repo_tools.release',
-        'edx_repo_tools.drip_survey',
     ],
     install_requires=[
         'appdirs',
