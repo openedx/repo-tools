@@ -21,6 +21,8 @@ setup(
     ],
     packages=[
         'edx_repo_tools',
+        'django2_codemods',
+        'django3_codemods',
     ],
     install_requires=[
         'appdirs',
