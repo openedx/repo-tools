@@ -1,3 +1,4 @@
+import setuptools
 from setuptools import setup
 
 
@@ -6,7 +7,7 @@ with open('README.rst') as readme:
 
 setup(
     name='edx-repo-tools',
-    version='0.2.9',
+    version='0.3.0',
     description="This repo contains a number of tools Open edX uses for working with GitHub repositories.",
     long_description=long_description,
     license='Apache',
@@ -19,9 +20,7 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License'
     ],
-    packages=[
-        'edx_repo_tools',
-    ],
+    packages=setuptools.find_packages(),
     install_requires=[
         'appdirs',
         'click',
@@ -42,10 +41,10 @@ setup(
             'tag_release = edx_repo_tools.release.tag_release:main',
             'drip = edx_repo_tools.drip_survey:cli',
             'get_org_repo_urls = edx_repo_tools.dev.get_org_repo_urls:main',
-            'modernize_travis = django3_codemods.config_tools.travis_modernizer:main',
-            'modernize_tox = django3_codemods.config_tools.tox_modernizer:main',
+            'modernize_travis = edx_repo_tools.codemods.django3.travis_modernizer:main',
+            'modernize_tox = edx_repo_tools.codemods.django3.tox_modernizer:main',
             'modernize_openedx_yaml = edx_repo_tools.modernize_openedx_yaml:main',
-            'modernize_github_actions = django3_codemods.config_tools.github_actions_modernizer:main',
+            'modernize_github_actions = edx_repo_tools.codemods.django3.github_actions_modernizer:main',
             'add_common_constraint = edx_repo_tools.add_common_constraint:main',
         ],
     },
