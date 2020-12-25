@@ -17,7 +17,7 @@ NEW_DJANGO_DEPENDENCIES = DJANGO_22_DEPENDENCY + DJANGO_30_DEPENDENCY + DJANGO_3
 
 SECTIONS = [TOX_SECTION, TEST_ENV_SECTION]
 
-PYTHON_PATTERN = "(py{.*?}-|py[0-9]+,|py[0-9]+-)"
+PYTHON_PATTERN = "(py{.*?}-?|py[0-9]+,|py[0-9]+-)"
 
 DJANGO_PATTERN = "(django[0-9]+,|django[0-9]+\n|django{.*}\n|django{.*?}|django[0-9]+-|django{.*}-)"
 
@@ -62,6 +62,8 @@ class ToxModernizer:
     @staticmethod
     def _replace_runners(pattern, substitute, env_list):
         matches = re.findall(pattern, env_list)
+        if not matches:
+            return env_list
         substitute = ToxModernizer._get_runner_substitute(matches, substitute)
         return ToxModernizer._replace_matches(pattern, substitute, env_list, matches)
 
