@@ -30,7 +30,7 @@ def people_to_qualtrics_csv(hub, repo_tools_data, frequency, update):
     """
 
     if update is not None:
-        with io.open(update, newline='', encoding='utf-8') as update_data:
+        with open(update, newline='', encoding='utf-8') as update_data:
             reader = csv.DictReader(update_data)
             initial = {
                 row[EMAIL]: row

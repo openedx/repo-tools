@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 """Sync labels across all repos using labels.yaml."""
 
-from __future__ import print_function
 
 import json
 
@@ -49,7 +48,7 @@ def set_or_delete_labels(dry, repo, new_labels):
     for label in undesired_names & existing_names:
         dry_echo(
             dry,
-            "Deleting label '{}'".format(label),
+            f"Deleting label '{label}'",
             fg="red"
         )
         if not dry:
@@ -71,7 +70,7 @@ def sync_labels(hub, repo_tools_data, org, repo, dry):
     else:
         repos = sorted(iter_openedx_yaml(hub, org))
     for repo, _ in repos:
-        print("Updating labels in {}".format(repo))
+        print(f"Updating labels in {repo}")
         set_or_delete_labels(
             dry,
             repo,

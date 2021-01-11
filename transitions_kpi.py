@@ -7,7 +7,6 @@ file to obtain KPI information.
 
 See https://openedx.atlassian.net/wiki/display/OPEN/Tracking+edX+Commitment+To+OSPRs
 """
-from __future__ import print_function
 from collections import OrderedDict
 from functools import reduce
 from subprocess import check_call
@@ -224,10 +223,10 @@ def pretty_print_time(time, message=None):
     minutes, seconds = divmod(remainder, 60)
     if message is not None:
         print(message)
-        print('\t {} days, {} hours, {} minutes, {} seconds'.format(days, hours, minutes, seconds))
+        print(f'\t {days} days, {hours} hours, {minutes} minutes, {seconds} seconds')
     # Print out fractional days things have been in this state
     total = days + hours/24. + minutes/(24.*60) + seconds/(24.*3600)
-    return "{:.1f}".format(total)
+    return f"{total:.1f}"
 
 
 def get_stats(time_spent, functions, pretty=False):
@@ -240,11 +239,11 @@ def get_stats(time_spent, functions, pretty=False):
     for func, fname in functions:
         output = func(time_spent)
         if pretty:
-            msg = '{} time spent'.format(fname)
+            msg = f'{fname} time spent'
             pretty_print_time(output, msg)
         else:
             # build up a string to print out.
-            header += "{}\t|".format(fname)
+            header += f"{fname}\t|"
             results += "{}\t ".format(pretty_print_time(output))
 
     if not pretty:
@@ -315,7 +314,7 @@ def main(argv):
     if args.percentile or args.all:
         pnum = args.percentile or 95
         pfunc = make_percentile(pnum)
-        functions.append((pfunc, '{}%'.format(pnum)))
+        functions.append((pfunc, f'{pnum}%'))
 
     if args.std_dev or args.all:
         functions.append((std_dev, 'StdDev'))
@@ -341,7 +340,7 @@ def main(argv):
     for list_name, time_spent in ticket_lists.iteritems():
         print("-" * 40)
         num_tix = len(time_spent)
-        print("Statistics for '{}', over {} tickets".format(list_name, num_tix))
+        print(f"Statistics for '{list_name}', over {num_tix} tickets")
         print("-" * 40)
         get_stats(time_spent, functions, args.pretty)
 

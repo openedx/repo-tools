@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 """Produce a list of the emails of all non-edX people in people.yaml"""
-from __future__ import print_function
 
 import yaml
 

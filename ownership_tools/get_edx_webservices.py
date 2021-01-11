@@ -10,6 +10,6 @@ for repo in expanded_repos_list(orgs):
     except github.GithubException:
         continue
     if 'tags' in metadata and 'webservice' in metadata['tags']:
-        print("{}".format(repo.html_url))
+        print(f"{repo.html_url}")
         webservices.append(repo)
 

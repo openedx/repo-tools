@@ -11,7 +11,6 @@ import os.path
 from appdirs import user_config_dir
 import click
 from github3 import login, GitHubError
-from six.moves import input
 import yaml
 
 
@@ -71,7 +70,7 @@ def login_github(username=None, password=None, token=None, token_file=None):
     try:
         with open(AUTH_CONFIG_FILE) as auth_config:
             AUTH_SETTINGS = yaml.safe_load(auth_config)
-        LOGGER.info("Read auth from {!r}".format(AUTH_CONFIG_FILE))
+        LOGGER.info(f"Read auth from {AUTH_CONFIG_FILE!r}")
     except:  # pylint: disable=bare-except
         LOGGER.debug('Unable to load auth settings', exc_info=True)
         AUTH_SETTINGS = {}
@@ -84,7 +83,7 @@ def login_github(username=None, password=None, token=None, token_file=None):
 
     # Log in with token from file, if it's supplied
     if token_file is not None and username is not None:
-        with open(token_file, 'r') as tf:
+        with open(token_file) as tf:
             token = tf.readline()[:-1]
             if token:
                 hub = login(username, token)
@@ -103,7 +102,7 @@ def login_github(username=None, password=None, token=None, token_file=None):
         # Try .netrc
         try:
             netrc_data = netrc.netrc()
-        except IOError:
+        except OSError:
             # No .netrc file, that's fine.
             pass
         else:
@@ -156,7 +155,7 @@ def login_github(username=None, password=None, token=None, token_file=None):
                 'username': username,
                 'token': token.token,
             }, auth_config)
-            LOGGER.info("Wrote credentials to {!r}".format(AUTH_CONFIG_FILE))
+            LOGGER.info(f"Wrote credentials to {AUTH_CONFIG_FILE!r}")
 
     hub.set_user_agent(AUTHORIZATION_NOTE)
 

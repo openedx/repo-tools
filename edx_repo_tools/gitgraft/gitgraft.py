@@ -27,7 +27,7 @@ class InputException(Exception):
     pass
 
 
-class Grafter(object):
+class Grafter:
     """
     Does all of the work of grafting including:
     - Compiling a list of commits across both repos for the given time period
@@ -116,7 +116,7 @@ class Grafter(object):
         errors = []
         for repo in (self.original_repo, self.branched_repo):
             if repo.bare:
-                errors.append("ERROR- repository {} is empty!".format(repo.working_tree_dir))
+                errors.append(f"ERROR- repository {repo.working_tree_dir} is empty!")
 
             if repo.is_dirty():
                 errors.append(
@@ -136,13 +136,13 @@ class Grafter(object):
         errors = []
         for repo in (self.original_repo, self.branched_repo):
             if repo.head.is_detached:
-                errors.append("ERROR- branch head {} is detached!".format(repo.head.name))
+                errors.append(f"ERROR- branch head {repo.head.name} is detached!")
 
             if repo.head.is_remote():
-                errors.append("ERROR- branch head {} is remote!".format(repo.head.name))
+                errors.append(f"ERROR- branch head {repo.head.name} is remote!")
 
             if not repo.head.is_valid():
-                errors.append("ERROR- branch head {} is invalid!".format(repo.head.name))
+                errors.append(f"ERROR- branch head {repo.head.name} is invalid!")
 
         self.fail_on_errors(errors)
 
@@ -159,7 +159,7 @@ class Grafter(object):
             full_path = join(repo_path, path)
 
             if not os.path.exists(full_path):
-                errors.append("{} path {} does not exist!".format(path_type, full_path))
+                errors.append(f"{path_type} path {full_path} does not exist!")
         self.fail_on_errors(errors)
 
     @staticmethod
@@ -207,11 +207,11 @@ class Grafter(object):
         ):
             # Key into the self.candidate_commits[digest] dict so we can make this chunk of code reusable across
             # original and branched repos.
-            commit_key = "{}_commit".format(repo_name)
+            commit_key = f"{repo_name}_commit"
             paths = list(paths)
 
             for commit in repo.commits(paths=paths):
-                self.vprint("Processing commit: {}".format(commit.hexsha))
+                self.vprint(f"Processing commit: {commit.hexsha}")
                 digest = self.get_hexdigest_from_commit(commit)
 
                 if commit.committed_date < self.oldest_lookback_epoch:
@@ -276,9 +276,9 @@ class Grafter(object):
                         match = tracked_src_path
                         match_path = check_path
                     else:
-                        self.vprint("{} does not exist in branched repo, skipping.".format(check_path))
+                        self.vprint(f"{check_path} does not exist in branched repo, skipping.")
             else:
-                self.vprint("{} not in tracked path {}".format(source, tracked_src_path))
+                self.vprint(f"{source} not in tracked path {tracked_src_path}")
 
         return match_path if match else None
 
@@ -311,16 +311,16 @@ class Grafter(object):
                     continue
 
                 self.vprint("-----------------------------------------------")
-                self.vprint("\nFiles in commit {}".format(original_commit.hexsha))
+                self.vprint(f"\nFiles in commit {original_commit.hexsha}")
                 self.vprint(original_commit.stats.files, pretty=True)
 
                 dest_path = self.try_map_path(i.a_path)
 
                 if dest_path:
-                    self.vprint("Copying {} to {}".format(i.a_path, dest_path))
+                    self.vprint(f"Copying {i.a_path} to {dest_path}")
 
                     if not self.dry_run:
-                        with io.open(dest_path, 'wb') as f:
+                        with open(dest_path, 'wb') as f:
                             i.a_blob.stream_data(f)
 
                     found_files.append(dest_path)
@@ -346,11 +346,11 @@ Original commit by {committer_name} on {date} with this message:
                 #    self.branched_repo.index.add(found_files)
                 #    self.branched_repo.index.commit(msg)
             else:
-                self.vprint("\n\nNothing to commit for original repo sha {}".format(original_commit.hexsha))
+                self.vprint(f"\n\nNothing to commit for original repo sha {original_commit.hexsha}")
 
         if not self.dry_run:
             print("--------------------------------------------------")
-            print("Your branch has been changed to {}".format(self.output_branch))
+            print(f"Your branch has been changed to {self.output_branch}")
             print("--------------------------------------------------")
 
     def is_valid_candidate_path(self, path, repo_name):
@@ -399,7 +399,7 @@ Original commit by {committer_name} on {date} with this message:
             commit_dict = self.candidate_commits[digest]
 
             if commit_dict['original_commit'] is not None and commit_dict['branched_commit'] is not None:
-                print("{} - exists in both repos!".format(digest))
+                print(f"{digest} - exists in both repos!")
             elif commit_dict['branched_commit'] is not None:
                 print("{} - commit {} only in branched repo".format(digest, commit_dict['branched_commit']))
             elif commit_dict['original_commit'] is not None:
