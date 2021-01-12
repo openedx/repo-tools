@@ -15,6 +15,7 @@ class TestGithubActionsModernizer(TestCase):
     def setUp(self):
         self.test_file1 = self._setup_local_copy("sample_files/sample_ci_file.yml")
         self.test_file2 = self._setup_local_copy("sample_files/sample_ci_file_2.yml")
+        self.test_file3 = self._setup_local_copy("sample_files/sample_ci_file_3.yml")
 
     @staticmethod
     def _setup_local_copy(file_name):
@@ -34,6 +35,13 @@ class TestGithubActionsModernizer(TestCase):
     def test_python_matrix_items(self):
         ci_elements = TestGithubActionsModernizer._get_updated_yaml_elements(self.test_file1)
         python_versions = ci_elements['jobs']['run_tests']['strategy']['matrix']['python-version']
+
+        self.assertIsInstance(python_versions, list)
+        self.assertNotIn('3.5', python_versions)
+
+    def test_python_matrix_items_build_tag(self):
+        ci_elements = TestGithubActionsModernizer._get_updated_yaml_elements(self.test_file3)
+        python_versions = ci_elements['jobs']['build']['strategy']['matrix']['python-version']
 
         self.assertIsInstance(python_versions, list)
         self.assertNotIn('3.5', python_versions)
