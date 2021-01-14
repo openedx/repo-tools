@@ -1,3 +1,4 @@
+import io
 import re
 from configparser import ConfigParser, NoSectionError
 
@@ -92,8 +93,13 @@ class ToxModernizer:
         self.config_parser[TEST_ENV_SECTION][TEST_ENV_DEPS] = dependencies
 
     def _update_config_file(self):
+        # ConfigParser insists on using tabs for output. We want spaces.
+        with io.StringIO() as configw:
+            self.config_parser.write(configw)
+            new_ini = configw.getvalue()
+        new_ini = new_ini.replace("\t", "    ")
         with open(self.file_path, 'w') as configfile:
-            self.config_parser.write(configfile)
+            configfile.write(new_ini)
 
     def modernize(self):
         self._update_env_list()

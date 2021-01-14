@@ -57,3 +57,4 @@ class TestGithubActionsModernizer(TestCase):
     def tearDown(self):
         os.remove(self.test_file1)
         os.remove(self.test_file2)
+        os.remove(self.test_file3)

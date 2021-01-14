@@ -10,8 +10,8 @@ from django3_codemods.config_tools.tox_modernizer import ConfigReader
 
 class TestToxModernizer(TestCase):
     def setUp(self):
-        self.config_file1 = TestToxModernizer._setup_local_copy("sample_tox_config.ini")
-        self.config_file2 = TestToxModernizer._setup_local_copy("sample_tox_config_2.ini")
+        self.config_file1 = self._setup_local_copy("sample_tox_config.ini")
+        self.config_file2 = self._setup_local_copy("sample_tox_config_2.ini")
 
     @staticmethod
     def _setup_local_copy(file_name):
@@ -21,16 +21,16 @@ class TestToxModernizer(TestCase):
         shutil.copy2(local_file, temp_file)
         return temp_file
 
-    @staticmethod
-    def _get_parser(file_path):
+    def _get_parser(self, file_path):
         modernizer = ConfigReader(file_path=file_path).get_modernizer()
         modernizer.modernize()
         parser = ConfigParser()
         parser.read(file_path)
+        self._assert_no_tabs(file_path)
         return parser
 
     def _assert_django_dependencies_replaced(self, config_file):
-        parser = TestToxModernizer._get_parser(config_file)
+        parser = self._get_parser(config_file)
         dependencies = parser['testenv']['deps']
 
         self.assertNotIn("django111:", dependencies)
@@ -40,7 +40,7 @@ class TestToxModernizer(TestCase):
         self.assertIn("django30:", dependencies)
 
     def _assert_replaces_python_interpreters(self, config_file):
-        parser = TestToxModernizer._get_parser(config_file)
+        parser = self._get_parser(config_file)
         env_list = parser['tox']['envlist']
 
         self.assertNotRegex("py{27}", env_list)
@@ -50,7 +50,7 @@ class TestToxModernizer(TestCase):
         self.assertIn("py38", env_list)
 
     def _assert_replaces_django_runners(self, config_file):
-        parser = TestToxModernizer._get_parser(config_file)
+        parser = self._get_parser(config_file)
         env_list = parser['tox']['envlist']
 
         self.assertNotIn("django{111}", env_list)
@@ -73,6 +73,10 @@ class TestToxModernizer(TestCase):
             parser.write(configfile)
 
         self._assert_django_dependencies_replaced(config_file)
+
+    def _assert_no_tabs(self, config_file):
+        with open(config_file) as configfile:
+            assert "\t" not in configfile.read()
 
     def test_raises_error_no_empty_config(self):
         tox_config = {}
