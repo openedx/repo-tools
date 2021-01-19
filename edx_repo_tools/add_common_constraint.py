@@ -20,6 +20,7 @@ class CommonConstraint:
         self.constraint = "-c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints" \
                           ".txt\n "
         self.file = self._get_file_name()
+        self.lines = []
 
     def _get_file_name(self):
         for file in FILES:
@@ -28,25 +29,32 @@ class CommonConstraint:
 
     def _read_lines(self):
         with open(self.file, 'r') as file:
-            lines = file.readlines()
-        return lines
+            self.lines = file.readlines()
 
-    def _insert_constraint(self, lines):
-        for i in range(len(lines)):
-            if not lines[i].lstrip().startswith('#'):
-                lines.insert(i, "\n")
-                lines.insert(i + 1, self.comment)
-                lines.insert(i + 2, self.constraint)
-                return lines
+    def _get_constraint_index(self):
+        for i in range(len(self.lines)):
+            if not self.lines[i].lstrip().startswith('#'):
+                if self.lines[i] == '\n':
+                    return i + 1
+        return 0
 
-    def _write_file(self, lines):
+    def _insert_constraint(self):
+        index = self._get_constraint_index()
+
+        self.lines.insert(index, self.comment)
+        self.lines.insert(index + 1, self.constraint)
+        self.lines.insert(index + 2, "\n")
+
+        return self.lines
+
+    def _write_file(self):
         with open(self.file, 'w') as file:
-            file.writelines(lines)
+            file.writelines(self.lines)
 
     def update_file(self):
-        lines = self._read_lines()
-        lines = self._insert_constraint(lines)
-        self._write_file(lines)
+        self._read_lines()
+        self._insert_constraint()
+        self._write_file()
 
 
 @click.command()
