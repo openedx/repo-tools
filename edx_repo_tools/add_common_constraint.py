@@ -1,4 +1,6 @@
+import re
 from os import path
+import urllib.request
 
 import click
 
@@ -38,6 +40,29 @@ class CommonConstraint:
                     return i + 1
         return 0
 
+    def _get_constraints(self):
+        target_url = "https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt"
+
+        packages = []
+        for raw_line in urllib.request.urlopen(target_url):
+            line = raw_line.decode('utf-8')
+            package = re.search('^[A-Za-z0-9-_]+(<|==|>)', line)
+            if package:
+                packages.append(re.sub("(<=|==|>=|>|<)([0-9]*.*)\n", "", package.string.lower()))
+        return packages
+
+    def _remove_common_constraints(self):
+        constraints = self._get_constraints()
+        for index, line in enumerate(self.lines):
+            package = re.search('^[A-Za-z0-9-_]+(<|==|>)', line)
+            if package:
+                if re.sub("(<=|==|>=|>|<)([0-9]*.*)\n", "", package.string.lower()) in constraints:
+                    del self.lines[index]
+                    if self.lines[index - 1].lstrip().startswith('#'):
+                        del self.lines[index - 1]
+                    if self.lines[index - 2] == '\n':
+                        del self.lines[index - 1]
+
     def _insert_constraint(self):
         index = self._get_constraint_index()
 
@@ -52,9 +77,15 @@ class CommonConstraint:
             file.writelines(self.lines)
 
     def update_file(self):
+        if self.file is None:
+            raise click.ClickException('No constraint file exists!')
+
         self._read_lines()
         self._insert_constraint()
+        self._remove_common_constraints()
         self._write_file()
+
+        click.echo('Added common constraint successfully!')
 
 
 @click.command()
