@@ -4,7 +4,11 @@
 #
 #    make upgrade
 #
-click==7.1.2              # via -r requirements/gitgraft.in
-gitdb==4.0.5              # via gitpython
-gitpython==3.1.11         # via -r requirements/gitgraft.in
-smmap==3.0.4              # via gitdb
+click==7.1.2
+    # via -r requirements/gitgraft.in
+gitdb==4.0.5
+    # via gitpython
+gitpython==3.1.12
+    # via -r requirements/gitgraft.in
+smmap==3.0.4
+    # via gitdb

@@ -306,7 +306,7 @@ cal.set_cycling(None)
 cal.freeze_here()
 cal.text_line(
     "This calendar is part of OEP-10, please don't change it without considering the impact there." +
-    " Last updated {:%d-%b-%Y}".format(datetime.datetime.now())
+    f" Last updated {datetime.datetime.now():%d-%b-%Y}"
 )
 
 # Django releases
@@ -355,7 +355,7 @@ ubuntu_nicks = {                        # https://wiki.ubuntu.com/Releases
 }
 
 for year, month in itertools.product(range(16, 23), [4, 10]):
-    name = "{:d}.{:02d}".format(year, month)
+    name = f"{year:d}.{month:02d}"
     lts = (year % 2 == 0) and (month == 4)
     if LTS_ONLY and not lts:
         continue

@@ -1,4 +1,3 @@
-from __future__ import print_function
 import ast
 import logging
 
@@ -16,7 +15,7 @@ APPLICATION_ALLOWED_DJANGO_VERSIONS = {
 }
 
 DJANGO_VERSIONS = {
-    Version('{}.{}.{}'.format(major, minor, patch))
+    Version(f'{major}.{minor}.{patch}')
     for major, minors in {
         1: {
             8: range(19),
@@ -73,8 +72,7 @@ def parsed_requirements_txt(requirements_txt):
     for line in requirements_txt.lines():
         if line.strip().startswith('-r'):
             sub_requirements = requirements_txt.parent / line.replace('-r', '').strip()
-            for req in parsed_requirements_txt(sub_requirements):
-                yield req
+            yield from parsed_requirements_txt(sub_requirements)
         else:
             try:
                 yield Requirement(line)
@@ -84,7 +82,7 @@ def parsed_requirements_txt(requirements_txt):
 
 def requirement_is_django(req):
     try:
-        if isinstance(req, six.string_types):
+        if isinstance(req, str):
             req = Requirement(req)
         return req.name.lower() == 'django'
     except InvalidRequirement:
@@ -128,7 +126,7 @@ def tox_tested_django_versions(tox_ini):
     return tested_versions
 
 
-class OEP10(object):
+class OEP10:
     def check_django_versions(self, git_repo):
         """
         A repo is either a library or an application.
@@ -200,7 +198,7 @@ class OEP10(object):
                     return
             msg = (
                 "No allowed version range contained the largest allowed django " +
-                "version {} in the version specifier {}".format(largest_accepted_version, django_specifier)
+                f"version {largest_accepted_version} in the version specifier {django_specifier}"
             )
             assert False, msg
         else:

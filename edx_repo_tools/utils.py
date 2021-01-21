@@ -45,7 +45,7 @@ class YamlLoader:
         self._load_file()
 
     def _load_file(self):
-        with open(self.file_path, 'r') as file_stream:
+        with open(self.file_path) as file_stream:
             self.elements = self.yml_instance.load(file_stream)
 
     def update_yml_file(self):

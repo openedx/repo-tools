@@ -1,6 +1,5 @@
 """Helpers for various things."""
 
-from __future__ import print_function
 
 import os
 import pprint
@@ -33,7 +32,7 @@ def make_timezone_aware(dt):
     return dt
 
 
-class WrappedRequests(object):
+class WrappedRequests:
     """A helper wrapper around requests.
 
     Provides uniform authentication and logging.
@@ -56,7 +55,7 @@ class WrappedRequests(object):
 
     def record_request(self, method, url, args, kwargs):
         if 0:
-            print("{} {}".format(method, url))
+            print(f"{method} {url}")
         if self.all_requests is None:
             return
         self.all_requests.append(
@@ -89,7 +88,7 @@ class WrappedRequests(object):
                 info = "{} left".format(response.headers["X-RateLimit-Remaining"])
                 print("headers:")
                 pprint.pprint(dict(response.headers))
-            print("GET {}: {}".format(url, info))
+            print(f"GET {url}: {info}")
         return response
 
     def post(self, url, *args, **kwargs):

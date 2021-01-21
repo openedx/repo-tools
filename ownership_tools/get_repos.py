@@ -1,4 +1,3 @@
-# coding: utf-8
 import csv
 import os
 import github
@@ -144,7 +143,7 @@ def is_oep_compliant(repo, oep_name):
             else:
                 return (False, "Stated in openedx.yaml")
         else:
-            return (False, "No '{}' entry in oeps dictinary.".format(oep_name))
+            return (False, f"No '{oep_name}' entry in oeps dictinary.")
     else:
         return (False, "No oeps dictionary to indicate oep compliance status.")
 
@@ -215,7 +214,7 @@ def filter_valid_pythons(version_list):
             yield version
 
         elif type(version) == str:
-            parsed_version = re.search("^\d+(\.\d+)?", version)
+            parsed_version = re.search(r"^\d+(\.\d+)?", version)
             if parsed_version:
                 if float(parsed_version.group(0)) >= 3.5:
                     yield version
@@ -243,15 +242,15 @@ def might_be_oep7_compliant(repo):
             python_data = travis_config['python']
             if type(python_data) == str or type(python_data) == float:
                 if float(python_data) >= 3.5:
-                    return (True, "Running only on python {}".format(python_data))
+                    return (True, f"Running only on python {python_data}")
                 else:
-                    return (False, "Running older python({})".format(python_data))
+                    return (False, f"Running older python({python_data})")
             elif type(python_data) == list:
                 valid_versions = list(filter_valid_pythons(python_data))
                 if len(valid_versions) > 0:
-                    return (True, "Running tests on the following valid pythons: {}".format(valid_versions))
+                    return (True, f"Running tests on the following valid pythons: {valid_versions}")
                 else:
-                    return (False, "Running older pythons: {}".format(python_data))
+                    return (False, f"Running older pythons: {python_data}")
         else:
             return (False, "No python section in travis.yaml.")
 

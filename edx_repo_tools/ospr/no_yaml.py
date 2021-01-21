@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 """Find repos with no openedx.yaml file."""
 
-from __future__ import print_function
 
 import itertools
 
@@ -33,11 +32,11 @@ def no_yaml(hub, repo_tools_data, org, dry):
             contents = None
 
         if contents is None:
-            print(u"{}: {}".format(repo.full_name, repo.pushed_at))
+            print(f"{repo.full_name}: {repo.pushed_at}")
             try:
                 commits = list(itertools.islice(repo.commits(), 5))
             except Exception as exc:
-                print("  Error: {}".format(exc))
+                print(f"  Error: {exc}")
                 continue
             for commit in commits:
                 commit = commit.refresh()
@@ -45,4 +44,4 @@ def no_yaml(hub, repo_tools_data, org, dry):
                 when = " ".join(commit.last_modified.split()[1:4])
                 message = commit.commit['message'].splitlines()[0]
                 who = commit.commit['author']['name']
-                print(u"  {}: {} ({})".format(who, message, when))
+                print(f"  {who}: {message} ({when})")

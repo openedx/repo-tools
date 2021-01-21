@@ -68,7 +68,7 @@ def iter_openedx_yaml(hub, orgs, branches=None):
                 break
 
 
-class Person(object):
+class Person:
     """
     A wrapper object around data parsed from people.yaml.
     """
@@ -121,7 +121,7 @@ class Person(object):
         return False
 
 
-class RepoToolsData(object):
+class RepoToolsData:
 
     def _read_file(self, filename):
         raise NotImplementedError()
