@@ -38,7 +38,8 @@ class CommonConstraint:
             if not self.lines[i].lstrip().startswith('#'):
                 if self.lines[i] == '\n':
                     return i + 1
-        return 0
+        self.lines.insert(len(self.lines), '\n')
+        return len(self.lines) + 1
 
     def _get_constraints(self):
         target_url = "https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt"
@@ -61,7 +62,7 @@ class CommonConstraint:
                     if self.lines[index - 1].lstrip().startswith('#'):
                         del self.lines[index - 1]
                     if self.lines[index - 2] == '\n':
-                        del self.lines[index - 1]
+                        del self.lines[index - 2]
 
     def _insert_constraint(self):
         index = self._get_constraint_index()
