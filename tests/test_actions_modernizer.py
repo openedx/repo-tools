@@ -6,7 +6,7 @@ import shutil
 import uuid
 from unittest import TestCase
 
-from django3_codemods.config_tools.github_actions_modernizer import GithubCIModernizer
+from edx_repo_tools.codemods.django3 import GithubCIModernizer
 from edx_repo_tools.utils import YamlLoader
 
 

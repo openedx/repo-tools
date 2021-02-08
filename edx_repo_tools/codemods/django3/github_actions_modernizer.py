@@ -2,7 +2,6 @@
 Modernizer for Github Actions CI
 """
 from copy import deepcopy
-import sys
 
 import click
 

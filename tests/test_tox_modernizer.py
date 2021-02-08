@@ -5,7 +5,7 @@ from configparser import NoSectionError, ConfigParser
 from unittest import TestCase
 import shutil
 import uuid
-from django3_codemods.config_tools.tox_modernizer import ConfigReader
+from edx_repo_tools.codemods.django3 import ConfigReader
 
 
 class TestToxModernizer(TestCase):

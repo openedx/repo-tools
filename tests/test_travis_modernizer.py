@@ -4,8 +4,7 @@ import shutil
 import uuid
 from unittest import TestCase
 
-from django3_codemods.config_tools.travis_modernizer import TravisModernizer
-from django3_codemods.config_tools.travis_modernizer import DJANGO_PATTERN
+from edx_repo_tools.codemods.django3 import TravisModernizer, DJANGO_PATTERN
 from edx_repo_tools.utils import YamlLoader
 
 
