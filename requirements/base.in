@@ -1,6 +1,5 @@
 CacheControl
 PyYAML
-SQLAlchemy==0.9.8
 appdirs
 backports.csv
 click
