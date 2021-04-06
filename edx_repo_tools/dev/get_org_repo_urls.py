@@ -27,8 +27,11 @@ from edx_repo_tools.auth import pass_github
 @click.option(
     '--add_archived', is_flag=True, default=False,
     help="Do you want urls for archived repos?")
+@click.option(
+    '--ignore-repo', '-i', multiple=True, default=[],
+    help="If you want to ignore any repo?")
 @pass_github
-def main(hub, forks, org, url_type, output_file, add_archived):
+def main(hub, forks, org, url_type, output_file, add_archived, ignore_repo):
     """
     Used to get the urls for all the repositories in a github organization
     """
@@ -37,6 +40,8 @@ def main(hub, forks, org, url_type, output_file, add_archived):
         if repo.fork and not forks:
             continue
         if repo.archived and not add_archived:
+            continue
+        if repo.name in ignore_repo:
             continue
         if url_type == "ssh":
             repositories.append(repo.ssh_url)
