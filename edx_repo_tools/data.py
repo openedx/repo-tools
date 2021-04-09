@@ -62,9 +62,13 @@ def iter_openedx_yaml(hub, orgs, branches=None):
             if contents is not None:
                 LOGGER.debug("Found openedx.yaml at %s:%s", repo.full_name, branch)
                 try:
-                    yield repo, yaml.safe_load(contents.decoded)
+                    data = yaml.safe_load(contents.decoded)
                 except Exception as exc:
                     LOGGER.error("Couldn't parse openedx.yaml from %s:%s, skipping repo", repo.full_name, branch, exc_info=True)
+                else:
+                    if data is not None:
+                        yield repo, data
+
                 break
 
 
