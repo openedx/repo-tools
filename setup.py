@@ -7,7 +7,7 @@ with open('README.rst') as readme:
 
 setup(
     name='edx-repo-tools',
-    version='0.3.0',
+    version='0.3.1',
     description="This repo contains a number of tools Open edX uses for working with GitHub repositories.",
     long_description=long_description,
     license='Apache',
