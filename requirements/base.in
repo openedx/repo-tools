@@ -1,3 +1,5 @@
+-c constraints.txt
+
 CacheControl
 PyYAML
 appdirs
