@@ -5,10 +5,12 @@
 #    make upgrade
 #
 click==7.1.2
-    # via -r requirements/gitgraft.in
-gitdb==4.0.5
+    # via
+    #   -c requirements/constraints.txt
+    #   -r requirements/gitgraft.in
+gitdb==4.0.7
     # via gitpython
-gitpython==3.1.13
+gitpython==3.1.17
     # via -r requirements/gitgraft.in
-smmap==3.0.5
+smmap==4.0.0
     # via gitdb

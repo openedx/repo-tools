@@ -11,7 +11,7 @@ appdirs==1.4.4
     #   -r requirements/base.in
     #   fissix
     #   virtualenv
-attrs==20.3.0
+attrs==21.2.0
     # via
     #   automat
     #   bowler
@@ -34,12 +34,13 @@ chardet==4.0.0
     # via requests
 click==7.1.2
     # via
+    #   -c requirements/constraints.txt
     #   -r requirements/base.in
     #   bowler
     #   moreorless
 constantly==15.1.0
     # via twisted
-cryptography==3.4.4
+cryptography==3.4.7
     # via
     #   jwcrypto
     #   pyopenssl
@@ -51,7 +52,7 @@ cssselect==1.1.0
     #   scrapy
 distlib==0.3.1
     # via virtualenv
-docutils==0.16
+docutils==0.17.1
     # via statistics
 execnet==1.8.0
     # via pytest-xdist
@@ -61,19 +62,27 @@ filelock==3.0.12
     #   virtualenv
 fissix==20.8.0
     # via bowler
-gitdb==4.0.5
+gitdb==4.0.7
     # via gitpython
-github3.py==1.3.0
+github3.py==2.0.0
     # via -r requirements/base.in
-gitpython==3.1.13
+gitpython==3.1.17
     # via -r requirements/base.in
+h2==3.2.0
+    # via
+    #   scrapy
+    #   twisted
+hpack==3.0.0
+    # via h2
+hyperframe==5.2.0
+    # via h2
 hyperlink==21.0.0
     # via twisted
 idna==2.10
     # via
     #   hyperlink
     #   requests
-incremental==17.5.0
+incremental==21.3.0
     # via twisted
 iniconfig==1.1.1
     # via pytest
@@ -93,17 +102,17 @@ lazy==1.4
     # via -r requirements/base.in
 lockfile==0.12.2
     # via -r requirements/base.in
-lxml==4.6.2
+lxml==4.6.3
     # via
     #   parsel
     #   scrapy
 more-itertools==8.7.0
     # via -r requirements/base.in
-moreorless==0.3.0
+moreorless==0.4.0
     # via bowler
 msgpack==1.0.2
     # via cachecontrol
-numpy==1.20.1
+numpy==1.20.3
     # via -r requirements/base.in
 oauthlib==3.1.0
     # via requests-oauthlib
@@ -111,20 +120,20 @@ packaging==20.9
     # via
     #   pytest
     #   tox
-parameterized==0.8.1
-    # via moreorless
 parsel==1.6.0
     # via
     #   itemloaders
     #   scrapy
 path.py==12.5.0
     # via -r requirements/base.in
-path==15.1.0
+path==15.1.2
     # via path.py
 pluggy==0.13.1
     # via
     #   pytest
     #   tox
+priority==1.3.0
+    # via twisted
 protego==0.1.16
     # via scrapy
 py==1.10.0
@@ -142,8 +151,6 @@ pycparser==2.20
     # via cffi
 pydispatcher==2.0.5
     # via scrapy
-pyhamcrest==2.0.2
-    # via twisted
 pyopenssl==20.0.1
     # via scrapy
 pyparsing==2.4.7
@@ -154,7 +161,7 @@ pytest-logging==2015.11.4
     # via -r requirements/base.in
 pytest-xdist==2.2.1
     # via -r requirements/base.in
-pytest==6.2.2
+pytest==6.2.4
     # via
     #   -r requirements/base.in
     #   pytest-forked
@@ -164,11 +171,11 @@ python-dateutil==2.8.1
     # via
     #   -r requirements/base.in
     #   github3.py
-python-dotenv==0.15.0
+python-dotenv==0.17.1
     # via -r requirements/base.in
 pyyaml==5.4.1
     # via -r requirements/base.in
-queuelib==1.5.0
+queuelib==1.6.1
     # via scrapy
 requests-oauthlib==1.3.0
     # via jira
@@ -184,13 +191,13 @@ requests==2.25.1
     #   requests-toolbelt
 ruamel.yaml.clib==0.2.2
     # via ruamel.yaml
-ruamel.yaml==0.16.12
+ruamel.yaml==0.17.4
     # via -r requirements/base.in
-scrapy==2.4.1
+scrapy==2.5.0
     # via -r requirements/base.in
-service-identity==18.1.0
+service-identity==21.1.0
     # via scrapy
-six==1.15.0
+six==1.16.0
     # via
     #   automat
     #   jira
@@ -198,10 +205,11 @@ six==1.15.0
     #   protego
     #   pyopenssl
     #   python-dateutil
+    #   service-identity
     #   tox
     #   virtualenv
     #   w3lib
-smmap==3.0.5
+smmap==4.0.0
     # via gitdb
 statistics==1.0.3.5
     # via -r requirements/base.in
@@ -211,32 +219,30 @@ toml==0.10.2
     # via
     #   pytest
     #   tox
-tox==3.21.4
+tox==3.23.1
     # via -r requirements/base.in
-tqdm==4.56.2
+tqdm==4.60.0
     # via -r requirements/base.in
-twisted==20.3.0
+twisted[http2]==21.2.0
     # via scrapy
 uritemplate==3.0.1
     # via
     #   -r requirements/base.in
     #   github3.py
-urllib3==1.26.3
+urllib3==1.26.4
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.4.2
+virtualenv==20.4.6
     # via tox
 volatile==2.1.0
-    # via
-    #   bowler
-    #   moreorless
+    # via bowler
 w3lib==1.22.0
     # via
     #   itemloaders
     #   parsel
     #   scrapy
-zope.interface==5.2.0
+zope.interface==5.4.0
     # via
     #   scrapy
     #   twisted
