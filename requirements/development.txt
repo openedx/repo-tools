@@ -61,7 +61,7 @@ click==7.1.2
     #   edx-lint
     #   moreorless
     #   pip-tools
-code-annotations==1.1.1
+code-annotations==1.1.2
     # via edx-lint
 constantly==15.1.0
     # via
@@ -84,9 +84,7 @@ distlib==0.3.1
     #   -r requirements/base.txt
     #   virtualenv
 django==3.2.3
-    # via
-    #   code-annotations
-    #   edx-lint
+    # via edx-lint
 docutils==0.17.1
     # via
     #   -r requirements/base.txt
@@ -182,7 +180,7 @@ markupsafe==2.0.1
     # via jinja2
 mccabe==0.6.1
     # via pylint
-more-itertools==8.7.0
+more-itertools==8.8.0
     # via -r requirements/base.txt
 moreorless==0.4.0
     # via
