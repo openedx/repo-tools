@@ -106,7 +106,7 @@ lxml==4.6.3
     # via
     #   parsel
     #   scrapy
-more-itertools==8.7.0
+more-itertools==8.8.0
     # via -r requirements/base.in
 moreorless==0.4.0
     # via bowler
