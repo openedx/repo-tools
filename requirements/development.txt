@@ -384,7 +384,7 @@ toml==0.10.2
     #   tox
 tox==3.23.1
     # via -r requirements/base.txt
-tqdm==4.60.0
+tqdm==4.61.0
     # via -r requirements/base.txt
 twisted[http2]==21.2.0
     # via
@@ -394,14 +394,14 @@ uritemplate==3.0.1
     # via
     #   -r requirements/base.txt
     #   github3.py
-urllib3==1.26.4
+urllib3==1.26.5
     # via
     #   -r requirements/base.txt
     #   requests
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.4.6
+virtualenv==20.4.7
     # via
     #   -r requirements/base.txt
     #   tox

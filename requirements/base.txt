@@ -221,7 +221,7 @@ toml==0.10.2
     #   tox
 tox==3.23.1
     # via -r requirements/base.in
-tqdm==4.60.0
+tqdm==4.61.0
     # via -r requirements/base.in
 twisted[http2]==21.2.0
     # via scrapy
@@ -229,11 +229,11 @@ uritemplate==3.0.1
     # via
     #   -r requirements/base.in
     #   github3.py
-urllib3==1.26.4
+urllib3==1.26.5
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.4.6
+virtualenv==20.4.7
     # via tox
 volatile==2.1.0
     # via bowler
