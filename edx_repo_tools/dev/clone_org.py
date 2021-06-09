@@ -22,6 +22,10 @@ from edx_repo_tools.auth import pass_github
 )
 @pass_github
 def main(hub, forks, depth, org):
+    """
+    Clone an entire GitHub organization into the current directory.
+    Each repo becomes a subdirectory.
+    """
     for repo in hub.organization(org).repositories():
         if repo.fork and not forks:
             continue
