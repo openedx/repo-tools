@@ -246,12 +246,12 @@ LTS_ONLY = True
 
 # The current versions of everything.  Use the same strings as the keys in the various sections below.
 CURRENT = {
-    "Open edX": "Koa",
+    "Open edX": "Lilac",
     "Python": "3.8",
     "Django": "2.2",
     "Ubuntu": "20.04",
     "Node": "12.x",
-    "Mongo": "3.6",
+    "Mongo": "4.0",
     "MySQL": "5.7",
     "elasticsearch": "1.5",
     "ruby": "2.5",
@@ -277,9 +277,10 @@ names = [
     ('Ironwood', 2019, 3),
     ('Juniper', 2020, 6),
     ("Koa", 2020, 12),
+    ("Lilac", 2021, 6),
     ]
 # https://www.treenames.net/common_tree_names.html
-future = ["Lilac", "Maple", "Nutmeg", "Olive"] + list("PQRSTUVWXYZ")
+future = ["Maple", "Nutmeg", "Olive"] + list("PQRSTUVWXYZ")
 target_length = 6 # months per release
 
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
