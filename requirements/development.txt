@@ -37,7 +37,7 @@ bowler==0.9.0
     # via -r requirements/base.txt
 cachecontrol==0.12.6
     # via -r requirements/base.txt
-certifi==2020.12.5
+certifi==2021.5.30
     # via
     #   -r requirements/base.txt
     #   requests
@@ -79,11 +79,15 @@ cssselect==1.1.0
     #   -r requirements/base.txt
     #   parsel
     #   scrapy
-distlib==0.3.1
+deprecated==1.2.12
+    # via
+    #   -r requirements/base.txt
+    #   jwcrypto
+distlib==0.3.2
     # via
     #   -r requirements/base.txt
     #   virtualenv
-django==3.2.3
+django==3.2.4
     # via edx-lint
 docutils==0.17.1
     # via
@@ -91,7 +95,7 @@ docutils==0.17.1
     #   statistics
 edx-lint==5.0.0
     # via -r requirements/development.in
-execnet==1.8.0
+execnet==1.8.1
     # via
     #   -r requirements/base.txt
     #   pytest-xdist
@@ -100,7 +104,7 @@ filelock==3.0.12
     #   -r requirements/base.txt
     #   tox
     #   virtualenv
-fissix==20.8.0
+fissix==21.6.6
     # via
     #   -r requirements/base.txt
     #   bowler
@@ -161,7 +165,7 @@ jmespath==0.10.0
     # via
     #   -r requirements/base.txt
     #   itemloaders
-jwcrypto==0.8
+jwcrypto==0.9.1
     # via
     #   -r requirements/base.txt
     #   github3.py
@@ -192,7 +196,7 @@ msgpack==1.0.2
     #   cachecontrol
 numpy==1.20.3
     # via -r requirements/base.txt
-oauthlib==3.1.0
+oauthlib==3.1.1
     # via
     #   -r requirements/base.txt
     #   requests-oauthlib
@@ -264,7 +268,7 @@ pylint-plugin-utils==0.6
     # via
     #   pylint-celery
     #   pylint-django
-pylint==2.8.2
+pylint==2.8.3
     # via
     #   edx-lint
     #   pylint-celery
@@ -336,7 +340,7 @@ ruamel.yaml.clib==0.2.2
     # via
     #   -r requirements/base.txt
     #   ruamel.yaml
-ruamel.yaml==0.17.4
+ruamel.yaml==0.17.8
     # via -r requirements/base.txt
 scrapy==2.5.0
     # via -r requirements/base.txt
@@ -350,6 +354,7 @@ six==1.16.0
     #   automat
     #   edx-lint
     #   jira
+    #   jwcrypto
     #   parsel
     #   protego
     #   pyopenssl
@@ -384,7 +389,7 @@ toml==0.10.2
     #   tox
 tox==3.23.1
     # via -r requirements/base.txt
-tqdm==4.60.0
+tqdm==4.61.0
     # via -r requirements/base.txt
 twisted[http2]==21.2.0
     # via
@@ -394,14 +399,14 @@ uritemplate==3.0.1
     # via
     #   -r requirements/base.txt
     #   github3.py
-urllib3==1.26.4
+urllib3==1.26.5
     # via
     #   -r requirements/base.txt
     #   requests
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.4.6
+virtualenv==20.4.7
     # via
     #   -r requirements/base.txt
     #   tox
@@ -416,7 +421,10 @@ w3lib==1.22.0
     #   parsel
     #   scrapy
 wrapt==1.12.1
-    # via astroid
+    # via
+    #   -r requirements/base.txt
+    #   astroid
+    #   deprecated
 zope.interface==5.4.0
     # via
     #   -r requirements/base.txt
