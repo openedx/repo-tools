@@ -253,7 +253,7 @@ CURRENT = {
     "Node": "12.x",
     "Mongo": "4.0",
     "MySQL": "5.7",
-    "elasticsearch": "1.5",
+    "elasticsearch": "7.8",
     "ruby": "2.5",
 }
 
@@ -343,6 +343,7 @@ python_releases = [
     #('3.7', 2018, 6, 2023, 6),          # https://www.python.org/dev/peps/pep-0537/
     ('3.8', 2019, 10, 2024, 10),        # https://www.python.org/dev/peps/pep-0569/
     ('3.9', 2020, 10, 2025, 10),        # https://www.python.org/dev/peps/pep-0596/
+    ('3.10', 2021, 10, 2026, 10),       # https://www.python.org/dev/peps/pep-0619/
 ]
 for name, syear, smonth, eyear, emonth in python_releases:
     cal.bar(f"Python {name}", start=(syear, smonth), end=(eyear, emonth), color="#ffd545", current=(name==CURRENT["Python"]))
@@ -376,6 +377,8 @@ node_releases = [
     ('10.x', 2018, 4, 2021, 4),
     ('12.x', 2019, 4, 2022, 4),
     ('14.x', 2020, 4, 2023, 4),
+    ('16.x', 2021, 4, 2024, 4),
+    ('18.x', 2022, 4, 2025, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
     cal.bar(f"Node {name}", start=(syear, smonth), end=(eyear, emonth), color="#2f6c1b", text_color="white", current=(name==CURRENT["Node"]))
@@ -409,12 +412,16 @@ cal.gap_line()
 # elasticsearch releases
 cal.section_note("https://www.elastic.co/support/eol")
 es_releases = [
-    ('1.5', 2015, 3, 2016, 9),
-    ('1.7', 2015, 7, 2017, 1),
-    ('2.4', 2016, 8, 2018, 2),
-    ('5.6', 2017, 9, 2019, 3),
-    ('6.8', 2019, 5, 2020, 11),
+    # ('1.5', 2015, 3, 2016, 9),
+    # ('1.7', 2015, 7, 2017, 1),
+    # ('2.4', 2016, 8, 2018, 2),
+    # ('5.6', 2017, 9, 2019, 3),
+    # ('6.8', 2019, 5, 2020, 11),
     ('7.8', 2020, 6, 2021, 12),
+    ('7.10', 2020, 11, 2022, 5),
+    ('7.11', 2021, 2, 2022, 8),
+    ('7.12', 2021, 3, 2022, 9),
+    ('7.13', 2021, 5, 2022, 11),
 ]
 for name, syear, smonth, eyear, emonth in es_releases:
     cal.bar(f"elasticsearch {name}", start=(syear, smonth), end=(eyear, emonth), color="#4595ba", current=(name==CURRENT["elasticsearch"]))
