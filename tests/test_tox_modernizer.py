@@ -38,6 +38,8 @@ class TestToxModernizer(TestCase):
         self.assertNotIn("django21:", dependencies)
         self.assertIn("django22:", dependencies)
         self.assertIn("django30:", dependencies)
+        self.assertIn("django31:", dependencies)
+        self.assertIn("django32:", dependencies)
 
     def _assert_replaces_python_interpreters(self, config_file):
         parser = self._get_parser(config_file)
@@ -56,7 +58,7 @@ class TestToxModernizer(TestCase):
         self.assertNotIn("django{111}", env_list)
         self.assertNotIn("django{111,20}", env_list)
         self.assertNotIn("django{111,20,21}", env_list)
-        self.assertIn("django{22,30,31}", env_list)
+        self.assertIn("django{22,30,31,32}", env_list)
 
     def _assert_replaces_django_dependencies(self, config_file):
         self._assert_django_dependencies_replaced(config_file)
