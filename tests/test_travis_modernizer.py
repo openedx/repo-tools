@@ -60,6 +60,7 @@ class TestTravisModernizer(TestCase):
         self.assertTrue(any("django22" in django_env for django_env in django_envs))
         self.assertTrue(any("django30" in django_env for django_env in django_envs))
         self.assertTrue(any("django31" in django_env for django_env in django_envs))
+        self.assertTrue(any("django32" in django_env for django_env in django_envs))
 
     def test_django_matrix_items(self):
         travis_elements = TestTravisModernizer._get_updated_yaml_elements(self.test_file2)
@@ -74,6 +75,7 @@ class TestTravisModernizer(TestCase):
         self.assertTrue(any("django22" in django_env for django_env in django_envs))
         self.assertTrue(any("django30" in django_env for django_env in django_envs))
         self.assertTrue(any("django31" in django_env for django_env in django_envs))
+        self.assertTrue(any("django32" in django_env for django_env in django_envs))
 
     def tearDown(self):
         os.remove(self.test_file1)

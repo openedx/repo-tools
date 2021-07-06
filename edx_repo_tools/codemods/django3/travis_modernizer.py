@@ -8,11 +8,11 @@ from edx_repo_tools.utils import YamlLoader
 ALLOWED_PYTHON_VERSIONS = '3.8'
 
 DEPRECATED_DJANGO_VERSIONS_PATTERN = r"django111|django20|django21"
-ALLOWED_DJANGO_VERSIONS_PATTERN = r"django22|django30|django31"
+ALLOWED_DJANGO_VERSIONS_PATTERN = r"django22|django30|django31|django32"
 
 DJANGO_PATTERN = r"django[0-3][0-2][0-2]?"
 
-ALLOWED_DJANGO_VERSIONS = ['django22', 'django30', 'django31']
+ALLOWED_DJANGO_VERSIONS = ['django22', 'django30', 'django31', 'django32']
 
 
 class TravisModernizer(YamlLoader):
