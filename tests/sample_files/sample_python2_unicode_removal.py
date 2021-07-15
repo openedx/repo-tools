@@ -1,5 +1,5 @@
 """
-Test file for the script replace_python_2_unicode_compatible.py
+Test file for the script remove_python2_unicode_compatible.py
 """
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
