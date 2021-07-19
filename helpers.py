@@ -16,21 +16,6 @@ try:
 except ImportError:
     CacheControlAdapter = None
 
-import datetime
-import dateutil.parser
-import dateutil.tz
-
-
-def date_arg(s):
-    """An argument parser for dates."""
-    return make_timezone_aware(dateutil.parser.parse(s))
-
-def make_timezone_aware(dt):
-    """Make a datetime timezone-aware."""
-    if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=dateutil.tz.tzutc())
-    return dt
-
 
 class WrappedRequests:
     """A helper wrapper around requests.
