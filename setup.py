@@ -46,6 +46,7 @@ setup(
             'modernize_github_actions = edx_repo_tools.codemods.django3.github_actions_modernizer:main',
             'add_common_constraint = edx_repo_tools.add_common_constraint:main',
             'remove_python2_unicode_compatible = edx_repo_tools.codemods.django3.remove_python2_unicode_compatible:main',
+            'conventional_commits = edx_repo_tools.conventional_commits.commitstats:main',
         ],
     },
     package_data={
