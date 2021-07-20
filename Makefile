@@ -17,10 +17,12 @@ upgrade: ## Upgrade requirements with pip-tools
 	pip-compile --upgrade -o requirements/pip-tools.txt requirements/pip-tools.in
 	pip-compile --upgrade -o requirements/base.txt requirements/base.in
 	pip-compile --upgrade -o requirements/development.txt requirements/development.in
+	pip-compile --upgrade -o requirements/conventional_commits.txt edx_repo_tools/conventional_commits/extra.in
 	bash post-pip-compile.sh \
 		requirements/pip-tools.txt \
 		requirements/base.txt \
-		requirements/development.txt
+		requirements/development.txt \
+		requirements/conventional_commits.txt
 
 lint:
 	pep8 || true
