@@ -108,7 +108,7 @@ def analyze_commit(row):
 @click.option("--require", help="A file that must exist to process the repo")
 @click.argument("repos", nargs=-1)
 def collect(dbfile, ignore, require, repos):
-    db = dataset.connect("sqlite:///" + dbfile)
+    db = dataset.connect("sqlite:///" + dbfile, sqlite_wal_mode=False)
     for repo in repos:
         if any(fnmatch.fnmatch(repo, pat) for pat in ignore):
             print(f"Ignoring {repo}")
@@ -155,7 +155,6 @@ def plot():
     df["when"] = pd.to_datetime(df["weekend"], format="%Y%m%d")
     # Drop the last row, because it's probably incomplete
     df = df[:-1]
-    df.tail()
 
     fig, ax = plt.subplots()
     fig.set_size_inches(12, 8)
