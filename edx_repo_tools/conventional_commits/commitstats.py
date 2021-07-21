@@ -130,7 +130,7 @@ QUERY = """\
         strftime("%Y%m%d", date, "weekday 0") as weekend,
         count(*) total,
         sum(conventional) as con, sum(bodylines > 0) as bod
-        from commits where repo = "edx/edx-platform" group by weekend
+        from commits group by weekend
     )
     where weekend > '202009';
     """
