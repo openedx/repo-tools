@@ -122,6 +122,16 @@ def collect(dbfile, ignore, require, repos):
             repo_name = "/".join(repo_dir.split("/")[-2:])
             load_commits(db, repo_name)
 
+    # Write repo->squad mapping to the db.
+    with open("edx/repo-health-data/dashboards/dashboard_main.csv") as repos_csv:
+        repos_table = db["repos"]
+        for row in csv.DictReader(repos_csv):
+            repos_table.insert({
+                "repo": row["repo_name"],
+                "squad": row["ownership.theme"] + "/" + row["ownership.squad"],
+            })
+
+
 QUERY = """\
     select
     weekend, total, con, cast((con*100.0)/total as integer) pctcon, bod, cast((bod*100.0)/total as integer) pctbod
@@ -165,6 +175,21 @@ def plot():
     plt.legend(lines, [l.get_label() for l in lines])
     plt.show()
 
+# A by-squad query to try:
+#
+#   select
+#   squad, repos, commits, con, cast((con*100.0)/commits as integer) pctcon
+#   from (
+#       select
+#           r.squad squad,
+#           count(distinct r.repo) repos,
+#           count(*) commits,
+#           sum(conventional) con
+#       from commits c, repos r
+#       on c.repo = r.repo
+#       where date > '2021-06-01'
+#       group by 1
+#   );
 
 if __name__ == "__main__":
     main()
