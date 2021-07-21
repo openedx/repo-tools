@@ -2,14 +2,13 @@
 Collect and report on conventional commit statistics.
 """
 
-import contextlib
+import csv
 import datetime
 import fnmatch
 import os
 import os.path
 import re
 import sqlite3
-import subprocess
 import sys
 
 import click
@@ -21,23 +20,12 @@ try:
 except ImportError as err:
     sys.exit(f"Did you install requirements/conventional_commits.txt? {err}")
 
+from edx_repo_tools.utils import change_dir, get_cmd_output
 
 
 @click.group(help=__doc__)
 def main():
     pass
-
-def get_cmd_output(cmd):
-    """Run a command in shell, and return the Unicode output."""
-    try:
-        data = subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as ex:
-        data = ex.output
-    try:
-        data = data.decode("utf-8")
-    except UnicodeDecodeError:
-        data = data.decode("latin1")
-    return data
 
 def load_commits(db, repo_name):
     """Load the commits from the current directory repo."""
@@ -113,20 +101,6 @@ def analyze_commit(row):
         row["subjtext"] = m["subjtext"]
     row["bodylines"] = len(row["body"].splitlines())
 
-@contextlib.contextmanager
-def change_dir(new_dir):
-    """Change directory, and then change back.
-
-    Use as a context manager, it will give you the new directory, and later
-    restore the old one.
-
-    """
-    old_dir = os.getcwd()
-    os.chdir(new_dir)
-    try:
-        yield os.getcwd()
-    finally:
-        os.chdir(old_dir)
 
 @main.command(help="Collect stats about commits in local git repos")
 @click.option("--db", "dbfile", default="commits.db", help="SQLite database file to write to")
