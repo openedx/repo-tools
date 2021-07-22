@@ -45,7 +45,7 @@ six==1.16.0
     # via
     #   cycler
     #   python-dateutil
-sqlalchemy==1.4.21
+sqlalchemy==1.4.22
     # via
     #   alembic
     #   dataset
