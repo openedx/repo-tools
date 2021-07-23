@@ -1,21 +1,25 @@
-import sys
+import io
 import re
 from configparser import ConfigParser, NoSectionError
+
+import click
 
 TOX_SECTION = "tox"
 ENVLIST = "envlist"
 TEST_ENV_SECTION = "testenv"
 TEST_ENV_DEPS = "deps"
-PYTHON_SUBSTITUTE = "py{35,38}"
-DJANGO_SUBSTITUTE = "django{22,30}"
+PYTHON_SUBSTITUTE = "py38"
+DJANGO_SUBSTITUTE = "django{22,30,31,32}"
 
 DJANGO_22_DEPENDENCY = "django22: Django>=2.2,<2.3\n"
 DJANGO_30_DEPENDENCY = "django30: Django>=3.0,<3.1\n"
-NEW_DJANGO_DEPENDENCIES = DJANGO_22_DEPENDENCY + DJANGO_30_DEPENDENCY
+DJANGO_31_DEPENDENCY = "django31: Django>=3.1,<3.2\n"
+DJANGO_32_DEPENDENCY = "django32: Django>=3.2,<4.0\n"
+NEW_DJANGO_DEPENDENCIES = DJANGO_22_DEPENDENCY + DJANGO_30_DEPENDENCY + DJANGO_31_DEPENDENCY + DJANGO_32_DEPENDENCY
 
 SECTIONS = [TOX_SECTION, TEST_ENV_SECTION]
 
-PYTHON_PATTERN = "(py{.*?}-|py[0-9]+,|py[0-9]+-)"
+PYTHON_PATTERN = "(py{.*?}-?|py[0-9]+,|py[0-9]+-)"
 
 DJANGO_PATTERN = "(django[0-9]+,|django[0-9]+\n|django{.*}\n|django{.*?}|django[0-9]+-|django{.*}-)"
 
@@ -60,6 +64,8 @@ class ToxModernizer:
     @staticmethod
     def _replace_runners(pattern, substitute, env_list):
         matches = re.findall(pattern, env_list)
+        if not matches:
+            return env_list
         substitute = ToxModernizer._get_runner_substitute(matches, substitute)
         return ToxModernizer._replace_matches(pattern, substitute, env_list, matches)
 
@@ -88,8 +94,13 @@ class ToxModernizer:
         self.config_parser[TEST_ENV_SECTION][TEST_ENV_DEPS] = dependencies
 
     def _update_config_file(self):
+        # ConfigParser insists on using tabs for output. We want spaces.
+        with io.StringIO() as configw:
+            self.config_parser.write(configw)
+            new_ini = configw.getvalue()
+        new_ini = new_ini.replace("\t", "    ")
         with open(self.file_path, 'w') as configfile:
-            self.config_parser.write(configfile)
+            configfile.write(new_ini)
 
     def modernize(self):
         self._update_env_list()
@@ -97,6 +108,14 @@ class ToxModernizer:
         self._update_config_file()
 
 
-if __name__ == '__main__':
-    modernizer = ConfigReader(file_path=sys.argv[1]).get_modernizer()
+@click.command()
+@click.option(
+    '--path', default='tox.ini',
+    help="Path to target tox config file")
+def main(path):
+    modernizer = ConfigReader(path).get_modernizer()
     modernizer.modernize()
+
+
+if __name__ == '__main__':
+    main()

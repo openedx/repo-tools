@@ -1,6 +1,5 @@
 """Helpers for various things."""
 
-from __future__ import print_function
 
 import os
 import pprint
@@ -17,23 +16,8 @@ try:
 except ImportError:
     CacheControlAdapter = None
 
-import datetime
-import dateutil.parser
-import dateutil.tz
 
-
-def date_arg(s):
-    """An argument parser for dates."""
-    return make_timezone_aware(dateutil.parser.parse(s))
-
-def make_timezone_aware(dt):
-    """Make a datetime timezone-aware."""
-    if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=dateutil.tz.tzutc())
-    return dt
-
-
-class WrappedRequests(object):
+class WrappedRequests:
     """A helper wrapper around requests.
 
     Provides uniform authentication and logging.
@@ -56,7 +40,7 @@ class WrappedRequests(object):
 
     def record_request(self, method, url, args, kwargs):
         if 0:
-            print("{} {}".format(method, url))
+            print(f"{method} {url}")
         if self.all_requests is None:
             return
         self.all_requests.append(
@@ -89,7 +73,7 @@ class WrappedRequests(object):
                 info = "{} left".format(response.headers["X-RateLimit-Remaining"])
                 print("headers:")
                 pprint.pprint(dict(response.headers))
-            print("GET {}: {}".format(url, info))
+            print(f"GET {url}: {info}")
         return response
 
     def post(self, url, *args, **kwargs):

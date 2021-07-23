@@ -246,14 +246,14 @@ LTS_ONLY = True
 
 # The current versions of everything.  Use the same strings as the keys in the various sections below.
 CURRENT = {
-    "Open edX": "Juniper",
-    "Python": "3.5",
+    "Open edX": "Lilac",
+    "Python": "3.8",
     "Django": "2.2",
-    "Ubuntu": "16.04",
+    "Ubuntu": "20.04",
     "Node": "12.x",
-    "Mongo": "3.6",
-    "MySQL": "5.6",
-    "elasticsearch": "1.5",
+    "Mongo": "4.0",
+    "MySQL": "5.7",
+    "elasticsearch": "7.8",
     "ruby": "2.5",
 }
 
@@ -276,9 +276,11 @@ names = [
     ('Hawthorn', 2018, 8),
     ('Ironwood', 2019, 3),
     ('Juniper', 2020, 6),
+    ("Koa", 2020, 12),
+    ("Lilac", 2021, 6),
     ]
 # https://www.treenames.net/common_tree_names.html
-future = ['Koa', 'Lilac', 'Maple', 'Nutmeg', 'Olive'] + list('PQRSTUVWXYZ')
+future = ["Maple", "Nutmeg", "Olive"] + list("PQRSTUVWXYZ")
 target_length = 6 # months per release
 
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
@@ -305,7 +307,7 @@ cal.set_cycling(None)
 cal.freeze_here()
 cal.text_line(
     "This calendar is part of OEP-10, please don't change it without considering the impact there." +
-    " Last updated {:%d-%b-%Y}".format(datetime.datetime.now())
+    f" Last updated {datetime.datetime.now():%d-%b-%Y}"
 )
 
 # Django releases
@@ -337,10 +339,11 @@ python_releases = [
     # Version, and Year-Month for start and end of support.
     #('2.7', 2010, 7, 2019, 12),
     ('3.5', 2015, 9, 2020, 9),          # https://www.python.org/dev/peps/pep-0478/
-    ('3.6', 2016, 12, 2021, 12),        # https://www.python.org/dev/peps/pep-0494/
-    ('3.7', 2018, 6, 2023, 6),          # https://www.python.org/dev/peps/pep-0537/
+    #('3.6', 2016, 12, 2021, 12),        # https://www.python.org/dev/peps/pep-0494/
+    #('3.7', 2018, 6, 2023, 6),          # https://www.python.org/dev/peps/pep-0537/
     ('3.8', 2019, 10, 2024, 10),        # https://www.python.org/dev/peps/pep-0569/
     ('3.9', 2020, 10, 2025, 10),        # https://www.python.org/dev/peps/pep-0596/
+    ('3.10', 2021, 10, 2026, 10),       # https://www.python.org/dev/peps/pep-0619/
 ]
 for name, syear, smonth, eyear, emonth in python_releases:
     cal.bar(f"Python {name}", start=(syear, smonth), end=(eyear, emonth), color="#ffd545", current=(name==CURRENT["Python"]))
@@ -354,7 +357,7 @@ ubuntu_nicks = {                        # https://wiki.ubuntu.com/Releases
 }
 
 for year, month in itertools.product(range(16, 23), [4, 10]):
-    name = "{:d}.{:02d}".format(year, month)
+    name = f"{year:d}.{month:02d}"
     lts = (year % 2 == 0) and (month == 4)
     if LTS_ONLY and not lts:
         continue
@@ -374,6 +377,8 @@ node_releases = [
     ('10.x', 2018, 4, 2021, 4),
     ('12.x', 2019, 4, 2022, 4),
     ('14.x', 2020, 4, 2023, 4),
+    ('16.x', 2021, 4, 2024, 4),
+    ('18.x', 2022, 4, 2025, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
     cal.bar(f"Node {name}", start=(syear, smonth), end=(eyear, emonth), color="#2f6c1b", text_color="white", current=(name==CURRENT["Node"]))
@@ -385,9 +390,9 @@ mongo_releases = [
     #('3.0', 2015, 3, 2018, 2),
     #('3.2', 2015, 12, 2018, 9),
     #('3.4', 2016, 11, 2020, 1),
-    ('3.6', 2017, 11, 3000, 1),
-    ('4.0', 2018, 6, 3000, 1),
-    #('4.2', 2019, 8, 3000, 1),
+    ('3.6', 2017, 11, 2021, 4),
+    ('4.0', 2018, 6, 2022, 1),
+    ('4.2', 2019, 8, 3000, 1),
 ]
 for name, syear, smonth, eyear, emonth in mongo_releases:
     cal.bar(f"Mongo {name}", start=(syear, smonth), end=(eyear, emonth), color="#4da65a", current=(name==CURRENT["Mongo"]))
@@ -407,12 +412,16 @@ cal.gap_line()
 # elasticsearch releases
 cal.section_note("https://www.elastic.co/support/eol")
 es_releases = [
-    ('1.5', 2015, 3, 2016, 9),
-    ('1.7', 2015, 7, 2017, 1),
-    ('2.4', 2016, 8, 2018, 2),
-    ('5.6', 2017, 9, 2019, 3),
-    ('6.8', 2019, 5, 2020, 11),
-    ('7.3', 2019, 8, 2021, 1),
+    # ('1.5', 2015, 3, 2016, 9),
+    # ('1.7', 2015, 7, 2017, 1),
+    # ('2.4', 2016, 8, 2018, 2),
+    # ('5.6', 2017, 9, 2019, 3),
+    # ('6.8', 2019, 5, 2020, 11),
+    ('7.8', 2020, 6, 2021, 12),
+    ('7.10', 2020, 11, 2022, 5),
+    ('7.11', 2021, 2, 2022, 8),
+    ('7.12', 2021, 3, 2022, 9),
+    ('7.13', 2021, 5, 2022, 11),
 ]
 for name, syear, smonth, eyear, emonth in es_releases:
     cal.bar(f"elasticsearch {name}", start=(syear, smonth), end=(eyear, emonth), color="#4595ba", current=(name==CURRENT["elasticsearch"]))

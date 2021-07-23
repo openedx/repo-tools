@@ -20,7 +20,7 @@ from edx_repo_tools.auth import login_github
 SYNCED = set()
 
 
-class Oep2ReportPlugin(object):
+class Oep2ReportPlugin:
     """
     A py.test plugin that wires together the fixtures needed to run the reports.
     """
@@ -128,14 +128,14 @@ class Oep2ReportPlugin(object):
             metafunc.parametrize(
                 "oep",
                 metafunc.config.option.oep,
-                ids=["OEP-{}".format(oep) for oep in metafunc.config.option.oep],
+                ids=[f"OEP-{oep}" for oep in metafunc.config.option.oep],
             )
 
     def pytest_make_parametrize_id(self, config, val):
         if isinstance(val, Repo):
             test_id = "local"
         elif isinstance(val, Repository):
-            test_id = "{}/{}".format(val.owner, val.name)
+            test_id = f"{val.owner}/{val.name}"
         else:
             test_id = None
 
@@ -195,8 +195,8 @@ class Oep2ReportPlugin(object):
             branch = github_repo.default_branch
 
         head = repo.head
-        remote_branch = RemoteReference(repo, 'refs/remotes/{}/{}'.format(remote, branch))
-        local_branch = Head(repo, 'refs/heads/{}'.format(branch))
+        remote_branch = RemoteReference(repo, f'refs/remotes/{remote}/{branch}')
+        local_branch = Head(repo, f'refs/heads/{branch}')
 
         try:
             if head.commit != remote_branch.commit:
@@ -204,7 +204,7 @@ class Oep2ReportPlugin(object):
                 local_branch.checkout()
 
         except ValueError:
-            pytest.xfail("Branch {} is empty".format(branch))
+            pytest.xfail(f"Branch {branch} is empty")
 
         return repo
 
@@ -222,7 +222,7 @@ class Oep2ReportPlugin(object):
         try:
             with open(os.path.join(git_repo.working_tree_dir, "openedx.yaml")) as openedx_yaml_file:
                 return yaml.safe_load(openedx_yaml_file)
-        except IOError:
+        except OSError:
             return None
 
     def pytest_runtest_logreport(self, report):
@@ -251,7 +251,7 @@ class Oep2ReportPlugin(object):
         def format_report(report, test_key):
             title = cgi.escape("{}[{}]".format(test_key[0], test_key[1]))
             if report is None:
-                return '<td class="skipped" title="{}"/>'.format(title)
+                return f'<td class="skipped" title="{title}"/>'
             else:
                 return '<td class="{css_class}" title="{title}">{passed}</td>'.format(
                     css_class=cgi.escape(report.outcome, quote=True),

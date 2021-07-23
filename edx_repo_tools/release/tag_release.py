@@ -103,7 +103,7 @@ def trim_skipped_repos(repos, skip_repos):
     trimmed = {}
     for repo, data in repos.items():
         if any(repo_matches(repo, pat) for pat in skip_repos):
-            log.warning("Skipping {} by pattern".format(repo))
+            log.warning(f"Skipping {repo} by pattern")
             continue
         trimmed[repo] = data
     return trimmed
@@ -119,7 +119,7 @@ def trim_dependent_repos(repos):
 
     for r, data in repos.items():
         if 'parent-repo' in data['openedx-release']:
-            msg = u"Repo {repo} is dependent: you can remove openedx-release from its openedx.yaml file".format(repo=r)
+            msg = f"Repo {r} is dependent: you can remove openedx-release from its openedx.yaml file"
             click.secho(msg, fg='yellow')
         else:
             trimmed[r] = data
@@ -142,7 +142,7 @@ def trim_indecisive_repos(repos):
     for repo, repo_data in repos.items():
         maybe = repo_data["openedx-release"].get("maybe")
         if maybe:
-            click.secho("*** {repo} has openedx-release 'maybe', skipped".format(repo=repo), fg="red")
+            click.secho(f"*** {repo} has openedx-release 'maybe', skipped", fg="red")
         else:
             trimmed[repo] = repo_data
     return trimmed
@@ -216,7 +216,7 @@ def commit_ref_info(repos, skip_invalid=False):
                 ref_info[repo] = get_latest_commit_for_ref(repo, ref)
             except (GitHubError, ValueError):
                 if skip_invalid:
-                    msg = u"Invalid ref {ref} in repo {repo}".format(
+                    msg = "Invalid ref {ref} in repo {repo}".format(
                         ref=ref,
                         repo=repo.full_name
                     )
@@ -256,7 +256,7 @@ def get_latest_commit_for_ref(repo, ref):
         }
 
     try:
-        tag = repo.ref('tags/{}'.format(ref))
+        tag = repo.ref(f'tags/{ref}')
     except TypeError as err:
         # GitHub unfortunately returns a list of partial matches if you ask for
         # a ref that doesn't exist.  This means the code in github3 that
@@ -265,11 +265,24 @@ def get_latest_commit_for_ref(repo, ref):
         # https://github.com/sigmavirus24/github3.py/issues/310
         # We'll catch the error and make the problem clearer.
         if "pop() takes at most 1 argument (2 given)" in str(err):
-            raise ValueError(u"In repo {}, ref {!r} doesn't exist.".format(repo, ref))
+            raise ValueError(f"In repo {repo}, ref {ref!r} doesn't exist.")
         else:
             raise
     except NotFoundError:
-        raise ValueError(u"In repo {}, ref {!r} doesn't exist.".format(repo, ref))
+        try:
+            # Maybe it's a commit sha?
+            commit = repo.git_commit(ref).refresh()
+        except NotFoundError:
+            raise ValueError(f"In repo {repo}, ref {ref!r} doesn't exist.")
+        else:
+            return {
+                "ref": ref,
+                "ref_type": "commit",
+                "sha": ref,
+                "message": commit.message,
+                "author": commit.author,
+                "committer": commit.committer,
+            }
 
     if tag.object.type == "tag":
         # An annotated tag, one more level of indirection.
@@ -286,7 +299,7 @@ def get_latest_commit_for_ref(repo, ref):
             "committer": commit.committer,
         }
 
-    raise ValueError(u"No commit for {ref} in {repo}".format(ref=ref, repo=repo.full_name))
+    raise ValueError(f"No commit for {ref} in {repo.full_name}")
 
 
 
@@ -353,7 +366,7 @@ def todo_list(ref_info):
     entries = []
     for repo, commit_info in ref_info.items():
         when = datetime.datetime.strptime(commit_info['committer']['date'], "%Y-%m-%dT%H:%M:%SZ")
-        entries.append(u"{repo}: {ref} ({type}) {sha}\n  {when:%Y-%m-%d} {who}: {msg}".format(
+        entries.append("{repo}: {ref} ({type}) {sha}\n  {when:%Y-%m-%d} {who}: {msg}".format(
             repo=repo,
             ref=commit_info['ref'],
             type=commit_info['ref_type'],
@@ -397,7 +410,7 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
 
     """
     if not ref.startswith("refs/"):
-        ref = u"refs/{type}/{ref}".format(
+        ref = "refs/{type}/{ref}".format(
             type="tags" if use_tag else "heads",
             ref=ref,
         )
@@ -408,7 +421,7 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
         try:
             dry_echo(
                 dry,
-                u'Creating ref {} with sha {} in repo {}'.format(
+                'Creating ref {} with sha {} in repo {}'.format(
                     ref, commit_info['sha'], repo.full_name
                 ),
                 fg='green'
@@ -437,8 +450,8 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
 
     if not succeeded:
         msg = (
-            u"Failed to create {ref} on {failed_repo}. "
-            u"Error was {orig_err}. No refs have been created on any repos."
+            "Failed to create {ref} on {failed_repo}. "
+            "Error was {orig_err}. No refs have been created on any repos."
         ).format(
             ref=ref,
             failed_repo=failed_repo.full_name,
@@ -453,7 +466,7 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
             try:
                 dry_echo(
                     dry,
-                    u'Deleting ref {} from repo {}'.format(
+                    'Deleting ref {} from repo {}'.format(
                         created_ref.ref, repo.full_name
                     ),
                     fg='red'
@@ -465,10 +478,10 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
 
         if rollback_failures:
             msg = (
-                u"Failed to create {ref} on {failed_repo}. "
-                u"Error was {orig_err}. "
-                u"Attempted to roll back, but failed to delete ref on "
-                u"the following repos: {rollback_failures}"
+                "Failed to create {ref} on {failed_repo}. "
+                "Error was {orig_err}. "
+                "Attempted to roll back, but failed to delete ref on "
+                "the following repos: {rollback_failures}"
             ).format(
                 ref=ref,
                 failed_repo=failed_repo.full_name,
@@ -481,9 +494,9 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
             raise err
         else:
             msg = (
-                u"Failed to create {ref} on {failed_repo}. "
-                u"Error was {orig_err}. However, all refs were successfully "
-                u"rolled back."
+                "Failed to create {ref} on {failed_repo}. "
+                "Error was {orig_err}. However, all refs were successfully "
+                "rolled back."
             ).format(
                 ref=ref,
                 failed_repo=failed_repo.full_name,
@@ -494,9 +507,9 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
     else:
         # don't try to rollback, just raise an error
         msg = (
-            u"Failed to create {ref} on {failed_repo}. "
-            u"Error was {orig_err}. No rollback attempted. Refs exist on "
-            u"the following repos: {tagged_repos}"
+            "Failed to create {ref} on {failed_repo}. "
+            "Error was {orig_err}. No rollback attempted. Refs exist on "
+            "the following repos: {tagged_repos}"
         ).format(
             ref=ref,
             failed_repo=failed_repo.full_name,
@@ -555,7 +568,7 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
 
             dry_echo(
                 dry,
-                u'Deleting ref {} from repo {}'.format(
+                'Deleting ref {} from repo {}'.format(
                     ref_obj.ref, repo.full_name
                 ),
                 fg='red'
@@ -569,7 +582,7 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
 
     if failures:
         msg = (
-            u"Failed to remove the ref from the following repos: {repos}"
+            "Failed to remove the ref from the following repos: {repos}"
         ).format(
             repos=", ".join(failures.keys())
         )
@@ -607,13 +620,13 @@ def ensure_writable(repos):
         repos: a list of Repository objects.
     """
     while repos:
-        click.secho(u"The following repos need to be unarchived to continue:", fg='red', bold=True)
+        click.secho("The following repos need to be unarchived to continue:", fg='red', bold=True)
         for repo in repos:
-            click.echo(u"  {}: https://github.com/{}/settings".format(repo.full_name, repo.full_name))
-        while not click.confirm(u"Are they all unarchived?"):
+            click.echo(f"  {repo.full_name}: https://github.com/{repo.full_name}/settings")
+        while not click.confirm("Are they all unarchived?"):
             pass
         repos = archived_repos(repos)
-    click.echo(u"Thanks, they will be re-archived automatically")
+    click.echo("Thanks, they will be re-archived automatically")
 
 
 @click.command()
@@ -622,38 +635,38 @@ def ensure_writable(repos):
 )
 @click.option(
     '--tag/--branch', "use_tag", is_flag=True, default=True,
-    help=u"Whether to create branches or tags in the repo. Defaults to using tags."
+    help="Whether to create branches or tags in the repo. Defaults to using tags."
 )
 @click.option(
     '--override-ref', metavar="REF",
-    help=u"A reference to use that overrides the references from the "
-         u"openedx.yaml file in *ALL* repos. This might be a release candidate "
-         u"branch, for example."
+    help="A reference to use that overrides the references from the "
+         "openedx.yaml file in *ALL* repos. This might be a release candidate "
+         "branch, for example."
 )
 @click.option(
     '--override', 'overrides',
     nargs=2, metavar="REPO REF",
     multiple=True,
-    help=u"Override a reference for a specific repo. The repo must be "
-         u"specified using the full name of the repo, like 'edx/edx-platform'. "
-         u"This option can be provided multiple times."
+    help="Override a reference for a specific repo. The repo must be "
+         "specified using the full name of the repo, like 'edx/edx-platform'. "
+         "This option can be provided multiple times."
 )
 @click.option(
     '-y', '--yes', 'interactive', is_flag=True, default=True, flag_value=False,
-    help=u"non-interactive mode: answer yes to all questions"
+    help="non-interactive mode: answer yes to all questions"
 )
 @click.option(
     '-q', '--quiet', is_flag=True, default=False,
-    help=u"don't print any unnecessary output"
+    help="don't print any unnecessary output"
 )
 @click.option(
     '-R', '--reverse', is_flag=True, default=False,
-    help=u"delete ref instead of creating it"
+    help="delete ref instead of creating it"
 )
 @click.option(
     '--skip-invalid', is_flag=True, default=False,
-    help=u"if the openedx.yaml file points to an invalid repo, skip it "
-         u"instead of throwing an error"
+    help="if the openedx.yaml file points to an invalid repo, skip it "
+         "instead of throwing an error"
 )
 @click.option(
     '--skip-repo', 'skip_repos', multiple=True,
@@ -677,7 +690,7 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
 
     repos = openedx_release_repos(hub, orgs, branches)
     if not repos:
-        raise ValueError(u"No repos marked for openedx-release in their openedx.yaml files!")
+        raise ValueError("No repos marked for openedx-release in their openedx.yaml files!")
 
     repos = trim_skipped_repos(repos, skip_repos)
     repos = trim_dependent_repos(repos)
@@ -691,7 +704,7 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
     archived = archived_repos(repos.keys())
     if archived:
         if dry:
-            dry_echo(dry, u"Will need to unarchive these repos: {}".format(
+            dry_echo(dry, "Will need to unarchive these repos: {}".format(
                 ", ".join(repo.full_name for repo in archived)
                 ))
         else:
@@ -701,7 +714,7 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
         ret = do_the_work(repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry)
     finally:
         for repo in archived:
-            dry_echo(dry, u"Re-archiving {}".format(repo.full_name))
+            dry_echo(dry, f"Re-archiving {repo.full_name}")
             if not dry:
                 repo.edit(repo.name, archived=True)
 
@@ -722,7 +735,7 @@ def do_the_work(repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, 
     if reverse:
         if not existing_refs:
             msg = (
-                u"Ref {ref} is not present in any repos, cannot remove it"
+                "Ref {ref} is not present in any repos, cannot remove it"
             ).format(
                 ref=ref,
             )
@@ -731,21 +744,21 @@ def do_the_work(repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, 
         if interactive or not quiet:
             click.echo(todo_list(existing_refs))
         if interactive:
-            if not click.confirm(u"Remove these refs?"):
+            if not click.confirm("Remove these refs?"):
                 return
 
         modified = remove_ref_for_repos(repos, ref, use_tag=use_tag, dry=dry)
         if not quiet:
             if modified:
-                click.echo(u"Success!")
+                click.echo("Success!")
             else:
-                click.echo(u"No refs modified")
+                click.echo("No refs modified")
         return modified
 
     else:
         if existing_refs:
             msg = (
-                u"The {ref} ref already exists in the following repos: {repos}"
+                "The {ref} ref already exists in the following repos: {repos}"
             ).format(
                 ref=ref,
                 repos=", ".join(existing_refs.keys()),
@@ -756,13 +769,13 @@ def do_the_work(repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, 
         if interactive or not quiet:
             click.echo(todo_list(ref_info))
         if interactive:
-            if not click.confirm(u"Is this correct?"):
+            if not click.confirm("Is this correct?"):
                 return
         result = create_ref_for_repos(ref_info, ref, use_tag=use_tag, dry=dry)
 
         if not quiet:
             if result:
-                click.echo(u"Success!")
+                click.echo("Success!")
             else:
-                raise ValueError(u"Failed to create refs, but rolled back successfully")
+                raise ValueError("Failed to create refs, but rolled back successfully")
         return result

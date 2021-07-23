@@ -14,7 +14,7 @@ def setup_local_copy(tmpdir):
 
 
 def load_yaml(sample_yam_file):
-    with open(sample_yam_file, 'r') as file_stream:
+    with open(sample_yam_file) as file_stream:
         return YAML().load(file_stream)
 
 

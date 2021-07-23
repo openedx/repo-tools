@@ -8,7 +8,7 @@ def check_is_oep_explicitly_satisfied(openedx_yaml, oep):
     if 'oeps' not in openedx_yaml:
         pytest.xfail("No 'oeps' key in openedx.yaml")
 
-    oep_key = 'oep-{}'.format(oep)
+    oep_key = f'oep-{oep}'
 
     assert oep_key in openedx_yaml['oeps']
 

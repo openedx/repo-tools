@@ -16,7 +16,7 @@ from helpers import paginated_get
 def main(hub, org, pattern=None):
     for repo in hub.organization(org).repositories():
         printed_repo = False
-        url = "https://api.github.com/repos/{name}/hooks".format(name=repo.full_name)
+        url = f"https://api.github.com/repos/{repo.full_name}/hooks"
         for r in paginated_get(url):
             if pattern:
                 show_it = False
@@ -28,9 +28,9 @@ def main(hub, org, pattern=None):
 
             if show_it:
                 if not printed_repo:
-                    print("\n-- {} ---------------------".format(repo.full_name))
-                    print("  https://github.com/{}/settings/hooks".format(repo.full_name))
+                    print(f"\n-- {repo.full_name} ---------------------")
+                    print(f"  https://github.com/{repo.full_name}/settings/hooks")
                     printed_repo = True
                 print("{r[name]}".format(r=r))
                 for k, v in sorted(r['config'].items()):
-                    print("  {k}: {v}".format(k=k, v=v))
+                    print(f"  {k}: {v}")

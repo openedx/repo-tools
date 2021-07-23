@@ -4,7 +4,6 @@ Spider to scrape JIRA for transitions in and out of states.
 Usage: `scrapy runspider jiraspider.py -o states.json`
 """
 
-from __future__ import print_function
 from collections import namedtuple
 import datetime
 import json
@@ -78,7 +77,7 @@ def jira_issues(server_url, project_name):
      IssueFields(key='OSPR-458', labels=[], issuetype=u'Pull Request Review')]
     """
     jira = JIRA({'server': server_url})
-    issues = jira.search_issues('project = {}'.format(project_name), maxResults=None)
+    issues = jira.search_issues(f'project = {project_name}', maxResults=None)
     return [extract_fields(iss) for iss in issues]
 
 
@@ -105,7 +104,7 @@ class IssueStateDurations(scrapy.Item):
     resolution = scrapy.Field()
 
     def __str__(self):
-        return "Processed issue {}".format(self.issue)
+        return f"Processed issue {self.issue}"
 
 
 class JiraSpider(scrapy.Spider):
@@ -125,7 +124,7 @@ class JiraSpider(scrapy.Spider):
         for issue in issues:
             # TODO (potentially) ignore subtasks, or do something with them? (issue.issuetype)
             request = Request(
-                "{}/browse/{}?page=com.googlecode.jira-suite-utilities:transitions-summary-tabpanel".format(SERVER, issue.key)
+                f"{SERVER}/browse/{issue.key}?page=com.googlecode.jira-suite-utilities:transitions-summary-tabpanel"
             )
             request.meta['issue_key'] = issue.key
             request.meta['labels'] = issue.labels
@@ -170,7 +169,7 @@ class JiraSpider(scrapy.Spider):
             # ignore states that we spent less than one minute in (often this is just because transitioning
             # through JIRA states is stupid, or botbro is stupid)
             if source_status != 'Needs Triage' and duration_datetime < self.onemin:
-                item['debug'] += "Ignoring state ({}) of length {}. ".format(source_status, duration)
+                item['debug'] += f"Ignoring state ({source_status}) of length {duration}. "
                 continue
 
             # Add the amount of time spent in source status to any previous recorded time we've spent there
@@ -178,7 +177,7 @@ class JiraSpider(scrapy.Spider):
             self.validate_tdelta(
                 states[source_status],
                 item,
-                'adding src status time: {}'.format(duration_datetime)
+                f'adding src status time: {duration_datetime}'
             )
 
         # Need to consider current state ('dest_status'), as well.
@@ -220,13 +219,13 @@ class JiraSpider(scrapy.Spider):
                 self.validate_tdelta(
                     current_duration,
                     item,
-                    'cd: now() minus last time, {}'.format(last_execution_date)
+                    f'cd: now() minus last time, {last_execution_date}'
                 )
                 states[dest_status] = states.get(dest_status, self.default_time) + current_duration
                 self.validate_tdelta(
                     states[dest_status],
                     item,
-                    'getting dest status {}, duration {}'.format(dest_status, current_duration)
+                    f'getting dest status {dest_status}, duration {current_duration}'
                 )
 
         # json-serialize each timedelta ('xx:yy', xx days, yy seconds) (skipping useconds)
@@ -251,12 +250,12 @@ class JiraSpider(scrapy.Spider):
             A Scrapy Selector for the data.
 
         """
-        marker = 'WRM._unparsedData["{}"]='.format(key)
+        marker = f'WRM._unparsedData["{key}"]='
         for line in response.body.splitlines():
             if line.startswith(marker):
                 break
         else:
-            raise Exception("Couldn't find {} in response".format(key))
+            raise Exception(f"Couldn't find {key} in response")
 
         # Extract the data from the line.
         js_str = line.split('=', 1)[1].strip().rstrip(';')
@@ -299,7 +298,7 @@ class JiraSpider(scrapy.Spider):
                 cleaned.append((source_status, dest_status, duration))
 
             except Exception as err:
-                item['error'] += "ERROR in clean_transactions: {}".format(err)
+                item['error'] += f"ERROR in clean_transactions: {err}"
                 continue
 
         return cleaned
@@ -315,7 +314,7 @@ class JiraSpider(scrapy.Spider):
 
         elif status not in OSPR_STATES:
             # emit error message if we find an unexpected state
-            item['error'] += "ERROR: Found unexpected state '{}'!".format(status)
+            item['error'] += f"ERROR: Found unexpected state '{status}'!"
 
         return status
 
@@ -375,4 +374,4 @@ class JiraSpider(scrapy.Spider):
         Logs a debug message if not.
         """
         if tdelta < datetime.timedelta(0):
-            item['debug'] += 'DEBUG: negative time found. {}'.format(msg)
+            item['debug'] += f'DEBUG: negative time found. {msg}'

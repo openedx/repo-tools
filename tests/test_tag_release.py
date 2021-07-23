@@ -23,7 +23,7 @@ class FakeNotFoundError(NotFoundError):
     content = "A fake response"
 
     def __init__(self):
-        super(FakeNotFoundError, self).__init__(self)
+        super().__init__(self)
 
 
 def mock_repository(name, has_refs=False):
@@ -485,9 +485,9 @@ def test_remove_ref_formatting(ref_prefix, use_tag, call_prefix):
         Mock(spec=Repository, full_name="edx/edx-platform"),
         Mock(spec=Repository, full_name="edx/configuration"),
     ]
-    result = remove_ref_for_repos(repos, "{}tag-exists-all-repos".format(ref_prefix), use_tag=use_tag, dry=False)
+    result = remove_ref_for_repos(repos, f"{ref_prefix}tag-exists-all-repos", use_tag=use_tag, dry=False)
     assert result is True
     for repo in repos:
-        repo.ref.assert_called_once_with('{}tag-exists-all-repos'.format(call_prefix))
+        repo.ref.assert_called_once_with(f'{call_prefix}tag-exists-all-repos')
         ref = repo.ref.return_value
         ref.delete.assert_called_once_with()

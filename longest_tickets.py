@@ -53,9 +53,9 @@ def longest_open_per_state(tickets, current=True):
         print("Longest amount spent in each state, over currently-open tickets:")
     else:
         print("Historic longest time tickets:")
-    print("Longest amount spent in Engineering states: {} ({})".format(leng, tixe))
-    print("Longest amount spent in Needs Triage: {} ({})".format(ltri, tixt))
-    print("Longest amount spent in Awaiting Prioritization: {} ({})".format(lap, tixap))
+    print(f"Longest amount spent in Engineering states: {leng} ({tixe})")
+    print(f"Longest amount spent in Needs Triage: {ltri} ({tixt})")
+    print(f"Longest amount spent in Awaiting Prioritization: {lap} ({tixap})")
 
 
 def all_with_length(tickets, state):
@@ -63,8 +63,8 @@ def all_with_length(tickets, state):
     Show currently-open tickets in the given state, sorted by amount of time they've been there.
     """
     if state not in OSPR_STATES:
-        print("Validation error: Unrecognized state '{}'".format(state))
-        print("Valid states are: {}".format(OSPR_STATES))
+        print(f"Validation error: Unrecognized state '{state}'")
+        print(f"Valid states are: {OSPR_STATES}")
         return
     target_tickets = []
     for ticket in tickets:
@@ -86,14 +86,14 @@ def all_with_length(tickets, state):
     target_tickets.sort(key=lambda x: x[1])
     target_tickets.reverse()
     if state == 'All Engineering' or state == 'All':
-        print("Issue Number (Time Spent in {}) - Current state".format(state))
+        print(f"Issue Number (Time Spent in {state}) - Current state")
         for issue, time, current in target_tickets:
-            print("{} ({}) - {}".format(issue, time, current))
+            print(f"{issue} ({time}) - {current}")
         return
 
-    print("Issue Number (Time Spent in {})".format(state))
+    print(f"Issue Number (Time Spent in {state})")
     for issue, time in target_tickets:
-        print("{} ({})".format(issue, time))
+        print(f"{issue} ({time})")
 
 
 def main(argv):

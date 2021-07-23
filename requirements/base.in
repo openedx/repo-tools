@@ -1,6 +1,7 @@
+-c constraints.txt
+
 CacheControl
 PyYAML
-SQLAlchemy==0.9.8
 appdirs
 backports.csv
 click
@@ -20,6 +21,7 @@ tqdm
 uritemplate
 urlobject
 ruamel.yaml
+bowler
 
 # pytest is used by `edx_report_tools.oep2` directly
 pytest
