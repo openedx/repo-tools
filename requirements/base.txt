@@ -125,11 +125,11 @@ parsel==1.6.0
     # via
     #   itemloaders
     #   scrapy
-path==16.0.0
+path==16.2.0
     # via path.py
 path.py==12.5.0
     # via -r requirements/base.in
-platformdirs==2.0.2
+platformdirs==2.1.0
     # via virtualenv
 pluggy==0.13.1
     # via
@@ -174,7 +174,7 @@ python-dateutil==2.8.2
     # via
     #   -r requirements/base.in
     #   github3.py
-python-dotenv==0.18.0
+python-dotenv==0.19.0
     # via -r requirements/base.in
 pyyaml==5.4.1
     # via -r requirements/base.in
@@ -227,8 +227,10 @@ tox==3.24.0
     # via -r requirements/base.in
 tqdm==4.61.2
     # via -r requirements/base.in
-twisted[http2]==21.2.0
+twisted[http2]==21.7.0
     # via scrapy
+typing-extensions==3.10.0.0
+    # via twisted
 uritemplate==3.0.1
     # via
     #   -r requirements/base.in
