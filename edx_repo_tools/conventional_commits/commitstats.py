@@ -77,13 +77,18 @@ STRICT = r"""(?x)
     """
 
 # Looser checking of conformance to conventional commits.
-LAX = r"""(?xi)
+LAX = r"""(?xi) # case-insensitive
     ^
-    (?P<label>\w+)
+    # some labels can be pluralized, since it's hard to remember.
+    (?P<label>build|chores?|docs?|feat|fix|perf|refactor|revert|style|tests?|temp)
+    # an optional scope is allowed
     (?:\(\w+\))?
     (?P<breaking>!?):\s
     (?P<subjtext>.+)
     $
+    |
+    # GitHub revert PR commit syntax
+    ^Revert\s+"(?P<subjtext2>.+)"(?:\s+\(\#\d+\))?$
     """
 
 def analyze_commit(row):
@@ -98,7 +103,7 @@ def analyze_commit(row):
     if m:
         row["label"] = m["label"]
         row["breaking"] = bool(m["breaking"])
-        row["subjtext"] = m["subjtext"]
+        row["subjtext"] = m["subjtext"] or m["subjtext2"] or ""
     row["bodylines"] = len(row["body"].splitlines())
 
 
@@ -134,12 +139,15 @@ def collect(dbfile, ignore, require, repos):
 
 QUERY = """\
     select
-    weekend, total, con, cast((con*100.0)/total as integer) pctcon, bod, cast((bod*100.0)/total as integer) pctbod
+    weekend, total,
+    con, cast((con*100.0)/total as integer) pctcon,
+    lax, cast(((con+lax)*100.0)/total as integer) pctlax,
+    bod, cast((bod*100.0)/total as integer) pctbod
     from (
         select
         strftime("%Y%m%d", date, "weekday 0") as weekend,
         count(*) total,
-        sum(conventional) as con, sum(bodylines > 0) as bod
+        sum(conventional) as con, sum(lax) as lax, sum(bodylines > 0) as bod
         from commits group by weekend
     )
     where weekend > '202009';
@@ -160,17 +168,21 @@ def plot():
     fig.set_size_inches(12, 8)
     ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%b'))
 
-    line1 = ax.plot(df.when, df.total, "*-", label="# Commits", color="gray", linewidth=1)[0]
+    lines = []
+    lines.append(ax.plot(df.when, df.total, "*-", label="# Commits", color="gray", linewidth=1)[0])
 
-    ax2 = ax.twinx()
-    ax2.set_ylim(-5, 105)
-    line2 = ax2.plot(df.when, df.pctcon, label="% Conventional", color="green", linewidth=4)[0]
+    subplot = ax.twinx()
+    subplot.set_ylim(-5, 105)
+    lines.append(subplot.plot(df.when, df.pctcon, label="% Strict", color="red", linewidth=4)[0])
 
-    ax3 = ax.twinx()
-    ax3.set_ylim(-5, 105)
-    line3 = ax3.plot(df.when, df.pctbod, label="% with bodies", color="blue", linewidth=2)[0]
+    subplot = ax.twinx()
+    subplot.set_ylim(-5, 105)
+    lines.append(subplot.plot(df.when, df.pctlax, label="% Lax", color="green", linewidth=4)[0])
 
-    lines = [line1, line2, line3]
+    subplot = ax.twinx()
+    subplot.set_ylim(-5, 105)
+    lines.append(subplot.plot(df.when, df.pctbod, label="% with bodies", color="blue", linewidth=2)[0])
+
     plt.legend(lines, [l.get_label() for l in lines])
     plt.show()
 
