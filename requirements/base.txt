@@ -29,7 +29,7 @@ certifi==2021.5.30
     # via requests
 cffi==1.14.6
     # via cryptography
-charset-normalizer==2.0.3
+charset-normalizer==2.0.4
     # via requests
 click==7.1.2
     # via
@@ -97,7 +97,7 @@ jira==1.0.3
     # via -r requirements/base.in
 jmespath==0.10.0
     # via itemloaders
-jwcrypto==0.9.1
+jwcrypto==1.0
     # via github3.py
 lazy==1.4
     # via -r requirements/base.in
@@ -125,11 +125,11 @@ parsel==1.6.0
     # via
     #   itemloaders
     #   scrapy
-path==16.0.0
+path==16.2.0
     # via path.py
 path.py==12.5.0
     # via -r requirements/base.in
-platformdirs==2.0.2
+platformdirs==2.2.0
     # via virtualenv
 pluggy==0.13.1
     # via
@@ -174,7 +174,7 @@ python-dateutil==2.8.2
     # via
     #   -r requirements/base.in
     #   github3.py
-python-dotenv==0.18.0
+python-dotenv==0.19.0
     # via -r requirements/base.in
 pyyaml==5.4.1
     # via -r requirements/base.in
@@ -204,7 +204,6 @@ six==1.16.0
     # via
     #   automat
     #   jira
-    #   jwcrypto
     #   parsel
     #   protego
     #   pyopenssl
@@ -223,12 +222,14 @@ toml==0.10.2
     # via
     #   pytest
     #   tox
-tox==3.24.0
+tox==3.24.1
     # via -r requirements/base.in
-tqdm==4.61.2
+tqdm==4.62.0
     # via -r requirements/base.in
-twisted[http2]==21.2.0
+twisted[http2]==21.7.0
     # via scrapy
+typing-extensions==3.10.0.0
+    # via twisted
 uritemplate==3.0.1
     # via
     #   -r requirements/base.in
@@ -237,7 +238,7 @@ urllib3==1.26.6
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.6.0
+virtualenv==20.7.2
     # via tox
 volatile==2.1.0
     # via bowler
