@@ -11,7 +11,7 @@ This directory has code to collect and sort commits which are the diff between a
 
 #. Create html files of recent commit deltas with the following cli:
 
-   $ python python create_changelog.py
+   $ python create_changelog.py
 
 #. required arguments. Note that an api token can be configured to give access to private and other repos.
 
