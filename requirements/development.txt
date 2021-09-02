@@ -8,9 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-asgiref==3.4.1
-    # via django
-astroid==2.7.2
+astroid==2.7.3
     # via
     #   pylint
     #   pylint-celery
@@ -86,13 +84,11 @@ distlib==0.3.2
     # via
     #   -r requirements/base.txt
     #   virtualenv
-django==3.2.6
-    # via edx-lint
 docutils==0.17.1
     # via
     #   -r requirements/base.txt
     #   statistics
-edx-lint==5.0.0
+edx-lint==5.1.0
     # via -r requirements/development.in
 execnet==1.9.0
     # via
@@ -147,7 +143,7 @@ iniconfig==1.1.1
     #   pytest
 isort==5.9.3
     # via pylint
-itemadapter==0.3.0
+itemadapter==0.4.0
     # via
     #   -r requirements/base.txt
     #   itemloaders
@@ -223,12 +219,12 @@ pep8==1.7.1
     # via -r requirements/development.in
 pip-tools==6.2.0
     # via -r requirements/development.in
-platformdirs==2.2.0
+platformdirs==2.3.0
     # via
     #   -r requirements/base.txt
     #   pylint
     #   virtualenv
-pluggy==0.13.1
+pluggy==1.0.0
     # via
     #   -r requirements/base.txt
     #   pytest
@@ -286,7 +282,7 @@ pyparsing==2.4.7
     # via
     #   -r requirements/base.txt
     #   packaging
-pytest==6.2.4
+pytest==6.2.5
     # via
     #   -r requirements/base.txt
     #   pytest-forked
@@ -311,13 +307,11 @@ python-dotenv==0.19.0
     # via -r requirements/base.txt
 python-slugify==5.0.2
     # via code-annotations
-pytz==2021.1
-    # via django
 pyyaml==5.4.1
     # via
     #   -r requirements/base.txt
     #   code-annotations
-queuelib==1.6.1
+queuelib==1.6.2
     # via
     #   -r requirements/base.txt
     #   scrapy
@@ -340,7 +334,7 @@ requests-toolbelt==0.9.1
     #   jira
 responses==0.13.4
     # via -r requirements/development.in
-ruamel.yaml==0.17.14
+ruamel.yaml==0.17.16
     # via -r requirements/base.txt
 ruamel.yaml.clib==0.2.6
     # via
@@ -371,8 +365,6 @@ smmap==4.0.0
     # via
     #   -r requirements/base.txt
     #   gitdb
-sqlparse==0.4.1
-    # via django
 statistics==1.0.3.5
     # via -r requirements/base.txt
 stevedore==3.4.0
@@ -399,7 +391,7 @@ twisted[http2]==21.7.0
     # via
     #   -r requirements/base.txt
     #   scrapy
-typing-extensions==3.10.0.0
+typing-extensions==3.10.0.2
     # via
     #   -r requirements/base.txt
     #   twisted
