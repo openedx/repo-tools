@@ -7,7 +7,7 @@ with open('README.rst') as readme:
 
 setup(
     name='edx-repo-tools',
-    version='0.3.2',
+    version='0.3.3',
     description="This repo contains a number of tools Open edX uses for working with GitHub repositories.",
     long_description=long_description,
     license='Apache',
@@ -52,6 +52,7 @@ setup(
             'conventional_commits = edx_repo_tools.conventional_commits.commitstats:main',
             'replace_render_to_response = edx_repo_tools.codemods.django3.replace_render_to_response:main',
             'add_django32_settings = edx_repo_tools.codemods.django3.add_new_django32_settings:main',
+            'resolve_common_constraints = edx_repo_tools.resolve_common_constraints',
         ],
     },
     package_data={
