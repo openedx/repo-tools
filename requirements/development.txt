@@ -76,7 +76,7 @@ cssselect==1.1.0
     #   -r requirements/base.txt
     #   parsel
     #   scrapy
-deprecated==1.2.12
+deprecated==1.2.13
     # via
     #   -r requirements/base.txt
     #   jwcrypto
@@ -179,7 +179,7 @@ markupsafe==2.0.1
     # via jinja2
 mccabe==0.6.1
     # via pylint
-more-itertools==8.8.0
+more-itertools==8.9.0
     # via -r requirements/base.txt
 moreorless==0.4.0
     # via
