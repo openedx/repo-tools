@@ -8,7 +8,7 @@ repositories.
 * oep2: Report on `OEP-2`_ compliance across repositories.
 * tag_release: Tags multiple repos as part of the release process.
 
-.. _OEP-2: http://open-edx-proposals.readthedocs.io/en/latest/oeps/oep-0002.html
+.. _OEP-2: https://open-edx-proposals.readthedocs.io/en/latest/oep-0002-bp-repo-metadata.html
 
 Setting up GitHub authentication
 ================================
