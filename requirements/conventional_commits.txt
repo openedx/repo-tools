@@ -30,7 +30,7 @@ numpy==1.21.2
     #   pandas
 pandas==1.3.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-pillow==8.3.1
+pillow==8.3.2
     # via matplotlib
 pyparsing==2.4.7
     # via matplotlib
