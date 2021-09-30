@@ -12,7 +12,7 @@ cycler==0.10.0
     # via matplotlib
 dataset==1.5.0
     # via -r edx_repo_tools/conventional_commits/extra.in
-greenlet==1.1.1
+greenlet==1.1.2
     # via sqlalchemy
 importlib-resources==5.2.2
     # via alembic
@@ -48,5 +48,5 @@ sqlalchemy==1.4.25
     # via
     #   alembic
     #   dataset
-zipp==3.5.0
+zipp==3.6.0
     # via importlib-resources
