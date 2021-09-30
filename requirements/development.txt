@@ -64,7 +64,7 @@ constantly==15.1.0
     # via
     #   -r requirements/base.txt
     #   twisted
-cryptography==3.4.8
+cryptography==35.0.0
     # via
     #   -r requirements/base.txt
     #   jwcrypto
@@ -88,13 +88,13 @@ docutils==0.17.1
     # via
     #   -r requirements/base.txt
     #   statistics
-edx-lint==5.1.0
+edx-lint==5.2.0
     # via -r requirements/development.in
 execnet==1.9.0
     # via
     #   -r requirements/base.txt
     #   pytest-xdist
-filelock==3.0.12
+filelock==3.2.0
     # via
     #   -r requirements/base.txt
     #   tox
@@ -219,7 +219,7 @@ pep8==1.7.1
     # via -r requirements/development.in
 pip-tools==6.3.0
     # via -r requirements/development.in
-platformdirs==2.3.0
+platformdirs==2.4.0
     # via
     #   -r requirements/base.txt
     #   pylint
@@ -274,7 +274,7 @@ pylint-plugin-utils==0.6
     # via
     #   pylint-celery
     #   pylint-django
-pyopenssl==20.0.1
+pyopenssl==21.0.0
     # via
     #   -r requirements/base.txt
     #   scrapy
@@ -409,7 +409,7 @@ urllib3==1.26.7
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.8.0
+virtualenv==20.8.1
     # via
     #   -r requirements/base.txt
     #   tox

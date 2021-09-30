@@ -39,7 +39,7 @@ click==7.1.2
     #   moreorless
 constantly==15.1.0
     # via twisted
-cryptography==3.4.8
+cryptography==35.0.0
     # via
     #   jwcrypto
     #   pyopenssl
@@ -57,7 +57,7 @@ docutils==0.17.1
     # via statistics
 execnet==1.9.0
     # via pytest-xdist
-filelock==3.0.12
+filelock==3.2.0
     # via
     #   tox
     #   virtualenv
@@ -129,7 +129,7 @@ path==16.2.0
     # via path.py
 path.py==12.5.0
     # via -r requirements/base.in
-platformdirs==2.3.0
+platformdirs==2.4.0
     # via virtualenv
 pluggy==1.0.0
     # via
@@ -154,7 +154,7 @@ pycparser==2.20
     # via cffi
 pydispatcher==2.0.5
     # via scrapy
-pyopenssl==20.0.1
+pyopenssl==21.0.0
     # via scrapy
 pyparsing==2.4.7
     # via packaging
@@ -240,7 +240,7 @@ urllib3==1.26.7
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.8.0
+virtualenv==20.8.1
     # via tox
 volatile==2.1.0
     # via bowler
