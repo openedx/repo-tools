@@ -253,7 +253,7 @@ CURRENT = {
     "Node": "12.x",
     "Mongo": "4.0",
     "MySQL": "5.7",
-    "elasticsearch": "7.8",
+    "elasticsearch": "7.10",
     "ruby": "2.5",
 }
 
