@@ -16,11 +16,13 @@ import collections
 import copy
 import datetime
 import fnmatch
+import json
 import logging
 
 import click
 from github3 import GitHubError
 from github3.exceptions import NotFoundError
+from github3.repos.repo import ShortRepository
 from tqdm import tqdm
 
 from edx_repo_tools.auth import pass_github
@@ -87,6 +89,17 @@ def repo_matches(repo, pattern):
         fnmatch.fnmatch(repo.full_name, pattern) or
         fnmatch.fnmatch(repo.name, pattern)
     )
+
+
+def include_only_repos(repos, keep_repos):
+    kept = {}
+    for repo, data in repos.items():
+        if any(repo_matches(repo, pat) for pat in keep_repos):
+            kept[repo] = data
+        else:
+            log.warning(f"Skipping {repo} (not selected)")
+    return kept
+
 
 def trim_skipped_repos(repos, skip_repos):
     """Remove repos we've been told to skip.
@@ -669,6 +682,16 @@ def ensure_writable(repos):
          "instead of throwing an error"
 )
 @click.option(
+    '--input-repos', help="Path to load the list of `openedx.yaml` repositories from. Only use if no `openedx.yaml` files have changed."
+)
+@click.option(
+    '--output-repos', help="Path to save the list of `openedx.yaml` repositories for a later usage."
+)
+@click.option(
+    '--include-repo', 'included_repos', multiple=True,
+    help="Specify patterns of repos that should be included."
+)
+@click.option(
     '--skip-repo', 'skip_repos', multiple=True,
     help="Specify patterns of repos that should be ignored in spite of having an openedx.yaml file."
 )
@@ -685,13 +708,26 @@ def ensure_writable(repos):
 @dry
 @pass_github
 def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
-         reverse, skip_invalid, skip_repos, dry, orgs, branches):
+         reverse, skip_invalid, input_repos, output_repos, included_repos,
+         skip_repos, dry, orgs, branches):
     """Create/remove tags & branches on GitHub repos for Open edX releases."""
-
-    repos = openedx_release_repos(hub, orgs, branches)
+    if input_repos:
+        with open(input_repos) as f:
+            repos = {
+                ShortRepository.from_dict(r["repo"], hub): r["data"]
+                for r in json.load(f)
+            }
+    else:
+        repos = openedx_release_repos(hub, orgs, branches)
+        if output_repos:
+            with open(output_repos, "w") as f:
+                dumped = [{"repo": repo.as_dict(), "data": data} for repo, data in repos.items()]
+                json.dump(dumped, f, indent=2, sort_keys=True)
     if not repos:
         raise ValueError("No repos marked for openedx-release in their openedx.yaml files!")
 
+    if included_repos:
+        repos = include_only_repos(repos, included_repos)
     repos = trim_skipped_repos(repos, skip_repos)
     repos = trim_dependent_repos(repos)
     repos = trim_indecisive_repos(repos)
