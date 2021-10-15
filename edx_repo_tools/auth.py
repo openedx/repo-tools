@@ -84,7 +84,7 @@ def login_github(username=None, password=None, token=None, token_file=None):
     # Log in with token from file, if it's supplied
     if token_file is not None and username is not None:
         with open(token_file) as tf:
-            token = tf.readline()[:-1]
+            token = tf.readline().strip()
             if token:
                 hub = login(username, token)
             else:
