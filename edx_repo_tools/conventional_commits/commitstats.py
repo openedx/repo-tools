@@ -173,17 +173,17 @@ def plot():
 
     subplot = ax.twinx()
     subplot.set_ylim(-5, 105)
-    lines.append(subplot.plot(df.when, df.pctcon, label="% Strict", color="red", linewidth=4)[0])
+    lines.append(subplot.plot(df.when, df.pctcon, label="% Strict", color="green", linewidth=4)[0])
 
-    subplot = ax.twinx()
-    subplot.set_ylim(-5, 105)
-    lines.append(subplot.plot(df.when, df.pctlax, label="% Lax", color="green", linewidth=4)[0])
+    # subplot = ax.twinx()
+    # subplot.set_ylim(-5, 105)
+    # lines.append(subplot.plot(df.when, df.pctlax, label="% Lax", color="green", linewidth=4)[0])
 
     subplot = ax.twinx()
     subplot.set_ylim(-5, 105)
     lines.append(subplot.plot(df.when, df.pctbod, label="% with bodies", color="blue", linewidth=2)[0])
 
-    plt.legend(lines, [l.get_label() for l in lines])
+    plt.legend(lines, [l.get_label() for l in lines], loc="upper left")
     plt.show()
 
 # A by-squad query to try:
