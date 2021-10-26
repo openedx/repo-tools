@@ -71,6 +71,7 @@ def load_commits(db, repo_name):
 STRICT = r"""(?x)
     ^
     (?P<label>build|chore|docs|feat|fix|perf|refactor|revert|style|test|temp)
+    (?:\(\w+\))?        # an optional scope is allowed
     (?P<breaking>!?):\s
     (?P<subjtext>.+)
     $
@@ -177,7 +178,7 @@ def plot():
 
     # subplot = ax.twinx()
     # subplot.set_ylim(-5, 105)
-    # lines.append(subplot.plot(df.when, df.pctlax, label="% Lax", color="green", linewidth=4)[0])
+    # lines.append(subplot.plot(df.when, df.pctlax, label="% Lax", color="blue", linewidth=4)[0])
 
     subplot = ax.twinx()
     subplot.set_ylim(-5, 105)
