@@ -25,11 +25,11 @@ bowler==0.9.0
     # via -r requirements/base.in
 cachecontrol==0.12.6
     # via -r requirements/base.in
-certifi==2021.5.30
+certifi==2021.10.8
     # via requests
-cffi==1.14.6
+cffi==1.15.0
     # via cryptography
-charset-normalizer==2.0.6
+charset-normalizer==2.0.7
     # via requests
 click==7.1.2
     # via
@@ -53,17 +53,17 @@ deprecated==1.2.13
     # via jwcrypto
 distlib==0.3.3
     # via virtualenv
-docutils==0.17.1
+docutils==0.18
     # via statistics
 execnet==1.9.0
     # via pytest-xdist
-filelock==3.2.0
+filelock==3.3.1
     # via
     #   tox
     #   virtualenv
 fissix==21.6.6
     # via bowler
-gitdb==4.0.7
+gitdb==4.0.9
     # via gitpython
 github3.py==2.0.0
     # via -r requirements/base.in
@@ -79,7 +79,7 @@ hyperframe==5.2.0
     # via h2
 hyperlink==21.0.0
     # via twisted
-idna==3.2
+idna==3.3
     # via
     #   hyperlink
     #   requests
@@ -113,7 +113,7 @@ moreorless==0.4.0
     # via bowler
 msgpack==1.0.2
     # via cachecontrol
-numpy==1.21.2
+numpy==1.21.3
     # via -r requirements/base.in
 oauthlib==3.1.1
     # via requests-oauthlib
@@ -156,7 +156,7 @@ pydispatcher==2.0.5
     # via scrapy
 pyopenssl==21.0.0
     # via scrapy
-pyparsing==2.4.7
+pyparsing==3.0.3
     # via packaging
 pytest==6.2.5
     # via
@@ -174,9 +174,9 @@ python-dateutil==2.8.2
     # via
     #   -r requirements/base.in
     #   github3.py
-python-dotenv==0.19.0
+python-dotenv==0.19.1
     # via -r requirements/base.in
-pyyaml==5.4.1
+pyyaml==6.0
     # via -r requirements/base.in
 queuelib==1.6.2
     # via scrapy
@@ -196,7 +196,7 @@ ruamel.yaml==0.17.16
     # via -r requirements/base.in
 ruamel.yaml.clib==0.2.6
     # via ruamel.yaml
-scrapy==2.5.0
+scrapy==2.5.1
     # via -r requirements/base.in
 service-identity==21.1.0
     # via scrapy
@@ -212,7 +212,7 @@ six==1.16.0
     #   tox
     #   virtualenv
     #   w3lib
-smmap==4.0.0
+smmap==5.0.0
     # via gitdb
 statistics==1.0.3.5
     # via -r requirements/base.in
@@ -232,7 +232,7 @@ typing-extensions==3.10.0.2
     # via
     #   gitpython
     #   twisted
-uritemplate==3.0.1
+uritemplate==4.1.1
     # via
     #   -r requirements/base.in
     #   github3.py
@@ -240,7 +240,7 @@ urllib3==1.26.7
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.8.1
+virtualenv==20.9.0
     # via tox
 volatile==2.1.0
     # via bowler
@@ -249,7 +249,7 @@ w3lib==1.22.0
     #   itemloaders
     #   parsel
     #   scrapy
-wrapt==1.12.1
+wrapt==1.13.2
     # via deprecated
 zope.interface==5.4.0
     # via
