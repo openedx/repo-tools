@@ -32,7 +32,7 @@ backports.entry-points-selectable==1.1.0
     #   virtualenv
 bowler==0.9.0
     # via -r requirements/base.txt
-cachecontrol==0.12.6
+cachecontrol==0.12.9
     # via -r requirements/base.txt
 certifi==2021.10.8
     # via
@@ -94,7 +94,7 @@ execnet==1.9.0
     # via
     #   -r requirements/base.txt
     #   pytest-xdist
-filelock==3.3.1
+filelock==3.3.2
     # via
     #   -r requirements/base.txt
     #   tox
@@ -107,7 +107,7 @@ gitdb==4.0.9
     # via
     #   -r requirements/base.txt
     #   gitpython
-github3.py==2.0.0
+github3.py==3.0.0
     # via -r requirements/base.txt
 gitpython==3.1.24
     # via -r requirements/base.txt
@@ -141,7 +141,7 @@ iniconfig==1.1.1
     # via
     #   -r requirements/base.txt
     #   pytest
-isort==5.9.3
+isort==5.10.0
     # via pylint
 itemadapter==0.4.0
     # via
@@ -170,7 +170,7 @@ lazy-object-proxy==1.6.0
     # via astroid
 lockfile==0.12.2
     # via -r requirements/base.txt
-lxml==4.6.3
+lxml==4.6.4
     # via
     #   -r requirements/base.txt
     #   parsel
@@ -195,7 +195,7 @@ oauthlib==3.1.1
     # via
     #   -r requirements/base.txt
     #   requests-oauthlib
-packaging==21.0
+packaging==21.2
     # via
     #   -r requirements/base.txt
     #   pytest
@@ -278,7 +278,7 @@ pyopenssl==21.0.0
     # via
     #   -r requirements/base.txt
     #   scrapy
-pyparsing==3.0.3
+pyparsing==2.4.7
     # via
     #   -r requirements/base.txt
     #   packaging
@@ -334,7 +334,7 @@ requests-toolbelt==0.9.1
     #   jira
 responses==0.15.0
     # via -r requirements/development.in
-ruamel.yaml==0.17.16
+ruamel.yaml==0.17.17
     # via -r requirements/base.txt
 ruamel.yaml.clib==0.2.6
     # via
@@ -409,7 +409,7 @@ urllib3==1.26.7
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.9.0
+virtualenv==20.10.0
     # via
     #   -r requirements/base.txt
     #   tox
@@ -425,7 +425,7 @@ w3lib==1.22.0
     #   scrapy
 wheel==0.37.0
     # via pip-tools
-wrapt==1.13.2
+wrapt==1.13.3
     # via
     #   -r requirements/base.txt
     #   astroid
