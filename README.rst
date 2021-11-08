@@ -1,3 +1,4 @@
+
 ###################
 Open EdX Repo Tools
 ###################
@@ -23,8 +24,8 @@ has an entry like this::
 
 Change the login to your GitHub user name.  You'll get the password value from
 https://github.com/settings/applications.  Visit that page, click on Developer
-Settings and in the section called "Personal access tokens," click "Generate new token."  
-It will prompt you for your password, then you'll see a scary list of scopes. Check 
+Settings and in the section called "Personal access tokens," click "Generate new token."
+It will prompt you for your password, then you'll see a scary list of scopes. Check
 the "repo" option and click "Generate token." Copy the password that
 appears. Paste it into your ~/.netrc.
 
@@ -37,11 +38,11 @@ To work on these tools:
 1. Use a virtualenv.
 
 2. Install dependencies::
-   
+
     make dev-install
 
 3. Run tests::
-   
+
     make test
 
 4. Older tools were Python files run from the root of the repo.  Now we are
