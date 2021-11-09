@@ -240,7 +240,7 @@ class GsheetCalendar(BaseCalendar):
 # ==== Editable content ====
 
 # Global Options
-START_YEAR = 2017
+START_YEAR = 2018
 END_YEAR = 2025
 LTS_ONLY = True
 
@@ -248,12 +248,12 @@ LTS_ONLY = True
 CURRENT = {
     "Open edX": "Lilac",
     "Python": "3.8",
-    "Django": "2.2",
+    "Django": "3.2",
     "Ubuntu": "20.04",
     "Node": "12.x",
-    "Mongo": "4.0",
+    "Mongo": "4.2",
     "MySQL": "5.7",
-    "elasticsearch": "7.8",
+    "elasticsearch": "7.10",
     "ruby": "2.5",
 }
 
@@ -314,10 +314,10 @@ cal.text_line(
 cal.section_note("https://www.djangoproject.com/download/#supported-versions")
 django_releases = [
     # (Version, Year, Month, Is_LTS) when the release happened.
-    #('1.8', 2015, 4, True),
-    ('1.9', 2016, 1, False),
-    ('1.10', 2016, 8, False),
-    ('1.11', 2017, 4, True),
+    # ('1.8', 2015, 4, True),
+    # ('1.9', 2016, 1, False),
+    # ('1.10', 2016, 8, False),
+    # ('1.11', 2017, 4, True),
     ('2.0', 2018, 1, False),
     ('2.1', 2018, 8, False),
     ('2.2', 2019, 4, True),
@@ -325,6 +325,8 @@ django_releases = [
     ('3.1', 2020, 8, False),
     ('3.2', 2021, 4, True),
     ('4.0', 2022, 1, False),
+    ('4.1', 2022, 8, False),
+    ('4.2', 2023, 4, True),
 ]
 for name, year, month, lts in django_releases:
     if LTS_ONLY and not lts:
@@ -351,12 +353,13 @@ cal.gap_line()
 
 # Ubuntu releases
 ubuntu_nicks = {                        # https://wiki.ubuntu.com/Releases
-    '16.04': 'Xenial Xerus',
+    #'16.04': 'Xenial Xerus',
     '18.04': 'Bionic Beaver',
     '20.04': 'Focal Fossa',
+    '22.04': 'Jammy Jellyfish',
 }
 
-for year, month in itertools.product(range(16, 23), [4, 10]):
+for year, month in itertools.product(range(18, 23), [4, 10]):
     name = f"{year:d}.{month:02d}"
     lts = (year % 2 == 0) and (month == 4)
     if LTS_ONLY and not lts:
@@ -390,7 +393,7 @@ mongo_releases = [
     #('3.0', 2015, 3, 2018, 2),
     #('3.2', 2015, 12, 2018, 9),
     #('3.4', 2016, 11, 2020, 1),
-    ('3.6', 2017, 11, 2021, 4),
+    #('3.6', 2017, 11, 2021, 4),
     ('4.0', 2018, 6, 2022, 1),
     ('4.2', 2019, 8, 3000, 1),
 ]
