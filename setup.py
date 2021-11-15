@@ -4,7 +4,6 @@ import re
 import setuptools
 from setuptools import setup
 
-
 with open('README.rst') as readme:
     long_description = readme.read()
 
