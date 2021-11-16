@@ -57,11 +57,11 @@ docutils==0.18
     # via statistics
 execnet==1.9.0
     # via pytest-xdist
-filelock==3.3.2
+filelock==3.4.0
     # via
     #   tox
     #   virtualenv
-fissix==21.6.6
+fissix==21.11.13
     # via bowler
 gitdb==4.0.9
     # via gitpython
@@ -174,7 +174,7 @@ python-dateutil==2.8.2
     # via
     #   -r requirements/base.in
     #   github3.py
-python-dotenv==0.19.1
+python-dotenv==0.19.2
     # via -r requirements/base.in
 pyyaml==6.0
     # via -r requirements/base.in
@@ -228,7 +228,7 @@ tqdm==4.62.3
     # via -r requirements/base.in
 twisted[http2]==21.7.0
     # via scrapy
-typing-extensions==3.10.0.2
+typing-extensions==4.0.0
     # via
     #   gitpython
     #   twisted
