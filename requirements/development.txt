@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==2.8.4
+astroid==2.8.5
     # via
     #   pylint
     #   pylint-celery
@@ -94,12 +94,12 @@ execnet==1.9.0
     # via
     #   -r requirements/base.txt
     #   pytest-xdist
-filelock==3.3.2
+filelock==3.4.0
     # via
     #   -r requirements/base.txt
     #   tox
     #   virtualenv
-fissix==21.6.6
+fissix==21.11.13
     # via
     #   -r requirements/base.txt
     #   bowler
@@ -303,7 +303,7 @@ python-dateutil==2.8.2
     # via
     #   -r requirements/base.txt
     #   github3.py
-python-dotenv==0.19.1
+python-dotenv==0.19.2
     # via -r requirements/base.txt
 python-slugify==5.0.2
     # via code-annotations
@@ -391,7 +391,7 @@ twisted[http2]==21.7.0
     # via
     #   -r requirements/base.txt
     #   scrapy
-typing-extensions==3.10.0.2
+typing-extensions==4.0.0
     # via
     #   -r requirements/base.txt
     #   astroid
