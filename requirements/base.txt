@@ -117,7 +117,7 @@ numpy==1.21.4
     # via -r requirements/base.in
 oauthlib==3.1.1
     # via requests-oauthlib
-packaging==21.2
+packaging==21.3
     # via
     #   pytest
     #   tox
@@ -156,7 +156,7 @@ pydispatcher==2.0.5
     # via scrapy
 pyopenssl==21.0.0
     # via scrapy
-pyparsing==2.4.7
+pyparsing==3.0.6
     # via packaging
 pytest==6.2.5
     # via
