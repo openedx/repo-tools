@@ -195,7 +195,7 @@ oauthlib==3.1.1
     # via
     #   -r requirements/base.txt
     #   requests-oauthlib
-packaging==21.2
+packaging==21.3
     # via
     #   -r requirements/base.txt
     #   pytest
@@ -278,7 +278,7 @@ pyopenssl==21.0.0
     # via
     #   -r requirements/base.txt
     #   scrapy
-pyparsing==2.4.7
+pyparsing==3.0.6
     # via
     #   -r requirements/base.txt
     #   packaging
@@ -332,7 +332,7 @@ requests-toolbelt==0.9.1
     # via
     #   -r requirements/base.txt
     #   jira
-responses==0.15.0
+responses==0.16.0
     # via -r requirements/development.in
 ruamel.yaml==0.17.17
     # via -r requirements/base.txt
