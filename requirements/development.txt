@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==2.8.5
+astroid==2.8.6
     # via
     #   pylint
     #   pylint-celery
@@ -42,7 +42,7 @@ cffi==1.15.0
     # via
     #   -r requirements/base.txt
     #   cryptography
-charset-normalizer==2.0.7
+charset-normalizer==2.0.8
     # via
     #   -r requirements/base.txt
     #   requests
@@ -64,7 +64,7 @@ constantly==15.1.0
     # via
     #   -r requirements/base.txt
     #   twisted
-cryptography==35.0.0
+cryptography==36.0.0
     # via
     #   -r requirements/base.txt
     #   jwcrypto
@@ -84,7 +84,7 @@ distlib==0.3.3
     # via
     #   -r requirements/base.txt
     #   virtualenv
-docutils==0.18
+docutils==0.18.1
     # via
     #   -r requirements/base.txt
     #   statistics
@@ -179,13 +179,13 @@ markupsafe==2.0.1
     # via jinja2
 mccabe==0.6.1
     # via pylint
-more-itertools==8.11.0
+more-itertools==8.12.0
     # via -r requirements/base.txt
 moreorless==0.4.0
     # via
     #   -r requirements/base.txt
     #   bowler
-msgpack==1.0.2
+msgpack==1.0.3
     # via
     #   -r requirements/base.txt
     #   cachecontrol
@@ -211,7 +211,7 @@ path==16.2.0
     #   path.py
 path.py==12.5.0
     # via -r requirements/base.txt
-pbr==5.7.0
+pbr==5.8.0
     # via stevedore
 pep517==0.12.0
     # via pip-tools
