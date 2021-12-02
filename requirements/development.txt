@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==2.8.6
+astroid==2.9.0
     # via
     #   pylint
     #   pylint-celery
@@ -260,7 +260,7 @@ pydispatcher==2.0.5
     # via
     #   -r requirements/base.txt
     #   scrapy
-pylint==2.11.1
+pylint==2.12.1
     # via
     #   edx-lint
     #   pylint-celery
@@ -391,7 +391,7 @@ twisted[http2]==21.7.0
     # via
     #   -r requirements/base.txt
     #   scrapy
-typing-extensions==4.0.0
+typing-extensions==4.0.1
     # via
     #   -r requirements/base.txt
     #   astroid
