@@ -228,7 +228,7 @@ tqdm==4.62.3
     # via -r requirements/base.in
 twisted[http2]==21.7.0
     # via scrapy
-typing-extensions==4.0.0
+typing-extensions==4.0.1
     # via
     #   gitpython
     #   twisted
