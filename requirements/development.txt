@@ -42,7 +42,7 @@ cffi==1.15.0
     # via
     #   -r requirements/base.txt
     #   cryptography
-charset-normalizer==2.0.8
+charset-normalizer==2.0.9
     # via
     #   -r requirements/base.txt
     #   requests
@@ -80,7 +80,7 @@ deprecated==1.2.13
     # via
     #   -r requirements/base.txt
     #   jwcrypto
-distlib==0.3.3
+distlib==0.3.4
     # via
     #   -r requirements/base.txt
     #   virtualenv
@@ -260,7 +260,7 @@ pydispatcher==2.0.5
     # via
     #   -r requirements/base.txt
     #   scrapy
-pylint==2.12.1
+pylint==2.12.2
     # via
     #   edx-lint
     #   pylint-celery
