@@ -29,7 +29,7 @@ certifi==2021.10.8
     # via requests
 cffi==1.15.0
     # via cryptography
-charset-normalizer==2.0.8
+charset-normalizer==2.0.9
     # via requests
 click==7.1.2
     # via
@@ -51,7 +51,7 @@ cssselect==1.1.0
     #   scrapy
 deprecated==1.2.13
     # via jwcrypto
-distlib==0.3.3
+distlib==0.3.4
     # via virtualenv
 docutils==0.18.1
     # via statistics
