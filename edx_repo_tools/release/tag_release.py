@@ -35,6 +35,10 @@ log = logging.getLogger(__name__)
 # Name used for fetching/storing GitHub OAuth tokens on disk
 TOKEN_NAME = "openedx-release"
 
+# We are in the process of migrating repos; in the future, we will have to
+# remove "edx" from the list of organizations.
+OPENEDX_ORGS = ['edx', 'edx-solutions', 'openedx']
+
 
 # An object to act like a response (with a .text attribute) in the case that
 # create_ref uselessly returns us None on failure.
@@ -57,8 +61,8 @@ def openedx_release_repos(hub, orgs=None, branches=None):
 
     Arguments:
         hub (:class:`~github3.GitHub`): an authenticated GitHub instance.
-        orgs (list of str): The GitHub organizations to scan. Defaults to edx, edx-ops, and
-              edx-solutions.
+        orgs (list of str): The GitHub organizations to scan. Defaults to
+            OPENEDX_ORGS.
         branches (list of str): The branches to scan in all repos in the selected
                   orgs, defaulting to the repo's default branch.
 
@@ -67,9 +71,7 @@ def openedx_release_repos(hub, orgs=None, branches=None):
         repos with an ``openedx-release`` key specified.
 
     """
-    if not orgs:
-        orgs = ['edx', 'edx-ops', 'edx-solutions']
-
+    orgs = orgs or OPENEDX_ORGS
     repos = {}
 
     for repo, data in tqdm(iter_openedx_yaml(hub, orgs=orgs, branches=branches), desc='Find repos'):
@@ -701,7 +703,7 @@ def ensure_writable(repos):
          "multiple times, the first openedx.yaml file found will be used.",
 )
 @click.option(
-    '--org', 'orgs', multiple=True, default=['edx', 'edx-ops', 'edx-solutions'],
+    '--org', 'orgs', multiple=True, default=OPENEDX_ORGS, show_default=True,
     help="Specify a GitHub organization to search for openedx release data. "
          "May be specified multiple times.",
 )
