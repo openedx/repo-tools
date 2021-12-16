@@ -39,7 +39,7 @@ click==7.1.2
     #   moreorless
 constantly==15.1.0
     # via twisted
-cryptography==36.0.0
+cryptography==36.0.1
     # via
     #   jwcrypto
     #   pyopenssl
@@ -103,7 +103,7 @@ lazy==1.4
     # via -r requirements/base.in
 lockfile==0.12.2
     # via -r requirements/base.in
-lxml==4.6.4
+lxml==4.7.1
     # via
     #   parsel
     #   scrapy
@@ -164,11 +164,11 @@ pytest==6.2.5
     #   pytest-forked
     #   pytest-logging
     #   pytest-xdist
-pytest-forked==1.3.0
+pytest-forked==1.4.0
     # via pytest-xdist
 pytest-logging==2015.11.4
     # via -r requirements/base.in
-pytest-xdist==2.4.0
+pytest-xdist==2.5.0
     # via -r requirements/base.in
 python-dateutil==2.8.2
     # via
