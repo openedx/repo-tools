@@ -57,6 +57,9 @@ def load_commits(db, repo_name):
 
         log = get_cmd_output(GITLOG)
         for i, commit in enumerate(log.split(SEP + "\n")):
+            if "fatal: your current branch 'master' does not have any commits yet" in commit:
+                # Project-only repos are like this.
+                continue
             if commit:
                 lines = commit.split("\n", maxsplit=SHORT_LINES)
                 row = {"repo": repo_name}
