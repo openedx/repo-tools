@@ -113,7 +113,7 @@ moreorless==0.4.0
     # via bowler
 msgpack==1.0.3
     # via cachecontrol
-numpy==1.21.4
+numpy==1.21.5
     # via -r requirements/base.in
 oauthlib==3.1.1
     # via requests-oauthlib
