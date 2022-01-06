@@ -33,13 +33,8 @@ class TestToxModernizer(TestCase):
         parser = self._get_parser(config_file)
         dependencies = parser['testenv']['deps']
 
-        self.assertNotIn("django111:", dependencies)
-        self.assertNotIn("django20:", dependencies)
-        self.assertNotIn("django21:", dependencies)
-        self.assertIn("django22:", dependencies)
-        self.assertIn("django30:", dependencies)
-        self.assertIn("django31:", dependencies)
         self.assertIn("django32:", dependencies)
+        self.assertIn("django40:", dependencies)
 
     def _assert_replaces_python_interpreters(self, config_file):
         parser = self._get_parser(config_file)
@@ -58,7 +53,7 @@ class TestToxModernizer(TestCase):
         self.assertNotIn("django{111}", env_list)
         self.assertNotIn("django{111,20}", env_list)
         self.assertNotIn("django{111,20,21}", env_list)
-        self.assertIn("django{22,30,31,32}", env_list)
+        self.assertIn("django{32,40}", env_list)
 
     def _assert_replaces_django_dependencies(self, config_file):
         self._assert_django_dependencies_replaced(config_file)
@@ -68,7 +63,7 @@ class TestToxModernizer(TestCase):
         parser.read(config_file)
 
         dependencies = parser['testenv']['deps']
-        dependencies = re.sub("[^\n]*django22.*\n", '', dependencies)
+        dependencies = re.sub("[^\n]*django32.*\n", '', dependencies)
         parser['testenv']['deps'] = dependencies
 
         with open(config_file, 'w') as configfile:

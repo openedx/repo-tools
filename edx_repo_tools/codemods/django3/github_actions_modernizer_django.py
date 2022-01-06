@@ -8,8 +8,8 @@ import click
 
 from edx_repo_tools.utils import YamlLoader
 
-DJANGO_ENV_PATTERN = r"django[0-3][0-2][0-2]?"
-ALLOWED_DJANGO_ENVS = ['django22', 'django30', 'django31', 'django32']
+DJANGO_ENV_PATTERN = r"django[0-3][0-2]?"
+ALLOWED_DJANGO_ENVS = ['django32', 'django40']
 
 
 class GithubCIDjangoModernizer(YamlLoader):

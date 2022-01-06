@@ -14,7 +14,7 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
         python-version: ['3.5', '3.8']
-        tox-env: [django22, quality, docs, pii_check]
+        tox-env: [django32, quality, docs, pii_check]
     steps:
     - uses: actions/checkout@v2
     - name: setup python
@@ -29,5 +29,5 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
         python-version: ['3.5', '3.8']
-        django-version: ['2.2', '3.0', '3.1', '3.2']
-        tox: [django22, quality, docs, pii_check]
+        django-version: ['3.2', '4.0']
+        tox: [django32, quality, docs, pii_check]
