@@ -7,8 +7,8 @@ import click
 
 from edx_repo_tools.utils import YamlLoader
 
-TO_BE_REMOVED_PYTHON = ['3.5']
-ALLOWED_PYTHON_VERSIONS = ['3.6', '3.7', '3.8', 'py38']
+TO_BE_REMOVED_PYTHON = ['3.5', '3.6', '3.7']
+ALLOWED_PYTHON_VERSIONS = ['3.8', 'py38']
 
 
 class GithubCIModernizer(YamlLoader):
