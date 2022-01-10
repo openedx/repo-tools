@@ -32,9 +32,8 @@ def test_matrix_items(tmpdir):
     ci_elements = get_updated_yaml_elements(test_file)
     tox_envs = ci_elements['jobs']['run_tests']['strategy']['matrix']['toxenv']
 
-    assert 'django30' in tox_envs
-    assert 'django31' in tox_envs
     assert 'django32' in tox_envs
+    assert 'django40' in tox_envs
 
 
 def test_matrix_items_multiple_jobs(tmpdir):
@@ -46,18 +45,16 @@ def test_matrix_items_multiple_jobs(tmpdir):
 
     # test the case with django env present in one job
     job1_tox_envs = ci_elements['jobs']['build']['strategy']['matrix']['tox-env']
-    assert 'django30' in job1_tox_envs
-    assert 'django31' in job1_tox_envs
     assert 'django32' in job1_tox_envs
+    assert 'django40' in job1_tox_envs
 
     # test the case with django env present in second job
     job2_tox_envs = ci_elements['jobs']['django_test']['strategy']['matrix']['django-version']
-    assert 'django30' in job2_tox_envs
-    assert 'django31' in job2_tox_envs
     assert 'django32' in job2_tox_envs
+    assert 'django40' in job2_tox_envs
 
     # test the case with no django env present in third job.
     job3_tox_envs = ci_elements['jobs']['test']['strategy']['matrix']['tox']
-    assert 'django30' not in job3_tox_envs
-    assert 'django31' not in job3_tox_envs
     assert 'django32' not in job3_tox_envs
+    assert 'django40' not in job3_tox_envs
+

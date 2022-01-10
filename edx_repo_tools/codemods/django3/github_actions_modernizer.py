@@ -7,8 +7,8 @@ import click
 
 from edx_repo_tools.utils import YamlLoader
 
-TO_BE_REMOVED_PYTHON = ['3.5']
-ALLOWED_PYTHON_VERSIONS = ['3.6', '3.7', '3.8']
+TO_BE_REMOVED_PYTHON = ['3.5', '3.6']
+ALLOWED_PYTHON_VERSIONS = ['3.7', '3.8', 'py38']
 
 
 class GithubCIModernizer(YamlLoader):
@@ -23,7 +23,7 @@ class GithubCIModernizer(YamlLoader):
         matrix_elements = dict()
         section_key = None
 
-        for key in ['build', 'tests', 'run_tests', 'run_quality']:
+        for key in ['build', 'tests', 'run_tests', 'run_quality', 'pytest']:
             if key in self.elements['jobs']:
                 section_key = key
                 matrix_elements = deepcopy(self.elements['jobs'][section_key]['strategy']['matrix'])
