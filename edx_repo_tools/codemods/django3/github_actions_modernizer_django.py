@@ -35,22 +35,29 @@ class GithubCIDjangoModernizer(YamlLoader):
         matrices = job.get('strategy').get('matrix').items()
         for matrix_item_key, matrix_item in matrices:
             self._update_matrix_items(job_name, matrix_item_key, matrix_item)
+    
+    def _update_codecov_check(self, job_name, step): 
+        step_elements =  deepcopy(step)
+        if not 'uses' in step_elements:
+            return
+        if not (step_elements['uses']) in ['codecov/codecov-action@v1', 'codecov/codecov-action@v2']:
+            return
+        if not 'if' in step_elements:
+            return
+        step_index = self.elements['jobs'][job_name]['steps'].index(step)
+        django_32_string = step_elements['if'].replace('django22','django32')
+        self.elements['jobs'][job_name]['steps'][step_index]['if'] = django_32_string
 
-    def _update_codecov_check(self, job_name, job): 
+    def _update_job_steps(self, job_name, job):
         steps = job.get('steps')
-        if steps:
-            for step in steps:
-                step_elements =  deepcopy(step)
-                if 'name' in step_elements:
-                    if(step['name']) in ['Codecov', 'Coverage', 'Run coverage', 'Run Code Coverage', 'Run Coverage']:
-                        if 'if' in step_elements:
-                            step_index = steps.index(step)
-                            django_32_string = step['if'].replace('django22','django32')
-                            self.elements['jobs'][job_name]['steps'][step_index]['if'] = django_32_string
+        if not steps:
+            return
+        for step in steps:
+            self._update_codecov_check(job_name, step)
 
     def _update_job(self):
         for job_name, job in self.elements.get('jobs').items():
-            self._update_codecov_check(job_name, job)
+            self._update_job_steps(job_name, job)
         
     def _update_job_matrices(self):
         for job_name, job in self.elements.get('jobs').items():
