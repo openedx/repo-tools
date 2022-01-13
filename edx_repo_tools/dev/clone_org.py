@@ -11,6 +11,14 @@ from edx_repo_tools.auth import pass_github
 
 @click.command()
 @click.option(
+    '--archived/--no-archived', is_flag=True, default=False,
+    help="Should archived repos be included?"
+)
+@click.option(
+    '--archived-only', is_flag=True, default=False,
+    help="Should only archived repos be cloned?"
+)
+@click.option(
     '--forks/--no-forks', is_flag=True, default=False,
     help="Should forks be included?"
 )
@@ -20,20 +28,26 @@ from edx_repo_tools.auth import pass_github
 )
 @click.option(
     '--prune', is_flag=True, default=False,
-    help='Remove repos that are gone from GitHub'
+    help="Remove repos that we wouldn't have cloned",
 )
 @click.argument(
     'org'
 )
 @pass_github
-def main(hub, forks, depth, prune, org):
+def main(hub, archived, archived_only, forks, depth, prune, org):
     """
     Clone an entire GitHub organization into the current directory.
     Each repo becomes a subdirectory.
     """
+    if archived_only:
+        archived = True
     dir_names = set()
     for repo in hub.organization(org).repositories():
         if repo.fork and not forks:
+            continue
+        if repo.archived and not archived:
+            continue
+        if not repo.archived and archived_only:
             continue
         dir_name = repo.name
         dir_name = dir_name.lstrip("-")     # avoid dirname/option confusion
