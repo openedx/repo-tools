@@ -34,7 +34,8 @@ class GithubCIDjangoModernizer(YamlLoader):
             updated_matrix_items = non_django_matrix_items + ALLOWED_DJANGO_ENVS
             self.elements['jobs'][job_name]['strategy']['matrix'][matrix_item_name] = updated_matrix_items
         else:
-            self._update_matrix_include_exclude_sections(job_name, matrix_item_name, matrix_item)
+            self._update_matrix_include_exclude_sections(
+                job_name, matrix_item_name, matrix_item)
 
     def _update_matrix_include_exclude_sections(self, job_name, matrix_item_name, matrix_item):
         if not matrix_item_name in ['include', 'exclude']:
@@ -44,7 +45,8 @@ class GithubCIDjangoModernizer(YamlLoader):
             item_index = self.elements['jobs'][job_name]['strategy']['matrix'][matrix_item_name].index(item)
             if ('django-version' in item) and (not item['django-version'] in ALLOWED_DJANGO_VERSIONS):
                 del self.elements['jobs'][job_name]['strategy']['matrix'][matrix_item_name][item_index]
-            elif ('toxenv' in item) and (not item['toxenv'] in ALLOWED_DJANGO_ENVS) and (item['toxenv'].find('django') != -1):
+            elif (('toxenv' in item) and (not item['toxenv'] in ALLOWED_DJANGO_ENVS) and
+                  (item['toxenv'].find('django') != -1)):
                 del self.elements['jobs'][job_name]['strategy']['matrix'][matrix_item_name][item_index]
 
     def _update_django_matrix_items(self, job_name, job):
