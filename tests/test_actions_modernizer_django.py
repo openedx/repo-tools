@@ -58,3 +58,17 @@ def test_matrix_items_multiple_jobs(tmpdir):
     assert 'django32' not in job3_tox_envs
     assert 'django40' not in job3_tox_envs
 
+def test_include_exclude_list(tmpdir):
+    """
+    Test the scenario with job's matrix having include, exclude sections
+    """
+    test_file = setup_local_copy("sample_files/sample_ci_file_5.yml", tmpdir)
+    ci_elements = get_updated_yaml_elements(test_file)
+    include_list = ci_elements['jobs']['run_tests']['strategy']['matrix'].get('include', {})
+    exclude_list = ci_elements['jobs']['run_tests']['strategy']['matrix'].get('exclude', {})
+
+    for item in list(include_list) + list(exclude_list):
+        if 'django-version' in item:
+            assert item['django-version'] != '3.1'
+        if 'toxenv' in item:
+            assert item['toxenv'] != 'django30'
