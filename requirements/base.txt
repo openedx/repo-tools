@@ -65,7 +65,7 @@ gitdb==4.0.9
     # via gitpython
 github3.py==3.0.0
     # via -r requirements/base.in
-gitpython==3.1.24
+gitpython==3.1.26
     # via -r requirements/base.in
 h2==3.2.0
     # via
@@ -123,7 +123,7 @@ parsel==1.6.0
     # via
     #   itemloaders
     #   scrapy
-path==16.2.0
+path==16.3.0
     # via path.py
 path.py==12.5.0
     # via -r requirements/base.in
@@ -227,14 +227,12 @@ tqdm==4.62.3
 twisted[http2]==21.7.0
     # via scrapy
 typing-extensions==4.0.1
-    # via
-    #   gitpython
-    #   twisted
+    # via twisted
 uritemplate==4.1.1
     # via
     #   -r requirements/base.in
     #   github3.py
-urllib3==1.26.7
+urllib3==1.26.8
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
