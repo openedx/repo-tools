@@ -42,7 +42,8 @@ class GithubCIModernizer(YamlLoader):
                     self.elements['jobs'][section_key]['strategy']['matrix'][key] = without_python35
                 else:
                     del self.elements['jobs'][section_key]['strategy']['matrix'][key]
-
+        if not section_key:
+            return
         self.elements['jobs'][section_key]['strategy']['matrix']['python-version'] = python_versions
 
     def _update_python_versions(self):
