@@ -8,7 +8,7 @@ Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
     (https://docs.google.com/spreadsheets/d/11DheEtMDGrbA9hsUvZ2SEd4Cc8CaC4mAfoV8SVaLBGI)
     or a new spreadsheet.
 3. If the current tab isn't empty, open a new tab (Add Sheet).
-4. Open the script editor (Tools - Script Editor).
+4. Open the script editor (Extensions - Apps Script).
 5. If there's any code there, delete it.
 6. Paste the JavaScript code this program wrote.
 7. Save the code.  The function picker at the top should select makeBarCalendar.
@@ -280,7 +280,7 @@ names = [
     ("Lilac", 2021, 6),
     ]
 # https://www.treenames.net/common_tree_names.html
-future = ["Maple", "Nutmeg", "Olive"] + list("PQRSTUVWXYZ")
+future = ["Maple", "Nutmeg", "Olive", "Poplar"] + list("QRSTUVWXYZ")
 target_length = 6 # months per release
 
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
