@@ -274,7 +274,7 @@ pyopenssl==21.0.0
     # via
     #   -r requirements/base.txt
     #   scrapy
-pyparsing==3.0.6
+pyparsing==3.0.7
     # via
     #   -r requirements/base.txt
     #   packaging
