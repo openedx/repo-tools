@@ -9,7 +9,7 @@ from copy import deepcopy
 import click
 
 
-class SetupModernizer:
+class SetupFileModernizer:
     """
     Django32 modernizer for updating setup files.
     """
@@ -32,7 +32,6 @@ class SetupModernizer:
         return modified_file_data
 
     def _add_new_classifiers(self, file_data) -> str:
-        
         res = re.search(self.most_recent_classifier_regex, file_data)
         end_index_of_most_recent_classifier = res.end()
         modified_file_data = file_data
@@ -52,8 +51,8 @@ class SetupModernizer:
 
 @click.command()
 def main():
-    setting_modernizer = SetupModernizer()
-    setting_modernizer.update_setup_file()
+    setup_file_modernizer = SetupFileModernizer()
+    setup_file_modernizer.update_setup_file()
 
 
 if __name__ == '__main__':

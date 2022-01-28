@@ -3,7 +3,7 @@ Tests for Github Actions Django Modernizer Script
 """
 import os
 import shutil
-from os.path import dirname, basename, join
+from os.path import basename, dirname, join
 
 from edx_repo_tools.codemods.django3 import GithubCIDjangoModernizer
 from edx_repo_tools.utils import YamlLoader
