@@ -1,5 +1,5 @@
 """
-Codemod to modernizer setup file.
+Codemod to modernize setup file.
 """
 import json
 import os
