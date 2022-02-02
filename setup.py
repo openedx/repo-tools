@@ -62,6 +62,7 @@ setup(
             'modernize_openedx_yaml = edx_repo_tools.modernize_openedx_yaml:main',
             'modernize_github_actions = edx_repo_tools.codemods.django3.github_actions_modernizer:main',
             'modernize_github_actions_django = edx_repo_tools.codemods.django3.github_actions_modernizer_django:main',
+            'modernize_setup_file = edx_repo_tools.codemods.django3.setup_file_modernizer:main', 
             'add_common_constraint = edx_repo_tools.add_common_constraint:main',
             'remove_python2_unicode_compatible = edx_repo_tools.codemods.django3.remove_python2_unicode_compatible:main',
             'replace_unicode_with_str = edx_repo_tools.codemods.django3.replace_unicode_with_str:main',
