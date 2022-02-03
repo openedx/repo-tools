@@ -7,6 +7,7 @@ from setuptools import setup
 with open('README.rst') as readme:
     long_description = readme.read()
 
+
 def get_version(*file_paths):
     """
     Extract the version string from the file at the given relative path fragments.
@@ -18,6 +19,7 @@ def get_version(*file_paths):
     if version_match:
         return version_match.group(1)
     raise RuntimeError('Unable to find version string.')
+
 
 VERSION = get_version('edx_repo_tools', '__init__.py')
 
@@ -62,7 +64,8 @@ setup(
             'modernize_openedx_yaml = edx_repo_tools.modernize_openedx_yaml:main',
             'modernize_github_actions = edx_repo_tools.codemods.django3.github_actions_modernizer:main',
             'modernize_github_actions_django = edx_repo_tools.codemods.django3.github_actions_modernizer_django:main',
-            'modernize_setup_file = edx_repo_tools.codemods.django3.setup_file_modernizer:main', 
+            'modernize_setup_file = edx_repo_tools.codemods.django3.setup_file_modernizer:main',
+            'modernize_node_workflow = edx_repo_tools.codemods.node16.gha_ci_modernizer:main',
             'add_common_constraint = edx_repo_tools.add_common_constraint:main',
             'remove_python2_unicode_compatible = edx_repo_tools.codemods.django3.remove_python2_unicode_compatible:main',
             'replace_unicode_with_str = edx_repo_tools.codemods.django3.replace_unicode_with_str:main',

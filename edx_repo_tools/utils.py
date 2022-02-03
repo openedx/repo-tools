@@ -45,7 +45,8 @@ class YamlLoader:
     def __init__(self, file_path):
         self.file_path = file_path
         self.yml_instance = YAML()
-        self.yml_instance.indent(mapping=2, sequence=4, offset=2)
+        self.yml_instance.default_flow_style = None
+        self.yml_instance.indent(mapping=2, sequence=2, offset=0)
         self._load_file()
 
     def _load_file(self):
