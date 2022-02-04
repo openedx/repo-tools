@@ -16,8 +16,6 @@ ALLOWED_DJANGO_VERSIONS = ['3.2', '4.0']
 class GithubCIDjangoModernizer(YamlLoader):
     def __init__(self, file_path):
         super().__init__(file_path)
-        self.yml_instance.default_flow_style = None
-        self.yml_instance.indent(mapping=2, sequence=2, offset=0)
 
     def _update_matrix_items(self, job_name, matrix_item_name, matrix_item):
         MATRIX_INCLUDE_EXCLUDE_SECTION = ['include', 'exclude']
