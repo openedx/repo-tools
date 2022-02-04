@@ -14,8 +14,6 @@ ALLOWED_PYTHON_VERSIONS = ['3.7', '3.8', 'py38']
 class GithubCIModernizer(YamlLoader):
     def __init__(self, file_path):
         super().__init__(file_path)
-        self.yml_instance.default_flow_style = None
-        self.yml_instance.indent(mapping=2, sequence=2, offset=0)
 
     def _update_matrix(self):
 
