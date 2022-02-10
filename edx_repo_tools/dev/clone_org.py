@@ -23,6 +23,10 @@ from edx_repo_tools.auth import pass_github
     help="Should forks be included?"
 )
 @click.option(
+    '--forks-only', is_flag=True, default=False,
+    help="Should only forks be cloned?"
+)
+@click.option(
     '--depth', type=int, default=0,
     help="Depth argument for git clone",
 )
@@ -34,16 +38,20 @@ from edx_repo_tools.auth import pass_github
     'org'
 )
 @pass_github
-def main(hub, archived, archived_only, forks, depth, prune, org):
+def main(hub, archived, archived_only, forks, forks_only, depth, prune, org):
     """
     Clone an entire GitHub organization into the current directory.
     Each repo becomes a subdirectory.
     """
     if archived_only:
         archived = True
+    if forks_only:
+        forks = True
     dir_names = set()
     for repo in hub.organization(org).repositories():
         if repo.fork and not forks:
+            continue
+        if not repo.fork and forks_only:
             continue
         if repo.archived and not archived:
             continue
