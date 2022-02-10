@@ -8,7 +8,7 @@ Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
     (https://docs.google.com/spreadsheets/d/11DheEtMDGrbA9hsUvZ2SEd4Cc8CaC4mAfoV8SVaLBGI)
     or a new spreadsheet.
 3. If the current tab isn't empty, open a new tab (Add Sheet).
-4. Open the script editor (Tools - Script Editor).
+4. Open the script editor (Extensions - Apps Script).
 5. If there's any code there, delete it.
 6. Paste the JavaScript code this program wrote.
 7. Save the code.  The function picker at the top should select makeBarCalendar.
@@ -240,20 +240,20 @@ class GsheetCalendar(BaseCalendar):
 # ==== Editable content ====
 
 # Global Options
-START_YEAR = 2017
+START_YEAR = 2018
 END_YEAR = 2025
 LTS_ONLY = True
 
 # The current versions of everything.  Use the same strings as the keys in the various sections below.
 CURRENT = {
-    "Open edX": "Lilac",
+    "Open edX": "Maple",
     "Python": "3.8",
-    "Django": "2.2",
+    "Django": "3.2",
     "Ubuntu": "20.04",
     "Node": "12.x",
-    "Mongo": "4.0",
+    "Mongo": "4.2",
     "MySQL": "5.7",
-    "elasticsearch": "7.8",
+    "elasticsearch": "7.10",
     "ruby": "2.5",
 }
 
@@ -280,7 +280,7 @@ names = [
     ("Lilac", 2021, 6),
     ]
 # https://www.treenames.net/common_tree_names.html
-future = ["Maple", "Nutmeg", "Olive"] + list("PQRSTUVWXYZ")
+future = ["Maple", "Nutmeg", "Olive", "Poplar"] + list("QRSTUVWXYZ")
 target_length = 6 # months per release
 
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
@@ -314,10 +314,10 @@ cal.text_line(
 cal.section_note("https://www.djangoproject.com/download/#supported-versions")
 django_releases = [
     # (Version, Year, Month, Is_LTS) when the release happened.
-    #('1.8', 2015, 4, True),
-    ('1.9', 2016, 1, False),
-    ('1.10', 2016, 8, False),
-    ('1.11', 2017, 4, True),
+    # ('1.8', 2015, 4, True),
+    # ('1.9', 2016, 1, False),
+    # ('1.10', 2016, 8, False),
+    # ('1.11', 2017, 4, True),
     ('2.0', 2018, 1, False),
     ('2.1', 2018, 8, False),
     ('2.2', 2019, 4, True),
@@ -325,6 +325,8 @@ django_releases = [
     ('3.1', 2020, 8, False),
     ('3.2', 2021, 4, True),
     ('4.0', 2022, 1, False),
+    ('4.1', 2022, 8, False),
+    ('4.2', 2023, 4, True),
 ]
 for name, year, month, lts in django_releases:
     if LTS_ONLY and not lts:
@@ -351,12 +353,13 @@ cal.gap_line()
 
 # Ubuntu releases
 ubuntu_nicks = {                        # https://wiki.ubuntu.com/Releases
-    '16.04': 'Xenial Xerus',
+    #'16.04': 'Xenial Xerus',
     '18.04': 'Bionic Beaver',
     '20.04': 'Focal Fossa',
+    '22.04': 'Jammy Jellyfish',
 }
 
-for year, month in itertools.product(range(16, 23), [4, 10]):
+for year, month in itertools.product(range(18, 23), [4, 10]):
     name = f"{year:d}.{month:02d}"
     lts = (year % 2 == 0) and (month == 4)
     if LTS_ONLY and not lts:
@@ -385,12 +388,12 @@ for name, syear, smonth, eyear, emonth in node_releases:
 cal.gap_line()
 
 # Mongo releases
-cal.section_note("https://www.mongodb.com/support-policy")      # search for MongoDB Server
+cal.section_note("https://www.mongodb.com/support-policy/legacy")      # search for MongoDB Server
 mongo_releases = [
     #('3.0', 2015, 3, 2018, 2),
     #('3.2', 2015, 12, 2018, 9),
     #('3.4', 2016, 11, 2020, 1),
-    ('3.6', 2017, 11, 2021, 4),
+    #('3.6', 2017, 11, 2021, 4),
     ('4.0', 2018, 6, 2022, 4),
     ('4.2', 2019, 8, 3000, 1),
     ('4.4', 2020, 7, 3000, 1),

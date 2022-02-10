@@ -47,6 +47,6 @@ def main(hub, forks, org, url_type, output_file, add_archived, ignore_repo):
             repositories.append(repo.ssh_url)
         else:
             repositories.append(repo.clone_url)
-    with open(output_file, 'w') as filehandle:
+    with open(output_file, 'a') as filehandle:
         for repo_url in repositories:
             filehandle.write('%s\n' % repo_url)
