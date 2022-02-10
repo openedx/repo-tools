@@ -28,7 +28,7 @@ markupsafe==2.0.1
     # via mako
 matplotlib==3.5.1
     # via -r edx_repo_tools/conventional_commits/extra.in
-numpy==1.22.1
+numpy==1.22.2
     # via
     #   matplotlib
     #   pandas
