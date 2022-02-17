@@ -16,7 +16,7 @@ fonttools==4.29.1
     # via matplotlib
 greenlet==1.1.2
     # via sqlalchemy
-importlib-metadata==4.10.1
+importlib-metadata==4.11.1
     # via alembic
 importlib-resources==5.4.0
     # via alembic
@@ -34,7 +34,7 @@ numpy==1.22.2
     #   pandas
 packaging==21.3
     # via matplotlib
-pandas==1.4.0
+pandas==1.4.1
     # via -r edx_repo_tools/conventional_commits/extra.in
 pillow==9.0.1
     # via matplotlib
