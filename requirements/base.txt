@@ -39,6 +39,7 @@ constantly==15.1.0
     # via twisted
 cryptography==36.0.1
     # via
+    #   pyjwt
     #   pyopenssl
     #   scrapy
     #   service-identity
@@ -52,7 +53,7 @@ docutils==0.18.1
     # via statistics
 execnet==1.9.0
     # via pytest-xdist
-filelock==3.5.1
+filelock==3.6.0
     # via
     #   tox
     #   virtualenv
@@ -60,9 +61,9 @@ fissix==21.11.13
     # via bowler
 gitdb==4.0.9
     # via gitpython
-github3-py==3.1.0
+github3-py==3.1.2
     # via -r requirements/base.in
-gitpython==3.1.26
+gitpython==3.1.27
     # via -r requirements/base.in
 h2==3.2.0
     # via
@@ -96,7 +97,7 @@ lazy==1.4
     # via -r requirements/base.in
 lockfile==0.12.2
     # via -r requirements/base.in
-lxml==4.7.1
+lxml==4.8.0
     # via
     #   parsel
     #   scrapy
@@ -122,7 +123,7 @@ path==16.3.0
     # via path-py
 path-py==12.5.0
     # via -r requirements/base.in
-platformdirs==2.5.0
+platformdirs==2.5.1
     # via virtualenv
 pluggy==1.0.0
     # via
@@ -130,7 +131,7 @@ pluggy==1.0.0
     #   tox
 priority==1.3.0
     # via twisted
-protego==0.2.0
+protego==0.2.1
     # via scrapy
 py==1.11.0
     # via
@@ -147,7 +148,7 @@ pycparser==2.21
     # via cffi
 pydispatcher==2.0.5
     # via scrapy
-pyjwt==2.3.0
+pyjwt[crypto]==2.3.0
     # via github3-py
 pyopenssl==22.0.0
     # via scrapy
