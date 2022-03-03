@@ -16,7 +16,7 @@ fonttools==4.29.1
     # via matplotlib
 greenlet==1.1.2
     # via sqlalchemy
-importlib-metadata==4.11.1
+importlib-metadata==4.11.2
     # via alembic
 importlib-resources==5.4.0
     # via alembic
