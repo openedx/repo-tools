@@ -166,7 +166,7 @@ msgpack==1.0.3
     # via
     #   -r requirements/base.txt
     #   cachecontrol
-numpy==1.22.2
+numpy==1.22.3
     # via -r requirements/base.txt
 oauthlib==3.2.0
     # via
@@ -315,7 +315,7 @@ requests-toolbelt==0.9.1
     # via
     #   -r requirements/base.txt
     #   jira
-responses==0.18.0
+responses==0.19.0
     # via -r requirements/development.in
 ruamel-yaml==0.17.21
     # via -r requirements/base.txt
@@ -375,7 +375,7 @@ tox==3.24.5
     # via -r requirements/base.txt
 tqdm==4.63.0
     # via -r requirements/base.txt
-twisted==22.1.0
+twisted==22.2.0
     # via
     #   -r requirements/base.txt
     #   scrapy
@@ -396,7 +396,7 @@ urllib3==1.26.8
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.13.2
+virtualenv==20.13.3
     # via
     #   -r requirements/base.txt
     #   tox

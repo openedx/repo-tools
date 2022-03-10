@@ -101,7 +101,7 @@ moreorless==0.4.0
     # via bowler
 msgpack==1.0.3
     # via cachecontrol
-numpy==1.22.2
+numpy==1.22.3
     # via -r requirements/base.in
 oauthlib==3.2.0
     # via requests-oauthlib
@@ -220,7 +220,7 @@ tox==3.24.5
     # via -r requirements/base.in
 tqdm==4.63.0
     # via -r requirements/base.in
-twisted==22.1.0
+twisted==22.2.0
     # via scrapy
 typing-extensions==4.1.1
     # via twisted
@@ -232,7 +232,7 @@ urllib3==1.26.8
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.13.2
+virtualenv==20.13.3
     # via tox
 volatile==2.1.0
     # via bowler
