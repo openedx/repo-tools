@@ -28,7 +28,7 @@ markupsafe==2.1.0
     # via mako
 matplotlib==3.5.1
     # via -r edx_repo_tools/conventional_commits/extra.in
-numpy==1.22.2
+numpy==1.22.3
     # via
     #   matplotlib
     #   pandas
@@ -50,7 +50,7 @@ pytz==2021.3
     # via pandas
 six==1.16.0
     # via python-dateutil
-sqlalchemy==1.4.31
+sqlalchemy==1.4.32
     # via
     #   alembic
     #   dataset
