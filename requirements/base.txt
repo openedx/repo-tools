@@ -37,7 +37,7 @@ click==7.1.2
     #   moreorless
 constantly==15.1.0
     # via twisted
-cryptography==36.0.1
+cryptography==36.0.2
     # via
     #   pyjwt
     #   pyopenssl
@@ -85,7 +85,7 @@ itemloaders==1.0.4
     # via scrapy
 jira==1.0.3
     # via -r requirements/base.in
-jmespath==0.10.0
+jmespath==1.0.0
     # via itemloaders
 lazy==1.4
     # via -r requirements/base.in
@@ -146,7 +146,7 @@ pyopenssl==22.0.0
     # via scrapy
 pyparsing==3.0.7
     # via packaging
-pytest==7.0.1
+pytest==7.1.0
     # via
     #   -r requirements/base.in
     #   pytest-forked
@@ -228,7 +228,7 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.in
     #   github3-py
-urllib3==1.26.8
+urllib3==1.26.9
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
