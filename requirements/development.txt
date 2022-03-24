@@ -124,7 +124,7 @@ iniconfig==1.1.1
     #   pytest
 isort==5.10.1
     # via pylint
-itemadapter==0.4.0
+itemadapter==0.5.0
     # via
     #   -r requirements/base.txt
     #   itemloaders
@@ -259,7 +259,7 @@ pyparsing==3.0.7
     # via
     #   -r requirements/base.txt
     #   packaging
-pytest==7.1.0
+pytest==7.1.1
     # via
     #   -r requirements/base.txt
     #   pytest-forked
@@ -315,7 +315,7 @@ requests-toolbelt==0.9.1
     # via
     #   -r requirements/base.txt
     #   jira
-responses==0.19.0
+responses==0.20.0
     # via -r requirements/development.in
 ruamel-yaml==0.17.21
     # via -r requirements/base.txt
@@ -373,7 +373,7 @@ tomli==2.0.1
     #   pytest
 tox==3.24.5
     # via -r requirements/base.txt
-tqdm==4.63.0
+tqdm==4.63.1
     # via -r requirements/base.txt
 twisted==22.2.0
     # via
@@ -396,7 +396,7 @@ urllib3==1.26.9
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.13.3
+virtualenv==20.13.4
     # via
     #   -r requirements/base.txt
     #   tox
