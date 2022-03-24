@@ -12,7 +12,7 @@ cycler==0.11.0
     # via matplotlib
 dataset==1.5.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-fonttools==4.30.0
+fonttools==4.31.2
     # via matplotlib
 greenlet==1.1.2
     # via sqlalchemy
@@ -46,7 +46,7 @@ python-dateutil==2.8.2
     # via
     #   matplotlib
     #   pandas
-pytz==2021.3
+pytz==2022.1
     # via pandas
 six==1.16.0
     # via python-dateutil
