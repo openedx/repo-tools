@@ -6,7 +6,7 @@ from copy import deepcopy
 
 from edx_repo_tools.utils import YamlLoader
 
-ALLOWED_NODE_VERSIONS = [12, 14, 16]
+ALLOWED_NODE_VERSIONS = [16]
 ALLOWED_NPM_VERSION = '8.x.x'
 
 
