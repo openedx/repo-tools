@@ -218,7 +218,7 @@ tomli==2.0.1
     # via pytest
 tox==3.24.5
     # via -r requirements/base.in
-tqdm==4.63.1
+tqdm==4.64.0
     # via -r requirements/base.in
 twisted==22.2.0
     # via scrapy
