@@ -34,9 +34,9 @@ numpy==1.22.3
     #   pandas
 packaging==21.3
     # via matplotlib
-pandas==1.4.1
+pandas==1.4.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-pillow==9.0.1
+pillow==9.1.0
     # via matplotlib
 pyparsing==3.0.7
     # via
@@ -50,11 +50,11 @@ pytz==2022.1
     # via pandas
 six==1.16.0
     # via python-dateutil
-sqlalchemy==1.4.32
+sqlalchemy==1.4.35
     # via
     #   alembic
     #   dataset
-zipp==3.7.0
+zipp==3.8.0
     # via
     #   importlib-metadata
     #   importlib-resources
