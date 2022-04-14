@@ -144,7 +144,7 @@ pyjwt[crypto]==2.3.0
     # via github3-py
 pyopenssl==22.0.0
     # via scrapy
-pyparsing==3.0.7
+pyparsing==3.0.8
     # via packaging
 pytest==7.1.1
     # via
@@ -208,7 +208,7 @@ smmap==5.0.0
     # via gitdb
 statistics==1.0.3.5
     # via -r requirements/base.in
-tldextract==3.2.0
+tldextract==3.2.1
     # via scrapy
 tlslite==0.4.9
     # via jira
@@ -216,11 +216,11 @@ toml==0.10.2
     # via tox
 tomli==2.0.1
     # via pytest
-tox==3.24.5
+tox==3.25.0
     # via -r requirements/base.in
 tqdm==4.64.0
     # via -r requirements/base.in
-twisted==22.2.0
+twisted==22.4.0
     # via scrapy
 typing-extensions==4.1.1
     # via twisted
@@ -232,7 +232,7 @@ urllib3==1.26.9
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.14.0
+virtualenv==20.14.1
     # via tox
 volatile==2.1.0
     # via bowler
