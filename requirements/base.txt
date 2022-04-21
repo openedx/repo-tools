@@ -21,7 +21,7 @@ backports-csv==1.0.7
     # via -r requirements/base.in
 bowler==0.9.0
     # via -r requirements/base.in
-cachecontrol==0.12.10
+cachecontrol==0.12.11
     # via -r requirements/base.in
 certifi==2021.10.8
     # via requests
@@ -117,7 +117,7 @@ path==16.4.0
     # via path-py
 path-py==12.5.0
     # via -r requirements/base.in
-platformdirs==2.5.1
+platformdirs==2.5.2
     # via virtualenv
 pluggy==1.0.0
     # via
@@ -222,7 +222,7 @@ tqdm==4.64.0
     # via -r requirements/base.in
 twisted==22.4.0
     # via scrapy
-typing-extensions==4.1.1
+typing-extensions==4.2.0
     # via twisted
 uritemplate==4.1.1
     # via
