@@ -60,7 +60,7 @@ constantly==15.1.0
     # via
     #   -r requirements/base.txt
     #   twisted
-cryptography==36.0.2
+cryptography==37.0.1
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -261,7 +261,7 @@ pyparsing==3.0.8
     # via
     #   -r requirements/base.txt
     #   packaging
-pytest==7.1.1
+pytest==7.1.2
     # via
     #   -r requirements/base.txt
     #   pytest-forked
@@ -284,7 +284,7 @@ python-dateutil==2.8.2
     #   github3-py
 python-dotenv==0.20.0
     # via -r requirements/base.txt
-python-slugify==6.1.1
+python-slugify==6.1.2
     # via code-annotations
 pyyaml==6.0
     # via
