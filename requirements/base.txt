@@ -37,7 +37,7 @@ click==7.1.2
     #   moreorless
 constantly==15.1.0
     # via twisted
-cryptography==37.0.1
+cryptography==37.0.2
     # via
     #   pyjwt
     #   pyopenssl
@@ -208,7 +208,7 @@ smmap==5.0.0
     # via gitdb
 statistics==1.0.3.5
     # via -r requirements/base.in
-tldextract==3.2.1
+tldextract==3.3.0
     # via scrapy
 tlslite==0.4.9
     # via jira
