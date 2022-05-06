@@ -281,7 +281,7 @@ names = [
     ("Lilac", 2021, 6),
     ]
 # https://www.treenames.net/common_tree_names.html
-future = ["Maple", "Nutmeg", "Olive", "Poplar/Palm"] + list("QRSTUVWXYZ")
+future = ["Maple", "Nutmeg", "Olive", "Palm"] + list("QRSTUVWXYZ")
 target_length = 6 # months per release
 
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
