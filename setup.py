@@ -66,6 +66,7 @@ setup(
             'modernize_github_actions_django = edx_repo_tools.codemods.django3.github_actions_modernizer_django:main',
             'modernize_setup_file = edx_repo_tools.codemods.django3.setup_file_modernizer:main',
             'modernize_node_workflow = edx_repo_tools.codemods.node16.gha_ci_modernizer:main',
+            'modernize_node_release_workflow = edx_repo_tools.codemods.node16.gha_release_workflow_modernizer:main',
             'add_common_constraint = edx_repo_tools.add_common_constraint:main',
             'remove_python2_unicode_compatible = edx_repo_tools.codemods.django3.remove_python2_unicode_compatible:main',
             'replace_unicode_with_str = edx_repo_tools.codemods.django3.replace_unicode_with_str:main',
@@ -73,6 +74,7 @@ setup(
             'conventional_commits = edx_repo_tools.conventional_commits.commitstats:main',
             'replace_render_to_response = edx_repo_tools.codemods.django3.replace_render_to_response:main',
             'add_django32_settings = edx_repo_tools.codemods.django3.add_new_django32_settings:main',
+            
         ],
     },
     package_data={

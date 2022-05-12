@@ -1,1 +1,2 @@
 from .gha_ci_modernizer import GithubCiNodeModernizer
+from .gha_release_workflow_modernizer import GithubNodeReleaseWorkflowModernizer
