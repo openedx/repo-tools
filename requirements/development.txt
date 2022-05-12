@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==2.11.2
+astroid==2.11.5
     # via
     #   pylint
     #   pylint-celery
@@ -28,7 +28,7 @@ backports-csv==1.0.7
     # via -r requirements/base.txt
 bowler==0.9.0
     # via -r requirements/base.txt
-cachecontrol==0.12.10
+cachecontrol==0.12.11
     # via -r requirements/base.txt
 certifi==2021.10.8
     # via
@@ -60,7 +60,7 @@ constantly==15.1.0
     # via
     #   -r requirements/base.txt
     #   twisted
-cryptography==36.0.2
+cryptography==37.0.2
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -135,7 +135,7 @@ itemloaders==1.0.4
     # via
     #   -r requirements/base.txt
     #   scrapy
-jinja2==3.1.1
+jinja2==3.1.2
     # via code-annotations
 jira==1.0.3
     # via -r requirements/base.txt
@@ -158,7 +158,7 @@ markupsafe==2.1.1
     # via jinja2
 mccabe==0.7.0
     # via pylint
-more-itertools==8.12.0
+more-itertools==8.13.0
     # via -r requirements/base.txt
 moreorless==0.4.0
     # via
@@ -190,7 +190,7 @@ path==16.4.0
     #   path-py
 path-py==12.5.0
     # via -r requirements/base.txt
-pbr==5.8.1
+pbr==5.9.0
     # via stevedore
 pep517==0.12.0
     # via pip-tools
@@ -198,7 +198,7 @@ pep8==1.7.1
     # via -r requirements/development.in
 pip-tools==6.6.0
     # via -r requirements/development.in
-platformdirs==2.5.1
+platformdirs==2.5.2
     # via
     #   -r requirements/base.txt
     #   pylint
@@ -239,7 +239,7 @@ pyjwt[crypto]==2.3.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.13.5
+pylint==2.13.8
     # via
     #   edx-lint
     #   pylint-celery
@@ -257,11 +257,11 @@ pyopenssl==22.0.0
     # via
     #   -r requirements/base.txt
     #   scrapy
-pyparsing==3.0.7
+pyparsing==3.0.9
     # via
     #   -r requirements/base.txt
     #   packaging
-pytest==7.1.1
+pytest==7.1.2
     # via
     #   -r requirements/base.txt
     #   pytest-forked
@@ -284,7 +284,7 @@ python-dateutil==2.8.2
     #   github3-py
 python-dotenv==0.20.0
     # via -r requirements/base.txt
-python-slugify==6.1.1
+python-slugify==6.1.2
     # via code-annotations
 pyyaml==6.0
     # via
@@ -355,7 +355,7 @@ stevedore==3.5.0
     # via code-annotations
 text-unidecode==1.3
     # via python-slugify
-tldextract==3.2.0
+tldextract==3.3.0
     # via
     #   -r requirements/base.txt
     #   scrapy
@@ -373,15 +373,15 @@ tomli==2.0.1
     #   pep517
     #   pylint
     #   pytest
-tox==3.24.5
+tox==3.25.0
     # via -r requirements/base.txt
 tqdm==4.64.0
     # via -r requirements/base.txt
-twisted==22.2.0
+twisted==22.4.0
     # via
     #   -r requirements/base.txt
     #   scrapy
-typing-extensions==4.1.1
+typing-extensions==4.2.0
     # via
     #   -r requirements/base.txt
     #   astroid
@@ -398,7 +398,7 @@ urllib3==1.26.9
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.14.0
+virtualenv==20.14.1
     # via
     #   -r requirements/base.txt
     #   tox
@@ -414,7 +414,7 @@ w3lib==1.22.0
     #   scrapy
 wheel==0.37.1
     # via pip-tools
-wrapt==1.14.0
+wrapt==1.14.1
     # via astroid
 zope-interface==5.4.0
     # via

@@ -21,7 +21,7 @@ backports-csv==1.0.7
     # via -r requirements/base.in
 bowler==0.9.0
     # via -r requirements/base.in
-cachecontrol==0.12.10
+cachecontrol==0.12.11
     # via -r requirements/base.in
 certifi==2021.10.8
     # via requests
@@ -37,7 +37,7 @@ click==7.1.2
     #   moreorless
 constantly==15.1.0
     # via twisted
-cryptography==36.0.2
+cryptography==37.0.2
     # via
     #   pyjwt
     #   pyopenssl
@@ -95,7 +95,7 @@ lxml==4.8.0
     # via
     #   parsel
     #   scrapy
-more-itertools==8.12.0
+more-itertools==8.13.0
     # via -r requirements/base.in
 moreorless==0.4.0
     # via bowler
@@ -117,7 +117,7 @@ path==16.4.0
     # via path-py
 path-py==12.5.0
     # via -r requirements/base.in
-platformdirs==2.5.1
+platformdirs==2.5.2
     # via virtualenv
 pluggy==1.0.0
     # via
@@ -144,9 +144,9 @@ pyjwt[crypto]==2.3.0
     # via github3-py
 pyopenssl==22.0.0
     # via scrapy
-pyparsing==3.0.7
+pyparsing==3.0.9
     # via packaging
-pytest==7.1.1
+pytest==7.1.2
     # via
     #   -r requirements/base.in
     #   pytest-forked
@@ -208,7 +208,7 @@ smmap==5.0.0
     # via gitdb
 statistics==1.0.3.5
     # via -r requirements/base.in
-tldextract==3.2.0
+tldextract==3.3.0
     # via scrapy
 tlslite==0.4.9
     # via jira
@@ -216,13 +216,13 @@ toml==0.10.2
     # via tox
 tomli==2.0.1
     # via pytest
-tox==3.24.5
+tox==3.25.0
     # via -r requirements/base.in
 tqdm==4.64.0
     # via -r requirements/base.in
-twisted==22.2.0
+twisted==22.4.0
     # via scrapy
-typing-extensions==4.1.1
+typing-extensions==4.2.0
     # via twisted
 uritemplate==4.1.1
     # via
@@ -232,7 +232,7 @@ urllib3==1.26.9
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.14.0
+virtualenv==20.14.1
     # via tox
 volatile==2.1.0
     # via bowler

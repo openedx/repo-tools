@@ -253,8 +253,9 @@ CURRENT = {
     "Node": "12.x",
     "Mongo": "4.2",
     "MySQL": "5.7",
-    "elasticsearch": "7.10",
-    "ruby": "2.5",
+    "Elasticsearch": "7.10",
+    "Redis": "5.6",
+    "Ruby": "2.5",
 }
 
 cal = GsheetCalendar(START_YEAR, END_YEAR)
@@ -280,7 +281,7 @@ names = [
     ("Lilac", 2021, 6),
     ]
 # https://www.treenames.net/common_tree_names.html
-future = ["Maple", "Nutmeg", "Olive", "Poplar"] + list("QRSTUVWXYZ")
+future = ["Maple", "Nutmeg", "Olive", "Palm"] + list("QRSTUVWXYZ")
 target_length = 6 # months per release
 
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
@@ -344,8 +345,9 @@ python_releases = [
     #('3.6', 2016, 12, 2021, 12),        # https://www.python.org/dev/peps/pep-0494/
     #('3.7', 2018, 6, 2023, 6),          # https://www.python.org/dev/peps/pep-0537/
     ('3.8', 2019, 10, 2024, 10),        # https://www.python.org/dev/peps/pep-0569/
-    ('3.9', 2020, 10, 2025, 10),        # https://www.python.org/dev/peps/pep-0596/
+    #('3.9', 2020, 10, 2025, 10),        # https://www.python.org/dev/peps/pep-0596/
     ('3.10', 2021, 10, 2026, 10),       # https://www.python.org/dev/peps/pep-0619/
+    ('3.11', 2022, 10, 2027, 10),       # https://peps.python.org/pep-0664/
 ]
 for name, syear, smonth, eyear, emonth in python_releases:
     cal.bar(f"Python {name}", start=(syear, smonth), end=(eyear, emonth), color="#ffd545", current=(name==CURRENT["Python"]))
@@ -428,7 +430,20 @@ es_releases = [
     ('7.13', 2021, 5, 2022, 11),
 ]
 for name, syear, smonth, eyear, emonth in es_releases:
-    cal.bar(f"elasticsearch {name}", start=(syear, smonth), end=(eyear, emonth), color="#4595ba", current=(name==CURRENT["elasticsearch"]))
+    cal.bar(f"Elasticsearch {name}", start=(syear, smonth), end=(eyear, emonth), color="#4595ba", current=(name==CURRENT["Elasticsearch"]))
+cal.gap_line()
+
+# Redis
+cal.section_note("https://docs.redis.com/latest/rs/administering/product-lifecycle/#endoflife-schedule")
+# https://endoflife.date/redis
+redis_releases = [
+    ('5.6', 2020, 4, 2021, 10),
+    ('6.0', 2020, 5, 2022, 5),
+    ('6.2', 2021, 8, 2023, 2),
+    ('7.0', 2022, 4, 2023, 10),
+]
+for name, syear, smonth, eyear, emonth in redis_releases:
+    cal.bar(f"Redis {name}", start=(syear, smonth), end=(eyear, emonth), color="#963029", text_color="white", current=(name==CURRENT["Redis"]))
 cal.gap_line()
 
 # ruby
@@ -440,7 +455,7 @@ ruby_releases = [
     ('2.6', 2018, 12, 3000, 1),
 ]
 for name, syear, smonth, eyear, emonth in ruby_releases:
-    cal.bar(f"ruby {name}", start=(syear, smonth), end=(eyear, emonth), color="#DE3F24", current=(name==CURRENT["ruby"]))
+    cal.bar(f"Ruby {name}", start=(syear, smonth), end=(eyear, emonth), color="#DE3F24", current=(name==CURRENT["Ruby"]))
 cal.gap_line()
 
 

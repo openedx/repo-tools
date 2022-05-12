@@ -17,7 +17,7 @@ LOGGER = logging.getLogger(__name__)
 
 @click.command()
 @pass_github
-@click.option('--org', multiple=True, default=['edx', 'edx-ops', 'edx-solutions',])
+@click.option('--org', multiple=True, default=['edx', 'edx-ops',])
 @click.option(
     '--branch',
     multiple=True,
