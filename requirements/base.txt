@@ -95,7 +95,7 @@ lxml==4.8.0
     # via
     #   parsel
     #   scrapy
-more-itertools==8.12.0
+more-itertools==8.13.0
     # via -r requirements/base.in
 moreorless==0.4.0
     # via bowler
@@ -144,7 +144,7 @@ pyjwt[crypto]==2.3.0
     # via github3-py
 pyopenssl==22.0.0
     # via scrapy
-pyparsing==3.0.8
+pyparsing==3.0.9
     # via packaging
 pytest==7.1.2
     # via
