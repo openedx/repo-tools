@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==2.11.4
+astroid==2.11.5
     # via
     #   pylint
     #   pylint-celery
@@ -158,7 +158,7 @@ markupsafe==2.1.1
     # via jinja2
 mccabe==0.7.0
     # via pylint
-more-itertools==8.12.0
+more-itertools==8.13.0
     # via -r requirements/base.txt
 moreorless==0.4.0
     # via
@@ -190,7 +190,7 @@ path==16.4.0
     #   path-py
 path-py==12.5.0
     # via -r requirements/base.txt
-pbr==5.8.1
+pbr==5.9.0
     # via stevedore
 pep517==0.12.0
     # via pip-tools
@@ -257,7 +257,7 @@ pyopenssl==22.0.0
     # via
     #   -r requirements/base.txt
     #   scrapy
-pyparsing==3.0.8
+pyparsing==3.0.9
     # via
     #   -r requirements/base.txt
     #   packaging
