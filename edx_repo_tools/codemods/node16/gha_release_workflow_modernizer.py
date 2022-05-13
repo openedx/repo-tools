@@ -1,14 +1,12 @@
 """
 Node modernizer for Github CI release workflow
 """
-import os
+
 from copy import deepcopy
-from ntpath import join
 from os.path import exists
 from pathlib import Path
 
 import click
-from responses import target
 from ruamel.yaml.main import round_trip_load as yaml_load
 
 from edx_repo_tools.utils import YamlLoader
@@ -20,7 +18,7 @@ FETCH_NODE_VERSION_STEP = """name: 'Setup Nodejs Env'\nrun: 'echo "NODE_VER=`cat
 class GithubNodeReleaseWorkflowModernizer(YamlLoader):
     def __init__(self, release_workflow_file_path):
         super().__init__(release_workflow_file_path)
-        
+
     def _does_nvmrc_exists(self):
         target_file = Path(self.file_path).resolve().parents[2]
         target_file = str(target_file) + '/.nvmrc'
@@ -54,7 +52,7 @@ class GithubNodeReleaseWorkflowModernizer(YamlLoader):
 
                 updated_job_steps = job_steps
         return updated_job_steps
-                
+
 
     def _update_job(self):
         jobs = self.elements.get('jobs')
