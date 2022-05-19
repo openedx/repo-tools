@@ -36,7 +36,7 @@ packaging==21.3
     # via matplotlib
 pandas==1.4.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-pillow==9.1.0
+pillow==9.1.1
     # via matplotlib
 pyparsing==3.0.9
     # via

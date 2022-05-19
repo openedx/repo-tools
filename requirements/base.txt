@@ -23,7 +23,7 @@ bowler==0.9.0
     # via -r requirements/base.in
 cachecontrol==0.12.11
     # via -r requirements/base.in
-certifi==2021.10.8
+certifi==2022.5.18
     # via requests
 cffi==1.15.0
     # via cryptography
@@ -53,7 +53,7 @@ docutils==0.18.1
     # via statistics
 execnet==1.9.0
     # via pytest-xdist
-filelock==3.6.0
+filelock==3.7.0
     # via
     #   tldextract
     #   tox
@@ -77,7 +77,7 @@ incremental==21.3.0
     # via twisted
 iniconfig==1.1.1
     # via pytest
-itemadapter==0.5.0
+itemadapter==0.6.0
     # via
     #   itemloaders
     #   scrapy
@@ -140,7 +140,7 @@ pycparser==2.21
     # via cffi
 pydispatcher==2.0.5
     # via scrapy
-pyjwt[crypto]==2.3.0
+pyjwt[crypto]==2.4.0
     # via github3-py
 pyopenssl==22.0.0
     # via scrapy
