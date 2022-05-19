@@ -30,7 +30,7 @@ bowler==0.9.0
     # via -r requirements/base.txt
 cachecontrol==0.12.11
     # via -r requirements/base.txt
-certifi==2021.10.8
+certifi==2022.5.18
     # via
     #   -r requirements/base.txt
     #   requests
@@ -88,7 +88,7 @@ execnet==1.9.0
     # via
     #   -r requirements/base.txt
     #   pytest-xdist
-filelock==3.6.0
+filelock==3.7.0
     # via
     #   -r requirements/base.txt
     #   tldextract
@@ -126,7 +126,7 @@ iniconfig==1.1.1
     #   pytest
 isort==5.10.1
     # via pylint
-itemadapter==0.5.0
+itemadapter==0.6.0
     # via
     #   -r requirements/base.txt
     #   itemloaders
@@ -196,7 +196,7 @@ pep517==0.12.0
     # via pip-tools
 pep8==1.7.1
     # via -r requirements/development.in
-pip-tools==6.6.0
+pip-tools==6.6.1
     # via -r requirements/development.in
 platformdirs==2.5.2
     # via
@@ -235,11 +235,11 @@ pydispatcher==2.0.5
     # via
     #   -r requirements/base.txt
     #   scrapy
-pyjwt[crypto]==2.3.0
+pyjwt[crypto]==2.4.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.13.8
+pylint==2.13.9
     # via
     #   edx-lint
     #   pylint-celery
