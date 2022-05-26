@@ -16,7 +16,7 @@ fonttools==4.33.3
     # via matplotlib
 greenlet==1.1.2
     # via sqlalchemy
-importlib-metadata==4.11.3
+importlib-metadata==4.11.4
     # via alembic
 importlib-resources==5.7.1
     # via alembic
@@ -28,7 +28,7 @@ markupsafe==2.1.1
     # via mako
 matplotlib==3.5.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-numpy==1.22.3
+numpy==1.22.4
     # via
     #   matplotlib
     #   pandas
