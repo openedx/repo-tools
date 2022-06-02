@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-alembic==1.7.7
+alembic==1.8.0
     # via dataset
 banal==1.0.6
     # via dataset
@@ -50,7 +50,7 @@ pytz==2022.1
     # via pandas
 six==1.16.0
     # via python-dateutil
-sqlalchemy==1.4.36
+sqlalchemy==1.4.37
     # via
     #   alembic
     #   dataset
