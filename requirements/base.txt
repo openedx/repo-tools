@@ -53,7 +53,7 @@ docutils==0.18.1
     # via statistics
 execnet==1.9.0
     # via pytest-xdist
-filelock==3.7.0
+filelock==3.7.1
     # via
     #   tldextract
     #   tox
@@ -91,7 +91,7 @@ lazy==1.4
     # via -r requirements/base.in
 lockfile==0.12.2
     # via -r requirements/base.in
-lxml==4.8.0
+lxml==4.9.0
     # via
     #   parsel
     #   scrapy
