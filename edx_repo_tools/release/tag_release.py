@@ -712,7 +712,31 @@ def ensure_writable(repos):
 def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
          reverse, skip_invalid, input_repos, output_repos, included_repos,
          skip_repos, dry, orgs, branches):
-    """Create/remove tags & branches on GitHub repos for Open edX releases."""
+    """
+    Create/remove tags & branches on GitHub repos for Open edX releases.
+
+    Search GitHub repositories belonging to the Open edX organizations (`--org`)
+    that include an "openedx.yaml" file. For reference, see:
+
+    \b
+    https://open-edx-proposals.readthedocs.io/en/latest/processes/oep-0010-proc-openedx-releases.html#involving-repos-in-the-open-edx-build-process
+
+    The "openedx.yaml" file will be searched for in the branch indicated by
+    `--search-branch`, or in the default repo branch (typically "main" or
+    "master"). Once found, the chosen reference (`--tag` or `--branch`) will be
+    created in the branch indicated by `--override-ref/--override`, if present,
+    or the "ref" attribute from the "openedx.yaml" file.
+
+    For instance, to create a new release branch, run (in dry mode):
+
+        \b
+        tag_release --dry --branch open-release/zebulon.master
+
+    To create a new release tag in this branch, run:
+
+        \b
+        tag_release --dry --tag --search-branch=open-release/zebulon.master --override-ref=open-release/zebulon.master open-release/zebulon.1
+    """
     if input_repos:
         with open(input_repos) as f:
             repos = {
