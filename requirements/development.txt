@@ -164,7 +164,7 @@ moreorless==0.4.0
     # via
     #   -r requirements/base.txt
     #   bowler
-msgpack==1.0.3
+msgpack==1.0.4
     # via
     #   -r requirements/base.txt
     #   cachecontrol
@@ -239,7 +239,7 @@ pyjwt[crypto]==2.4.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.14.0
+pylint==2.14.1
     # via
     #   edx-lint
     #   pylint-celery
