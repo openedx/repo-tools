@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==2.11.5
+astroid==2.11.6
     # via
     #   pylint
     #   pylint-celery
@@ -30,7 +30,7 @@ bowler==0.9.0
     # via -r requirements/base.txt
 cachecontrol==0.12.11
     # via -r requirements/base.txt
-certifi==2022.5.18.1
+certifi==2022.6.15
     # via
     #   -r requirements/base.txt
     #   requests
@@ -82,7 +82,7 @@ docutils==0.18.1
     # via
     #   -r requirements/base.txt
     #   statistics
-edx-lint==5.2.2
+edx-lint==5.2.4
     # via -r requirements/development.in
 execnet==1.9.0
     # via
@@ -139,7 +139,7 @@ jinja2==3.1.2
     # via code-annotations
 jira==1.0.3
     # via -r requirements/base.txt
-jmespath==1.0.0
+jmespath==1.0.1
     # via
     #   -r requirements/base.txt
     #   itemloaders
@@ -168,7 +168,7 @@ msgpack==1.0.4
     # via
     #   -r requirements/base.txt
     #   cachecontrol
-numpy==1.22.4
+numpy==1.23.0
     # via -r requirements/base.txt
 oauthlib==3.2.0
     # via
@@ -239,7 +239,7 @@ pyjwt[crypto]==2.4.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.14.1
+pylint==2.14.3
     # via
     #   edx-lint
     #   pylint-celery
@@ -294,7 +294,7 @@ queuelib==1.6.2
     # via
     #   -r requirements/base.txt
     #   scrapy
-requests==2.27.1
+requests==2.28.0
     # via
     #   -r requirements/base.txt
     #   cachecontrol

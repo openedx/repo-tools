@@ -23,7 +23,7 @@ bowler==0.9.0
     # via -r requirements/base.in
 cachecontrol==0.12.11
     # via -r requirements/base.in
-certifi==2022.5.18.1
+certifi==2022.6.15
     # via requests
 cffi==1.15.0
     # via cryptography
@@ -85,7 +85,7 @@ itemloaders==1.0.4
     # via scrapy
 jira==1.0.3
     # via -r requirements/base.in
-jmespath==1.0.0
+jmespath==1.0.1
     # via itemloaders
 lazy==1.4
     # via -r requirements/base.in
@@ -101,7 +101,7 @@ moreorless==0.4.0
     # via bowler
 msgpack==1.0.4
     # via cachecontrol
-numpy==1.22.4
+numpy==1.23.0
     # via -r requirements/base.in
 oauthlib==3.2.0
     # via requests-oauthlib
@@ -168,7 +168,7 @@ pyyaml==6.0
     # via -r requirements/base.in
 queuelib==1.6.2
     # via scrapy
-requests==2.27.1
+requests==2.28.0
     # via
     #   -r requirements/base.in
     #   cachecontrol
