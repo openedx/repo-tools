@@ -1,2 +1,1 @@
-# code-annotations==1.1.1 && edx-lint==5.0.0 both require click<8.0.0
-click<8.0.0
+-c common_constraints.txt
