@@ -61,7 +61,7 @@ constantly==15.1.0
     # via
     #   -r requirements/base.txt
     #   twisted
-cryptography==37.0.2
+cryptography==37.0.4
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -79,7 +79,7 @@ distlib==0.3.4
     # via
     #   -r requirements/base.txt
     #   virtualenv
-docutils==0.18.1
+docutils==0.19
     # via
     #   -r requirements/base.txt
     #   statistics
@@ -276,7 +276,7 @@ pytest-forked==1.4.0
     #   pytest-xdist
 pytest-logging==2015.11.4
     # via -r requirements/base.txt
-pytest-mock==3.8.1
+pytest-mock==3.8.2
     # via -r requirements/development.in
 pytest-xdist==2.5.0
     # via -r requirements/base.txt
@@ -376,7 +376,7 @@ tomli==2.0.1
     #   pep517
     #   pylint
     #   pytest
-tomlkit==0.11.0
+tomlkit==0.11.1
     # via pylint
 tox==3.25.1
     # via -r requirements/base.txt

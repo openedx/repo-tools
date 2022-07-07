@@ -12,7 +12,7 @@ cycler==0.11.0
     # via matplotlib
 dataset==1.5.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-fonttools==4.33.3
+fonttools==4.34.2
     # via matplotlib
 greenlet==1.1.2
     # via sqlalchemy
