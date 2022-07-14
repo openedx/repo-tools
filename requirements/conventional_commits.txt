@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-alembic==1.8.0
+alembic==1.8.1
     # via dataset
 banal==1.0.6
     # via dataset
@@ -12,7 +12,7 @@ cycler==0.11.0
     # via matplotlib
 dataset==1.5.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-fonttools==4.34.2
+fonttools==4.34.4
     # via matplotlib
 greenlet==1.1.2
     # via sqlalchemy
@@ -28,7 +28,7 @@ markupsafe==2.1.1
     # via mako
 matplotlib==3.5.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-numpy==1.23.0
+numpy==1.23.1
     # via
     #   matplotlib
     #   pandas
@@ -54,7 +54,7 @@ sqlalchemy==1.4.39
     # via
     #   alembic
     #   dataset
-zipp==3.8.0
+zipp==3.8.1
     # via
     #   importlib-metadata
     #   importlib-resources

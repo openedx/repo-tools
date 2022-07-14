@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==2.11.6
+astroid==2.11.7
     # via
     #   pylint
     #   pylint-celery
@@ -169,7 +169,7 @@ msgpack==1.0.4
     # via
     #   -r requirements/base.txt
     #   cachecontrol
-numpy==1.23.0
+numpy==1.23.1
     # via -r requirements/base.txt
 oauthlib==3.2.0
     # via
@@ -353,11 +353,11 @@ smmap==5.0.0
     #   gitdb
 statistics==1.0.3.5
     # via -r requirements/base.txt
-stevedore==3.5.0
+stevedore==4.0.0
     # via code-annotations
 text-unidecode==1.3
     # via python-slugify
-tldextract==3.3.0
+tldextract==3.3.1
     # via
     #   -r requirements/base.txt
     #   scrapy
@@ -396,7 +396,7 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-urllib3==1.26.9
+urllib3==1.26.10
     # via
     #   -r requirements/base.txt
     #   requests
