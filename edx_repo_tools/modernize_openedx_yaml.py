@@ -2,7 +2,7 @@ import click
 
 from edx_repo_tools.utils import YamlLoader
 
-DEPRECATED_FIELDS = ['owner', 'supporting_teams', 'track_pulls', 'track-pulls']
+ADD_NEW_FIELDS = ["github-actions"]
 
 
 class YamlModernizer(YamlLoader):
@@ -14,13 +14,13 @@ class YamlModernizer(YamlLoader):
     def __init__(self, file_path):
         super().__init__(file_path)
 
-    def _remove_deprecated_elements(self):
-        for deprecated_field in DEPRECATED_FIELDS:
+    def _add_elements(self):
+        for _field in ADD_FIELDS:
             if deprecated_field in self.elements.keys():
                 del self.elements[deprecated_field]
 
     def modernize(self):
-        self._remove_deprecated_elements()
+        self._add_elements()
         self.update_yml_file()
 
 
@@ -29,6 +29,8 @@ class YamlModernizer(YamlLoader):
     '--path', default='openedx.yaml',
     help="Path to target openedx.yaml file")
 def main(path):
+    import pdb;
+    pdb.set_trace()
     modernizer = YamlModernizer(path)
     modernizer.modernize()
 
