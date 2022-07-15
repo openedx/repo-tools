@@ -15,4 +15,6 @@ oeps:
   oep-14: {applicable: false}
   oep-18: false
 
+owner: nedbat
+supporting_teams: edx/openedx-tooling
 tags: [tools]

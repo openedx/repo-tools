@@ -3,16 +3,20 @@ import click
 from edx_repo_tools.utils import YamlLoader
 from ruamel.yaml.scalarstring import DoubleQuotedScalarString as dq
 
+import ruamel.yaml
+yaml = ruamel.yaml.YAML()
+yaml.default_flow_style = None
 
-github_actions = {
-    "package-ecosystem": "github-actions",
-    "directory": dq("/"),
-    "schedule": "",
-    "interval": "daily"
-}
+
+github_actions = """\
+    package-ecosystem": github-actions
+    directory: /
+    schedule:
+        interval: weekly
+"""
 
 # Adding new packages for update. Add tuple with key and related data.
-ADD_NEW_FIELDS = [("github-actions", github_actions)]
+ADD_NEW_FIELDS = [("github-actions", github_actions,)]
 
 
 class YamlModernizer(YamlLoader):
@@ -34,7 +38,7 @@ class YamlModernizer(YamlLoader):
                     break
 
         if not found:
-            self.elements['updates'].append(value)
+            self.elements['updates'].append(yaml.load(value))
 
     def modernize(self):
         self._add_elements()
