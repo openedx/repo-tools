@@ -1,14 +1,10 @@
 import click
 
 from edx_repo_tools.utils import YamlLoader
-from ruamel.yaml.scalarstring import DoubleQuotedScalarString as dq
-
-import ruamel.yaml
-yaml = ruamel.yaml.YAML()
-yaml.default_flow_style = None
 
 
 github_actions = """\
+    # Adding new check for github-actions
     package-ecosystem": github-actions
     directory: /
     schedule:
@@ -38,10 +34,13 @@ class YamlModernizer(YamlLoader):
                     break
 
         if not found:
-            self.elements['updates'].append(yaml.load(value))
+            self.elements['updates'].append(self.yml_instance.load(value))
 
     def modernize(self):
         self._add_elements()
+        # otherwise it brings back whole update back towards left side.
+
+        self.yml_instance.indent(mapping=4, sequence=4, offset=2)
         self.update_yml_file()
 
 
