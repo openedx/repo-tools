@@ -100,7 +100,7 @@ moreorless==0.4.0
     # via bowler
 msgpack==1.0.4
     # via cachecontrol
-numpy==1.23.0
+numpy==1.23.1
     # via -r requirements/base.in
 oauthlib==3.2.0
     # via requests-oauthlib
@@ -207,7 +207,7 @@ smmap==5.0.0
     # via gitdb
 statistics==1.0.3.5
     # via -r requirements/base.in
-tldextract==3.3.0
+tldextract==3.3.1
     # via scrapy
 tlslite==0.4.9
     # via jira
@@ -227,7 +227,7 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.in
     #   github3-py
-urllib3==1.26.9
+urllib3==1.26.10
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
