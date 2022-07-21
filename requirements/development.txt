@@ -75,7 +75,7 @@ cssselect==1.1.0
     #   scrapy
 dill==0.3.5.1
     # via pylint
-distlib==0.3.4
+distlib==0.3.5
     # via
     #   -r requirements/base.txt
     #   virtualenv
@@ -241,7 +241,7 @@ pyjwt[crypto]==2.4.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.14.4
+pylint==2.14.5
     # via
     #   edx-lint
     #   pylint-celery

@@ -46,7 +46,7 @@ cssselect==1.1.0
     # via
     #   parsel
     #   scrapy
-distlib==0.3.4
+distlib==0.3.5
     # via virtualenv
 docutils==0.19
     # via statistics
