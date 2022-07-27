@@ -348,6 +348,7 @@ python_releases = [
     #('3.9', 2020, 10, 2025, 10),        # https://www.python.org/dev/peps/pep-0596/
     ('3.10', 2021, 10, 2026, 10),       # https://www.python.org/dev/peps/pep-0619/
     ('3.11', 2022, 10, 2027, 10),       # https://peps.python.org/pep-0664/
+    ('3.12', 2023, 10, 2028, 10),       # https://peps.python.org/pep-0693/
 ]
 for name, syear, smonth, eyear, emonth in python_releases:
     cal.bar(f"Python {name}", start=(syear, smonth), end=(eyear, emonth), color="#ffd545", current=(name==CURRENT["Python"]))
@@ -361,7 +362,7 @@ ubuntu_nicks = {                        # https://wiki.ubuntu.com/Releases
     '22.04': 'Jammy Jellyfish',
 }
 
-for year, month in itertools.product(range(18, 23), [4, 10]):
+for year, month in itertools.product(range(START_YEAR % 100, END_YEAR % 100), [4, 10]):
     name = f"{year:d}.{month:02d}"
     lts = (year % 2 == 0) and (month == 4)
     if LTS_ONLY and not lts:
