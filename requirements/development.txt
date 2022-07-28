@@ -327,7 +327,7 @@ ruamel-yaml-clib==0.2.6
     # via
     #   -r requirements/base.txt
     #   ruamel-yaml
-scrapy==2.6.1
+scrapy==2.6.2
     # via -r requirements/base.txt
 service-identity==21.1.0
     # via
@@ -345,7 +345,6 @@ six==1.16.0
     #   requests-file
     #   service-identity
     #   tox
-    #   virtualenv
     #   w3lib
 smmap==5.0.0
     # via
@@ -396,14 +395,14 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-urllib3==1.26.10
+urllib3==1.26.11
     # via
     #   -r requirements/base.txt
     #   requests
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.15.1
+virtualenv==20.16.2
     # via
     #   -r requirements/base.txt
     #   tox
