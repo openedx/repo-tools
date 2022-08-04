@@ -72,6 +72,7 @@ setup(
             'replace_render_to_response = edx_repo_tools.codemods.django3.replace_render_to_response:main',
             'replace_static = edx_repo_tools.codemods.django3.replace_static:main',
             'replace_unicode_with_str = edx_repo_tools.codemods.django3.replace_unicode_with_str:main',
+            'repo_access_scraper = edx_repo_tools.repo_access_scraper.repo_access_scraper:main',
             'show_hooks = edx_repo_tools.dev.show_hooks:main',
             'tag_release = edx_repo_tools.release.tag_release:main',
         ],

@@ -26,6 +26,7 @@ upgrade: $(COMMON_CONSTRAINTS_TXT)  ## update the requirements/*.txt files with 
 	pip-compile --upgrade -o requirements/base.txt requirements/base.in
 	pip-compile --upgrade -o requirements/development.txt requirements/development.in
 	pip-compile --upgrade -o requirements/conventional_commits.txt edx_repo_tools/conventional_commits/extra.in
+	pip-compile --upgrade -o requirements/repo_access_scraper.txt edx_repo_tools/repo_access_scraper/extra.in
 	bash post-pip-compile.sh \
 		requirements/pip-tools.txt \
 		requirements/base.txt \
