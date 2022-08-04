@@ -12,7 +12,7 @@ astroid==2.11.7
     # via
     #   pylint
     #   pylint-celery
-attrs==21.4.0
+attrs==22.1.0
     # via
     #   -r requirements/base.txt
     #   automat
@@ -127,7 +127,7 @@ iniconfig==1.1.1
     #   pytest
 isort==5.10.1
     # via pylint
-itemadapter==0.6.0
+itemadapter==0.7.0
     # via
     #   -r requirements/base.txt
     #   itemloaders
@@ -194,7 +194,7 @@ path-py==12.5.0
     # via -r requirements/base.txt
 pbr==5.9.0
     # via stevedore
-pep517==0.12.0
+pep517==0.13.0
     # via build
 pep8==1.7.1
     # via -r requirements/development.in

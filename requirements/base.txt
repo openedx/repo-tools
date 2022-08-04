@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.in
     #   fissix
-attrs==21.4.0
+attrs==22.1.0
     # via
     #   automat
     #   bowler
@@ -76,7 +76,7 @@ incremental==21.3.0
     # via twisted
 iniconfig==1.1.1
     # via pytest
-itemadapter==0.6.0
+itemadapter==0.7.0
     # via
     #   itemloaders
     #   scrapy
