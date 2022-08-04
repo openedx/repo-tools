@@ -1,0 +1,6 @@
+# The repo_access_scraper code needs some extra packages installed that are
+# large and unusual, so we keep them separate here.
+
+-c ../../requirements/constraints.txt
+
+playwright
