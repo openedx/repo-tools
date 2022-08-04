@@ -402,7 +402,7 @@ urllib3==1.26.11
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.16.2
+virtualenv==20.16.3
     # via
     #   -r requirements/base.txt
     #   tox
