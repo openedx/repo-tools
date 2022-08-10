@@ -4,6 +4,7 @@ Summarize who has write access to repos.
 Writes a .md report, and captures screenshots of the GitHub permissions pages.
 """
 
+import datetime
 import itertools
 import os
 import re
@@ -18,6 +19,12 @@ REPORT_FILE = "./report.md"
 
 
 def goto(page, url):
+    """
+    Visit a GitHub URL in a Playwright page.
+
+    If the page looks like it needs authentication, pause Playwright so the
+    user can log in.
+    """
     print(f"Visiting {url}")
     page.goto(url)
     if page.is_visible("text='Sign in'"):
@@ -37,6 +44,12 @@ def file_slug(s):
     return re.sub(r"[/]", "-", s)
 
 def screenshot_pages(page, url, image_prefix):
+    """
+    Capture screenshots of pages starting with `url`.
+
+    Follow links classed with `next_page` to capture follow-on pages.
+
+    """
     goto(page, url)
     for imgnum in itertools.count():
         page.screenshot(path=f"{IMAGES_DIR}/{image_prefix}-{imgnum}.png", full_page=True)
@@ -73,6 +86,26 @@ def request_dict(url):
     """Get dict data from a GitHub URL."""
     return requests.get(url, headers=HEADERS).json()
 
+def counted(things: list, thing_name: str) -> str:
+    """
+    Make a phrase counting the things in a list.
+
+    Uses a simplistic English pluralization.
+
+    >>> counted([1, 2, 3], "number")
+    "3 numbers"
+    >>> counted(["apple"], "fruit")
+    "1 fruit"
+    >>> counted([], "monster")
+    "0 monsters"
+
+    """
+    num = len(things)
+    words = f"{num} {thing_name}"
+    if num != 1:
+        words += "s"
+    return words
+
 
 PERMS = ["pull", "triage", "push", "maintain", "admin"]
 PUSH = PERMS.index("push")
@@ -83,7 +116,7 @@ def run(repos, playwright, report_print):
     page = context.new_page()
     goto(page, "https://github.com")
 
-    report_print("# Access report\n")
+    report_print(f"# Access report as of {datetime.datetime.now():%Y-%m-%d}\n")
 
     team_data = {}
     users = {}
@@ -105,7 +138,6 @@ def run(repos, playwright, report_print):
             name = team["name"]
             team_page = team["html_url"]
             access = ACCESS_NAMES[perm]
-            report_print(f"- team: [{name}]({team_page}), {access}")
             if name not in team_data:
                 team_data[name] = team
                 # Get the child teams.
@@ -119,12 +151,19 @@ def run(repos, playwright, report_print):
                 team_members = request_list(url)
                 team["members"] = team_members
 
-            for child_team in team_data[name]["child_teams"]:
+            members = team_data[name]["members"]
+            census = counted(members, "member")
+            child_teams = team_data[name]["child_teams"]
+            if child_teams:
+                census += ", " + counted(child_teams, "child team")
+            report_print(f"- team: [{name}]({team_page}), {access} access: {census}")
+
+            for child_team in child_teams:
                 team_name = child_team["name"]
                 team_page = child_team["html_url"]
                 report_print(f"  - team: [{team_name}]({team_page}), {access}")
 
-            for member in team_data[name]["members"]:
+            for member in members:
                 login = member["login"]
                 if login not in users:
                     user_info = request_dict(member["url"])
