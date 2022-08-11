@@ -52,7 +52,7 @@ docutils==0.19
     # via statistics
 execnet==1.9.0
     # via pytest-xdist
-filelock==3.7.1
+filelock==3.8.0
     # via
     #   tldextract
     #   tox
@@ -94,7 +94,7 @@ lxml==4.9.1
     # via
     #   parsel
     #   scrapy
-more-itertools==8.13.0
+more-itertools==8.14.0
     # via -r requirements/base.in
 moreorless==0.4.0
     # via bowler
