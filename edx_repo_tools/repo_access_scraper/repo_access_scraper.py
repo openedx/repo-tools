@@ -107,9 +107,12 @@ def counted(things: list, thing_name: str) -> str:
     return words
 
 
-PERMS = ["pull", "triage", "push", "maintain", "admin"]
+# Not sure what happened: GitHub used to report "push" for write access, but
+# now it reports "write"? We can have both, since PERMS is just used to order
+# access levels.
+PERMS = ["pull", "read", "triage", "push", "write", "maintain", "admin"]
 PUSH = PERMS.index("push")
-ACCESS_NAMES = ["Read", "Triage", "Write", "Maintain", "Admin"]
+ACCESS_NAMES = ["Read", "Read", "Triage", "Write", "Write", "Maintain", "Admin"]
 
 def run(repos, playwright, report_print):
     context = playwright.chromium.launch(headless=False)
