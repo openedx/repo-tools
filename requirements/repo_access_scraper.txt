@@ -6,7 +6,7 @@
 #
 greenlet==1.1.2
     # via playwright
-playwright==1.24.1
+playwright==1.25.1
     # via -r edx_repo_tools/repo_access_scraper/extra.in
 pyee==8.1.0
     # via playwright

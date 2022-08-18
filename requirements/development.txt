@@ -169,7 +169,7 @@ msgpack==1.0.4
     # via
     #   -r requirements/base.txt
     #   cachecontrol
-numpy==1.23.1
+numpy==1.23.2
     # via -r requirements/base.txt
 oauthlib==3.2.0
     # via
@@ -192,7 +192,7 @@ path==16.4.0
     #   path-py
 path-py==12.5.0
     # via -r requirements/base.txt
-pbr==5.9.0
+pbr==5.10.0
     # via stevedore
 pep517==0.13.0
     # via build
@@ -345,7 +345,6 @@ six==1.16.0
     #   requests-file
     #   service-identity
     #   tox
-    #   w3lib
 smmap==5.0.0
     # via
     #   -r requirements/base.txt
@@ -375,7 +374,7 @@ tomli==2.0.1
     #   pep517
     #   pylint
     #   pytest
-tomlkit==0.11.3
+tomlkit==0.11.4
     # via pylint
 tox==3.25.1
     # via -r requirements/base.txt
@@ -410,7 +409,7 @@ volatile==2.1.0
     # via
     #   -r requirements/base.txt
     #   bowler
-w3lib==1.22.0
+w3lib==2.0.1
     # via
     #   -r requirements/base.txt
     #   itemloaders
