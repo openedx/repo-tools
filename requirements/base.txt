@@ -100,7 +100,7 @@ moreorless==0.4.0
     # via bowler
 msgpack==1.0.4
     # via cachecontrol
-numpy==1.23.1
+numpy==1.23.2
     # via -r requirements/base.in
 oauthlib==3.2.0
     # via requests-oauthlib
@@ -201,7 +201,6 @@ six==1.16.0
     #   requests-file
     #   service-identity
     #   tox
-    #   w3lib
 smmap==5.0.0
     # via gitdb
 statistics==1.0.3.5
@@ -234,7 +233,7 @@ virtualenv==20.16.3
     # via tox
 volatile==2.1.0
     # via bowler
-w3lib==1.22.0
+w3lib==2.0.1
     # via
     #   itemloaders
     #   parsel
