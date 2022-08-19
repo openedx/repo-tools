@@ -246,7 +246,7 @@ LTS_ONLY = True
 
 # The current versions of everything.  Use the same strings as the keys in the various sections below.
 CURRENT = {
-    "Open edX": "Maple",
+    "Open edX": "Nutmeg",
     "Python": "3.8",
     "Django": "3.2",
     "Ubuntu": "20.04",
