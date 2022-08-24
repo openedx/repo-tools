@@ -1,13 +1,17 @@
-.PHONY: test dev-install install upgrade lint
+.PHONY: help test dev-install install upgrade lint
 
-test:
+help:				## display this help message
+	@echo "Please use \`make <target>' where <target> is one of"
+	@awk -F ':.*?## ' '/^[a-zA-Z]/ && NF==2 {printf "\033[36m  %-25s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
+
+test:				## run the tests
 	pytest
 
-dev-install:
+dev-install:			## install everything to develop here
 	pip install -r requirements/development.txt
 	pip install -e .
 
-install:
+install:			## install everything to run the tools
 	pip install -r requirements/base.txt
 	pip install -e .
 
@@ -33,6 +37,6 @@ upgrade: $(COMMON_CONSTRAINTS_TXT)  ## update the requirements/*.txt files with 
 		requirements/development.txt \
 		requirements/conventional_commits.txt
 
-lint:
+lint:				## run pep8 and pylint
 	pep8 || true
 	pylint *.py edx_repo_tools tests || true
