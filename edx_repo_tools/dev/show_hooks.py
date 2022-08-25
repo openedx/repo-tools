@@ -7,7 +7,7 @@ import click
 from git.repo.base import Repo
 
 from edx_repo_tools.auth import pass_github
-from helpers import paginated_get
+from edx_repo_tools.helpers import paginated_get
 
 @click.command()
 @click.argument('org')
