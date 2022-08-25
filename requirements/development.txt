@@ -40,7 +40,7 @@ cffi==1.15.1
     # via
     #   -r requirements/base.txt
     #   cryptography
-charset-normalizer==2.1.0
+charset-normalizer==2.1.1
     # via
     #   -r requirements/base.txt
     #   requests
@@ -394,7 +394,7 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-urllib3==1.26.11
+urllib3==1.26.12
     # via
     #   -r requirements/base.txt
     #   requests
