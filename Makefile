@@ -1,8 +1,16 @@
-.PHONY: help test dev-install install upgrade lint
+.PHONY: help clean test dev-install install upgrade lint
 
 help:				## display this help message
 	@echo "Please use \`make <target>' where <target> is one of"
 	@awk -F ':.*?## ' '/^[a-zA-Z]/ && NF==2 {printf "\033[36m  %-25s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
+
+clean:				## remove transient artifacts
+	rm -rf .*cache *.egg-info .coverage build/ htmlcov/
+	rm -rf .oep2-workspace/
+	find . -name '__pycache__' -exec rm -rf {} +
+	find . -name '*.pyc' -exec rm -f {} +
+	find . -name '*.pyo' -exec rm -f {} +
+	find . -name '*~' -exec rm -f {} +
 
 test:				## run the tests
 	pytest
