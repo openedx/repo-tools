@@ -46,7 +46,7 @@ cssselect==1.1.0
     # via
     #   parsel
     #   scrapy
-distlib==0.3.5
+distlib==0.3.6
     # via virtualenv
 docutils==0.19
     # via statistics
@@ -80,7 +80,7 @@ itemadapter==0.7.0
     # via
     #   itemloaders
     #   scrapy
-itemloaders==1.0.4
+itemloaders==1.0.6
     # via scrapy
 jira==1.0.3
     # via -r requirements/base.in
@@ -137,7 +137,7 @@ pyasn1-modules==0.2.8
     # via service-identity
 pycparser==2.21
     # via cffi
-pydispatcher==2.0.5
+pydispatcher==2.0.6
     # via scrapy
 pyjwt[crypto]==2.4.0
     # via github3-py
@@ -229,7 +229,7 @@ urllib3==1.26.12
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.16.3
+virtualenv==20.16.4
     # via tox
 volatile==2.1.0
     # via bowler
