@@ -21,15 +21,17 @@ This tool records who is granted write (or admin) access to a repo.  It writes a
 
    $ export GITHUB_TOKEN=ghp_w3IJJ8YvqW4MJ....DGDpP8iOhko472RmIlP
 
-#. Run the tool, naming the repos you want to audit::
+#. Run the tool, naming the repos you want to audit:
 
-   $ repo_access_scraper \
-        openedx/course-discovery \
-        openedx/frontend-app-publisher \
-        openedx/ecommerce \
-        openedx/ecommerce-worker \
-        openedx/frontend-app-payment \
-        openedx/frontend-app-ecommerce
+   .. code::
+
+       $ repo_access_scraper \
+           openedx/course-discovery \
+           openedx/frontend-app-publisher \
+           openedx/ecommerce \
+           openedx/ecommerce-worker \
+           openedx/frontend-app-payment \
+           openedx/frontend-app-ecommerce
 
 #. A report.md file will be created.
 
