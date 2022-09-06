@@ -37,8 +37,7 @@ upgrade: $(COMMON_CONSTRAINTS_TXT)  ## update the requirements/*.txt files with 
 	pip install -qr requirements/pip-tools.txt
 	pip-compile --upgrade -o requirements/base.txt requirements/base.in
 	pip-compile --upgrade -o requirements/development.txt requirements/development.in
-	pip-compile --upgrade -o requirements/conventional_commits.txt edx_repo_tools/conventional_commits/extra.in
-	pip-compile --upgrade -o requirements/repo_access_scraper.txt edx_repo_tools/repo_access_scraper/extra.in
+	for fextra in edx_repo_tools/*/extra.in; do pip-compile --upgrade -o $${fextra%.in}.txt $$fextra; done
 
 lint:				## run pep8 and pylint
 	pep8 || true
