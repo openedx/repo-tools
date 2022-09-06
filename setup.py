@@ -1,4 +1,5 @@
-import os
+import glob
+import os.path
 import re
 
 import setuptools
@@ -21,8 +22,38 @@ def get_version(*file_paths):
     raise RuntimeError('Unable to find version string.')
 
 
+def load_requirements(*requirements_paths):
+    """
+    Load all requirements from the specified requirements files.
+    Returns a list of requirement strings.
+    """
+    requirements = set()
+    for path in requirements_paths:
+        with open(path) as reqs:
+            requirements.update(
+                line.split('#')[0].strip() for line in reqs
+                if is_requirement(line.strip())
+            )
+    return list(requirements)
+
+
+def is_requirement(line):
+    """
+    Return True if the requirement line is a package requirement;
+    that is, it is not blank, a comment, a URL, or an included file.
+    """
+    return line and not line.startswith(('-r', '#', '-e', 'git+', '-c'))
+
+
 VERSION = get_version('edx_repo_tools', '__init__.py')
 
+# Find our extra requirements. A subdirectory of edx_repo_tools can have an
+# extra.in file. It will be pip-compiled to extra.txt.  Here we find them all
+# and register them as extras.
+EXTRAS_REQUIRE = {}
+for fextra in glob.glob("edx_repo_tools/*/extra.txt"):
+    slug = fextra.split("/")[1]
+    EXTRAS_REQUIRE[slug] = load_requirements(fextra)
 
 setup(
     name='edx-repo-tools',
@@ -40,16 +71,8 @@ setup(
         'License :: OSI Approved :: Apache Software License'
     ],
     packages=setuptools.find_packages(),
-    install_requires=[
-        'appdirs',
-        'click',
-        'lazy',
-        'github3.py',
-        'pytest',
-        'pytest-xdist',
-        'pyyaml',
-        'ruamel.yaml'
-    ],
+    install_requires=load_requirements("requirements/base.txt"),
+    extras_require=EXTRAS_REQUIRE,
     entry_points={
         'console_scripts': [
             'add_common_constraint = edx_repo_tools.add_common_constraint:main',
@@ -79,5 +102,5 @@ setup(
     },
     package_data={
         'edx_repo_tools.oep2.report': ['oep2-report.ini'],
-    }
+    },
 )
