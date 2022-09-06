@@ -1,14 +1,12 @@
 ###################
-Open EdX Repo Tools
+Open edX Repo Tools
 ###################
 
-This repo contains a number of tools Open edX uses for working with GitHub
-repositories.
+This repo contains a number of tools Open edX engineers use for working with
+GitHub repositories.
 
-* oep2: Report on `OEP-2`_ compliance across repositories.
-* tag_release: Tags multiple repos as part of the release process.
-
-.. _OEP-2: https://open-edx-proposals.readthedocs.io/en/latest/oep-0002-bp-repo-metadata.html
+The set of tools has grown over the years. Some are old and in current use,
+some have fallen out of use, some are quite new.
 
 Setting up GitHub authentication
 ================================
@@ -19,14 +17,13 @@ has an entry like this::
 
     machine api.github.com
       login your_user_name
-      password ddf9079e12042ac022c101c61c0235965851e209
+      password ghp_XyzzyfGXFooBar8nBqQuuxY9brgXYz4Xyzzy
 
-Change the login to your GitHub user name.  You'll get the password value from
-https://github.com/settings/applications.  Visit that page, click on Developer
-Settings and in the section called "Personal access tokens," click "Generate new token."  
-It will prompt you for your password, then you'll see a scary list of scopes. Check 
-the "repo" option and click "Generate token." Copy the password that
-appears. Paste it into your ~/.netrc.
+Change the login to your GitHub user name.  The password is a Personal Access
+Token you get from https://github.com/settings/tokens.  Visit that page, click
+"Generate new token." It will prompt you for your password, then you'll see a
+scary list of scopes. Check the "repo" option and click "Generate token." Copy
+the token that appears. Paste it into your ~/.netrc in the "password" entry.
 
 
 Working in the repo
@@ -37,16 +34,35 @@ To work on these tools:
 1. Use a virtualenv.
 
 2. Install dependencies::
-   
+
     make dev-install
 
 3. Run tests::
-   
+
     make test
 
 4. Older tools were Python files run from the root of the repo.  Now we are
    being more disciplined and putting code into importable modules with entry
    points in setup.py.
+
+5. Simple tools can go into an existing subdirectory of edx_repo_tools.  Follow
+   the structure of existing tools you find here.  More complex tools, or ones
+   that need unusual third-party requirements, should go into a new
+   subdirectory of edx_repo_tools.
+
+6. Add a new `entry_point` in setup.py for your command:
+
+   .. code::
+
+        entry_points={
+            'console_scripts': [
+                ...
+                'new_tool = edx_repo_tools.new_tool_dir.new_tool:main',
+                ...
+
+7. If your tool is in its own directory, you can create an `extra.in` file
+   there with third-party requirements intended just for your tool.  This will
+   automatically create an installable "extra" for your requirements.
 
 
 Older Tools
