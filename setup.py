@@ -91,6 +91,7 @@ setup(
             'modernize_travis = edx_repo_tools.codemods.django3.travis_modernizer:main',
             'no_yaml = edx_repo_tools.ospr.no_yaml:no_yaml',
             'oep2 = edx_repo_tools.oep2:_cli',
+            'private_link_linter = edx_repo_tools.private_link_linter.check_private_links:main',
             'remove_python2_unicode_compatible = edx_repo_tools.codemods.django3.remove_python2_unicode_compatible:main',
             'replace_render_to_response = edx_repo_tools.codemods.django3.replace_render_to_response:main',
             'replace_static = edx_repo_tools.codemods.django3.replace_static:main',
