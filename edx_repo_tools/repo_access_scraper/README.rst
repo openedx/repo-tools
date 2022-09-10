@@ -5,7 +5,7 @@ This tool records who is granted write (or admin) access to a repo.  It writes a
 
 #. Create a Python 3.8 virtualenv.
 
-#. Install repo-tools (https://github.com/edx/repo-tools) into your virtualenv, including the "repo_access_scraper" extra requirements::
+#. Install repo-tools (https://github.com/openedx/repo-tools) into your virtualenv, including the "repo_access_scraper" extra requirements::
 
    $ python -m pip install '/path/to/repo-tools[repo_access_scraper]'
 

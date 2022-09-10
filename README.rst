@@ -72,7 +72,7 @@ There are many programs in this repo in various stages of disrepair.  A few
 of them are described in this repo's `older README.md`_ file.  Others are not
 described at all, but may be useful, or have useful tidbits in the code.
 
-.. _older README.md: https://github.com/edx/repo-tools/blob/7aa8bda466d1925c56d4ad6e3b2bdd87b1f83148/README.md
+.. _older README.md: https://github.com/openedx/repo-tools/blob/7aa8bda466d1925c56d4ad6e3b2bdd87b1f83148/README.md
 
 
 Feedback

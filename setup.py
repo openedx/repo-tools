@@ -62,7 +62,7 @@ setup(
     long_description=long_description,
     license='Apache',
     keywords='edx repo tools',
-    url='https://github.com/edx/repo-tools',
+    url='https://github.com/openedx/repo-tools',
     author='edX',
     author_email='oscm@edx.org',
     classifiers=[

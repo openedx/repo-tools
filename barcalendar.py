@@ -461,6 +461,6 @@ cal.gap_line()
 
 
 cal.text_line("")
-cal.text_line("Created by https://github.com/edx/repo-tools/blob/master/barcalendar.py")
+cal.text_line("Created by https://github.com/openedx/repo-tools/blob/master/barcalendar.py")
 
 cal.write()
