@@ -23,7 +23,7 @@ bowler==0.9.0
     # via -r requirements/base.in
 cachecontrol==0.12.11
     # via -r requirements/base.in
-certifi==2022.6.15
+certifi==2022.9.14
     # via requests
 cffi==1.15.1
     # via cryptography
@@ -67,7 +67,7 @@ gitpython==3.1.27
     # via -r requirements/base.in
 hyperlink==21.0.0
     # via twisted
-idna==3.3
+idna==3.4
     # via
     #   hyperlink
     #   requests
@@ -100,9 +100,9 @@ moreorless==0.4.0
     # via bowler
 msgpack==1.0.4
     # via cachecontrol
-numpy==1.23.2
+numpy==1.23.3
     # via -r requirements/base.in
-oauthlib==3.2.0
+oauthlib==3.2.1
     # via requests-oauthlib
 packaging==21.3
     # via
@@ -209,11 +209,11 @@ tldextract==3.3.1
     # via scrapy
 tlslite==0.4.9
     # via jira
-toml==0.10.2
-    # via tox
 tomli==2.0.1
-    # via pytest
-tox==3.25.1
+    # via
+    #   pytest
+    #   tox
+tox==3.26.0
     # via -r requirements/base.in
 tqdm==4.64.1
     # via -r requirements/base.in

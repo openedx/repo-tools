@@ -32,7 +32,7 @@ build==0.8.0
     # via pip-tools
 cachecontrol==0.12.11
     # via -r requirements/base.txt
-certifi==2022.6.15
+certifi==2022.9.14
     # via
     #   -r requirements/base.txt
     #   requests
@@ -83,7 +83,7 @@ docutils==0.19
     # via
     #   -r requirements/base.txt
     #   statistics
-edx-lint==5.2.4
+edx-lint==5.2.5
     # via -r requirements/development.in
 execnet==1.9.0
     # via
@@ -111,7 +111,7 @@ hyperlink==21.0.0
     # via
     #   -r requirements/base.txt
     #   twisted
-idna==3.3
+idna==3.4
     # via
     #   -r requirements/base.txt
     #   hyperlink
@@ -169,9 +169,9 @@ msgpack==1.0.4
     # via
     #   -r requirements/base.txt
     #   cachecontrol
-numpy==1.23.2
+numpy==1.23.3
     # via -r requirements/base.txt
-oauthlib==3.2.0
+oauthlib==3.2.1
     # via
     #   -r requirements/base.txt
     #   requests-oauthlib
@@ -363,10 +363,6 @@ tlslite==0.4.9
     # via
     #   -r requirements/base.txt
     #   jira
-toml==0.10.2
-    # via
-    #   -r requirements/base.txt
-    #   tox
 tomli==2.0.1
     # via
     #   -r requirements/base.txt
@@ -374,9 +370,10 @@ tomli==2.0.1
     #   pep517
     #   pylint
     #   pytest
+    #   tox
 tomlkit==0.11.4
     # via pylint
-tox==3.25.1
+tox==3.26.0
     # via -r requirements/base.txt
 tqdm==4.64.1
     # via -r requirements/base.txt
