@@ -5,7 +5,7 @@ This directory has code to collect and report statistics about conventional comm
 
 #. Create a Python 3.8 virtualenv, and a new directory into which to clone the repos.
 
-#. Install repo-tools (https://github.com/edx/repo-tools) into your virtualenv, including the "conventional_commits" extra requirements::
+#. Install repo-tools (https://github.com/openedx/repo-tools) into your virtualenv, including the "conventional_commits" extra requirements::
 
    $ python -m pip install '/path/to/repo-tools[conventional_commits]'
 
