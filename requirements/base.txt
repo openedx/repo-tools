@@ -86,7 +86,7 @@ jira==1.0.3
     # via -r requirements/base.in
 jmespath==1.0.1
     # via itemloaders
-lazy==1.4
+lazy==1.5
     # via -r requirements/base.in
 lockfile==0.12.2
     # via -r requirements/base.in
@@ -139,7 +139,7 @@ pycparser==2.21
     # via cffi
 pydispatcher==2.0.6
     # via scrapy
-pyjwt[crypto]==2.4.0
+pyjwt[crypto]==2.5.0
     # via github3-py
 pyopenssl==22.0.0
     # via scrapy
@@ -219,6 +219,8 @@ tqdm==4.64.1
     # via -r requirements/base.in
 twisted==22.8.0
     # via scrapy
+types-cryptography==3.3.23
+    # via pyjwt
 typing-extensions==4.3.0
     # via twisted
 uritemplate==4.1.1
