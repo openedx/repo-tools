@@ -32,7 +32,7 @@ build==0.8.0
     # via pip-tools
 cachecontrol==0.12.11
     # via -r requirements/base.txt
-certifi==2022.9.14
+certifi==2022.9.24
     # via
     #   -r requirements/base.txt
     #   requests
@@ -186,7 +186,7 @@ parsel==1.6.0
     #   -r requirements/base.txt
     #   itemloaders
     #   scrapy
-path==16.4.0
+path==16.5.0
     # via
     #   -r requirements/base.txt
     #   path-py
@@ -255,7 +255,7 @@ pylint-plugin-utils==0.7
     # via
     #   pylint-celery
     #   pylint-django
-pyopenssl==22.0.0
+pyopenssl==22.1.0
     # via
     #   -r requirements/base.txt
     #   scrapy
@@ -276,7 +276,7 @@ pytest-forked==1.4.0
     #   pytest-xdist
 pytest-logging==2015.11.4
     # via -r requirements/base.txt
-pytest-mock==3.8.2
+pytest-mock==3.9.0
     # via -r requirements/development.in
 pytest-xdist==2.5.0
     # via -r requirements/base.txt
@@ -327,7 +327,7 @@ ruamel-yaml-clib==0.2.6
     # via
     #   -r requirements/base.txt
     #   ruamel-yaml
-scrapy==2.6.2
+scrapy==2.6.3
     # via -r requirements/base.txt
 service-identity==21.1.0
     # via
@@ -371,7 +371,7 @@ tomli==2.0.1
     #   pylint
     #   pytest
     #   tox
-tomlkit==0.11.4
+tomlkit==0.11.5
     # via pylint
 tox==3.26.0
     # via -r requirements/base.txt
