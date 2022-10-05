@@ -1,23 +1,21 @@
 #!/usr/bin/env python
 """Find repos with no openedx.yaml file."""
 
-
 import itertools
 
 import click
 from github3.exceptions import NotFoundError
 
 from edx_repo_tools.auth import pass_github
-from edx_repo_tools.data import pass_repo_tools_data, iter_nonforks
+from edx_repo_tools.data import iter_nonforks
 from edx_repo_tools.utils import dry_echo, dry
 
 
 @click.command()
 @pass_github
-@pass_repo_tools_data
 @click.option('--org', multiple=True, default=['edx', 'edx-ops'])
 @dry
-def no_yaml(hub, repo_tools_data, org, dry):
+def no_yaml(hub, org, dry):
     """Find public repos with no openedx.yaml file."""
     repos = iter_nonforks(hub, org)
     repos = sorted(repos, reverse=True, key=lambda r: r.pushed_at)
