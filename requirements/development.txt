@@ -198,7 +198,7 @@ pep517==0.13.0
     # via build
 pep8==1.7.1
     # via -r requirements/development.in
-pip-tools==6.8.0
+pip-tools==6.9.0
     # via -r requirements/development.in
 platformdirs==2.5.2
     # via
@@ -276,7 +276,7 @@ pytest-forked==1.4.0
     #   pytest-xdist
 pytest-logging==2015.11.4
     # via -r requirements/base.txt
-pytest-mock==3.9.0
+pytest-mock==3.10.0
     # via -r requirements/development.in
 pytest-xdist==2.5.0
     # via -r requirements/base.txt
@@ -355,7 +355,7 @@ stevedore==4.0.0
     # via code-annotations
 text-unidecode==1.3
     # via python-slugify
-tldextract==3.3.1
+tldextract==3.4.0
     # via
     #   -r requirements/base.txt
     #   scrapy
