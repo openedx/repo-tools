@@ -6,11 +6,9 @@
 #
 greenlet==1.1.3
     # via playwright
-playwright==1.26.1
+playwright==1.27.1
     # via -r edx_repo_tools/repo_access_scraper/extra.in
 pyee==8.1.0
     # via playwright
-typing-extensions==4.3.0
-    # via playwright
-websockets==10.1
+typing-extensions==4.4.0
     # via playwright
