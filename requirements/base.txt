@@ -50,7 +50,7 @@ distlib==0.3.6
     # via virtualenv
 docutils==0.19
     # via statistics
-exceptiongroup==1.0.1
+exceptiongroup==1.0.4
     # via pytest
 execnet==1.9.0
     # via pytest-xdist
@@ -120,7 +120,7 @@ path==16.5.0
     # via path-py
 path-py==12.5.0
     # via -r requirements/base.in
-platformdirs==2.5.3
+platformdirs==2.5.4
     # via virtualenv
 pluggy==1.0.0
     # via
@@ -210,7 +210,7 @@ tomli==2.0.1
     # via
     #   pytest
     #   tox
-tox==3.27.0
+tox==3.27.1
     # via -r requirements/base.in
 tqdm==4.64.1
     # via -r requirements/base.in
@@ -226,7 +226,7 @@ urllib3==1.26.12
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.16.6
+virtualenv==20.16.7
     # via tox
 volatile==2.1.0
     # via bowler
