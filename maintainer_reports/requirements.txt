@@ -2,5 +2,4 @@ click
 requests
 gspread
 python_graphql_client
-#google.oauth2
 google-cloud-bigquery

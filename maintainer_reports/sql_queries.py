@@ -38,3 +38,4 @@ when not matched then
   insert (additions, labels, mergedAt, isDraft, lastEditedAt, updatedAt, headRef, permalink, changedFiles, deletions, mergedBy, url, author, baseRef, createdAt, number, repository, commits, state, title)
   values (additions, labels, mergedAt, isDraft, lastEditedAt, updatedAt, headRef, permalink, changedFiles, deletions, mergedBy, url, author, baseRef, createdAt, number, repository, commits, state, title);
 """
+
