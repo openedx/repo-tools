@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==2.12.12
+astroid==2.12.13
     # via
     #   pylint
     #   pylint-celery
@@ -61,7 +61,7 @@ constantly==15.1.0
     # via
     #   -r requirements/base.txt
     #   twisted
-cryptography==38.0.3
+cryptography==38.0.4
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -85,7 +85,7 @@ docutils==0.19
     #   statistics
 edx-lint==5.3.0
     # via -r requirements/development.in
-exceptiongroup==1.0.1
+exceptiongroup==1.0.4
     # via
     #   -r requirements/base.txt
     #   pytest
@@ -103,7 +103,7 @@ fissix==21.11.13
     # via
     #   -r requirements/base.txt
     #   bowler
-gitdb==4.0.9
+gitdb==4.0.10
     # via
     #   -r requirements/base.txt
     #   gitpython
@@ -173,7 +173,7 @@ msgpack==1.0.4
     # via
     #   -r requirements/base.txt
     #   cachecontrol
-numpy==1.23.4
+numpy==1.23.5
     # via -r requirements/base.txt
 oauthlib==3.2.2
     # via
@@ -192,7 +192,7 @@ parsel==1.7.0
     #   -r requirements/base.txt
     #   itemloaders
     #   scrapy
-path==16.5.0
+path==16.6.0
     # via
     #   -r requirements/base.txt
     #   path-py
@@ -204,9 +204,9 @@ pep517==0.13.0
     # via build
 pep8==1.7.1
     # via -r requirements/development.in
-pip-tools==6.9.0
+pip-tools==6.10.0
     # via -r requirements/development.in
-platformdirs==2.5.3
+platformdirs==2.5.4
     # via
     #   -r requirements/base.txt
     #   pylint
@@ -245,7 +245,7 @@ pyjwt[crypto]==2.6.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.15.5
+pylint==2.15.7
     # via
     #   edx-lint
     #   pylint-celery
@@ -285,7 +285,7 @@ python-dateutil==2.8.2
     #   github3-py
 python-dotenv==0.21.0
     # via -r requirements/base.txt
-python-slugify==6.1.2
+python-slugify==7.0.0
     # via code-annotations
 pyyaml==6.0
     # via
@@ -349,7 +349,7 @@ smmap==5.0.0
     #   gitdb
 statistics==1.0.3.5
     # via -r requirements/base.txt
-stevedore==4.1.0
+stevedore==4.1.1
     # via code-annotations
 text-unidecode==1.3
     # via python-slugify
@@ -373,7 +373,7 @@ tomli==2.0.1
     #   tox
 tomlkit==0.11.6
     # via pylint
-tox==3.27.0
+tox==3.27.1
     # via -r requirements/base.txt
 tqdm==4.64.1
     # via -r requirements/base.txt
@@ -381,7 +381,7 @@ twisted==22.10.0
     # via
     #   -r requirements/base.txt
     #   scrapy
-types-toml==0.10.8
+types-toml==0.10.8.1
     # via responses
 typing-extensions==4.4.0
     # via
@@ -393,14 +393,14 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-urllib3==1.26.12
+urllib3==1.26.13
     # via
     #   -r requirements/base.txt
     #   requests
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.16.6
+virtualenv==20.17.0
     # via
     #   -r requirements/base.txt
     #   tox
@@ -408,7 +408,7 @@ volatile==2.1.0
     # via
     #   -r requirements/base.txt
     #   bowler
-w3lib==2.0.1
+w3lib==2.1.0
     # via
     #   -r requirements/base.txt
     #   itemloaders
@@ -418,7 +418,7 @@ wheel==0.38.4
     # via pip-tools
 wrapt==1.14.1
     # via astroid
-zope-interface==5.5.1
+zope-interface==5.5.2
     # via
     #   -r requirements/base.txt
     #   scrapy
