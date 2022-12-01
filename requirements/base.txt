@@ -36,7 +36,7 @@ click==8.1.3
     #   moreorless
 constantly==15.1.0
     # via twisted
-cryptography==38.0.3
+cryptography==38.0.4
     # via
     #   pyjwt
     #   pyopenssl
@@ -50,7 +50,7 @@ distlib==0.3.6
     # via virtualenv
 docutils==0.19
     # via statistics
-exceptiongroup==1.0.1
+exceptiongroup==1.0.4
     # via pytest
 execnet==1.9.0
     # via pytest-xdist
@@ -61,7 +61,7 @@ filelock==3.8.0
     #   virtualenv
 fissix==21.11.13
     # via bowler
-gitdb==4.0.9
+gitdb==4.0.10
     # via gitpython
 github3-py==3.2.0
     # via -r requirements/base.in
@@ -102,7 +102,7 @@ moreorless==0.4.0
     # via bowler
 msgpack==1.0.4
     # via cachecontrol
-numpy==1.23.4
+numpy==1.23.5
     # via -r requirements/base.in
 oauthlib==3.2.2
     # via requests-oauthlib
@@ -116,11 +116,11 @@ parsel==1.7.0
     # via
     #   itemloaders
     #   scrapy
-path==16.5.0
+path==16.6.0
     # via path-py
 path-py==12.5.0
     # via -r requirements/base.in
-platformdirs==2.5.3
+platformdirs==2.5.4
     # via virtualenv
 pluggy==1.0.0
     # via
@@ -210,7 +210,7 @@ tomli==2.0.1
     # via
     #   pytest
     #   tox
-tox==3.27.0
+tox==3.27.1
     # via -r requirements/base.in
 tqdm==4.64.1
     # via -r requirements/base.in
@@ -222,20 +222,20 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.in
     #   github3-py
-urllib3==1.26.12
+urllib3==1.26.13
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.16.6
+virtualenv==20.17.0
     # via tox
 volatile==2.1.0
     # via bowler
-w3lib==2.0.1
+w3lib==2.1.0
     # via
     #   itemloaders
     #   parsel
     #   scrapy
-zope-interface==5.5.1
+zope-interface==5.5.2
     # via
     #   scrapy
     #   twisted
