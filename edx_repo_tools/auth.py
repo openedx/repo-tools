@@ -195,11 +195,13 @@ def pass_github(f):
     @click.option(
         '--username',
         help='Specify the user to log in to GitHub with',
+        envvar="GITHUB_USERNAME",
     )
     @click.option('--password', help='Password to log in to GitHub with')
     @click.option(
         '--token',
         help='Personal access token to log in to GitHub with',
+        envvar="GITHUB_TOKEN",
     )
     @click.option(
         '--token-file',
