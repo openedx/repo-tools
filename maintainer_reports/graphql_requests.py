@@ -22,7 +22,7 @@ OPEN_PULL_REQUEST_TABLE = "open_edx_github.open_pull_requests"
 
 @click.group()
 @click.option('--preserve-temp-files',
-        default=False, 
+        default=False,
         help='Allows preserving temp files for debugging purposes, they are deleted by default.')
 @click.pass_context
 def cli(ctx, preserve_temp_files):
@@ -251,5 +251,6 @@ def handle_closed_pulls(ctx, days_ago):
 
 
 if __name__ == '__main__':
+
     # pylint: disable=no-value-for-parameter
     cli(obj={})
