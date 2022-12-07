@@ -9,9 +9,13 @@ import click
 import requests
 from dateutil.rrule import MONTHLY, rrule
 from requests.adapters import HTTPAdapter, Retry
+from dotenv import load_dotenv
 
 DATE_MASK='%Y-%m-%d'
 
+# Added for GCP support, should consider implications for 
+# running locally.
+load_dotenv()
 GH_BEARER_TOKEN = os.getenv('GH_BEARER_TOKEN')
 
 if not GH_BEARER_TOKEN:
@@ -33,7 +37,7 @@ def run_query_with_retry(query):
     # GitHub's API is pretty flakey and even with this configurations failure 
     # occasionally occur.
     s = requests.Session()
-    retries = Retry(total=5, backoff_factor=5, status_forcelist=[ 502, 503, 504 ])
+    retries = Retry(total=10, backoff_factor=5, status_forcelist=[ 502, 503, 504 ])
     s.mount('https://', HTTPAdapter(max_retries=retries))
 
     request = s.post(END_POINT, json={'query': query}, headers=HEADERS)
