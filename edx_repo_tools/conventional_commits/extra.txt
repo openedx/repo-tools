@@ -51,7 +51,7 @@ pytz==2022.6
     # via pandas
 six==1.16.0
     # via python-dateutil
-sqlalchemy==1.4.44
+sqlalchemy==1.4.45
     # via
     #   alembic
     #   dataset

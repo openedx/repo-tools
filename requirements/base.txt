@@ -23,14 +23,10 @@ bowler==0.9.0
     # via -r requirements/base.in
 cachecontrol==0.12.11
     # via -r requirements/base.in
-cachetools==5.2.0
-    # via tox
 certifi==2022.12.7
     # via requests
 cffi==1.15.1
     # via cryptography
-chardet==5.1.0
-    # via tox
 charset-normalizer==2.1.1
     # via requests
 click==8.1.3
@@ -38,8 +34,6 @@ click==8.1.3
     #   -r requirements/base.in
     #   bowler
     #   moreorless
-colorama==0.4.6
-    # via tox
 constantly==15.1.0
     # via twisted
 cryptography==38.0.4
@@ -98,7 +92,7 @@ lazy==1.5
     # via -r requirements/base.in
 lockfile==0.12.2
     # via -r requirements/base.in
-lxml==4.9.1
+lxml==4.9.2
     # via
     #   parsel
     #   scrapy
@@ -115,7 +109,6 @@ oauthlib==3.2.2
 packaging==22.0
     # via
     #   parsel
-    #   pyproject-api
     #   pytest
     #   scrapy
     #   tox
@@ -128,15 +121,15 @@ path==16.6.0
 path-py==12.5.0
     # via -r requirements/base.in
 platformdirs==2.6.0
-    # via
-    #   tox
-    #   virtualenv
+    # via virtualenv
 pluggy==1.0.0
     # via
     #   pytest
     #   tox
 protego==0.2.1
     # via scrapy
+py==1.11.0
+    # via tox
 pyasn1==0.4.8
     # via
     #   pyasn1-modules
@@ -151,8 +144,6 @@ pyjwt[crypto]==2.6.0
     # via github3-py
 pyopenssl==22.1.0
     # via scrapy
-pyproject-api==1.2.1
-    # via tox
 pytest==7.2.0
     # via
     #   -r requirements/base.in
@@ -204,6 +195,7 @@ six==1.16.0
     #   python-dateutil
     #   requests-file
     #   service-identity
+    #   tox
 smmap==5.0.0
     # via gitdb
 statistics==1.0.3.5
@@ -214,11 +206,12 @@ tlslite==0.4.9
     # via jira
 tomli==2.0.1
     # via
-    #   pyproject-api
     #   pytest
     #   tox
-tox==4.0.2
-    # via -r requirements/base.in
+tox==3.27.1
+    # via
+    #   -c requirements/common_constraints.txt
+    #   -r requirements/base.in
 tqdm==4.64.1
     # via -r requirements/base.in
 twisted==22.10.0
@@ -237,7 +230,7 @@ virtualenv==20.17.1
     # via tox
 volatile==2.1.0
     # via bowler
-w3lib==2.1.0
+w3lib==2.1.1
     # via
     #   itemloaders
     #   parsel
