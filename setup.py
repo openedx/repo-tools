@@ -79,6 +79,7 @@ setup(
             'add_django32_settings = edx_repo_tools.codemods.django3.add_new_django32_settings:main',
             'clone_org = edx_repo_tools.dev.clone_org:main',
             'conventional_commits = edx_repo_tools.conventional_commits.commitstats:main',
+            'find_dependencies = edx_repo_tools.find_dependencies.find_dependencies:main',
             'get_org_repo_urls = edx_repo_tools.dev.get_org_repo_urls:main',
             'modernize_github_actions = edx_repo_tools.codemods.django3.github_actions_modernizer:main',
             'modernize_github_actions_django = edx_repo_tools.codemods.django3.github_actions_modernizer_django:main',
