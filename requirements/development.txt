@@ -12,7 +12,7 @@ astroid==2.12.13
     # via
     #   pylint
     #   pylint-celery
-attrs==22.1.0
+attrs==22.2.0
     # via
     #   -r requirements/base.txt
     #   automat
@@ -129,7 +129,7 @@ iniconfig==1.1.1
     # via
     #   -r requirements/base.txt
     #   pytest
-isort==5.11.3
+isort==5.11.4
     # via pylint
 itemadapter==0.7.0
     # via
