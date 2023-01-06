@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-alembic==1.9.0
+alembic==1.9.1
     # via dataset
 banal==1.0.6
     # via dataset
@@ -18,9 +18,9 @@ fonttools==4.38.0
     # via matplotlib
 greenlet==2.0.1
     # via sqlalchemy
-importlib-metadata==5.2.0
+importlib-metadata==6.0.0
     # via alembic
-importlib-resources==5.10.1
+importlib-resources==5.10.2
     # via alembic
 kiwisolver==1.4.4
     # via matplotlib
@@ -30,7 +30,7 @@ markupsafe==2.1.1
     # via mako
 matplotlib==3.6.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-numpy==1.24.0
+numpy==1.24.1
     # via
     #   contourpy
     #   matplotlib
@@ -39,7 +39,7 @@ packaging==22.0
     # via matplotlib
 pandas==1.5.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-pillow==9.3.0
+pillow==9.4.0
     # via matplotlib
 pyparsing==3.0.9
     # via matplotlib
@@ -51,7 +51,7 @@ pytz==2022.7
     # via pandas
 six==1.16.0
     # via python-dateutil
-sqlalchemy==1.4.45
+sqlalchemy==1.4.46
     # via
     #   alembic
     #   dataset

@@ -12,7 +12,7 @@ astroid==2.12.13
     # via
     #   pylint
     #   pylint-celery
-attrs==22.1.0
+attrs==22.2.0
     # via
     #   -r requirements/base.txt
     #   automat
@@ -61,7 +61,7 @@ constantly==15.1.0
     # via
     #   -r requirements/base.txt
     #   twisted
-cryptography==38.0.4
+cryptography==39.0.0
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -85,7 +85,7 @@ docutils==0.19
     #   statistics
 edx-lint==5.3.0
     # via -r requirements/development.in
-exceptiongroup==1.0.4
+exceptiongroup==1.1.0
     # via
     #   -r requirements/base.txt
     #   pytest
@@ -93,7 +93,7 @@ execnet==1.9.0
     # via
     #   -r requirements/base.txt
     #   pytest-xdist
-filelock==3.8.2
+filelock==3.9.0
     # via
     #   -r requirements/base.txt
     #   tldextract
@@ -109,7 +109,7 @@ gitdb==4.0.10
     #   gitpython
 github3-py==3.2.0
     # via -r requirements/base.txt
-gitpython==3.1.29
+gitpython==3.1.30
     # via -r requirements/base.txt
 hyperlink==21.0.0
     # via
@@ -129,7 +129,7 @@ iniconfig==1.1.1
     # via
     #   -r requirements/base.txt
     #   pytest
-isort==5.11.3
+isort==5.11.4
     # via pylint
 itemadapter==0.7.0
     # via
@@ -150,7 +150,7 @@ jmespath==1.0.1
     #   itemloaders
 lazy==1.5
     # via -r requirements/base.txt
-lazy-object-proxy==1.8.0
+lazy-object-proxy==1.9.0
     # via astroid
 lockfile==0.12.2
     # via -r requirements/base.txt
@@ -173,7 +173,7 @@ msgpack==1.0.4
     # via
     #   -r requirements/base.txt
     #   cachecontrol
-numpy==1.24.0
+numpy==1.24.1
     # via -r requirements/base.txt
 oauthlib==3.2.2
     # via
@@ -206,7 +206,7 @@ pep8==1.7.1
     # via -r requirements/development.in
 pip-tools==6.12.1
     # via -r requirements/development.in
-platformdirs==2.6.0
+platformdirs==2.6.2
     # via
     #   -r requirements/base.txt
     #   pylint
@@ -259,7 +259,7 @@ pylint-plugin-utils==0.7
     # via
     #   pylint-celery
     #   pylint-django
-pyopenssl==22.1.0
+pyopenssl==23.0.0
     # via
     #   -r requirements/base.txt
     #   scrapy
