@@ -28,14 +28,14 @@ mako==1.2.4
     # via alembic
 markupsafe==2.1.1
     # via mako
-matplotlib==3.6.2
+matplotlib==3.6.3
     # via -r edx_repo_tools/conventional_commits/extra.in
 numpy==1.24.1
     # via
     #   contourpy
     #   matplotlib
     #   pandas
-packaging==22.0
+packaging==23.0
     # via matplotlib
 pandas==1.5.2
     # via -r edx_repo_tools/conventional_commits/extra.in

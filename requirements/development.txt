@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==2.12.13
+astroid==2.13.2
     # via
     #   pylint
     #   pylint-celery
@@ -28,7 +28,7 @@ backports-csv==1.0.7
     # via -r requirements/base.txt
 bowler==0.9.0
     # via -r requirements/base.txt
-build==0.9.0
+build==0.10.0
     # via pip-tools
 cachecontrol==0.12.11
     # via -r requirements/base.txt
@@ -125,7 +125,7 @@ incremental==22.10.0
     # via
     #   -r requirements/base.txt
     #   twisted
-iniconfig==1.1.1
+iniconfig==2.0.0
     # via
     #   -r requirements/base.txt
     #   pytest
@@ -179,7 +179,7 @@ oauthlib==3.2.2
     # via
     #   -r requirements/base.txt
     #   requests-oauthlib
-packaging==22.0
+packaging==23.0
     # via
     #   -r requirements/base.txt
     #   build
@@ -198,10 +198,8 @@ path==16.6.0
     #   path-py
 path-py==12.5.0
     # via -r requirements/base.txt
-pbr==5.11.0
+pbr==5.11.1
     # via stevedore
-pep517==0.13.0
-    # via build
 pep8==1.7.1
     # via -r requirements/development.in
 pip-tools==6.12.1
@@ -245,7 +243,7 @@ pyjwt[crypto]==2.6.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.15.9
+pylint==2.15.10
     # via
     #   edx-lint
     #   pylint-celery
@@ -263,6 +261,8 @@ pyopenssl==23.0.0
     # via
     #   -r requirements/base.txt
     #   scrapy
+pyproject-hooks==1.0.0
+    # via build
 pytest==7.2.0
     # via
     #   -r requirements/base.txt
@@ -363,8 +363,8 @@ tomli==2.0.1
     # via
     #   -r requirements/base.txt
     #   build
-    #   pep517
     #   pylint
+    #   pyproject-hooks
     #   pytest
     #   tox
 tomlkit==0.11.6
@@ -391,7 +391,7 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-urllib3==1.26.13
+urllib3==1.26.14
     # via
     #   -r requirements/base.txt
     #   requests
