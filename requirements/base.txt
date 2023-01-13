@@ -76,7 +76,7 @@ idna==3.4
     #   tldextract
 incremental==22.10.0
     # via twisted
-iniconfig==1.1.1
+iniconfig==2.0.0
     # via pytest
 itemadapter==0.7.0
     # via
@@ -106,7 +106,7 @@ numpy==1.24.1
     # via -r requirements/base.in
 oauthlib==3.2.2
     # via requests-oauthlib
-packaging==22.0
+packaging==23.0
     # via
     #   parsel
     #   pytest
@@ -222,7 +222,7 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.in
     #   github3-py
-urllib3==1.26.13
+urllib3==1.26.14
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
