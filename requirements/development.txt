@@ -40,7 +40,7 @@ cffi==1.15.1
     # via
     #   -r requirements/base.txt
     #   cryptography
-charset-normalizer==2.1.1
+charset-normalizer==3.0.1
     # via
     #   -r requirements/base.txt
     #   requests
@@ -159,7 +159,7 @@ lxml==4.9.2
     #   -r requirements/base.txt
     #   parsel
     #   scrapy
-markupsafe==2.1.1
+markupsafe==2.1.2
     # via jinja2
 mccabe==0.7.0
     # via pylint
@@ -263,7 +263,7 @@ pyopenssl==23.0.0
     #   scrapy
 pyproject-hooks==1.0.0
     # via build
-pytest==7.2.0
+pytest==7.2.1
     # via
     #   -r requirements/base.txt
     #   pytest-logging
@@ -291,7 +291,7 @@ queuelib==1.6.2
     # via
     #   -r requirements/base.txt
     #   scrapy
-requests==2.28.1
+requests==2.28.2
     # via
     #   -r requirements/base.txt
     #   cachecontrol
