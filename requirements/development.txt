@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==2.13.3
+astroid==2.14.1
     # via
     #   pylint
     #   pylint-celery
@@ -129,7 +129,7 @@ iniconfig==2.0.0
     # via
     #   -r requirements/base.txt
     #   pytest
-isort==5.11.4
+isort==5.12.0
     # via pylint
 itemadapter==0.7.0
     # via
@@ -202,7 +202,7 @@ pbr==5.11.1
     # via stevedore
 pep8==1.7.1
     # via -r requirements/development.in
-pip-tools==6.12.1
+pip-tools==6.12.2
     # via -r requirements/development.in
 platformdirs==2.6.2
     # via
@@ -243,7 +243,7 @@ pyjwt[crypto]==2.6.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.15.10
+pylint==2.16.0
     # via
     #   edx-lint
     #   pylint-celery
@@ -281,7 +281,7 @@ python-dateutil==2.8.2
     #   github3-py
 python-dotenv==0.21.1
     # via -r requirements/base.txt
-python-slugify==7.0.0
+python-slugify==8.0.0
     # via code-annotations
 pyyaml==6.0
     # via
