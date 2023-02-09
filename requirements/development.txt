@@ -61,7 +61,7 @@ constantly==15.1.0
     # via
     #   -r requirements/base.txt
     #   twisted
-cryptography==39.0.0
+cryptography==39.0.1
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -173,7 +173,7 @@ msgpack==1.0.4
     # via
     #   -r requirements/base.txt
     #   cachecontrol
-numpy==1.24.1
+numpy==1.24.2
     # via -r requirements/base.txt
 oauthlib==3.2.2
     # via
@@ -204,7 +204,7 @@ pep8==1.7.1
     # via -r requirements/development.in
 pip-tools==6.12.2
     # via -r requirements/development.in
-platformdirs==2.6.2
+platformdirs==3.0.0
     # via
     #   -r requirements/base.txt
     #   pylint
@@ -243,7 +243,7 @@ pyjwt[crypto]==2.6.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.16.0
+pylint==2.16.1
     # via
     #   edx-lint
     #   pylint-celery
@@ -273,7 +273,7 @@ pytest-logging==2015.11.4
     # via -r requirements/base.txt
 pytest-mock==3.10.0
     # via -r requirements/development.in
-pytest-xdist==3.1.0
+pytest-xdist==3.2.0
     # via -r requirements/base.txt
 python-dateutil==2.8.2
     # via
@@ -322,7 +322,7 @@ ruamel-yaml-clib==0.2.7
     # via
     #   -r requirements/base.txt
     #   ruamel-yaml
-scrapy==2.7.1
+scrapy==2.8.0
     # via -r requirements/base.txt
 service-identity==21.1.0
     # via
@@ -379,7 +379,7 @@ twisted==22.10.0
     # via
     #   -r requirements/base.txt
     #   scrapy
-types-toml==0.10.8.1
+types-toml==0.10.8.3
     # via responses
 typing-extensions==4.4.0
     # via
@@ -398,7 +398,7 @@ urllib3==1.26.14
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.17.1
+virtualenv==20.19.0
     # via
     #   -r requirements/base.txt
     #   tox
