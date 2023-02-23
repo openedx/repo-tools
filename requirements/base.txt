@@ -65,7 +65,7 @@ gitdb==4.0.10
     # via gitpython
 github3-py==3.2.0
     # via -r requirements/base.in
-gitpython==3.1.30
+gitpython==3.1.31
     # via -r requirements/base.in
 hyperlink==21.0.0
     # via twisted
@@ -138,7 +138,7 @@ pyasn1-modules==0.2.8
     # via service-identity
 pycparser==2.21
     # via cffi
-pydispatcher==2.0.6
+pydispatcher==2.0.7
     # via scrapy
 pyjwt[crypto]==2.6.0
     # via github3-py

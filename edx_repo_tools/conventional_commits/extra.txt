@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-alembic==1.9.3
+alembic==1.9.4
     # via dataset
 banal==1.0.6
     # via dataset
@@ -20,7 +20,7 @@ greenlet==2.0.2
     # via sqlalchemy
 importlib-metadata==6.0.0
     # via alembic
-importlib-resources==5.10.2
+importlib-resources==5.12.0
     # via
     #   alembic
     #   matplotlib
@@ -57,7 +57,7 @@ sqlalchemy==1.4.46
     # via
     #   alembic
     #   dataset
-zipp==3.13.0
+zipp==3.14.0
     # via
     #   importlib-metadata
     #   importlib-resources
