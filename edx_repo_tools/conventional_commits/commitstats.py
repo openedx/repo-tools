@@ -119,6 +119,8 @@ def analyze_commit(row):
 def collect(dbfile, ignore, require, repos):
     db = dataset.connect("sqlite:///" + dbfile, sqlite_wal_mode=False)
     for repo in repos:
+        if not os.path.isdir(repo):
+            continue
         if any(fnmatch.fnmatch(repo, pat) for pat in ignore):
             print(f"Ignoring {repo}")
             continue
