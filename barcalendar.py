@@ -383,7 +383,7 @@ node_releases = [
     # ('10.x', 2018, 4, 2021, 4),
     # ('12.x', 2019, 4, 2022, 4),
     ('14.x', 2020, 4, 2023, 4),
-    ('16.x', 2021, 4, 2024, 4),
+    ('16.x', 2021, 4, 2023, 9),     # https://nodejs.org/en/blog/announcements/nodejs16-eol/
     ('18.x', 2022, 4, 2025, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
