@@ -57,7 +57,7 @@ sqlalchemy==1.4.46
     # via
     #   alembic
     #   dataset
-zipp==3.14.0
+zipp==3.15.0
     # via
     #   importlib-metadata
     #   importlib-resources

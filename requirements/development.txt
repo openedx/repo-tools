@@ -163,7 +163,7 @@ markupsafe==2.1.2
     # via jinja2
 mccabe==0.7.0
     # via pylint
-more-itertools==9.0.0
+more-itertools==9.1.0
     # via -r requirements/base.txt
 moreorless==0.4.0
     # via
@@ -202,7 +202,7 @@ pbr==5.11.1
     # via stevedore
 pep8==1.7.1
     # via -r requirements/development.in
-pip-tools==6.12.2
+pip-tools==6.12.3
     # via -r requirements/development.in
 platformdirs==3.0.0
     # via
@@ -279,9 +279,9 @@ python-dateutil==2.8.2
     # via
     #   -r requirements/base.txt
     #   github3-py
-python-dotenv==0.21.1
+python-dotenv==1.0.0
     # via -r requirements/base.txt
-python-slugify==8.0.0
+python-slugify==8.0.1
     # via code-annotations
 pyyaml==6.0
     # via
@@ -398,7 +398,7 @@ urllib3==1.26.14
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.19.0
+virtualenv==20.20.0
     # via
     #   -r requirements/base.txt
     #   tox
@@ -414,7 +414,7 @@ w3lib==2.1.1
     #   scrapy
 wheel==0.38.4
     # via pip-tools
-wrapt==1.14.1
+wrapt==1.15.0
     # via astroid
 zope-interface==5.5.2
     # via
