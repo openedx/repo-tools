@@ -96,7 +96,7 @@ lxml==4.9.2
     # via
     #   parsel
     #   scrapy
-more-itertools==9.0.0
+more-itertools==9.1.0
     # via -r requirements/base.in
 moreorless==0.4.0
     # via bowler
@@ -157,7 +157,7 @@ python-dateutil==2.8.2
     # via
     #   -r requirements/base.in
     #   github3-py
-python-dotenv==0.21.1
+python-dotenv==1.0.0
     # via -r requirements/base.in
 pyyaml==6.0
     # via -r requirements/base.in
@@ -226,7 +226,7 @@ urllib3==1.26.14
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.19.0
+virtualenv==20.20.0
     # via tox
 volatile==2.1.0
     # via bowler
