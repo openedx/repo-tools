@@ -27,7 +27,7 @@ certifi==2022.12.7
     # via requests
 cffi==1.15.1
     # via cryptography
-charset-normalizer==3.0.1
+charset-normalizer==3.1.0
     # via requests
 click==8.1.3
     # via
@@ -36,7 +36,7 @@ click==8.1.3
     #   moreorless
 constantly==15.1.0
     # via twisted
-cryptography==39.0.1
+cryptography==39.0.2
     # via
     #   pyjwt
     #   pyopenssl
@@ -100,7 +100,7 @@ more-itertools==9.1.0
     # via -r requirements/base.in
 moreorless==0.4.0
     # via bowler
-msgpack==1.0.4
+msgpack==1.0.5
     # via cachecontrol
 numpy==1.24.2
     # via -r requirements/base.in
@@ -120,7 +120,7 @@ path==16.6.0
     # via path-py
 path-py==12.5.0
     # via -r requirements/base.in
-platformdirs==3.0.0
+platformdirs==3.1.0
     # via virtualenv
 pluggy==1.0.0
     # via
@@ -144,7 +144,7 @@ pyjwt[crypto]==2.6.0
     # via github3-py
 pyopenssl==23.0.0
     # via scrapy
-pytest==7.2.1
+pytest==7.2.2
     # via
     #   -r requirements/base.in
     #   pytest-logging
@@ -212,7 +212,7 @@ tox==3.28.0
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/base.in
-tqdm==4.64.1
+tqdm==4.65.0
     # via -r requirements/base.in
 twisted==22.10.0
     # via scrapy
