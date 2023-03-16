@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==2.14.2
+astroid==2.15.0
     # via
     #   pylint
     #   pylint-celery
@@ -40,7 +40,7 @@ cffi==1.15.1
     # via
     #   -r requirements/base.txt
     #   cryptography
-charset-normalizer==3.0.1
+charset-normalizer==3.1.0
     # via
     #   -r requirements/base.txt
     #   requests
@@ -61,7 +61,7 @@ constantly==15.1.0
     # via
     #   -r requirements/base.txt
     #   twisted
-cryptography==39.0.1
+cryptography==39.0.2
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -83,9 +83,9 @@ docutils==0.19
     # via
     #   -r requirements/base.txt
     #   statistics
-edx-lint==5.3.2
+edx-lint==5.3.4
     # via -r requirements/development.in
-exceptiongroup==1.1.0
+exceptiongroup==1.1.1
     # via
     #   -r requirements/base.txt
     #   pytest
@@ -93,7 +93,7 @@ execnet==1.9.0
     # via
     #   -r requirements/base.txt
     #   pytest-xdist
-filelock==3.9.0
+filelock==3.10.0
     # via
     #   -r requirements/base.txt
     #   tldextract
@@ -169,7 +169,7 @@ moreorless==0.4.0
     # via
     #   -r requirements/base.txt
     #   bowler
-msgpack==1.0.4
+msgpack==1.0.5
     # via
     #   -r requirements/base.txt
     #   cachecontrol
@@ -204,7 +204,7 @@ pep8==1.7.1
     # via -r requirements/development.in
 pip-tools==6.12.3
     # via -r requirements/development.in
-platformdirs==3.0.0
+platformdirs==3.1.1
     # via
     #   -r requirements/base.txt
     #   pylint
@@ -243,7 +243,7 @@ pyjwt[crypto]==2.6.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.16.2
+pylint==2.17.0
     # via
     #   edx-lint
     #   pylint-celery
@@ -263,7 +263,7 @@ pyopenssl==23.0.0
     #   scrapy
 pyproject-hooks==1.0.0
     # via build
-pytest==7.2.1
+pytest==7.2.2
     # via
     #   -r requirements/base.txt
     #   pytest-logging
@@ -273,7 +273,7 @@ pytest-logging==2015.11.4
     # via -r requirements/base.txt
 pytest-mock==3.10.0
     # via -r requirements/development.in
-pytest-xdist==3.2.0
+pytest-xdist==3.2.1
     # via -r requirements/base.txt
 python-dateutil==2.8.2
     # via
@@ -287,6 +287,7 @@ pyyaml==6.0
     # via
     #   -r requirements/base.txt
     #   code-annotations
+    #   responses
 queuelib==1.6.2
     # via
     #   -r requirements/base.txt
@@ -314,7 +315,7 @@ requests-toolbelt==0.10.1
     # via
     #   -r requirements/base.txt
     #   jira
-responses==0.22.0
+responses==0.23.1
     # via -r requirements/development.in
 ruamel-yaml==0.17.21
     # via -r requirements/base.txt
@@ -357,8 +358,6 @@ tlslite==0.4.9
     # via
     #   -r requirements/base.txt
     #   jira
-toml==0.10.2
-    # via responses
 tomli==2.0.1
     # via
     #   -r requirements/base.txt
@@ -373,13 +372,13 @@ tox==3.28.0
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/base.txt
-tqdm==4.64.1
+tqdm==4.65.0
     # via -r requirements/base.txt
 twisted==22.10.0
     # via
     #   -r requirements/base.txt
     #   scrapy
-types-toml==0.10.8.5
+types-pyyaml==6.0.12.8
     # via responses
 typing-extensions==4.5.0
     # via
@@ -391,14 +390,14 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-urllib3==1.26.14
+urllib3==1.26.15
     # via
     #   -r requirements/base.txt
     #   requests
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.20.0
+virtualenv==20.21.0
     # via
     #   -r requirements/base.txt
     #   tox
@@ -412,7 +411,7 @@ w3lib==2.1.1
     #   itemloaders
     #   parsel
     #   scrapy
-wheel==0.38.4
+wheel==0.40.0
     # via pip-tools
 wrapt==1.15.0
     # via astroid
