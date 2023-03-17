@@ -246,7 +246,7 @@ LTS_ONLY = True
 
 # The current versions of everything.  Use the same strings as the keys in the various sections below.
 CURRENT = {
-    "Open edX": "Nutmeg",
+    "Open edX": "Olive",
     "Python": "3.8",
     "Django": "3.2",
     "Ubuntu": "20.04",
@@ -319,8 +319,8 @@ django_releases = [
     # ('1.9', 2016, 1, False),
     # ('1.10', 2016, 8, False),
     # ('1.11', 2017, 4, True),
-    ('2.0', 2018, 1, False),
-    ('2.1', 2018, 8, False),
+    # ('2.0', 2018, 1, False),
+    # ('2.1', 2018, 8, False),
     ('2.2', 2019, 4, True),
     ('3.0', 2020, 1, False),
     ('3.1', 2020, 8, False),
@@ -380,10 +380,10 @@ cal.section_note("https://github.com/nodejs/Release")
 node_releases = [
     #('6.x', 2016, 4, 2019, 4),
     #('8.x', 2017, 5, 2019, 12),
-    ('10.x', 2018, 4, 2021, 4),
-    ('12.x', 2019, 4, 2022, 4),
+    # ('10.x', 2018, 4, 2021, 4),
+    # ('12.x', 2019, 4, 2022, 4),
     ('14.x', 2020, 4, 2023, 4),
-    ('16.x', 2021, 4, 2024, 4),
+    ('16.x', 2021, 4, 2023, 9),     # https://nodejs.org/en/blog/announcements/nodejs16-eol/
     ('18.x', 2022, 4, 2025, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
@@ -398,8 +398,8 @@ mongo_releases = [
     #('3.4', 2016, 11, 2020, 1),
     #('3.6', 2017, 11, 2021, 4),
     ('4.0', 2018, 6, 2022, 4),
-    ('4.2', 2019, 8, 3000, 1),
-    ('4.4', 2020, 7, 3000, 1),
+    ('4.2', 2019, 8, 2023, 4),
+    ('4.4', 2020, 7, 2024, 2),
 ]
 for name, syear, smonth, eyear, emonth in mongo_releases:
     cal.bar(f"Mongo {name}", start=(syear, smonth), end=(eyear, emonth), color="#4da65a", current=(name==CURRENT["Mongo"]))
@@ -410,7 +410,7 @@ cal.section_note("https://endoflife.software/applications/databases/mysql")
 mysql_releases = [
     ('5.6', 2013, 2, 2021, 2),
     ('5.7', 2015, 10, 2023, 10),
-    ('8.0', 2018, 4, 3000, 1),
+    ('8.0', 2018, 4, 2026, 4),
 ]
 for name, syear, smonth, eyear, emonth in mysql_releases:
     cal.bar(f"MySQL {name}", start=(syear, smonth), end=(eyear, emonth), color="#b9dc48", current=(name==CURRENT["MySQL"]))
@@ -452,8 +452,11 @@ cal.section_note("https://www.ruby-lang.org/en/downloads/branches/")
 ruby_releases = [
     #('2.3', 2015, 12, 2019, 3),
     #('2.4', 2016, 12, 2020, 3),
-    ('2.5', 2017, 12, 3000, 1),
-    ('2.6', 2018, 12, 3000, 1),
+    ('2.5', 2017, 12, 2021, 3),
+    ('2.6', 2018, 12, 2022, 3),
+    ('2.7', 2019, 12, 2023, 3),
+    ('3.0', 2020, 12, 2024, 3),
+    ('3.1', 2021, 12, 2025, 3),
 ]
 for name, syear, smonth, eyear, emonth in ruby_releases:
     cal.bar(f"Ruby {name}", start=(syear, smonth), end=(eyear, emonth), color="#DE3F24", current=(name==CURRENT["Ruby"]))

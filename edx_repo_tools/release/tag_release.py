@@ -35,9 +35,7 @@ log = logging.getLogger(__name__)
 # Name used for fetching/storing GitHub OAuth tokens on disk
 TOKEN_NAME = "openedx-release"
 
-# We are in the process of migrating repos; in the future, we will have to
-# remove "edx" from the list of organizations.
-OPENEDX_ORGS = ['edx', 'openedx']
+OPENEDX_ORGS = ['openedx']
 
 
 # An object to act like a response (with a .text attribute) in the case that
