@@ -50,6 +50,20 @@ class YamlLoader:
         self._load_file()
 
     def _load_file(self):
+        new_file_content = """version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    # We don't want test-repo actions to be updated, but "/" will make this
+    # look only in .github anyway.
+    # https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#directory
+    directory: "/"
+    schedule:
+      interval: "weekly"
+"""
+        if not os.path.exists(self.file_path):
+            with open(self.file_path, 'w') as file:
+                file.write(new_file_content)
+
         with open(self.file_path) as file_stream:
             self.elements = self.yml_instance.load(file_stream)
 

@@ -46,7 +46,7 @@ class YamlModernizer(YamlLoader):
 
 @click.command()
 @click.option(
-    '--path', default='dependantbot.yaml',
+    '--path', default='.github/dependantbot.yaml',
     help="Path to target dependantbot.yaml file")
 def main(path):
     modernizer = YamlModernizer(path)
