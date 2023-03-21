@@ -1,3 +1,4 @@
+import os
 import click
 
 from edx_repo_tools.utils import YamlLoader
@@ -5,7 +6,7 @@ from edx_repo_tools.utils import YamlLoader
 
 github_actions = """\
     # Adding new check for github-actions
-    package-ecosystem": github-actions
+    package-ecosystem: github-actions
     directory: /
     schedule:
         interval: weekly
@@ -15,21 +16,20 @@ github_actions = """\
 ADD_NEW_FIELDS = [("github-actions", github_actions,)]
 
 
-class YamlModernizer(YamlLoader):
+class DependabotYamlModernizer(YamlLoader):
     """
-    Yaml Modernizer class is responsible for adding new elements in yml.
+    Dependabot Yaml Modernizer class is responsible for adding new elements in dependabot.yml.
     """
 
     def __init__(self, file_path):
         super().__init__(file_path)
 
     def _add_elements(self):
-        updates = self.elements.get('updates')
-
+        self.elements['updates'] = self.elements.get('updates') or []
         found = False
         for key, value in ADD_NEW_FIELDS:
-            for index in updates:
-                if key in index['package-ecosystem']:
+            for index in self.elements['updates']:
+                if key == index.get('package-ecosystem', None):
                     found = True
                     break
 
@@ -46,10 +46,17 @@ class YamlModernizer(YamlLoader):
 
 @click.command()
 @click.option(
-    '--path', default='.github/dependantbot.yaml',
-    help="Path to target dependantbot.yaml file")
+    '--path', default='.github/dependabot.yml',
+    help="Path to target dependabot.yml file")
 def main(path):
-    modernizer = YamlModernizer(path)
+    if not os.path.exists(path):
+        new_file_content = """\
+            version: 2
+            updates:
+        """
+        with open(path, 'w') as file:
+            file.write(new_file_content)
+    modernizer = DependabotYamlModernizer(path)
     modernizer.modernize()
 
 
