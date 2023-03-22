@@ -6,10 +6,10 @@ from edx_repo_tools.utils import YamlLoader
 
 github_actions = """\
     # Adding new check for github-actions
-    package-ecosystem: github-actions
-    directory: /
+    package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
-        interval: weekly
+        interval: "weekly"
 """
 
 # Adding new packages for update. Add tuple with key and related data.
