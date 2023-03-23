@@ -93,7 +93,7 @@ execnet==1.9.0
     # via
     #   -r requirements/base.txt
     #   pytest-xdist
-filelock==3.10.0
+filelock==3.10.2
     # via
     #   -r requirements/base.txt
     #   tldextract
@@ -243,7 +243,7 @@ pyjwt[crypto]==2.6.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.17.0
+pylint==2.17.1
     # via
     #   edx-lint
     #   pylint-celery
@@ -415,7 +415,7 @@ wheel==0.40.0
     # via pip-tools
 wrapt==1.15.0
     # via astroid
-zope-interface==5.5.2
+zope-interface==6.0
     # via
     #   -r requirements/base.txt
     #   scrapy
