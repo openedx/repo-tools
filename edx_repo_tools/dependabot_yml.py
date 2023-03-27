@@ -29,7 +29,7 @@ class DependabotYamlModernizer(YamlLoader):
         found = False
         for key, value in ADD_NEW_FIELDS:
             for index in self.elements['updates']:
-                if key == index.get('package-ecosystem', None):
+                if key == index.get('package-ecosystem'):
                     found = True
                     break
 
