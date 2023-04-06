@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==2.15.0
+astroid==2.15.2
     # via
     #   pylint
     #   pylint-celery
@@ -61,7 +61,7 @@ constantly==15.1.0
     # via
     #   -r requirements/base.txt
     #   twisted
-cryptography==39.0.2
+cryptography==40.0.1
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -93,7 +93,7 @@ execnet==1.9.0
     # via
     #   -r requirements/base.txt
     #   pytest-xdist
-filelock==3.10.0
+filelock==3.10.7
     # via
     #   -r requirements/base.txt
     #   tldextract
@@ -131,7 +131,7 @@ iniconfig==2.0.0
     #   pytest
 isort==5.12.0
     # via pylint
-itemadapter==0.7.0
+itemadapter==0.8.0
     # via
     #   -r requirements/base.txt
     #   itemloaders
@@ -204,7 +204,7 @@ pep8==1.7.1
     # via -r requirements/development.in
 pip-tools==6.12.3
     # via -r requirements/development.in
-platformdirs==3.1.1
+platformdirs==3.2.0
     # via
     #   -r requirements/base.txt
     #   pylint
@@ -243,7 +243,7 @@ pyjwt[crypto]==2.6.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.17.0
+pylint==2.17.2
     # via
     #   edx-lint
     #   pylint-celery
@@ -257,7 +257,7 @@ pylint-plugin-utils==0.7
     # via
     #   pylint-celery
     #   pylint-django
-pyopenssl==23.0.0
+pyopenssl==23.1.1
     # via
     #   -r requirements/base.txt
     #   scrapy
@@ -366,7 +366,7 @@ tomli==2.0.1
     #   pyproject-hooks
     #   pytest
     #   tox
-tomlkit==0.11.6
+tomlkit==0.11.7
     # via pylint
 tox==3.28.0
     # via
@@ -378,7 +378,7 @@ twisted==22.10.0
     # via
     #   -r requirements/base.txt
     #   scrapy
-types-pyyaml==6.0.12.8
+types-pyyaml==6.0.12.9
     # via responses
 typing-extensions==4.5.0
     # via
@@ -415,7 +415,7 @@ wheel==0.40.0
     # via pip-tools
 wrapt==1.15.0
     # via astroid
-zope-interface==5.5.2
+zope-interface==6.0
     # via
     #   -r requirements/base.txt
     #   scrapy
