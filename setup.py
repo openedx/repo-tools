@@ -98,6 +98,7 @@ setup(
             'repo_access_scraper = edx_repo_tools.repo_access_scraper.repo_access_scraper:main',
             'show_hooks = edx_repo_tools.dev.show_hooks:main',
             'tag_release = edx_repo_tools.release.tag_release:main',
+            'add_dependabot_ecosystem = edx_repo_tools.dependabot_yml:main',
         ],
     },
     package_data={
