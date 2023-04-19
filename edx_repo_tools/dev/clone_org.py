@@ -1,5 +1,6 @@
 """Clone an entire GitHub organization into current directory."""
 
+import fnmatch
 import os.path
 import shutil
 
@@ -31,6 +32,10 @@ from edx_repo_tools.auth import pass_github
     help="Depth argument for git clone",
 )
 @click.option(
+    '--ignore',
+    help="Glob pattern for repos to ignore",
+)
+@click.option(
     '--prune', is_flag=True, default=False,
     help="Remove repos that we wouldn't have cloned",
 )
@@ -38,7 +43,7 @@ from edx_repo_tools.auth import pass_github
     'org'
 )
 @pass_github
-def main(hub, archived, archived_only, forks, forks_only, depth, prune, org):
+def main(hub, archived, archived_only, forks, forks_only, depth, ignore, prune, org):
     """
     Clone an entire GitHub organization into the current directory.
     Each repo becomes a subdirectory.
@@ -56,6 +61,9 @@ def main(hub, archived, archived_only, forks, forks_only, depth, prune, org):
         if repo.archived and not archived:
             continue
         if not repo.archived and archived_only:
+            continue
+        if ignore and fnmatch.fnmatch(repo.name, ignore):
+            print(f"Ignoring {repo.full_name}")
             continue
         dir_name = repo.name
         dir_name = dir_name.lstrip("-")     # avoid dirname/option confusion
