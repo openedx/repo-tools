@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-alembic==1.10.2
+alembic==1.10.3
     # via dataset
 banal==1.0.6
     # via dataset
@@ -14,11 +14,11 @@ cycler==0.11.0
     # via matplotlib
 dataset==1.6.0
     # via -r edx_repo_tools/conventional_commits/extra.in
-fonttools==4.39.0
+fonttools==4.39.3
     # via matplotlib
 greenlet==2.0.2
     # via sqlalchemy
-importlib-metadata==6.0.0
+importlib-metadata==6.3.0
     # via alembic
 importlib-resources==5.12.0
     # via
@@ -37,11 +37,11 @@ numpy==1.24.2
     #   contourpy
     #   matplotlib
     #   pandas
-packaging==23.0
+packaging==23.1
     # via matplotlib
-pandas==1.5.3
+pandas==2.0.0
     # via -r edx_repo_tools/conventional_commits/extra.in
-pillow==9.4.0
+pillow==9.5.0
     # via matplotlib
 pyparsing==3.0.9
     # via matplotlib
@@ -49,16 +49,18 @@ python-dateutil==2.8.2
     # via
     #   matplotlib
     #   pandas
-pytz==2022.7.1
+pytz==2023.3
     # via pandas
 six==1.16.0
     # via python-dateutil
-sqlalchemy==1.4.46
+sqlalchemy==1.4.47
     # via
     #   alembic
     #   dataset
 typing-extensions==4.5.0
     # via alembic
+tzdata==2023.3
+    # via pandas
 zipp==3.15.0
     # via
     #   importlib-metadata
