@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.in
     #   fissix
-attrs==22.2.0
+attrs==23.1.0
     # via
     #   automat
     #   bowler
@@ -35,7 +35,7 @@ click==8.1.3
     #   moreorless
 constantly==15.1.0
     # via twisted
-cryptography==40.0.1
+cryptography==40.0.2
     # via
     #   pyjwt
     #   pyopenssl
@@ -53,7 +53,7 @@ exceptiongroup==1.1.1
     # via pytest
 execnet==1.9.0
     # via pytest-xdist
-filelock==3.11.0
+filelock==3.12.0
     # via
     #   tldextract
     #   tox
@@ -62,7 +62,7 @@ fissix==21.11.13
     # via bowler
 gitdb==4.0.10
     # via gitpython
-github3-py==3.2.0
+github3-py==4.0.0
     # via -r requirements/base.in
 gitpython==3.1.31
     # via -r requirements/base.in
@@ -81,12 +81,14 @@ itemadapter==0.8.0
     # via
     #   itemloaders
     #   scrapy
-itemloaders==1.0.6
+itemloaders==1.1.0
     # via scrapy
 jira==1.0.3
     # via -r requirements/base.in
 jmespath==1.0.1
-    # via itemloaders
+    # via
+    #   itemloaders
+    #   parsel
 lazy==1.5
     # via -r requirements/base.in
 lockfile==0.12.2
@@ -101,7 +103,7 @@ moreorless==0.4.0
     # via bowler
 msgpack==1.0.5
     # via cachecontrol
-numpy==1.24.2
+numpy==1.24.3
     # via -r requirements/base.in
 oauthlib==3.2.2
     # via requests-oauthlib
@@ -111,7 +113,7 @@ packaging==23.1
     #   pytest
     #   scrapy
     #   tox
-parsel==1.7.0
+parsel==1.8.1
     # via
     #   itemloaders
     #   scrapy
@@ -129,11 +131,11 @@ protego==0.2.1
     # via scrapy
 py==1.11.0
     # via tox
-pyasn1==0.4.8
+pyasn1==0.5.0
     # via
     #   pyasn1-modules
     #   service-identity
-pyasn1-modules==0.2.8
+pyasn1-modules==0.3.0
     # via service-identity
 pycparser==2.21
     # via cffi
@@ -143,7 +145,7 @@ pyjwt[crypto]==2.6.0
     # via github3-py
 pyopenssl==23.1.1
     # via scrapy
-pytest==7.3.0
+pytest==7.3.1
     # via
     #   -r requirements/base.in
     #   pytest-logging
@@ -225,7 +227,7 @@ urllib3==1.26.15
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.21.0
+virtualenv==20.22.0
     # via tox
 volatile==2.1.0
     # via bowler
