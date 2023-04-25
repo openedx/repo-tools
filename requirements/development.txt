@@ -8,16 +8,15 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==2.15.0
+astroid==2.15.4
     # via
     #   pylint
     #   pylint-celery
-attrs==22.2.0
+attrs==23.1.0
     # via
     #   -r requirements/base.txt
     #   automat
     #   bowler
-    #   pytest
     #   service-identity
     #   twisted
 automat==22.10.0
@@ -61,7 +60,7 @@ constantly==15.1.0
     # via
     #   -r requirements/base.txt
     #   twisted
-cryptography==39.0.2
+cryptography==40.0.2
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -93,7 +92,7 @@ execnet==1.9.0
     # via
     #   -r requirements/base.txt
     #   pytest-xdist
-filelock==3.10.0
+filelock==3.12.0
     # via
     #   -r requirements/base.txt
     #   tldextract
@@ -107,7 +106,7 @@ gitdb==4.0.10
     # via
     #   -r requirements/base.txt
     #   gitpython
-github3-py==3.2.0
+github3-py==4.0.0
     # via -r requirements/base.txt
 gitpython==3.1.31
     # via -r requirements/base.txt
@@ -131,12 +130,12 @@ iniconfig==2.0.0
     #   pytest
 isort==5.12.0
     # via pylint
-itemadapter==0.7.0
+itemadapter==0.8.0
     # via
     #   -r requirements/base.txt
     #   itemloaders
     #   scrapy
-itemloaders==1.0.6
+itemloaders==1.1.0
     # via
     #   -r requirements/base.txt
     #   scrapy
@@ -148,6 +147,7 @@ jmespath==1.0.1
     # via
     #   -r requirements/base.txt
     #   itemloaders
+    #   parsel
 lazy==1.5
     # via -r requirements/base.txt
 lazy-object-proxy==1.9.0
@@ -173,13 +173,13 @@ msgpack==1.0.5
     # via
     #   -r requirements/base.txt
     #   cachecontrol
-numpy==1.24.2
+numpy==1.24.3
     # via -r requirements/base.txt
 oauthlib==3.2.2
     # via
     #   -r requirements/base.txt
     #   requests-oauthlib
-packaging==23.0
+packaging==23.1
     # via
     #   -r requirements/base.txt
     #   build
@@ -187,7 +187,7 @@ packaging==23.0
     #   pytest
     #   scrapy
     #   tox
-parsel==1.7.0
+parsel==1.8.1
     # via
     #   -r requirements/base.txt
     #   itemloaders
@@ -202,9 +202,9 @@ pbr==5.11.1
     # via stevedore
 pep8==1.7.1
     # via -r requirements/development.in
-pip-tools==6.12.3
+pip-tools==6.13.0
     # via -r requirements/development.in
-platformdirs==3.1.1
+platformdirs==3.2.0
     # via
     #   -r requirements/base.txt
     #   pylint
@@ -222,12 +222,12 @@ py==1.11.0
     # via
     #   -r requirements/base.txt
     #   tox
-pyasn1==0.4.8
+pyasn1==0.5.0
     # via
     #   -r requirements/base.txt
     #   pyasn1-modules
     #   service-identity
-pyasn1-modules==0.2.8
+pyasn1-modules==0.3.0
     # via
     #   -r requirements/base.txt
     #   service-identity
@@ -243,7 +243,7 @@ pyjwt[crypto]==2.6.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.17.0
+pylint==2.17.3
     # via
     #   edx-lint
     #   pylint-celery
@@ -257,13 +257,13 @@ pylint-plugin-utils==0.7
     # via
     #   pylint-celery
     #   pylint-django
-pyopenssl==23.0.0
+pyopenssl==23.1.1
     # via
     #   -r requirements/base.txt
     #   scrapy
 pyproject-hooks==1.0.0
     # via build
-pytest==7.2.2
+pytest==7.3.1
     # via
     #   -r requirements/base.txt
     #   pytest-logging
@@ -366,7 +366,7 @@ tomli==2.0.1
     #   pyproject-hooks
     #   pytest
     #   tox
-tomlkit==0.11.6
+tomlkit==0.11.7
     # via pylint
 tox==3.28.0
     # via
@@ -378,7 +378,7 @@ twisted==22.10.0
     # via
     #   -r requirements/base.txt
     #   scrapy
-types-pyyaml==6.0.12.8
+types-pyyaml==6.0.12.9
     # via responses
 typing-extensions==4.5.0
     # via
@@ -397,7 +397,7 @@ urllib3==1.26.15
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.21.0
+virtualenv==20.22.0
     # via
     #   -r requirements/base.txt
     #   tox
@@ -415,7 +415,7 @@ wheel==0.40.0
     # via pip-tools
 wrapt==1.15.0
     # via astroid
-zope-interface==5.5.2
+zope-interface==6.0
     # via
     #   -r requirements/base.txt
     #   scrapy
