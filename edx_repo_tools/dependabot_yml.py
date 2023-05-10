@@ -43,15 +43,15 @@ class DependabotYamlModernizer(YamlLoader):
 
 
     def _add_reviewers(self):
-        self.elements['updates'] = self.elements.get('updates') or []
-        for key, value in ADD_NEW_FIELDS:
-            for index, elem in enumerate(self.elements['updates']):
-                if key == elem.get('package-ecosystem'):
-                    if 'reviewers' not in elem:
+        if self.reviewer:   
+            self.elements['updates'] = self.elements.get('updates') or []
+            for key, value in ADD_NEW_FIELDS:
+                for index, elem in enumerate(self.elements['updates']):
+                    if key == elem.get('package-ecosystem'):
                         self.elements["updates"][index].update(self.yml_instance.load(
                             ecosystem_reviewers.format(**{"reviewer": self.reviewer})
                         ))
-                    break
+                        break
 
 
     def modernize(self):
