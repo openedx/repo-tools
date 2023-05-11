@@ -440,7 +440,7 @@ cal.section_note("https://docs.redis.com/latest/rs/administering/product-lifecyc
 redis_releases = [
     ('5.6', 2020, 4, 2021, 10),
     ('6.0', 2020, 5, 2022, 5),
-    ('6.2', 2021, 8, 2024, 8),
+    ('6.2', 2021, 8, 2024, 4),
     ('7.0', 2022, 4, 2023, 10),
 ]
 for name, syear, smonth, eyear, emonth in redis_releases:
