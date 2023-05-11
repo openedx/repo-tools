@@ -37,26 +37,23 @@ class DependabotYamlModernizer(YamlLoader):
                 if key == index.get('package-ecosystem'):
                     found = True
                     break
-
         if not found:
             self.elements['updates'].append(self.yml_instance.load(value))
 
-
     def _add_reviewers(self):
-        if self.reviewer:   
-            self.elements['updates'] = self.elements.get('updates') or []
-            for key, value in ADD_NEW_FIELDS:
-                for index, elem in enumerate(self.elements['updates']):
-                    if key == elem.get('package-ecosystem'):
-                        self.elements["updates"][index].update(self.yml_instance.load(
-                            ecosystem_reviewers.format(**{"reviewer": self.reviewer})
-                        ))
-                        break
+        self.elements['updates'] = self.elements.get('updates') or []
+        for key, value in ADD_NEW_FIELDS:
+            for index, elem in enumerate(self.elements['updates']):
+                if key == elem.get('package-ecosystem'):
+                    self.elements["updates"][index].update(self.yml_instance.load(
+                        ecosystem_reviewers.format(**{"reviewer": self.reviewer})
+                    ))
+                    break
 
 
     def modernize(self):
         self._add_elements()
-        self._add_reviewers()
+        self.reviewer and self._add_reviewers()
         # otherwise it brings back whole update back towards left side.
 
         self.yml_instance.indent(mapping=4, sequence=4, offset=2)
@@ -64,9 +61,12 @@ class DependabotYamlModernizer(YamlLoader):
 
 
 @click.command()
+# path should be the path of dependabot.yml inside a repo
 @click.option(
     '--path', default='.github/dependabot.yml',
     help="Path to target dependabot.yml file")
+# reviewer should be a github username or team name,
+# and the team name should be in the format of org-name/team-name
 @click.option(
     '--reviewer', default=None,
     help="Name of the reviewer")
