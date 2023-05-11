@@ -31,7 +31,7 @@ build==0.10.0
     # via pip-tools
 cachecontrol==0.12.11
     # via -r requirements/base.txt
-certifi==2022.12.7
+certifi==2023.5.7
     # via
     #   -r requirements/base.txt
     #   requests
@@ -78,7 +78,7 @@ distlib==0.3.6
     # via
     #   -r requirements/base.txt
     #   virtualenv
-docutils==0.19
+docutils==0.20
     # via
     #   -r requirements/base.txt
     #   statistics
@@ -239,11 +239,11 @@ pydispatcher==2.0.7
     # via
     #   -r requirements/base.txt
     #   scrapy
-pyjwt[crypto]==2.6.0
+pyjwt[crypto]==2.7.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.17.3
+pylint==2.17.4
     # via
     #   edx-lint
     #   pylint-celery
@@ -292,7 +292,7 @@ queuelib==1.6.2
     # via
     #   -r requirements/base.txt
     #   scrapy
-requests==2.29.0
+requests==2.30.0
     # via
     #   -r requirements/base.txt
     #   cachecontrol
@@ -317,13 +317,13 @@ requests-toolbelt==1.0.0
     #   jira
 responses==0.23.1
     # via -r requirements/development.in
-ruamel-yaml==0.17.22
+ruamel-yaml==0.17.26
     # via -r requirements/base.txt
 ruamel-yaml-clib==0.2.7
     # via
     #   -r requirements/base.txt
     #   ruamel-yaml
-scrapy==2.8.0
+scrapy==2.9.0
     # via -r requirements/base.txt
 service-identity==21.1.0
     # via
@@ -390,7 +390,7 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-urllib3==1.26.15
+urllib3==2.0.2
     # via
     #   -r requirements/base.txt
     #   requests
