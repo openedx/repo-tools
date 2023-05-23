@@ -6,7 +6,7 @@
 #
 appdirs==1.4.4
     # via
-    #   -r requirements/base.in
+    #   -r base.in
     #   fissix
 attrs==23.1.0
     # via
@@ -17,11 +17,11 @@ attrs==23.1.0
 automat==22.10.0
     # via twisted
 backports-csv==1.0.7
-    # via -r requirements/base.in
+    # via -r base.in
 bowler==0.9.0
-    # via -r requirements/base.in
+    # via -r base.in
 cachecontrol==0.12.11
-    # via -r requirements/base.in
+    # via -r base.in
 certifi==2022.12.7
     # via requests
 cffi==1.15.1
@@ -30,7 +30,7 @@ charset-normalizer==3.1.0
     # via requests
 click==8.1.3
     # via
-    #   -r requirements/base.in
+    #   -r base.in
     #   bowler
     #   moreorless
 constantly==15.1.0
@@ -49,8 +49,6 @@ distlib==0.3.6
     # via virtualenv
 docutils==0.19
     # via statistics
-exceptiongroup==1.1.1
-    # via pytest
 execnet==1.9.0
     # via pytest-xdist
 filelock==3.12.0
@@ -63,9 +61,9 @@ fissix==21.11.13
 gitdb==4.0.10
     # via gitpython
 github3-py==4.0.1
-    # via -r requirements/base.in
+    # via -r base.in
 gitpython==3.1.31
-    # via -r requirements/base.in
+    # via -r base.in
 hyperlink==21.0.0
     # via twisted
 idna==3.4
@@ -84,27 +82,27 @@ itemadapter==0.8.0
 itemloaders==1.1.0
     # via scrapy
 jira==1.0.3
-    # via -r requirements/base.in
+    # via -r base.in
 jmespath==1.0.1
     # via
     #   itemloaders
     #   parsel
 lazy==1.5
-    # via -r requirements/base.in
+    # via -r base.in
 lockfile==0.12.2
-    # via -r requirements/base.in
+    # via -r base.in
 lxml==4.9.2
     # via
     #   parsel
     #   scrapy
 more-itertools==9.1.0
-    # via -r requirements/base.in
+    # via -r base.in
 moreorless==0.4.0
     # via bowler
 msgpack==1.0.5
     # via cachecontrol
 numpy==1.24.3
-    # via -r requirements/base.in
+    # via -r base.in
 oauthlib==3.2.2
     # via requests-oauthlib
 packaging==23.1
@@ -120,7 +118,7 @@ parsel==1.8.1
 path==16.6.0
     # via path-py
 path-py==12.5.0
-    # via -r requirements/base.in
+    # via -r base.in
 platformdirs==3.5.0
     # via virtualenv
 pluggy==1.0.0
@@ -147,26 +145,26 @@ pyopenssl==23.1.1
     # via scrapy
 pytest==7.3.1
     # via
-    #   -r requirements/base.in
+    #   -r base.in
     #   pytest-logging
     #   pytest-xdist
 pytest-logging==2015.11.4
-    # via -r requirements/base.in
+    # via -r base.in
 pytest-xdist==3.2.1
-    # via -r requirements/base.in
+    # via -r base.in
 python-dateutil==2.8.2
     # via
-    #   -r requirements/base.in
+    #   -r base.in
     #   github3-py
 python-dotenv==1.0.0
-    # via -r requirements/base.in
+    # via -r base.in
 pyyaml==6.0
-    # via -r requirements/base.in
+    # via -r base.in
 queuelib==1.6.2
     # via scrapy
-requests==2.29.0
+requests==2.31.0
     # via
-    #   -r requirements/base.in
+    #   -r base.in
     #   cachecontrol
     #   github3-py
     #   jira
@@ -181,11 +179,9 @@ requests-oauthlib==1.3.1
 requests-toolbelt==1.0.0
     # via jira
 ruamel-yaml==0.17.22
-    # via -r requirements/base.in
-ruamel-yaml-clib==0.2.7
-    # via ruamel-yaml
+    # via -r base.in
 scrapy==2.8.0
-    # via -r requirements/base.in
+    # via -r base.in
 service-identity==21.1.0
     # via scrapy
 six==1.16.0
@@ -200,33 +196,29 @@ six==1.16.0
 smmap==5.0.0
     # via gitdb
 statistics==1.0.3.5
-    # via -r requirements/base.in
+    # via -r base.in
 tldextract==3.4.1
     # via scrapy
 tlslite==0.4.9
     # via jira
-tomli==2.0.1
-    # via
-    #   pytest
-    #   tox
 tox==3.28.0
     # via
-    #   -c requirements/common_constraints.txt
-    #   -r requirements/base.in
+    #   -c common_constraints.txt
+    #   -r base.in
 tqdm==4.65.0
-    # via -r requirements/base.in
+    # via -r base.in
 twisted==22.10.0
     # via scrapy
 typing-extensions==4.5.0
     # via twisted
 uritemplate==4.1.1
     # via
-    #   -r requirements/base.in
+    #   -r base.in
     #   github3-py
 urllib3==1.26.15
     # via requests
 urlobject==2.4.3
-    # via -r requirements/base.in
+    # via -r base.in
 virtualenv==20.23.0
     # via tox
 volatile==2.1.0
