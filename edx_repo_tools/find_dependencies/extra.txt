@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-certifi==2022.12.7
+certifi==2023.5.7
     # via requests
 charset-normalizer==3.1.0
     # via requests
@@ -16,11 +16,11 @@ mdurl==0.1.2
     # via markdown-it-py
 pygments==2.15.1
     # via rich
-requests==2.29.0
+requests==2.31.0
     # via -r edx_repo_tools/find_dependencies/extra.in
 rich==13.3.5
     # via -r edx_repo_tools/find_dependencies/extra.in
-typing-extensions==4.5.0
+typing-extensions==4.6.1
     # via rich
-urllib3==1.26.15
+urllib3==2.0.2
     # via requests
