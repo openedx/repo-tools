@@ -441,7 +441,7 @@ redis_releases = [
     ('5.6', 2020, 4, 2021, 10),
     ('6.0', 2020, 5, 2022, 5),
     ('6.2', 2021, 8, 2024, 4),
-    ('7.0', 2022, 4, 2024, 10),
+    ('7.0', 2022, 4, 2025, 4),
 ]
 for name, syear, smonth, eyear, emonth in redis_releases:
     cal.bar(f"Redis {name}", start=(syear, smonth), end=(eyear, emonth), color="#963029", text_color="white", current=(name==CURRENT["Redis"]))
