@@ -4,5 +4,6 @@
 edx-lint
 pep8
 pip-tools
+pytest
 pytest-mock
 responses

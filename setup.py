@@ -76,6 +76,7 @@ setup(
     entry_points={
         'console_scripts': [
             'add_common_constraint = edx_repo_tools.add_common_constraint:main',
+            'add_dependabot_ecosystem = edx_repo_tools.dependabot_yml:main',
             'add_django32_settings = edx_repo_tools.codemods.django3.add_new_django32_settings:main',
             'clone_org = edx_repo_tools.dev.clone_org:main',
             'conventional_commits = edx_repo_tools.conventional_commits.commitstats:main',
@@ -96,12 +97,13 @@ setup(
             'replace_static = edx_repo_tools.codemods.django3.replace_static:main',
             'replace_unicode_with_str = edx_repo_tools.codemods.django3.replace_unicode_with_str:main',
             'repo_access_scraper = edx_repo_tools.repo_access_scraper.repo_access_scraper:main',
+            'repo_checks = edx_repo_tools.repo_checks.repo_checks:main',
             'show_hooks = edx_repo_tools.dev.show_hooks:main',
             'tag_release = edx_repo_tools.release.tag_release:main',
-            'add_dependabot_ecosystem = edx_repo_tools.dependabot_yml:main',
         ],
     },
     package_data={
         'edx_repo_tools.oep2.report': ['oep2-report.ini'],
+        'edx_repo_tools.repo_checks': ['labels.yaml'],
     },
 )
