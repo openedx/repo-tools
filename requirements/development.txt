@@ -60,7 +60,7 @@ constantly==15.1.0
     # via
     #   -r requirements/base.txt
     #   twisted
-cryptography==41.0.0
+cryptography==41.0.1
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -266,6 +266,7 @@ pyproject-hooks==1.0.0
 pytest==7.3.1
     # via
     #   -r requirements/base.txt
+    #   -r requirements/development.in
     #   pytest-logging
     #   pytest-mock
     #   pytest-xdist
@@ -380,7 +381,7 @@ twisted==22.10.0
     #   scrapy
 types-pyyaml==6.0.12.10
     # via responses
-typing-extensions==4.6.2
+typing-extensions==4.6.3
     # via
     #   -r requirements/base.txt
     #   astroid

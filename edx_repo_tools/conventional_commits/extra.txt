@@ -57,7 +57,7 @@ sqlalchemy==1.4.48
     # via
     #   alembic
     #   dataset
-typing-extensions==4.6.2
+typing-extensions==4.6.3
     # via alembic
 tzdata==2023.3
     # via pandas
