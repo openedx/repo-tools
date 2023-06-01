@@ -1,3 +1,5 @@
+# pylint: disable=too-many-lines
+# pylint: disable=f-string-without-interpolation
 """
 Run checks against repos and correct them if they're missing something.
 
@@ -5,29 +7,29 @@ See README.rst in this directory for details.
 """
 from __future__ import annotations
 
-import re
 import importlib.resources
+import re
 import textwrap
-from base64 import standard_b64decode, standard_b64encode
 from functools import lru_cache
 from itertools import chain
-from pathlib import Path
 from pprint import pformat
 
 import click
 import requests
 import yaml
+# Pylint doesn't believe that fastcore.net exports these error classes...
+# pylint: disable=no-name-in-module
 from fastcore.net import (
     HTTP4xxClientError,
-    HTTP5xxServerError,
     HTTP404NotFoundError,
     HTTP409ConflictError,
 )
+# pylint: enable=no-name-in-module
 from ghapi.all import GhApi, paged
 
 HAS_GHSA_SUFFIX = re.compile(r".*?-ghsa-\w{4}-\w{4}-\w{4}$")
 
-LABELS_YAML_FILELNAME = "./labels.yaml"
+LABELS_YAML_FILENAME = "./labels.yaml"
 
 # Note: This is functionally equivalent to `from functools import cache`,
 # which becomes available in Python 3.9.
@@ -63,19 +65,15 @@ def is_empty(api, org, repo):
     default_branch = api.repos.get(org, repo).default_branch
 
     try:
-        default_branch_ref = api.git.get_ref(
+        _default_branch_ref = api.git.get_ref(
             org,
             repo,
             f"heads/{default_branch}",
         )
-    except HTTP409ConflictError as e:
-        if "Git Repository is empty." in str(e):
+    except HTTP409ConflictError as err:
+        if "Git Repository is empty." in str(err):
             return True
         raise
-    except Exception as e:
-        breakpoint()
-        raise
-
     return False
 
 
@@ -90,12 +88,20 @@ def get_github_file_contents(api, org, repo, path, ref):
 
 
 class Check:
+    """
+    Something that we want to ensure about a given repository.
+
+    This is an abstract class; concrete checks should be implemented
+    as subclasses and override the four methods below
+    (is_relevant, check, fix, and dry_run).
+    """
+
     def __init__(self, api, org, repo):
         self.api = api
         self.org_name = org
         self.repo_name = repo
 
-    def is_relevant(self):
+    def is_relevant(self) -> bool:
         """
         Checks to see if the given check is relevant to run on the
         given repo.
@@ -106,11 +112,13 @@ class Check:
 
         raise NotImplementedError
 
-    def check(self) -> (bool, str):
+    def check(self) -> tuple[bool, str]:
         """
         Verify whether or not the check is failing.
 
-        This should not change anything and should not have a side-effect.
+        This should not change anything and should not have a side-effect
+        other than populating `self` with any data that is needed later for
+        `fix` or `dry_run`.
 
         The string in the return tuple should be a human readable reason
         that the check failed.
@@ -121,6 +129,8 @@ class Check:
     def fix(self):
         """
         Make an idempotent change to resolve the issue.
+
+        Expects that `check` has already been run.
         """
 
         raise NotImplementedError
@@ -128,6 +138,8 @@ class Check:
     def dry_run(self):
         """
         See what will happen without making any changes.
+
+        Expects that `check` has already been run.
         """
         raise NotImplementedError
 
@@ -180,7 +192,8 @@ class EnsureWorkflowTemplates(Check):
             self.files_to_update = files_that_differ
             return (
                 False,
-                f"Some workflows in this repo don't match the template.\n\t\t{files_that_differ=}\n\t\t{files_that_are_missing=}",
+                f"Some workflows in this repo don't match the template.\n"
+                f"\t\t{files_that_differ=}\n\t\t{files_that_are_missing=}",
             )
 
         return (
@@ -209,11 +222,12 @@ class EnsureWorkflowTemplates(Check):
                     file_path,
                     dot_github_default_branch,
                 )
-            except HTTP4xxClientError as e:
+            except HTTP4xxClientError as err:
                 click.echo(
-                    f"File: https://github.com/{org_name}/.github/blob/{dot_github_default_branch}/{file_path}"
+                    f"File: https://github.com/{self.org_name}/"
+                    f".github/blob/{dot_github_default_branch}/{file_path}"
                 )
-                click.echo(e.fp.read().decode("utf-8"))
+                click.echo(err.fp.read().decode("utf-8"))
                 raise
 
         # Get the content of the repo specific file.
@@ -229,8 +243,8 @@ class EnsureWorkflowTemplates(Check):
                     file_path,
                     branch_name,
                 )
-            except HTTP4xxClientError as e:
-                if e.status == 404:
+            except HTTP4xxClientError as err:
+                if err.status == 404:
                     files_that_are_missing.append(file)
 
         # Compare the two.
@@ -261,8 +275,8 @@ class EnsureWorkflowTemplates(Check):
             self.api.git.get_ref(
                 self.org_name, self.repo_name, f"heads/{self.branch_name}"
             )
-        except HTTP4xxClientError as e:
-            if e.status == 404:
+        except HTTP4xxClientError as err:
+            if err.status == 404:
                 branch_exists = False
             else:
                 raise  # For any other unexpected errors.
@@ -363,7 +377,7 @@ class EnsureWorkflowTemplates(Check):
             )
         )
 
-        prs = list([pr for pr in prs if pr.head.ref == self.branch_name])
+        prs = [pr for pr in prs if pr.head.ref == self.branch_name]
 
         if prs:
             pr = prs[0]
@@ -396,17 +410,20 @@ class EnsureLabels(Check):
     """
     All repos in the org should have certain labels.
     """
+    # Load up the labels file in the class definition so that we fail
+    # fast if the file isn't valid YAML.
     # Each item should be a dict with the fields:
     #  name: str
     #  color: str (rrggbb hex string)
     #  description: str
-    labels: list
-
-    # Load up the labels file in the class definition so that we fail
-    # fast if the YAML if malformed.
-    labels = yaml.safe_load(
+    labels: list[dict[str, str]] = yaml.safe_load(
         importlib.resources.read_text(__package__, "labels.yaml")
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.missing_labels = []
+        self.labels_that_need_updates = []  # pair of (current_label, new_label)
 
     def is_relevant(self):
         return not is_security_private_fork(self.api, self.org_name, self.repo_name)
@@ -451,9 +468,12 @@ class EnsureLabels(Check):
                 False,
                 "Labels need updating. "
                 f"{len(self.missing_labels)} to create, "
-                f"{len(self.labels_that_need_updates)} to fix."
+                f"{len(self.labels_that_need_updates)} to fix.",
             )
-        return (True, "All desired labels exist with the right name, color, description.")
+        return (
+            True,
+            "All desired labels exist with the right name, color, description.",
+        )
 
     def dry_run(self):
         return self.fix(dry_run=True)
@@ -472,8 +492,8 @@ class EnsureLabels(Check):
                         color=label["color"],
                         description=label["description"],
                     )
-                except HTTP4xxClientError as e:
-                    click.echo(e.fp.read().decode("utf-8"))
+                except HTTP4xxClientError as err:
+                    click.echo(err.fp.read().decode("utf-8"))
                     raise
             steps.append(f"Created {label=}.")
 
@@ -489,8 +509,8 @@ class EnsureLabels(Check):
                         description=new_label["description"],
                         new_name=new_label["name"],
                     )
-                except HTTP4xxClientError as e:
-                    click.echo(e.fp.read().decode("utf-8"))
+                except HTTP4xxClientError as err:
+                    click.echo(err.fp.read().decode("utf-8"))
                     raise
             steps.append(f"Fixed {current_label=} to {new_label=}")
 
@@ -525,6 +545,9 @@ class RequireTeamPermission(Check):
 
         self.team_setup_correctly = False
 
+    def is_relevant(self):
+        raise NotImplementedError
+
     def check(self):
         teams = chain.from_iterable(
             paged(
@@ -540,15 +563,14 @@ class RequireTeamPermission(Check):
             return (False, f"'{self.team}' team not listed on the repo.")
         # Check to see if the team has the correct permission.
         # More and less acess are both considered incorrect.
-        elif team_permissions[self.team] != self.permission:
+        if team_permissions[self.team] != self.permission:
             return (
                 False,
                 f"'{self.team}' team does not have the correct access. "
                 f"Has {team_permissions[self.team]} instead of {self.permission}.",
             )
-        else:
-            self.team_setup_correctly = True
-            return (True, f"'{self.team}' team has '{self.permission}' access.")
+        self.team_setup_correctly = True
+        return (True, f"'{self.team}' team has '{self.permission}' access.")
 
     def dry_run(self):
         """
@@ -572,8 +594,8 @@ class RequireTeamPermission(Check):
             return [
                 f"Added {self.permission} access for {self.team} to {self.repo_name}."
             ]
-        except HTTP4xxClientError as e:
-            click.echo(e.fp.read().decode("utf-8"))
+        except HTTP4xxClientError as err:
+            click.echo(err.fp.read().decode("utf-8"))
             raise
 
 
@@ -656,7 +678,10 @@ class RequiredCLACheck(Check):
         reason = f"{is_required_check[1]} {repo_on_required_team[1]}"
         return (value, reason)
 
-    def _check_cla_is_required_check(self):
+    def _check_cla_is_required_check(self) -> tuple[bool, str]:
+        """
+        Is the CLA required on the repo? If not, what's wrong?
+        """
         repo = self.api.repos.get(self.org_name, self.repo_name)
         default_branch = repo.default_branch
         # Branch protection rule might not exist.
@@ -665,7 +690,7 @@ class RequiredCLACheck(Check):
                 self.org_name, self.repo_name, default_branch
             )
             self.has_a_branch_protection_rule = True
-        except HTTP404NotFoundError as e:
+        except HTTP404NotFoundError:
             return (False, "No branch protection rule.")
 
         if "required_status_checks" not in branch_protection:
@@ -702,6 +727,9 @@ class RequiredCLACheck(Check):
         return steps
 
     def _fix_branch_protection(self, dry_run=False):
+        """
+        Ensure the default branch is has a protection which requires the CLA check.
+        """
         try:
             steps = []
 
@@ -774,17 +802,17 @@ class RequiredCLACheck(Check):
                 if not dry_run:
                     self._update_branch_protection(params)
                 # self.api.repos.update_branch_protection(**params)
-        except HTTP4xxClientError as e:
+        except HTTP4xxClientError as err:
             # Print the steps before raising the existing exception so we have
             # some more context on what might have happened.
             click.echo("\n".join(steps))
-            click.echo(e.fp.read().decode("utf-8"))
+            click.echo(err.fp.read().decode("utf-8"))
             raise
-        except requests.HTTPError as e:
+        except requests.HTTPError as err:
             # Print the steps before raising the existing exception so we have
             # some more context on what might have happened.
             click.echo("\n".join(steps))
-            click.echo(pformat(e.response.json()))
+            click.echo(pformat(err.response.json()))
             raise
 
         return steps
@@ -803,7 +831,7 @@ class RequiredCLACheck(Check):
             "https://api.github.com"
             + self.api.repos.update_branch_protection.path.format(**params)
         )
-        resp = requests.put(url, headers=headers, json=params)
+        resp = requests.put(url, headers=headers, json=params)  # pylint: disable=missing-timeout
 
         resp.raise_for_status()
 
@@ -820,35 +848,41 @@ class RequiredCLACheck(Check):
         # TODO: Could use Glom here in the future, but didn't need it.
         repo = self.api.repos.get(self.org_name, self.repo_name)
         default_branch = repo.default_branch
-        bp = self.api.repos.get_branch_protection(
+        protection = self.api.repos.get_branch_protection(
             self.org_name, self.repo_name, default_branch
         )
 
         required_checks = None
-        if "required_status_checks" in bp:
+        if "required_status_checks" in protection:
             # While the API docs claim that "contexts" is a required part
             # of the put body, it is only required if "checks" is not supplied.
             # The GET endpoint provides the curent set of required checks in both
             # format. So we only use the new "checks" format in our PUT params.
             required_checks = {
-                "strict": bp.required_status_checks.strict,
-                "checks": list(bp.required_status_checks.checks),
+                "strict": protection.required_status_checks.strict,
+                "checks": list(protection.required_status_checks.checks),
             }
 
         required_pr_reviews = None
-        if "required_pull_request_reviews" in bp:
+        if "required_pull_request_reviews" in protection:
             required_pr_reviews = {
-                "dismiss_stale_reviews": bp.required_pull_request_reviews.dismiss_stale_reviews,
-                "require_code_owner_reviews": bp.required_pull_request_reviews.require_code_owner_reviews,
-                "required_approving_review_count": bp.required_pull_request_reviews.required_approving_review_count,
+                "dismiss_stale_reviews": (
+                    protection.required_pull_request_reviews.dismiss_stale_reviews,
+                ),
+                "require_code_owner_reviews": (
+                    protection.required_pull_request_reviews.require_code_owner_reviews,
+                ),
+                "required_approving_review_count": (
+                    protection.required_pull_request_reviews.required_approving_review_count,
+                ),
             }
 
         restrictions = None
-        if "restrictions" in bp:
+        if "restrictions" in protection:
             restrictions = {
-                "users": [user.login for user in bp.restrictions.users],
-                "teams": [team.slug for team in bp.restrictions.teams],
-                "apps": [app.slug for app in bp.restrictions.apps],
+                "users": [user.login for user in protection.restrictions.users],
+                "teams": [team.slug for team in protection.restrictions.teams],
+                "apps": [app.slug for app in protection.restrictions.apps],
             }
 
         params = {
@@ -856,7 +890,7 @@ class RequiredCLACheck(Check):
             "repo": self.repo_name,
             "branch": default_branch,
             "required_status_checks": required_checks,
-            "enforce_admins": True if bp.enforce_admins.enabled else None,
+            "enforce_admins": True if protection.enforce_admins.enabled else None,
             "required_pull_request_reviews": required_pr_reviews,
             "restrictions": restrictions,
         }
@@ -878,12 +912,14 @@ CHECKS_BY_NAME_LOWER = {check_cls.__name__.lower(): check_cls for check_cls in C
 @click.command()
 @click.option(
     "--github-token",
+    "_github_token",
     envvar="GITHUB_TOKEN",
     required=True,
     help="A github personal access token.",
 )
 @click.option(
     "--org",
+    "org",
     default="openedx",
     help="The github org that you wish check.",
 )
@@ -901,7 +937,7 @@ CHECKS_BY_NAME_LOWER = {check_cls.__name__.lower(): check_cls for check_cls in C
     default=None,
     multiple=True,
     type=click.Choice(CHECKS_BY_NAME.keys(), case_sensitive=False),
-    help=f"Limit to specific check(s), case-insensitive."
+    help=f"Limit to specific check(s), case-insensitive.",
 )
 @click.option(
     "--repo",
@@ -917,7 +953,11 @@ CHECKS_BY_NAME_LOWER = {check_cls.__name__.lower(): check_cls for check_cls in C
     default=None,
     help="Which repo in the list to start running checks at.",
 )
-def main(org, dry_run, github_token, check_names, repos, start_at):
+def main(org, dry_run, _github_token, check_names, repos, start_at):
+    """
+    Entry point for command-line invocation.
+    """
+    # pylint: disable=too-many-locals,too-many-branches
     api = GhApi()
     if not repos:
         repos = [
@@ -942,7 +982,9 @@ def main(org, dry_run, github_token, check_names, repos, start_at):
     else:
         active_checks = CHECKS
     click.secho(f"The following checks will be run:", fg="magenta", bold=True)
-    active_checks_string = "\n".join("\t" + check_cls.__name__ for check_cls in active_checks)
+    active_checks_string = "\n".join(
+        "\t" + check_cls.__name__ for check_cls in active_checks
+    )
     click.secho(active_checks_string, fg="magenta")
 
     before_start_at = bool(start_at)
@@ -955,7 +997,6 @@ def main(org, dry_run, github_token, check_names, repos, start_at):
 
         click.secho(f"{repo}: ", bold=True)
         for CheckType in active_checks:
-
             check = CheckType(api, org, repo)
 
             if check.is_relevant():
@@ -971,15 +1012,15 @@ def main(org, dry_run, github_token, check_names, repos, start_at):
                     try:
                         steps = check.dry_run()
                         steps_color = "yellow"
-                    except HTTP4xxClientError as e:
-                        click.echo(e.fp.read().decode("utf-8"))
+                    except HTTP4xxClientError as err:
+                        click.echo(err.fp.read().decode("utf-8"))
                         raise
                 else:
                     try:
                         steps = check.fix()
                         steps_color = "green"
-                    except HTTP4xxClientError as e:
-                        click.echo(e.fp.read().decode("utf-8"))
+                    except HTTP4xxClientError as err:
+                        click.echo(err.fp.read().decode("utf-8"))
                         raise
 
                 if steps:
@@ -988,8 +1029,11 @@ def main(org, dry_run, github_token, check_names, repos, start_at):
                         "\n\t\t".join([step.replace("\n", "\n\t\t") for step in steps])
                     )
             else:
-                click.secho(f"\tSkipping {CheckType.__name__} as it is not relevant on this repo.", fg="cyan")
+                click.secho(
+                    f"\tSkipping {CheckType.__name__} as it is not relevant on this repo.",
+                    fg="cyan",
+                )
 
 
 if __name__ == "__main__":
-    main()
+    main()  # pylint: disable=no-value-for-parameter
