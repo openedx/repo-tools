@@ -16,8 +16,7 @@ test:				## run the tests
 	pytest
 
 dev-install:			## install everything to develop here
-	pip install -r requirements/development.txt
-	pip install -e .
+	pip install -e .[dev]
 
 install:			## install everything to run the tools
 	pip install -r requirements/base.txt
