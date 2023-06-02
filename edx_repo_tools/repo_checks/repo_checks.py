@@ -4,6 +4,10 @@
 Run checks against repos and correct them if they're missing something.
 
 See README.rst in this directory for details.
+
+This script was originally developed in the terraform-github repository.
+If you're trying to git-blame it, you might need to dig into the original source:
+https://github.com/openedx-unsupported/terraform-github/blame/main/migrate/repo_checks.py
 """
 from __future__ import annotations
 
@@ -387,8 +391,7 @@ class EnsureWorkflowTemplates(Check):
             steps.append("No PR exists, creating a PR.")
             pr_body = textwrap.dedent(
                 """
-                This PR was created automatically by the `repo_checks.py` script in the
-                https://github.com/openedx/terraform-github repository.
+                This PR was created automatically by [the `repo_checks` tool](https://github.com/openedx/repo-tools/tree/master/edx_repo_tools/repo_checks).
                 """
             )
             if not dry_run:
@@ -601,15 +604,11 @@ class RequireTeamPermission(Check):
 
 class RequireTriageTeamAccess(RequireTeamPermission):
     """
-    The Core Contributor Triage Team needs to be able to triage
-    issues in all repos in the Open edX Platform.
-
-    The check function will tell us if the team has the correct level of access
-    and the fix function will make it so if it does not.
+    Ensure that the openedx-triage team grants Triage access to every public repo in the org.
     """
 
     def __init__(self, api, org, repo):
-        team = "community-pr-triage-managers"
+        team = "openedx-triage"
         permission = "triage"
         super().__init__(api, org, repo, team, permission)
 
