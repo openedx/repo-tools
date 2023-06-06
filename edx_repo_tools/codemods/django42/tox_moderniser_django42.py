@@ -11,10 +11,9 @@ TEST_ENV_DEPS = "deps"
 PYTHON_SUBSTITUTE = "py38"
 DJANGO_SUBSTITUTE = "django{32,40,42}"
 
-DJANGO_32_DEPENDENCY = "django32: Django>=3.2,<4.0\n"
 DJANGO_40_DEPENDENCY = "django40: Django>=4.0,<4.1\n"
 DJANGO_42_DEPENDENCY = "django42: Django>=4.2,<4.3\n"
-NEW_DJANGO_DEPENDENCIES = DJANGO_32_DEPENDENCY + DJANGO_40_DEPENDENCY + DJANGO_42_DEPENDENCY
+NEW_DJANGO_DEPENDENCIES = DJANGO_40_DEPENDENCY + DJANGO_42_DEPENDENCY
 
 SECTIONS = [TOX_SECTION, TEST_ENV_SECTION]
 
@@ -22,7 +21,7 @@ PYTHON_PATTERN = "(py{.*?}-?|py[0-9]+,|py[0-9]+-)"
 
 DJANGO_PATTERN = "(django[0-9]+,|django[0-9]+\n|django{.*}\n|django{.*?}|django[0-9]+-|django{.*}-)"
 
-DJANGO_DEPENDENCY_PATTERN = "([^\n]*django[0-9]+:.*\n?)"
+DJANGO4_DEPENDENCY_PATTERN = "(django32:.*\n)"
 
 
 class ConfigReader:
@@ -75,6 +74,10 @@ class ToxModernizer:
         occurrences_to_replace = len(matches) - 1
         if occurrences_to_replace > 0:
             target = re.sub(pattern, '', target, occurrences_to_replace)
+        
+        # checking if there is any dependency for django32 dont override it
+        if matches[0].startswith('django32:'):
+            substitute = matches[0] + substitute
         target = re.sub(pattern, substitute, target)
         return target
 
@@ -87,8 +90,8 @@ class ToxModernizer:
     def _replace_django_versions(self):
         test_environment = self.config_parser[TEST_ENV_SECTION]
         dependencies = test_environment[TEST_ENV_DEPS]
-        matches = re.findall(DJANGO_DEPENDENCY_PATTERN, dependencies)
-        dependencies = self._replace_matches(DJANGO_DEPENDENCY_PATTERN, NEW_DJANGO_DEPENDENCIES, dependencies, matches)
+        matches = re.findall(DJANGO4_DEPENDENCY_PATTERN, dependencies)
+        dependencies = self._replace_matches(DJANGO4_DEPENDENCY_PATTERN, NEW_DJANGO_DEPENDENCIES, dependencies, matches)
 
         self.config_parser[TEST_ENV_SECTION][TEST_ENV_DEPS] = dependencies
 
