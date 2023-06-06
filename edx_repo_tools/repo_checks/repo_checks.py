@@ -617,22 +617,6 @@ class RequireTriageTeamAccess(RequireTeamPermission):
         return is_public(self.api, self.org_name, self.repo_name)
 
 
-class RequireProductManagersAccess(RequireTeamPermission):
-    """
-    The Open edX Product Managers team needs to be able to triage issue
-    in all repos of the Open edX Platform.
-    """
-
-    def __init__(self, api, org, repo):
-        team = "open-edx-product-managers"
-        permission = "triage"
-        super().__init__(api, org, repo, team, permission)
-
-    def is_relevant(self):
-        # Need to be a public repo.
-        return is_public(self.api, self.org_name, self.repo_name)
-
-
 class RequiredCLACheck(Check):
     """
     This class validates the following:
@@ -900,7 +884,6 @@ class RequiredCLACheck(Check):
 CHECKS = [
     RequiredCLACheck,
     RequireTriageTeamAccess,
-    RequireProductManagersAccess,
     EnsureLabels,
     EnsureWorkflowTemplates,
 ]
