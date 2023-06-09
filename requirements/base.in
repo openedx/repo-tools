@@ -9,6 +9,8 @@ PyYAML
 appdirs
 backports.csv
 click
+django-codemod  # Old Django Codemod but it has support till 4.0
+django-upgrade
 github3.py
 gitpython
 lazy
