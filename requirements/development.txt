@@ -29,7 +29,7 @@ bowler==0.9.0
     # via -r requirements/base.txt
 build==0.10.0
     # via pip-tools
-cachecontrol==0.13.0
+cachecontrol==0.13.1
     # via -r requirements/base.txt
 certifi==2023.5.7
     # via
@@ -49,9 +49,11 @@ click==8.1.3
     #   bowler
     #   click-log
     #   code-annotations
+    #   django-codemod
     #   edx-lint
     #   moreorless
     #   pip-tools
+    #   rich-click
 click-log==0.4.0
     # via edx-lint
 code-annotations==1.3.0
@@ -78,6 +80,10 @@ distlib==0.3.6
     # via
     #   -r requirements/base.txt
     #   virtualenv
+django-codemod==1.11.7
+    # via -r requirements/base.txt
+django-upgrade==1.13.0
+    # via -r requirements/base.txt
 docutils==0.20.1
     # via
     #   -r requirements/base.txt
@@ -152,6 +158,10 @@ lazy==1.5
     # via -r requirements/base.txt
 lazy-object-proxy==1.9.0
     # via astroid
+libcst==0.4.9
+    # via
+    #   -r requirements/base.txt
+    #   django-codemod
 lockfile==0.12.2
     # via -r requirements/base.txt
 lxml==4.9.2
@@ -159,10 +169,18 @@ lxml==4.9.2
     #   -r requirements/base.txt
     #   parsel
     #   scrapy
+markdown-it-py==2.2.0
+    # via
+    #   -r requirements/base.txt
+    #   rich
 markupsafe==2.1.3
     # via jinja2
 mccabe==0.7.0
     # via pylint
+mdurl==0.1.2
+    # via
+    #   -r requirements/base.txt
+    #   markdown-it-py
 more-itertools==9.1.0
     # via -r requirements/base.txt
 moreorless==0.4.0
@@ -173,6 +191,10 @@ msgpack==1.0.5
     # via
     #   -r requirements/base.txt
     #   cachecontrol
+mypy-extensions==1.0.0
+    # via
+    #   -r requirements/base.txt
+    #   typing-inspect
 numpy==1.24.3
     # via -r requirements/base.txt
 oauthlib==3.2.2
@@ -198,6 +220,10 @@ path==16.6.0
     #   path-py
 path-py==12.5.0
     # via -r requirements/base.txt
+pathspec==0.11.1
+    # via
+    #   -r requirements/base.txt
+    #   django-codemod
 pbr==5.11.1
     # via stevedore
 pep8==1.7.1
@@ -239,6 +265,10 @@ pydispatcher==2.0.7
     # via
     #   -r requirements/base.txt
     #   scrapy
+pygments==2.15.1
+    # via
+    #   -r requirements/base.txt
+    #   rich
 pyjwt[crypto]==2.7.0
     # via
     #   -r requirements/base.txt
@@ -288,6 +318,7 @@ pyyaml==6.0
     # via
     #   -r requirements/base.txt
     #   code-annotations
+    #   libcst
     #   responses
 queuelib==1.6.2
     # via
@@ -318,6 +349,15 @@ requests-toolbelt==1.0.0
     #   jira
 responses==0.23.1
     # via -r requirements/development.in
+rich==13.4.1
+    # via
+    #   -r requirements/base.txt
+    #   django-codemod
+    #   rich-click
+rich-click==1.6.1
+    # via
+    #   -r requirements/base.txt
+    #   django-codemod
 ruamel-yaml==0.17.31
     # via -r requirements/base.txt
 ruamel-yaml-clib==0.2.7
@@ -359,6 +399,10 @@ tlslite==0.4.9
     # via
     #   -r requirements/base.txt
     #   jira
+tokenize-rt==5.0.0
+    # via
+    #   -r requirements/base.txt
+    #   django-upgrade
 tomli==2.0.1
     # via
     #   -r requirements/base.txt
@@ -385,8 +429,15 @@ typing-extensions==4.6.3
     # via
     #   -r requirements/base.txt
     #   astroid
+    #   libcst
     #   pylint
+    #   rich
     #   twisted
+    #   typing-inspect
+typing-inspect==0.9.0
+    # via
+    #   -r requirements/base.txt
+    #   libcst
 uritemplate==4.1.1
     # via
     #   -r requirements/base.txt
