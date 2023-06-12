@@ -223,7 +223,7 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.in
     #   github3-py
-urllib3==2.0.2
+urllib3==2.0.3
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in

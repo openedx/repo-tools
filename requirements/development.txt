@@ -159,7 +159,7 @@ lxml==4.9.2
     #   -r requirements/base.txt
     #   parsel
     #   scrapy
-markupsafe==2.1.2
+markupsafe==2.1.3
     # via jinja2
 mccabe==0.7.0
     # via pylint
@@ -391,7 +391,7 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-urllib3==2.0.2
+urllib3==2.0.3
     # via
     #   -r requirements/base.txt
     #   requests
