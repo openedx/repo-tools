@@ -1,95 +1,41 @@
 """
-Django Matrix Modernizer for Github Actions CI
+Modernizer for Github Actions CI
 """
-import re
 from copy import deepcopy
-
 import click
-
 from edx_repo_tools.utils import YamlLoader
 
-# DJANGO_ENV_PATTERN = r"^django[34]\d$"
-DJANGO_ENV_PATTERN = r"django[0-3][0-2]$"
-ALLOWED_DJANGO_ENVS = ['django32', 'django40', 'django42']
-ALLOWED_DJANGO_VERSIONS = ['3.2', '4.0', '4.2']
+ALLOWED_DJANGO_VERSIONS = ['django32', 'django40', 'django42']
 
 
-class GithubCIDjangoModernizer(YamlLoader):
+class GithubCIModernizer(YamlLoader):
     def __init__(self, file_path):
         super().__init__(file_path)
 
-    def _update_matrix_items(self, job_name, matrix_item_name, matrix_item):
-        MATRIX_INCLUDE_EXCLUDE_SECTION = ['include', 'exclude']
-        if not isinstance(matrix_item, list):
-            return
-        if matrix_item_name not in MATRIX_INCLUDE_EXCLUDE_SECTION:
-            django_envs = any(
-                re.match(DJANGO_ENV_PATTERN, item) for item in matrix_item
-            )
-            # checking if there is any django env found in the matrix items
-            if not django_envs:
-                return
-            django_envs = [item for item in matrix_item if re.match(DJANGO_ENV_PATTERN, item)]
-            for item in ALLOWED_DJANGO_ENVS:
-                if item not in django_envs:
-                    django_envs.append(item)
-            
-            non_django_matrix_items = [
-                item for item in matrix_item if not re.match(DJANGO_ENV_PATTERN, item)]
-            updated_matrix_items = list(set(non_django_matrix_items + django_envs))
-            self.elements['jobs'][job_name]['strategy']['matrix'][matrix_item_name] = updated_matrix_items
-                
-        else:
-            self._update_matrix_include_exclude_sections(
-                job_name, matrix_item_name, matrix_item)
+    def _update_django_in_matrix(self):
+        django_versions = list()
+        matrix_elements = dict()
+        section_key = None
 
-    def _update_matrix_include_exclude_sections(self, job_name, matrix_item_name, matrix_item):
-        if not matrix_item_name in ['include', 'exclude']:
-            return
-        section_items = deepcopy(matrix_item)
-        for item in section_items:
-            item_index = self.elements['jobs'][job_name]['strategy']['matrix'][matrix_item_name].index(item)
-            if ('django-version' in item) and (not item['django-version'] in ALLOWED_DJANGO_VERSIONS):
-                del self.elements['jobs'][job_name]['strategy']['matrix'][matrix_item_name][item_index]
-            elif (('toxenv' in item) and (not item['toxenv'] in ALLOWED_DJANGO_ENVS) and
-                  (item['toxenv'].find('django') != -1)):
-                del self.elements['jobs'][job_name]['strategy']['matrix'][matrix_item_name][item_index]
+        for key in ['build', 'tests', 'run_tests', 'run_quality', 'pytest']:
+            if key in self.elements['jobs']:
+                section_key = key
+                matrix_elements = deepcopy(self.elements['jobs'][section_key]['strategy']['matrix'])
 
-    def _update_django_matrix_items(self, job_name, job):
-        matrices = job.get('strategy').get('matrix').items()
-        for matrix_item_key, matrix_item in matrices:
-            self._update_matrix_items(job_name, matrix_item_key, matrix_item)
-
-    def _update_codecov_check(self, job_name, step):
-        step_elements = deepcopy(step)
-        if not 'uses' in step_elements:
+        for key, value in matrix_elements.items():
+            if key == 'django-version':
+                django_versions = value
+                django_versions.extend(filter(
+                    lambda version: version not in value, ALLOWED_DJANGO_VERSIONS))
+        if not section_key:
             return
-        if not (step_elements['uses']) in ['codecov/codecov-action@v1', 'codecov/codecov-action@v2']:
-            return
-        if not 'if' in step_elements:
-            return
-        step_index = self.elements['jobs'][job_name]['steps'].index(step)
-        django_32_string = step_elements['if'].replace('django22', 'django32')
-        self.elements['jobs'][job_name]['steps'][step_index]['if'] = django_32_string
+        self.elements['jobs'][section_key]['strategy']['matrix']['django-version'] = django_versions
 
-    def _update_job_steps(self, job_name, job):
-        steps = job.get('steps')
-        if not steps:
-            return
-        for step in steps:
-            self._update_codecov_check(job_name, step)
-
-    def _update_job(self):
-        for job_name, job in self.elements.get('jobs').items():
-            self._update_job_steps(job_name, job)
-
-    def _update_job_matrices(self):
-        for job_name, job in self.elements.get('jobs').items():
-            self._update_django_matrix_items(job_name, job)
+    def _update_github_actions(self):
+        self._update_django_in_matrix()
 
     def modernize(self):
-        self._update_job_matrices()
-        self._update_job()
+        self._update_github_actions()
         self.update_yml_file()
 
 
@@ -98,7 +44,7 @@ class GithubCIDjangoModernizer(YamlLoader):
     '--path', default='.github/workflows/ci.yml',
     help="Path to default CI workflow file")
 def main(path):
-    modernizer = GithubCIDjangoModernizer(path)
+    modernizer = GithubCIModernizer(path)
     modernizer.modernize()
 
 
