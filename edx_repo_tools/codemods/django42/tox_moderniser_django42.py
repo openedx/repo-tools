@@ -75,15 +75,15 @@ class ToxModernizer:
         occurrences_to_replace = len(matches) - 1
         if occurrences_to_replace > 0:
             target = re.sub(pattern, '', target, occurrences_to_replace)
-            
+
         # checking if there is any dependency for django32 dont override it
         if matches[0].startswith('django32:'):
             substitute = matches[0]
-            if 'django40' not in target:
+            if 'django40:' not in target:
                 substitute += DJANGO_40_DEPENDENCY
-            if 'django41' not in target:
+            if 'django41:' not in target:
                 substitute += DJANGO_41_DEPENDENCY
-            if 'django42' not in target:
+            if 'django42:' not in target:
                 substitute += DJANGO_42_DEPENDENCY
         target = re.sub(pattern, substitute, target)
         return target
