@@ -29,7 +29,8 @@ class GithubCIModernizer(YamlLoader):
                     lambda version: version not in value, ALLOWED_DJANGO_VERSIONS))
         if not section_key:
             return
-        self.elements['jobs'][section_key]['strategy']['matrix']['django-version'] = django_versions
+        if django_versions:
+            self.elements['jobs'][section_key]['strategy']['matrix']['django-version'] = django_versions
 
     def _update_github_actions(self):
         self._update_django_in_matrix()
