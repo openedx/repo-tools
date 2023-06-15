@@ -1,4 +1,3 @@
-#!/usr/bin/env python3.6
 """
 Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
 
@@ -82,6 +81,7 @@ class GsheetCalendar(BaseCalendar):
             function makeBarCalendar() {{
             var sheet = SpreadsheetApp.getActiveSheet();
             sheet.getDataRange().deleteCells(SpreadsheetApp.Dimension.ROWS);
+            sheet.insertRowsAfter(sheet.getDataRange().getLastRow(), 200);
             """)
 
     def epilog(self):
@@ -96,12 +96,12 @@ class GsheetCalendar(BaseCalendar):
                 sheet.setRowHeight({gap_row}, 6);
             """)
         print(f"""\
-            var keepRows = 10;
+            var keepRows = 0;   // Number of extra rows to keep at the bottom.
             var tooMany = sheet.getMaxRows() - range.getLastRow() - keepRows;
             if (tooMany > 0) {{
                 sheet.deleteRows(range.getLastRow() + keepRows + 1, tooMany);
             }}
-            var keepCols = 1;
+            var keepCols = 0;   // Number of extra columns to keep at the right.
             var tooMany = sheet.getMaxColumns() - range.getLastColumn() - keepCols;
             if (tooMany > 0) {{
                 sheet.deleteColumns(range.getLastColumn() + keepCols + 1, tooMany);
@@ -240,13 +240,13 @@ class GsheetCalendar(BaseCalendar):
 # ==== Editable content ====
 
 # Global Options
-START_YEAR = 2018
-END_YEAR = 2025
+START_YEAR = 2020
+END_YEAR = 2027
 LTS_ONLY = True
 
 # The current versions of everything.  Use the same strings as the keys in the various sections below.
 CURRENT = {
-    "Open edX": "Olive",
+    "Open edX": "Palm",
     "Python": "3.8",
     "Django": "3.2",
     "Ubuntu": "20.04",
