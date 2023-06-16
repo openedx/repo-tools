@@ -20,7 +20,7 @@ backports-csv==1.0.7
     # via -r requirements/base.in
 bowler==0.9.0
     # via -r requirements/base.in
-cachecontrol==0.13.0
+cachecontrol==0.13.1
     # via -r requirements/base.in
 certifi==2023.5.7
     # via requests
@@ -53,7 +53,7 @@ exceptiongroup==1.1.1
     # via pytest
 execnet==1.9.0
     # via pytest-xdist
-filelock==3.12.0
+filelock==3.12.2
     # via
     #   tldextract
     #   tox
@@ -121,7 +121,7 @@ path==16.6.0
     # via path-py
 path-py==12.5.0
     # via -r requirements/base.in
-platformdirs==3.5.1
+platformdirs==3.5.3
     # via virtualenv
 pluggy==1.0.0
     # via
@@ -145,7 +145,7 @@ pyjwt[crypto]==2.7.0
     # via github3-py
 pyopenssl==23.2.0
     # via scrapy
-pytest==7.3.1
+pytest==7.3.2
     # via
     #   -r requirements/base.in
     #   pytest-logging
@@ -186,7 +186,7 @@ ruamel-yaml-clib==0.2.7
     # via ruamel-yaml
 scrapy==2.9.0
     # via -r requirements/base.in
-service-identity==21.1.0
+service-identity==23.1.0
     # via scrapy
 six==1.16.0
     # via
@@ -195,7 +195,6 @@ six==1.16.0
     #   protego
     #   python-dateutil
     #   requests-file
-    #   service-identity
     #   tox
 smmap==5.0.0
     # via gitdb
