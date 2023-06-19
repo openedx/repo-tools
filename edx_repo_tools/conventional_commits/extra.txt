@@ -4,8 +4,10 @@
 #
 #    make upgrade
 #
-alembic==1.11.1
-    # via dataset
+alembic==1.10.4
+    # via
+    #   -c edx_repo_tools/conventional_commits/../../requirements/constraints.txt
+    #   dataset
 banal==1.0.6
     # via dataset
 contourpy==1.1.0
