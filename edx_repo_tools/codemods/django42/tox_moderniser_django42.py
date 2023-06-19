@@ -9,9 +9,10 @@ ENVLIST = "envlist"
 TEST_ENV_SECTION = "testenv"
 TEST_ENV_DEPS = "deps"
 PYTHON_SUBSTITUTE = "py38"
-DJANGO_SUBSTITUTE = "django{32,40,42}"
+DJANGO_SUBSTITUTE = "django{32,40, 41,42}"
 
 DJANGO_40_DEPENDENCY = "django40: Django>=4.0,<4.1\n"
+DJANGO_41_DEPENDENCY = "django41: Django>=4.1,<4.2\n"
 DJANGO_42_DEPENDENCY = "django42: Django>=4.2,<4.3\n"
 NEW_DJANGO_DEPENDENCIES = DJANGO_40_DEPENDENCY + DJANGO_42_DEPENDENCY
 
@@ -74,10 +75,16 @@ class ToxModernizer:
         occurrences_to_replace = len(matches) - 1
         if occurrences_to_replace > 0:
             target = re.sub(pattern, '', target, occurrences_to_replace)
-        
+
         # checking if there is any dependency for django32 dont override it
         if matches[0].startswith('django32:'):
-            substitute = matches[0] + substitute
+            substitute = matches[0]
+            if 'django40:' not in target:
+                substitute += DJANGO_40_DEPENDENCY
+            if 'django41:' not in target:
+                substitute += DJANGO_41_DEPENDENCY
+            if 'django42:' not in target:
+                substitute += DJANGO_42_DEPENDENCY
         target = re.sub(pattern, substitute, target)
         return target
 

@@ -110,6 +110,7 @@ setup(
             'show_hooks = edx_repo_tools.dev.show_hooks:main',
             'tag_release = edx_repo_tools.release.tag_release:main',
             'modernize_tox_django42 = edx_repo_tools.codemods.django42.tox_moderniser_django42:main',
+            'modernize_github_actions_django42 = edx_repo_tools.codemods.django42.github_actions_modernizer_django42:main',
         ],
     },
     package_data={
