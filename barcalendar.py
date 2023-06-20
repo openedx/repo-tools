@@ -74,6 +74,7 @@ class GsheetCalendar(BaseCalendar):
         self.currow = 1
         self.cycling = None
         self.gaps = []
+        self.footnotes = []
         self.prologue()
 
     def prologue(self):
@@ -161,7 +162,7 @@ class GsheetCalendar(BaseCalendar):
             sheet.setConditionalFormatRules(rules);
             """)
 
-    def rawbar(self, istart, iend, name, color=None, text_color=None, current=False, indefinite=False):
+    def rawbar(self, istart, iend, name, color=None, text_color=None, current=False, indefinite=False, note=None):
         formatting = ""
         if color:
             if current:
@@ -174,11 +175,15 @@ class GsheetCalendar(BaseCalendar):
             formatting += f""".setFontWeight("bold")"""
         if indefinite:
             iend = self.width - 24
+        text = name
+        if note:
+            self.footnotes.append(note)
+            text = f"{text} (note {len(self.footnotes)})"
         print(f"""\
             sheet.getRange({self.currow}, {istart + 1}, 1, {iend - istart + 1})
                 .merge()
                 {formatting}
-                .setValue({name!r});
+                .setValue({text!r});
             """)
         if indefinite:
             for i in range(4):
@@ -221,6 +226,10 @@ class GsheetCalendar(BaseCalendar):
         print(f"""\
             sheet.getRange({self.currow}, {self.width - 10}).setValue({text!r});
             """)
+
+    def footnote_lines(self):
+        for i, note in enumerate(self.footnotes, start=1):
+            self.text_line(f"Note {i}: {note}")
 
     def freeze_here(self):
         print(f"""\
@@ -327,14 +336,21 @@ django_releases = [
     ('3.2', 2021, 4, True),
     ('4.0', 2022, 1, False),
     ('4.1', 2022, 8, False),
-    ('4.2', 2023, 4, True),
+    ('4.2', 2023, 4, True, "Django 4.2 work is being tracked in https://github.com/openedx/platform-roadmap/issues/269"),
 ]
-for name, year, month, lts in django_releases:
+for name, year, month, lts, *more in django_releases:
     if LTS_ONLY and not lts:
         continue
     length = 3*12 if lts else 16
     color = "#44b78b" if lts else "#c9f0df"
-    cal.bar(f"Django {name}", start=(year, month), length=length, color=color, current=(name==CURRENT["Django"]))
+    cal.bar(
+        f"Django {name}",
+        start=(year, month),
+        length=length,
+        color=color,
+        current=(name==CURRENT["Django"]),
+        note=(more[0] if more else None),
+    )
 cal.gap_line()
 
 # Python releases
@@ -464,6 +480,8 @@ cal.gap_line()
 
 
 cal.text_line("")
+cal.footnote_lines()
+cal.gap_line()
 cal.text_line("Created by https://github.com/openedx/repo-tools/blob/master/barcalendar.py")
 
 cal.write()
