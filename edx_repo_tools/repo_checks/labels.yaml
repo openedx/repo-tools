@@ -104,6 +104,24 @@
   color: "bfd6f6"  # baby blue
   description: "PR author needs to resolve review requests, answer questions, fix tests, etc."
 
+# Used by the PR Triage team to indicate when an author has done all work needed
+# to have this PR be reviewed by an engineer.  The goal is to make it easier for
+# reviewing users/teams to know when their attention is needed.  Similar to "waiting on author"
+# this label is used when the board does not have a relevant status column but need to convey
+# this information.  (e.g. It was set to "In eng review" and the author has addressed all change
+# requests.)
+- name: "waiting for eng review"
+  color: "ebe534" # bright yellow
+  description: "PR is ready for review. Review and merge it, or suggest changes."
+
+# Used by review teams to indicate that a PR or Issue specifically needs the attention of the maintainers
+# and can't be handled by CCs.  The PR Triage team is not expected to use this label. It is expecetd to
+# be used by teams that coordinate upgrades such as the Arbi-BOM team or by triagers at the team level who
+# filter work that needs to be done by the maintaining team vs CCs.
+- name: "needs maintainer attention"
+  color: "ebb134" # orange
+  description: "Issue or PR specifically needs the attention of the maintainer."
+
 # Used when the author has been unresponsive for several months.
 # Typically author will be told “we might need to close this due to
 # inactivity” and if there’s still no response we close it a couple weeks later.
