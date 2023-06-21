@@ -849,15 +849,9 @@ class RequiredCLACheck(Check):
         required_pr_reviews = None
         if "required_pull_request_reviews" in protection:
             required_pr_reviews = {
-                "dismiss_stale_reviews": (
-                    protection.required_pull_request_reviews.dismiss_stale_reviews,
-                ),
-                "require_code_owner_reviews": (
-                    protection.required_pull_request_reviews.require_code_owner_reviews,
-                ),
-                "required_approving_review_count": (
-                    protection.required_pull_request_reviews.required_approving_review_count,
-                ),
+                "dismiss_stale_reviews": protection.required_pull_request_reviews.dismiss_stale_reviews,
+                "require_code_owner_reviews": protection.required_pull_request_reviews.require_code_owner_reviews,
+                "required_approving_review_count": protection.required_pull_request_reviews.required_approving_review_count,
             }
 
         restrictions = None
