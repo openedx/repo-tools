@@ -21,6 +21,7 @@ from pprint import pformat
 import click
 import requests
 import yaml
+
 # Pylint doesn't believe that fastcore.net exports these error classes...
 # pylint: disable=no-name-in-module
 from fastcore.net import (
@@ -28,6 +29,7 @@ from fastcore.net import (
     HTTP404NotFoundError,
     HTTP409ConflictError,
 )
+
 # pylint: enable=no-name-in-module
 from ghapi.all import GhApi, paged
 
@@ -413,6 +415,7 @@ class EnsureLabels(Check):
     """
     All repos in the org should have certain labels.
     """
+
     # Load up the labels file in the class definition so that we fail
     # fast if the file isn't valid YAML.
     # Each item should be a dict with the fields:
@@ -814,7 +817,9 @@ class RequiredCLACheck(Check):
             "https://api.github.com"
             + self.api.repos.update_branch_protection.path.format(**params)
         )
-        resp = requests.put(url, headers=headers, json=params)  # pylint: disable=missing-timeout
+        resp = requests.put(
+            url, headers=headers, json=params
+        )  # pylint: disable=missing-timeout
 
         resp.raise_for_status()
 
@@ -849,15 +854,9 @@ class RequiredCLACheck(Check):
         required_pr_reviews = None
         if "required_pull_request_reviews" in protection:
             required_pr_reviews = {
-                "dismiss_stale_reviews": (
-                    protection.required_pull_request_reviews.dismiss_stale_reviews,
-                ),
-                "require_code_owner_reviews": (
-                    protection.required_pull_request_reviews.require_code_owner_reviews,
-                ),
-                "required_approving_review_count": (
-                    protection.required_pull_request_reviews.required_approving_review_count,
-                ),
+                "dismiss_stale_reviews": protection.required_pull_request_reviews.dismiss_stale_reviews,
+                "require_code_owner_reviews": protection.required_pull_request_reviews.require_code_owner_reviews,
+                "required_approving_review_count": protection.required_pull_request_reviews.required_approving_review_count,
             }
 
         restrictions = None
