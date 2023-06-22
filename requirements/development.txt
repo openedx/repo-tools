@@ -204,12 +204,12 @@ pep8==1.7.1
     # via -r requirements/development.in
 pip-tools==6.13.0
     # via -r requirements/development.in
-platformdirs==3.5.3
+platformdirs==3.7.0
     # via
     #   -r requirements/base.txt
     #   pylint
     #   virtualenv
-pluggy==1.0.0
+pluggy==1.2.0
     # via
     #   -r requirements/base.txt
     #   pytest
@@ -272,7 +272,7 @@ pytest==7.3.2
     #   pytest-xdist
 pytest-logging==2015.11.4
     # via -r requirements/base.txt
-pytest-mock==3.10.0
+pytest-mock==3.11.1
     # via -r requirements/development.in
 pytest-xdist==3.3.1
     # via -r requirements/base.txt
@@ -318,7 +318,7 @@ requests-toolbelt==1.0.0
     #   jira
 responses==0.23.1
     # via -r requirements/development.in
-ruamel-yaml==0.17.31
+ruamel-yaml==0.17.32
     # via -r requirements/base.txt
 ruamel-yaml-clib==0.2.7
     # via
@@ -397,7 +397,7 @@ urllib3==2.0.3
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.23.0
+virtualenv==20.23.1
     # via
     #   -r requirements/base.txt
     #   tox
