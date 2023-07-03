@@ -103,7 +103,7 @@ moreorless==0.4.0
     # via bowler
 msgpack==1.0.5
     # via cachecontrol
-numpy==1.24.3
+numpy==1.24.4
     # via -r requirements/base.in
 oauthlib==3.2.2
     # via requests-oauthlib
@@ -121,7 +121,7 @@ path==16.6.0
     # via path-py
 path-py==12.5.0
     # via -r requirements/base.in
-platformdirs==3.7.0
+platformdirs==3.8.0
     # via virtualenv
 pluggy==1.2.0
     # via
@@ -145,7 +145,7 @@ pyjwt[crypto]==2.7.0
     # via github3-py
 pyopenssl==23.2.0
     # via scrapy
-pytest==7.3.2
+pytest==7.4.0
     # via
     #   -r requirements/base.in
     #   pytest-logging
@@ -216,7 +216,7 @@ tqdm==4.65.0
     # via -r requirements/base.in
 twisted==22.10.0
     # via scrapy
-typing-extensions==4.6.3
+typing-extensions==4.7.0
     # via twisted
 uritemplate==4.1.1
     # via
