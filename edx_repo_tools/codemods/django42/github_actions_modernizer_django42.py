@@ -5,7 +5,7 @@ from copy import deepcopy
 import click
 from edx_repo_tools.utils import YamlLoader
 
-ALLOWED_DJANGO_VERSIONS = ['django32', 'django40', 'django41', 'django42']
+ALLOWED_DJANGO_VERSIONS = ['django32', 'django42']
 
 
 class GithubCIModernizer(YamlLoader):
