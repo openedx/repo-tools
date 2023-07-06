@@ -20,7 +20,7 @@ requests==2.31.0
     # via -r edx_repo_tools/find_dependencies/extra.in
 rich==13.4.2
     # via -r edx_repo_tools/find_dependencies/extra.in
-typing-extensions==4.7.0
+typing-extensions==4.7.1
     # via rich
 urllib3==2.0.3
     # via requests
