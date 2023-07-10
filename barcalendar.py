@@ -440,11 +440,12 @@ es_releases = [
     # ('2.4', 2016, 8, 2018, 2),
     # ('5.6', 2017, 9, 2019, 3),
     # ('6.8', 2019, 5, 2020, 11),
-    ('7.8', 2020, 6, 2021, 12),
+    # ('7.8', 2020, 6, 2021, 12),
     ('7.10', 2020, 11, 2022, 5),
     ('7.11', 2021, 2, 2022, 8),
     ('7.12', 2021, 3, 2022, 9),
     ('7.13', 2021, 5, 2022, 11),
+    ('7.17', 2022, 2, 2023, 8),
 ]
 for name, syear, smonth, eyear, emonth in es_releases:
     cal.bar(f"Elasticsearch {name}", start=(syear, smonth), end=(eyear, emonth), color="#4595ba", current=(name==CURRENT["Elasticsearch"]))
