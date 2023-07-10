@@ -19,6 +19,10 @@ Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
 import colorsys
 import datetime
 import itertools
+import re
+import requests
+import time
+from yaml import safe_load
 
 
 def css_to_rgb(hex):
@@ -245,6 +249,51 @@ class GsheetCalendar(BaseCalendar):
     def write(self):
         self.epilog()
 
+def get_defaults_from_tutor():
+    """
+    Fetches default configurations from tutor repository.
+    Returns:
+        object: Default configurations as Python object
+    """
+    url = "https://raw.githubusercontent.com/overhangio/tutor/master/tutor/templates/config/defaults.yml"
+    while True:
+        try:
+            resp = requests.get(url, timeout=10)
+        except requests.RequestException as exc:
+            print(f"Couldn't fetch {url}: {exc}")
+            return None
+        if resp.status_code == 429:
+            wait = int(resp.headers.get("Retry-After", 10))
+            time.sleep(wait + 1)
+        else:
+            break
+
+    if resp.status_code == 200:
+        return safe_load(resp.text)
+    return None
+
+def parse_version_number(line):
+    """
+    Get version number in line from YAML file.
+    Note that this only captures major and minor version (not patch number). 
+    e.g. "docker.io/elasticsearch:7.17.9" -> "7.17"
+    """
+    match = re.search(r'(?P<version_number>\d+(\.\d+)?)', line)
+    if match is not None:
+        version_number = match.group("version_number")
+        return version_number
+    return None
+
+def parse_version_name(line):
+    """
+    Get openedx version name in line from YAML file.
+    e.g. "open-release/palm.1" -> "Palm"
+    """
+    match = re.search(r'(?P<version_name>[A-Za-z]+)[\.\d+]*$', line)
+    if match is not None:
+        version_name = match.group("version_name")
+        return version_name.capitalize()
+    return None
 
 # ==== Editable content ====
 
@@ -253,17 +302,19 @@ START_YEAR = 2020
 END_YEAR = 2027
 LTS_ONLY = True
 
+versions = get_defaults_from_tutor()
+
 # The current versions of everything.  Use the same strings as the keys in the various sections below.
 CURRENT = {
-    "Open edX": "Palm",
+    "Open edX": f"{parse_version_name(versions['OPENEDX_COMMON_VERSION'])}",
     "Python": "3.8",
     "Django": "3.2",
     "Ubuntu": "20.04",
     "Node": "16.x",
-    "Mongo": "4.2",
-    "MySQL": "5.7",
-    "Elasticsearch": "7.10",
-    "Redis": "5.6",
+    "Mongo": f"{parse_version_number(versions['DOCKER_IMAGE_MONGODB'])}",
+    "MySQL": f"{parse_version_number(versions['DOCKER_IMAGE_MYSQL'])}",
+    "Elasticsearch": f"{parse_version_number(versions['DOCKER_IMAGE_ELASTICSEARCH'])}",
+    "Redis": f"{parse_version_number(versions['DOCKER_IMAGE_REDIS'])}",
     "Ruby": "3.0",
 }
 
