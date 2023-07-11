@@ -84,7 +84,7 @@ docutils==0.20.1
     #   statistics
 edx-lint==5.3.4
     # via -r requirements/development.in
-exceptiongroup==1.1.1
+exceptiongroup==1.1.2
     # via
     #   -r requirements/base.txt
     #   pytest
@@ -154,7 +154,7 @@ lazy-object-proxy==1.9.0
     # via astroid
 lockfile==0.12.2
     # via -r requirements/base.txt
-lxml==4.9.2
+lxml==4.9.3
     # via
     #   -r requirements/base.txt
     #   parsel
@@ -202,7 +202,7 @@ pbr==5.11.1
     # via stevedore
 pep8==1.7.1
     # via -r requirements/development.in
-pip-tools==6.13.0
+pip-tools==6.14.0
     # via -r requirements/development.in
 platformdirs==3.8.0
     # via
@@ -362,6 +362,7 @@ tomli==2.0.1
     # via
     #   -r requirements/base.txt
     #   build
+    #   pip-tools
     #   pylint
     #   pyproject-hooks
     #   pytest
@@ -380,7 +381,7 @@ twisted==22.10.0
     #   scrapy
 types-pyyaml==6.0.12.10
     # via responses
-typing-extensions==4.7.0
+typing-extensions==4.7.1
     # via
     #   -r requirements/base.txt
     #   astroid
