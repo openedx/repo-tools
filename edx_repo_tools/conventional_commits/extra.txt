@@ -14,15 +14,15 @@ contourpy==1.1.0
     # via matplotlib
 cycler==0.11.0
     # via matplotlib
-dataset==1.6.0
+dataset==1.6.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-fonttools==4.40.0
+fonttools==4.41.0
     # via matplotlib
 greenlet==2.0.2
     # via sqlalchemy
-importlib-metadata==6.7.0
+importlib-metadata==6.8.0
     # via alembic
-importlib-resources==5.12.0
+importlib-resources==6.0.0
     # via
     #   alembic
     #   matplotlib
@@ -63,7 +63,7 @@ typing-extensions==4.7.1
     # via alembic
 tzdata==2023.3
     # via pandas
-zipp==3.15.0
+zipp==3.16.1
     # via
     #   importlib-metadata
     #   importlib-resources

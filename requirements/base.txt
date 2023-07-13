@@ -26,16 +26,16 @@ certifi==2023.5.7
     # via requests
 cffi==1.15.1
     # via cryptography
-charset-normalizer==3.1.0
+charset-normalizer==3.2.0
     # via requests
-click==8.1.3
+click==8.1.4
     # via
     #   -r requirements/base.in
     #   bowler
     #   moreorless
 constantly==15.1.0
     # via twisted
-cryptography==41.0.1
+cryptography==41.0.2
     # via
     #   pyjwt
     #   pyopenssl
@@ -51,7 +51,7 @@ docutils==0.20.1
     # via statistics
 exceptiongroup==1.1.2
     # via pytest
-execnet==1.9.0
+execnet==2.0.2
     # via pytest-xdist
 filelock==3.12.2
     # via
@@ -64,7 +64,7 @@ gitdb==4.0.10
     # via gitpython
 github3-py==4.0.1
     # via -r requirements/base.in
-gitpython==3.1.31
+gitpython==3.1.32
     # via -r requirements/base.in
 hyperlink==21.0.0
     # via twisted
@@ -117,11 +117,11 @@ parsel==1.8.1
     # via
     #   itemloaders
     #   scrapy
-path==16.6.0
+path==16.7.1
     # via path-py
 path-py==12.5.0
     # via -r requirements/base.in
-platformdirs==3.8.0
+platformdirs==3.8.1
     # via virtualenv
 pluggy==1.2.0
     # via
