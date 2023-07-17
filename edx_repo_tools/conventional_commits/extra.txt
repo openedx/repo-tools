@@ -4,10 +4,8 @@
 #
 #    make upgrade
 #
-alembic==1.10.4
-    # via
-    #   -c edx_repo_tools/conventional_commits/../../requirements/constraints.txt
-    #   dataset
+alembic==1.11.1
+    # via dataset
 banal==1.0.6
     # via dataset
 contourpy==1.1.0
@@ -63,7 +61,7 @@ typing-extensions==4.7.1
     # via alembic
 tzdata==2023.3
     # via pandas
-zipp==3.16.1
+zipp==3.16.2
     # via
     #   importlib-metadata
     #   importlib-resources
