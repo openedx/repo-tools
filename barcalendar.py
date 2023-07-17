@@ -261,7 +261,7 @@ def get_defaults_from_tutor():
             resp = requests.get(url, timeout=10)
         except requests.RequestException as exc:
             print(f"Couldn't fetch {url}: {exc}")
-            return None
+            raise
         if resp.status_code == 429:
             wait = int(resp.headers.get("Retry-After", 10))
             time.sleep(wait + 1)
@@ -270,7 +270,7 @@ def get_defaults_from_tutor():
 
     if resp.status_code == 200:
         return yaml.safe_load(resp.text)
-    return None
+    raise RuntimeError(f"Couldn't fetch {url}: {resp.status_code}")
 
 def parse_version_number(line):
     """
