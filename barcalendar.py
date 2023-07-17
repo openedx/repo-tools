@@ -290,7 +290,7 @@ def parse_version_name(line):
     e.g.1 "open-release/palm.1" -> "Palm"
     e.g.2 "open-release/palm.master" -> "Palm"
     """
-    match = re.search(r'(?P<version_name>[A-Za-z]+)(\.\w*)*$', line)
+    match = re.search(r'/(?P<version_name>[A-Za-z]+)\.', line)
     if match is not None:
         version_name = match.group("version_name")
         return version_name.capitalize()
