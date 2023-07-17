@@ -22,7 +22,7 @@ import itertools
 import re
 import requests
 import time
-from yaml import safe_load
+import yaml
 
 
 def css_to_rgb(hex):
@@ -269,7 +269,7 @@ def get_defaults_from_tutor():
             break
 
     if resp.status_code == 200:
-        return safe_load(resp.text)
+        return yaml.safe_load(resp.text)
     return None
 
 def parse_version_number(line):
