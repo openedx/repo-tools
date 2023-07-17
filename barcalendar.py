@@ -270,7 +270,7 @@ def get_defaults_from_tutor():
 
     if resp.status_code == 200:
         return yaml.safe_load(resp.text)
-    raise RuntimeError(f"Couldn't fetch {url}: {resp.status_code}")
+    resp.raise_for_status()
 
 def parse_version_number(line):
     """
