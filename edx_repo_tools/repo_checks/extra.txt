@@ -10,7 +10,7 @@ certifi==2023.5.7
     # via requests
 charset-normalizer==3.2.0
     # via requests
-click==8.1.4
+click==8.1.5
     # via -r edx_repo_tools/repo_checks/extra.in
 fastcore==1.5.29
     # via ghapi
@@ -19,7 +19,9 @@ ghapi==1.0.4
 idna==3.4
     # via requests
 packaging==23.1
-    # via ghapi
+    # via
+    #   fastcore
+    #   ghapi
 pyyaml==6.0
     # via -r edx_repo_tools/repo_checks/extra.in
 requests==2.31.0
