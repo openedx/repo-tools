@@ -287,9 +287,10 @@ def parse_version_number(line):
 def parse_version_name(line):
     """
     Get openedx version name in line from YAML file.
-    e.g. "open-release/palm.1" -> "Palm"
+    e.g.1 "open-release/palm.1" -> "Palm"
+    e.g.2 "open-release/palm.master" -> "Palm"
     """
-    match = re.search(r'(?P<version_name>[A-Za-z]+)[\.\d+]*$', line)
+    match = re.search(r'(?P<version_name>[A-Za-z]+)(\.\w*)*$', line)
     if match is not None:
         version_name = match.group("version_name")
         return version_name.capitalize()
