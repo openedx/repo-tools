@@ -307,15 +307,15 @@ versions = get_defaults_from_tutor()
 
 # The current versions of everything.  Use the same strings as the keys in the various sections below.
 CURRENT = {
-    "Open edX": f"{parse_version_name(versions['OPENEDX_COMMON_VERSION'])}",
+    "Open edX": parse_version_name(versions['OPENEDX_COMMON_VERSION']),
     "Python": "3.8",
     "Django": "3.2",
     "Ubuntu": "20.04",
     "Node": "16.x",
-    "Mongo": f"{parse_version_number(versions['DOCKER_IMAGE_MONGODB'])}",
-    "MySQL": f"{parse_version_number(versions['DOCKER_IMAGE_MYSQL'])}",
-    "Elasticsearch": f"{parse_version_number(versions['DOCKER_IMAGE_ELASTICSEARCH'])}",
-    "Redis": f"{parse_version_number(versions['DOCKER_IMAGE_REDIS'])}",
+    "Mongo": parse_version_number(versions['DOCKER_IMAGE_MONGODB']),
+    "MySQL": parse_version_number(versions['DOCKER_IMAGE_MYSQL']),
+    "Elasticsearch": parse_version_number(versions['DOCKER_IMAGE_ELASTICSEARCH']),
+    "Redis": parse_version_number(versions['DOCKER_IMAGE_REDIS']),
     "Ruby": "3.0",
 }
 
