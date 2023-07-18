@@ -20,10 +20,10 @@ import colorsys
 import datetime
 import itertools
 import re
-import requests
 import time
-import yaml
 
+import requests
+import yaml
 
 def css_to_rgb(hex):
     assert hex[0] == "#"
