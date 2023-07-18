@@ -282,7 +282,7 @@ def parse_version_number(line):
     if match is not None:
         version_number = match.group("version_number")
         return version_number
-    return None
+    raise ValueError(f"Couldn't get version number from {line!r}")
 
 def parse_version_name(line):
     """
@@ -294,7 +294,7 @@ def parse_version_name(line):
     if match is not None:
         version_name = match.group("version_name")
         return version_name.capitalize()
-    return None
+    raise ValueError(f"Couldn't get version name from {line!r}")
 
 # ==== Editable content ====
 
