@@ -22,5 +22,5 @@ rich==13.4.2
     # via -r edx_repo_tools/find_dependencies/extra.in
 typing-extensions==4.7.1
     # via rich
-urllib3==2.0.3
+urllib3==2.0.4
     # via requests

@@ -43,7 +43,7 @@ charset-normalizer==3.2.0
     # via
     #   -r requirements/base.txt
     #   requests
-click==8.1.5
+click==8.1.6
     # via
     #   -r requirements/base.txt
     #   bowler
@@ -202,7 +202,7 @@ pbr==5.11.1
     # via stevedore
 pep8==1.7.1
     # via -r requirements/development.in
-pip-tools==7.0.0
+pip-tools==7.1.0
     # via -r requirements/development.in
 platformdirs==3.9.1
     # via
@@ -239,7 +239,7 @@ pydispatcher==2.0.7
     # via
     #   -r requirements/base.txt
     #   scrapy
-pyjwt[crypto]==2.7.0
+pyjwt[crypto]==2.8.0
     # via
     #   -r requirements/base.txt
     #   github3-py
@@ -284,7 +284,7 @@ python-dotenv==1.0.0
     # via -r requirements/base.txt
 python-slugify==8.0.1
     # via code-annotations
-pyyaml==6.0
+pyyaml==6.0.1
     # via
     #   -r requirements/base.txt
     #   code-annotations
@@ -391,14 +391,14 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-urllib3==2.0.3
+urllib3==2.0.4
     # via
     #   -r requirements/base.txt
     #   requests
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.24.0
+virtualenv==20.24.1
     # via
     #   -r requirements/base.txt
     #   tox

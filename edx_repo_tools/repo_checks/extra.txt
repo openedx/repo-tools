@@ -10,7 +10,7 @@ certifi==2023.5.7
     # via requests
 charset-normalizer==3.2.0
     # via requests
-click==8.1.5
+click==8.1.6
     # via -r edx_repo_tools/repo_checks/extra.in
 fastcore==1.5.29
     # via ghapi
@@ -22,11 +22,11 @@ packaging==23.1
     # via
     #   fastcore
     #   ghapi
-pyyaml==6.0
+pyyaml==6.0.1
     # via -r edx_repo_tools/repo_checks/extra.in
 requests==2.31.0
     # via -r edx_repo_tools/repo_checks/extra.in
-urllib3==2.0.3
+urllib3==2.0.4
     # via requests
 
 # The following packages are considered to be unsafe in a requirements file:
