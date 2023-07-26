@@ -58,7 +58,7 @@ for fextra in glob.glob("edx_repo_tools/*/extra.txt"):
 # To run tests & linting across the entire repo, we need to install the union
 # of *all* extra requirements lists *plus* the dev-specific requirements.
 # If this list contains conflicting pins, then installing it will fail;
-# that is intentional. 
+# that is intentional.
 EXTRAS_REQUIRE["dev"] = sorted({
     *load_requirements("requirements/development.txt"),
     *(extra_pin for extra_reqs in EXTRAS_REQUIRE.values() for extra_pin in extra_reqs),

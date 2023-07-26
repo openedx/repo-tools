@@ -3,7 +3,6 @@ Collect and report on conventional commit statistics.
 """
 
 import csv
-import datetime
 import fnmatch
 import os
 import os.path
@@ -56,7 +55,7 @@ def load_commits(db, repo_name):
         commit_table = db["commits"]
 
         log = get_cmd_output(GITLOG)
-        for i, commit in enumerate(log.split(SEP + "\n")):
+        for commit in log.split(SEP + "\n"):
             if re.match(r"fatal: your current branch '\w+' does not have any commits yet", commit):
                 # Project-only or uninitialized repos are like this.
                 continue

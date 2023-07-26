@@ -200,8 +200,6 @@ path-py==12.5.0
     # via -r requirements/base.txt
 pbr==5.11.1
     # via stevedore
-pep8==1.7.1
-    # via -r requirements/development.in
 pip-tools==7.0.0
     # via -r requirements/development.in
 platformdirs==3.9.1

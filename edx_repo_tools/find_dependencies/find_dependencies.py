@@ -278,7 +278,7 @@ def find_py_reqs():
         if possible_req.exists():
             return possible_req
     if any(Path(ind).exists() for ind in PY_INDICATORS):
-        print(f"WARNING: {repo_name} is likely a Python package, but we can't find its dependencies.")
+        print(f"WARNING: {os.getcwd()} is likely a Python package, but we can't find its dependencies.")
     return None
 
 

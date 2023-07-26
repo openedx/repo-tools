@@ -38,6 +38,5 @@ upgrade: $(COMMON_CONSTRAINTS_TXT)  ## update the requirements/*.txt files with 
 	pip-compile --upgrade -o requirements/development.txt requirements/development.in
 	for fextra in edx_repo_tools/*/extra.in; do pip-compile --upgrade -o $${fextra%.in}.txt $$fextra; done
 
-lint:				## run pep8 and pylint
-	pep8 || true
-	pylint *.py edx_repo_tools tests || true
+lint:				## run pylint
+	pylint *.py edx_repo_tools tests
