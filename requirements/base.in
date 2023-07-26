@@ -14,12 +14,10 @@ gitpython
 lazy
 lockfile
 more_itertools
-numpy
 path.py
 python-dateutil
 python-dotenv
 requests
-scrapy
 statistics
 tqdm
 uritemplate
@@ -34,6 +32,3 @@ pytest-xdist
 
 # tox is used by the OEP10 checker
 tox
-
-# See https://github.com/pycontribs/jira/issues/325
-jira==1.0.3
