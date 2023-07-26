@@ -6,7 +6,7 @@
 #
 appdirs==1.4.4
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   fissix
 astroid==2.15.6
     # via
@@ -14,38 +14,38 @@ astroid==2.15.6
     #   pylint-celery
 attrs==23.1.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   automat
     #   bowler
     #   service-identity
     #   twisted
 automat==22.10.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   twisted
 backports-csv==1.0.7
-    # via -r requirements/base.txt
+    # via -r base.txt
 bowler==0.9.0
-    # via -r requirements/base.txt
+    # via -r base.txt
 build==0.10.0
     # via pip-tools
 cachecontrol==0.13.1
-    # via -r requirements/base.txt
-certifi==2023.5.7
+    # via -r base.txt
+certifi==2023.7.22
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   requests
 cffi==1.15.1
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   cryptography
 charset-normalizer==3.2.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   requests
 click==8.1.5
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   bowler
     #   click-log
     #   code-annotations
@@ -58,105 +58,101 @@ code-annotations==1.3.0
     # via edx-lint
 constantly==15.1.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   twisted
 cryptography==41.0.2
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   pyjwt
     #   pyopenssl
     #   scrapy
     #   service-identity
 cssselect==1.2.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   parsel
     #   scrapy
 dill==0.3.6
     # via pylint
 distlib==0.3.7
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   virtualenv
 docutils==0.20.1
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   statistics
 edx-lint==5.3.4
-    # via -r requirements/development.in
-exceptiongroup==1.1.2
-    # via
-    #   -r requirements/base.txt
-    #   pytest
+    # via -r development.in
 execnet==2.0.2
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   pytest-xdist
 filelock==3.12.2
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   tldextract
     #   tox
     #   virtualenv
 fissix==21.11.13
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   bowler
 gitdb==4.0.10
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   gitpython
 github3-py==4.0.1
-    # via -r requirements/base.txt
+    # via -r base.txt
 gitpython==3.1.32
-    # via -r requirements/base.txt
+    # via -r base.txt
 hyperlink==21.0.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   twisted
 idna==3.4
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   hyperlink
     #   requests
     #   tldextract
 incremental==22.10.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   twisted
 iniconfig==2.0.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   pytest
 isort==5.12.0
     # via pylint
 itemadapter==0.8.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   itemloaders
     #   scrapy
 itemloaders==1.1.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   scrapy
 jinja2==3.1.2
     # via code-annotations
 jira==1.0.3
-    # via -r requirements/base.txt
+    # via -r base.txt
 jmespath==1.0.1
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   itemloaders
     #   parsel
 lazy==1.5
-    # via -r requirements/base.txt
+    # via -r base.txt
 lazy-object-proxy==1.9.0
     # via astroid
 lockfile==0.12.2
-    # via -r requirements/base.txt
+    # via -r base.txt
 lxml==4.9.3
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   parsel
     #   scrapy
 markupsafe==2.1.3
@@ -164,24 +160,24 @@ markupsafe==2.1.3
 mccabe==0.7.0
     # via pylint
 more-itertools==9.1.0
-    # via -r requirements/base.txt
+    # via -r base.txt
 moreorless==0.4.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   bowler
 msgpack==1.0.5
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   cachecontrol
 numpy==1.24.4
-    # via -r requirements/base.txt
+    # via -r base.txt
 oauthlib==3.2.2
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   requests-oauthlib
 packaging==23.1
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   build
     #   parsel
     #   pytest
@@ -189,57 +185,57 @@ packaging==23.1
     #   tox
 parsel==1.8.1
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   itemloaders
     #   scrapy
 path==16.7.1
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   path-py
 path-py==12.5.0
-    # via -r requirements/base.txt
+    # via -r base.txt
 pbr==5.11.1
     # via stevedore
 pip-tools==7.0.0
-    # via -r requirements/development.in
+    # via -r development.in
 platformdirs==3.9.1
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   pylint
     #   virtualenv
 pluggy==1.2.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   pytest
     #   tox
 protego==0.2.1
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   scrapy
 py==1.11.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   tox
 pyasn1==0.5.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   pyasn1-modules
     #   service-identity
 pyasn1-modules==0.3.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   service-identity
 pycparser==2.21
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   cffi
 pydispatcher==2.0.7
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   scrapy
 pyjwt[crypto]==2.7.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   github3-py
 pylint==2.17.4
     # via
@@ -257,43 +253,43 @@ pylint-plugin-utils==0.8.2
     #   pylint-django
 pyopenssl==23.2.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   scrapy
 pyproject-hooks==1.0.0
     # via build
 pytest==7.4.0
     # via
-    #   -r requirements/base.txt
-    #   -r requirements/development.in
+    #   -r base.txt
+    #   -r development.in
     #   pytest-logging
     #   pytest-mock
     #   pytest-xdist
 pytest-logging==2015.11.4
-    # via -r requirements/base.txt
+    # via -r base.txt
 pytest-mock==3.11.1
-    # via -r requirements/development.in
+    # via -r development.in
 pytest-xdist==3.3.1
-    # via -r requirements/base.txt
+    # via -r base.txt
 python-dateutil==2.8.2
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   github3-py
 python-dotenv==1.0.0
-    # via -r requirements/base.txt
+    # via -r base.txt
 python-slugify==8.0.1
     # via code-annotations
 pyyaml==6.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   code-annotations
     #   responses
 queuelib==1.6.2
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   scrapy
 requests==2.31.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   cachecontrol
     #   github3-py
     #   jira
@@ -304,33 +300,33 @@ requests==2.31.0
     #   tldextract
 requests-file==1.5.1
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   tldextract
 requests-oauthlib==1.3.1
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   jira
 requests-toolbelt==1.0.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   jira
 responses==0.23.1
-    # via -r requirements/development.in
+    # via -r development.in
 ruamel-yaml==0.17.32
-    # via -r requirements/base.txt
+    # via -r base.txt
 ruamel-yaml-clib==0.2.7
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   ruamel-yaml
 scrapy==2.9.0
-    # via -r requirements/base.txt
+    # via -r base.txt
 service-identity==23.1.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   scrapy
 six==1.16.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   automat
     #   edx-lint
     #   jira
@@ -340,73 +336,62 @@ six==1.16.0
     #   tox
 smmap==5.0.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   gitdb
 statistics==1.0.3.5
-    # via -r requirements/base.txt
+    # via -r base.txt
 stevedore==5.1.0
     # via code-annotations
 text-unidecode==1.3
     # via python-slugify
 tldextract==3.4.4
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   scrapy
 tlslite==0.4.9
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   jira
-tomli==2.0.1
-    # via
-    #   -r requirements/base.txt
-    #   build
-    #   pip-tools
-    #   pylint
-    #   pyproject-hooks
-    #   pytest
-    #   tox
 tomlkit==0.11.8
     # via pylint
 tox==3.28.0
     # via
-    #   -c requirements/common_constraints.txt
-    #   -r requirements/base.txt
+    #   -c common_constraints.txt
+    #   -r base.txt
 tqdm==4.65.0
-    # via -r requirements/base.txt
+    # via -r base.txt
 twisted==22.10.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   scrapy
 types-pyyaml==6.0.12.10
     # via responses
 typing-extensions==4.7.1
     # via
-    #   -r requirements/base.txt
-    #   astroid
-    #   pylint
+    #   -r base.txt
     #   twisted
 uritemplate==4.1.1
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   github3-py
 urllib3==2.0.3
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   requests
     #   responses
 urlobject==2.4.3
-    # via -r requirements/base.txt
+    # via -r base.txt
 virtualenv==20.24.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   tox
 volatile==2.1.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   bowler
 w3lib==2.1.1
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   itemloaders
     #   parsel
     #   scrapy
@@ -416,7 +401,7 @@ wrapt==1.15.0
     # via astroid
 zope-interface==6.0
     # via
-    #   -r requirements/base.txt
+    #   -r base.txt
     #   scrapy
     #   twisted
 
