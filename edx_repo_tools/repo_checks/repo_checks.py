@@ -817,9 +817,9 @@ class RequiredCLACheck(Check):
             "https://api.github.com"
             + self.api.repos.update_branch_protection.path.format(**params)
         )
-        resp = requests.put(
+        resp = requests.put(  # pylint: disable=missing-timeout
             url, headers=headers, json=params
-        )  # pylint: disable=missing-timeout
+        )
 
         resp.raise_for_status()
 

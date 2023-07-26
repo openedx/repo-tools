@@ -139,14 +139,14 @@ class GsheetCalendar(BaseCalendar):
                 for (m = 0; m < 12; m++) {{
                     sheet.getRange({monthrow}, {iyear}+m).setValue("JFMAMJJASOND"[m]);
                 }}
-                """);
+                """)
         print(f"""\
             sheet.getRange({yearrow}, 1, 1, {self.width})
                 .setFontWeight("bold")
                 .setHorizontalAlignment("center");
             sheet.getRange({monthrow}, 1, 1, {self.width})
                 .setHorizontalAlignment("center");
-            """);
+            """)
         print(f"""\
             var rules = sheet.getConditionalFormatRules();
             rules.push(
@@ -275,7 +275,7 @@ def get_defaults_from_tutor():
 def parse_version_number(line):
     """
     Get version number in line from YAML file.
-    Note that this only captures major and minor version (not patch number). 
+    Note that this only captures major and minor version (not patch number).
     e.g. "docker.io/elasticsearch:7.17.9" -> "7.17"
     """
     match = re.search(r'(?P<version_number>\d+(\.\d+)?)', line)

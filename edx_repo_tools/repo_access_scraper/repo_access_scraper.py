@@ -55,10 +55,10 @@ def screenshot_pages(page, url, image_prefix):
         page.screenshot(path=f"{IMAGES_DIR}/{image_prefix}-{imgnum}.png", full_page=True)
 
         # If there's a next page, visit it.
-        next = page.locator("a.next_page")
-        if next.count():
+        next_page = page.locator("a.next_page")
+        if next_page.count():
             with page.expect_navigation():
-                next.click()
+                next_page.click()
         else:
             # No next page, we're done here.
             break
@@ -72,7 +72,7 @@ def request_list(url):
     """
     data = []
     while url:
-        resp = requests.get(url, headers=HEADERS)
+        resp = requests.get(url, headers=HEADERS, timeout=60)
         data.extend(resp.json())
         url = None
         if "link" in resp.headers:
@@ -84,7 +84,7 @@ def request_list(url):
 
 def request_dict(url):
     """Get dict data from a GitHub URL."""
-    return requests.get(url, headers=HEADERS).json()
+    return requests.get(url, headers=HEADERS, timeout=60).json()
 
 def counted(things: list, thing_name: str) -> str:
     """
