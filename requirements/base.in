@@ -1,5 +1,9 @@
 -c constraints.txt
 
+# TODO: This list could be trimmed down by moving
+# some requirements out to the extra.in files of the tools
+# that actually need them.
+
 CacheControl
 PyYAML
 appdirs

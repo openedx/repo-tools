@@ -1,4 +1,3 @@
-#!/usr/bin/env python3.6
 """
 Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
 
@@ -20,7 +19,11 @@ Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
 import colorsys
 import datetime
 import itertools
+import re
+import time
 
+import requests
+import yaml
 
 def css_to_rgb(hex):
     assert hex[0] == "#"
@@ -75,6 +78,7 @@ class GsheetCalendar(BaseCalendar):
         self.currow = 1
         self.cycling = None
         self.gaps = []
+        self.footnotes = []
         self.prologue()
 
     def prologue(self):
@@ -82,6 +86,7 @@ class GsheetCalendar(BaseCalendar):
             function makeBarCalendar() {{
             var sheet = SpreadsheetApp.getActiveSheet();
             sheet.getDataRange().deleteCells(SpreadsheetApp.Dimension.ROWS);
+            sheet.insertRowsAfter(sheet.getDataRange().getLastRow(), 200);
             """)
 
     def epilog(self):
@@ -96,12 +101,12 @@ class GsheetCalendar(BaseCalendar):
                 sheet.setRowHeight({gap_row}, 6);
             """)
         print(f"""\
-            var keepRows = 10;
+            var keepRows = 0;   // Number of extra rows to keep at the bottom.
             var tooMany = sheet.getMaxRows() - range.getLastRow() - keepRows;
             if (tooMany > 0) {{
                 sheet.deleteRows(range.getLastRow() + keepRows + 1, tooMany);
             }}
-            var keepCols = 1;
+            var keepCols = 0;   // Number of extra columns to keep at the right.
             var tooMany = sheet.getMaxColumns() - range.getLastColumn() - keepCols;
             if (tooMany > 0) {{
                 sheet.deleteColumns(range.getLastColumn() + keepCols + 1, tooMany);
@@ -134,14 +139,14 @@ class GsheetCalendar(BaseCalendar):
                 for (m = 0; m < 12; m++) {{
                     sheet.getRange({monthrow}, {iyear}+m).setValue("JFMAMJJASOND"[m]);
                 }}
-                """);
+                """)
         print(f"""\
             sheet.getRange({yearrow}, 1, 1, {self.width})
                 .setFontWeight("bold")
                 .setHorizontalAlignment("center");
             sheet.getRange({monthrow}, 1, 1, {self.width})
                 .setHorizontalAlignment("center");
-            """);
+            """)
         print(f"""\
             var rules = sheet.getConditionalFormatRules();
             rules.push(
@@ -161,7 +166,7 @@ class GsheetCalendar(BaseCalendar):
             sheet.setConditionalFormatRules(rules);
             """)
 
-    def rawbar(self, istart, iend, name, color=None, text_color=None, current=False, indefinite=False):
+    def rawbar(self, istart, iend, name, color=None, text_color=None, current=False, indefinite=False, note=None):
         formatting = ""
         if color:
             if current:
@@ -174,11 +179,15 @@ class GsheetCalendar(BaseCalendar):
             formatting += f""".setFontWeight("bold")"""
         if indefinite:
             iend = self.width - 24
+        text = name
+        if note:
+            self.footnotes.append(note)
+            text = f"{text} (note {len(self.footnotes)})"
         print(f"""\
             sheet.getRange({self.currow}, {istart + 1}, 1, {iend - istart + 1})
                 .merge()
                 {formatting}
-                .setValue({name!r});
+                .setValue({text!r});
             """)
         if indefinite:
             for i in range(4):
@@ -222,6 +231,10 @@ class GsheetCalendar(BaseCalendar):
             sheet.getRange({self.currow}, {self.width - 10}).setValue({text!r});
             """)
 
+    def footnote_lines(self):
+        for i, note in enumerate(self.footnotes, start=1):
+            self.text_line(f"Note {i}: {note}")
+
     def freeze_here(self):
         print(f"""\
             sheet.setFrozenRows({self.currow - 1});
@@ -236,26 +249,74 @@ class GsheetCalendar(BaseCalendar):
     def write(self):
         self.epilog()
 
+def get_defaults_from_tutor():
+    """
+    Fetches default configurations from tutor repository.
+    Returns:
+        object: Default configurations as Python object
+    """
+    url = "https://raw.githubusercontent.com/overhangio/tutor/master/tutor/templates/config/defaults.yml"
+    while True:
+        try:
+            resp = requests.get(url, timeout=10)
+        except requests.RequestException as exc:
+            print(f"Couldn't fetch {url}: {exc}")
+            raise
+        if resp.status_code == 429:
+            wait = int(resp.headers.get("Retry-After", 10))
+            time.sleep(wait + 1)
+        else:
+            break
+
+    if resp.status_code == 200:
+        return yaml.safe_load(resp.text)
+    resp.raise_for_status()
+
+def parse_version_number(line):
+    """
+    Get version number in line from YAML file.
+    Note that this only captures major and minor version (not patch number).
+    e.g. "docker.io/elasticsearch:7.17.9" -> "7.17"
+    """
+    match = re.search(r'(?P<version_number>\d+(\.\d+)?)', line)
+    if match is not None:
+        version_number = match.group("version_number")
+        return version_number
+    raise ValueError(f"Couldn't get version number from {line!r}")
+
+def parse_version_name(line):
+    """
+    Get openedx version name in line from YAML file.
+    e.g.1 "open-release/palm.1" -> "Palm"
+    e.g.2 "open-release/palm.master" -> "Palm"
+    """
+    match = re.search(r'/(?P<version_name>[A-Za-z]+)\.', line)
+    if match is not None:
+        version_name = match.group("version_name")
+        return version_name.capitalize()
+    raise ValueError(f"Couldn't get version name from {line!r}")
 
 # ==== Editable content ====
 
 # Global Options
-START_YEAR = 2018
-END_YEAR = 2025
+START_YEAR = 2020
+END_YEAR = 2027
 LTS_ONLY = True
+
+versions = get_defaults_from_tutor()
 
 # The current versions of everything.  Use the same strings as the keys in the various sections below.
 CURRENT = {
-    "Open edX": "Olive",
+    "Open edX": parse_version_name(versions['OPENEDX_COMMON_VERSION']),
     "Python": "3.8",
     "Django": "3.2",
     "Ubuntu": "20.04",
     "Node": "16.x",
-    "Mongo": "4.2",
-    "MySQL": "5.7",
-    "Elasticsearch": "7.10",
-    "Redis": "5.6",
-    "Ruby": "2.5",
+    "Mongo": parse_version_number(versions['DOCKER_IMAGE_MONGODB']),
+    "MySQL": parse_version_number(versions['DOCKER_IMAGE_MYSQL']),
+    "Elasticsearch": parse_version_number(versions['DOCKER_IMAGE_ELASTICSEARCH']),
+    "Redis": parse_version_number(versions['DOCKER_IMAGE_REDIS']),
+    "Ruby": "3.0",
 }
 
 cal = GsheetCalendar(START_YEAR, END_YEAR)
@@ -327,14 +388,21 @@ django_releases = [
     ('3.2', 2021, 4, True),
     ('4.0', 2022, 1, False),
     ('4.1', 2022, 8, False),
-    ('4.2', 2023, 4, True),
+    ('4.2', 2023, 4, True, "Django 4.2 work is being tracked in https://github.com/openedx/platform-roadmap/issues/269"),
 ]
-for name, year, month, lts in django_releases:
+for name, year, month, lts, *more in django_releases:
     if LTS_ONLY and not lts:
         continue
     length = 3*12 if lts else 16
     color = "#44b78b" if lts else "#c9f0df"
-    cal.bar(f"Django {name}", start=(year, month), length=length, color=color, current=(name==CURRENT["Django"]))
+    cal.bar(
+        f"Django {name}",
+        start=(year, month),
+        length=length,
+        color=color,
+        current=(name==CURRENT["Django"]),
+        note=(more[0] if more else None),
+    )
 cal.gap_line()
 
 # Python releases
@@ -424,11 +492,12 @@ es_releases = [
     # ('2.4', 2016, 8, 2018, 2),
     # ('5.6', 2017, 9, 2019, 3),
     # ('6.8', 2019, 5, 2020, 11),
-    ('7.8', 2020, 6, 2021, 12),
+    # ('7.8', 2020, 6, 2021, 12),
     ('7.10', 2020, 11, 2022, 5),
     ('7.11', 2021, 2, 2022, 8),
     ('7.12', 2021, 3, 2022, 9),
     ('7.13', 2021, 5, 2022, 11),
+    ('7.17', 2022, 2, 2023, 8),
 ]
 for name, syear, smonth, eyear, emonth in es_releases:
     cal.bar(f"Elasticsearch {name}", start=(syear, smonth), end=(eyear, emonth), color="#4595ba", current=(name==CURRENT["Elasticsearch"]))
@@ -440,8 +509,8 @@ cal.section_note("https://docs.redis.com/latest/rs/administering/product-lifecyc
 redis_releases = [
     ('5.6', 2020, 4, 2021, 10),
     ('6.0', 2020, 5, 2022, 5),
-    ('6.2', 2021, 8, 2023, 2),
-    ('7.0', 2022, 4, 2023, 10),
+    ('6.2', 2021, 8, 2024, 4),
+    ('7.0', 2022, 4, 2025, 4),
 ]
 for name, syear, smonth, eyear, emonth in redis_releases:
     cal.bar(f"Redis {name}", start=(syear, smonth), end=(eyear, emonth), color="#963029", text_color="white", current=(name==CURRENT["Redis"]))
@@ -455,15 +524,24 @@ ruby_releases = [
     ('2.5', 2017, 12, 2021, 3),
     ('2.6', 2018, 12, 2022, 3),
     ('2.7', 2019, 12, 2023, 3),
-    ('3.0', 2020, 12, 2024, 3),
+    ('3.0', 2020, 12, 2024, 3, "Updated to Ruby 3 in https://github.com/openedx/cs_comments_service/pull/392, but not updated on edx.org"),
     ('3.1', 2021, 12, 2025, 3),
 ]
-for name, syear, smonth, eyear, emonth in ruby_releases:
-    cal.bar(f"Ruby {name}", start=(syear, smonth), end=(eyear, emonth), color="#DE3F24", current=(name==CURRENT["Ruby"]))
+for name, syear, smonth, eyear, emonth, *more in ruby_releases:
+    cal.bar(
+        f"Ruby {name}",
+        start=(syear, smonth),
+        end=(eyear, emonth),
+        color="#DE3F24",
+        current=(name==CURRENT["Ruby"]),
+        note=(more[0] if more else None),
+    )
 cal.gap_line()
 
 
 cal.text_line("")
+cal.footnote_lines()
+cal.gap_line()
 cal.text_line("Created by https://github.com/openedx/repo-tools/blob/master/barcalendar.py")
 
 cal.write()

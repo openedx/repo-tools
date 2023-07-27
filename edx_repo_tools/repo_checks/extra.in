@@ -1,0 +1,7 @@
+-c ../../requirements/constraints.txt
+
+cache_to_disk
+click
+ghapi
+pyyaml
+requests

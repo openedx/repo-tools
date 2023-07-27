@@ -1,0 +1,178 @@
+# Repository labels to be synced across the entire org.
+# Every item must have a name, color, and description.
+
+# Notes:
+# * Repositories may define their own labels as long as they don't
+#   conflict with what's listed here. If it turns out a repository-specific
+#   label would be useful to have in the entire organization, we can always add
+#   it here post facto.
+# * We have added these based on need. They are not all-encompassing. If something
+#   seems missing, feel free to open a PR.
+# * Whenever a repo has a matching label, that label will be updated. If there
+#   is no matching label, the label will be created anew. "Matching" is determined
+#   by comparing the label's lowercased name, with all puncutation, emoji, and special
+#   chars removed.
+# * For picking hex colors, you might use: https://www.color-hex.com/
+#   Describe your color with a comment so it's easier to review.
+
+
+### LABELS INDICATING HOW ISSUES CAN BE ENAGAGED WITH.
+
+- name: "good first issue"
+  color: "42dd35"  # friendly lime green
+  description: "A good task for a newcomer to start with"
+
+- name: "help wanted"
+  color: "54976d"  # fenway green
+  description: "Ready to be picked up by anyone in the community"
+
+
+### LABELS INDICATING BROAD THEMES OF WORK.
+### MORE THAN ONE OF THESE MAY APPLY AT A TIME.
+
+- name: "maintenance"
+  color: "ff9125"  # construction orange
+  description: "Routine upkeep necessary for the health of the platform"
+
+- name: "code health"
+  color: "f0d165"  # caution yellow
+  description: "Proactive technical investment via refactorings, removals, etc."
+
+- name: "security"
+  color: "000000"  # black
+  description: "Relates to improving to the security posture of the platform"
+
+- name: "a11y"
+  color: "ffffff"  # white
+  description: "Relates to platform accessibility"
+
+- name: "enhancement"
+  color: "a2eeef"  # electric blue!
+  description: "Relates to new features or improvements to existing features"
+
+- name: "documentation"
+  color: "0052cc"  # royal blue
+  description: "Relates to documentation improvements"
+
+
+
+### LABELS INDICATING THE SCOPE OR FUNCTION OF THE ISSUE.
+### AT MOST ONE OF THESE SHOULD BE USED AT A TIME.
+
+- name: "depr"
+  color: "3c3cc3"  # indigo-blue
+  description: "Proposal for deprecation & removal per OEP-21"
+
+- name: "bug"
+  color: "d93f0b"  # scarlet red...
+  description: "Report of or fix for something that isn't working as intended"
+
+- name: "discovery"
+  color: "d876e3"  # a curious shade of lavendar
+  description: "Pre-work to determine if an idea is feasible"
+
+- name: "epic"
+  color: "7e027e"  # epic violet
+  description: "Large unit of work, consisting of multiple tasks"
+
+- name: "initiative"
+  color: "340963"  # formidably deep mauve
+  description: "Huge unit of work, consisting of multiple epics"
+
+
+### LABELS INDICATING ISSUE OUTCOMES.
+
+- name: "wontfix"
+  color: "ffffff"  # white
+  description: "This will not be worked on"
+
+- name: "duplicate"
+  color: "cfd3d7"  # duplicitous grey
+  description: "This issue or pull request already exists elsewhere"
+
+
+### LABELS USED IN THE OPEN EDX CONTRIBUTION WORKFLOW.
+### PLEASE CONSULT WITH OPEN EDX PROJECT MANAGMENT BEFORE CHANGING THESE.
+### YOU CAN SEE THE CURRENT PROJECT MANAGERS HERE:
+### https://openedx.atlassian.net/wiki/spaces/COMM/pages/3548807177/Community+Contributions+Project+Manager#Current-OSPR-Project-Managers
+
+# Waiting for the author to respond to change requests, feedback, failing
+# tests, etc. Usually this label is used for PRs in board statuses other
+# than “Waiting for Author” (e.g. the pull request is “In Eng Review”
+# column on the board, but the author needs to address review feedback).
+- name: "waiting on author"
+  color: "bfd6f6"  # baby blue
+  description: "PR author needs to resolve review requests, answer questions, fix tests, etc."
+
+# Used by the PR Triage team to indicate when an author has done all work needed
+# to have this PR be reviewed by an engineer.  The goal is to make it easier for
+# reviewing users/teams to know when their attention is needed.  Similar to "waiting on author"
+# this label is used when the board does not have a relevant status column but need to convey
+# this information.  (e.g. It was set to "In eng review" and the author has addressed all change
+# requests.)
+- name: "waiting for eng review"
+  color: "ebe534" # bright yellow
+  description: "PR is ready for review. Review and merge it, or suggest changes."
+
+# Used by review teams to indicate that a PR or Issue specifically needs the attention of the maintainers
+# and can't be handled by CCs.  The PR Triage team is not expected to use this label. It is expecetd to
+# be used by teams that coordinate upgrades such as the Arbi-BOM team or by triagers at the team level who
+# filter work that needs to be done by the maintaining team vs CCs.
+- name: "needs maintainer attention"
+  color: "ebb134" # orange
+  description: "Issue or PR specifically needs the attention of the maintainer."
+
+# Used when the author has been unresponsive for several months.
+# Typically author will be told “we might need to close this due to
+# inactivity” and if there’s still no response we close it a couple weeks later.
+- name: "inactive"
+  color: "cc950a"  # clay-ish brown
+  description: "PR author has been unresponsive for several months"
+
+# Closed due to PR being abandoned. Typically used after a PR has been abandoned
+ # and labeled as “inactive.”
+- name: "closed inactivity"
+  color: "dbcd00"  # gold
+  description: "PR was closed because the author abandoned it"
+
+# This means an author has not contributed to a particular repo before and needs
+# authorization to be able to run tests on the PR. As of May 2023, test authorization
+# is handled manually by Axim.
+- name: "needs test run"
+  color: "f5424b"  # crimson red
+  description: "Author's first PR to this repository, awaiting test authorization from Axim"
+
+# Automatically added by bot to PRs coming from community contributors
+# other than (a) Axim itself or (b) those under 2U's entity CLA.
+- name: "open-source-contribution"
+  color: "f0f0f0"  # light grey
+  description: "PR author is not from Axim or 2U"
+
+ # Indicates that a PR is blocked.
+ # It should say in the PR why the work is blocked (e.g. waiting to merge a related PR first).
+- name: "blocked by other work"
+  color: "ffa500"  # yellow orange
+  description: "PR cannot be finished until other work is complete"
+
+# Open edX product managers will add this label to PRs which require
+# product review.
+- name: "product review"
+  color: "c97bf7"  # light puple
+  description: "PR requires product review before merging"
+
+# As of May 2023, 2U has a "blended" development structure through which they design, fund &
+# review contributions from other community providers. Their own tools or project managers
+# may add this label in order to manage such contributions.
+- name: "blended"
+  color: "6b360f" # brown
+  description: "PR is managed through 2U's blended developmnt program"
+
+# This label is a manually applied by PR authors or others to indicate that the
+# author is a Core Contributor, which helps set expectations for reviewers and
+# the project managers. Note that Core Contributors have varying levels of
+# access to each repository, and thus still may need someone else to merge
+# their pull request.
+- name: "core contributor"
+  color: "ffd700"  # gold!
+  description: "PR author is a Core Contributor (who may or may not have write access to this repo)."
+

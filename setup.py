@@ -55,6 +55,15 @@ for fextra in glob.glob("edx_repo_tools/*/extra.txt"):
     slug = fextra.split("/")[1]
     EXTRAS_REQUIRE[slug] = load_requirements(fextra)
 
+# To run tests & linting across the entire repo, we need to install the union
+# of *all* extra requirements lists *plus* the dev-specific requirements.
+# If this list contains conflicting pins, then installing it will fail;
+# that is intentional.
+EXTRAS_REQUIRE["dev"] = sorted({
+    *load_requirements("requirements/development.txt"),
+    *(extra_pin for extra_reqs in EXTRAS_REQUIRE.values() for extra_pin in extra_reqs),
+})
+
 setup(
     name='edx-repo-tools',
     version=VERSION,
@@ -76,6 +85,7 @@ setup(
     entry_points={
         'console_scripts': [
             'add_common_constraint = edx_repo_tools.add_common_constraint:main',
+            'add_dependabot_ecosystem = edx_repo_tools.dependabot_yml:main',
             'add_django32_settings = edx_repo_tools.codemods.django3.add_new_django32_settings:main',
             'clone_org = edx_repo_tools.dev.clone_org:main',
             'conventional_commits = edx_repo_tools.conventional_commits.commitstats:main',
@@ -96,12 +106,15 @@ setup(
             'replace_static = edx_repo_tools.codemods.django3.replace_static:main',
             'replace_unicode_with_str = edx_repo_tools.codemods.django3.replace_unicode_with_str:main',
             'repo_access_scraper = edx_repo_tools.repo_access_scraper.repo_access_scraper:main',
+            'repo_checks = edx_repo_tools.repo_checks.repo_checks:main',
             'show_hooks = edx_repo_tools.dev.show_hooks:main',
             'tag_release = edx_repo_tools.release.tag_release:main',
-            'add_dependabot_ecosystem = edx_repo_tools.dependabot_yml:main',
+            'modernize_tox_django42 = edx_repo_tools.codemods.django42.tox_moderniser_django42:main',
+            'modernize_github_actions_django42 = edx_repo_tools.codemods.django42.github_actions_modernizer_django42:main',
         ],
     },
     package_data={
         'edx_repo_tools.oep2.report': ['oep2-report.ini'],
+        'edx_repo_tools.repo_checks': ['labels.yaml'],
     },
 )

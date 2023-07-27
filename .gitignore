@@ -23,5 +23,3 @@ edx_repo_tools.egg-info
 .idea/
 
 build/
-
-fake_repo*
