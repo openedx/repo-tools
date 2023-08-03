@@ -22,20 +22,20 @@ bowler==0.9.0
     # via -r requirements/base.in
 cachecontrol==0.13.1
     # via -r requirements/base.in
-certifi==2023.5.7
+certifi==2023.7.22
     # via requests
 cffi==1.15.1
     # via cryptography
 charset-normalizer==3.2.0
     # via requests
-click==8.1.5
+click==8.1.6
     # via
     #   -r requirements/base.in
     #   bowler
     #   moreorless
 constantly==15.1.0
     # via twisted
-cryptography==41.0.2
+cryptography==41.0.3
     # via
     #   pyjwt
     #   pyopenssl
@@ -97,7 +97,7 @@ lxml==4.9.3
     # via
     #   parsel
     #   scrapy
-more-itertools==9.1.0
+more-itertools==10.0.0
     # via -r requirements/base.in
 moreorless==0.4.0
     # via bowler
@@ -121,7 +121,7 @@ path==16.7.1
     # via path-py
 path-py==12.5.0
     # via -r requirements/base.in
-platformdirs==3.9.1
+platformdirs==3.10.0
     # via virtualenv
 pluggy==1.2.0
     # via
@@ -141,7 +141,7 @@ pycparser==2.21
     # via cffi
 pydispatcher==2.0.7
     # via scrapy
-pyjwt[crypto]==2.7.0
+pyjwt[crypto]==2.8.0
     # via github3-py
 pyopenssl==23.2.0
     # via scrapy
@@ -160,7 +160,7 @@ python-dateutil==2.8.2
     #   github3-py
 python-dotenv==1.0.0
     # via -r requirements/base.in
-pyyaml==6.0
+pyyaml==6.0.1
     # via -r requirements/base.in
 queuelib==1.6.2
     # via scrapy
@@ -222,11 +222,11 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.in
     #   github3-py
-urllib3==2.0.3
+urllib3==2.0.4
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.24.0
+virtualenv==20.24.2
     # via tox
 volatile==2.1.0
     # via bowler

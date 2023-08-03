@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-certifi==2023.5.7
+certifi==2023.7.22
     # via requests
 charset-normalizer==3.2.0
     # via requests
@@ -18,9 +18,9 @@ pygments==2.15.1
     # via rich
 requests==2.31.0
     # via -r edx_repo_tools/find_dependencies/extra.in
-rich==13.4.2
+rich==13.5.2
     # via -r edx_repo_tools/find_dependencies/extra.in
 typing-extensions==4.7.1
     # via rich
-urllib3==2.0.3
+urllib3==2.0.4
     # via requests
