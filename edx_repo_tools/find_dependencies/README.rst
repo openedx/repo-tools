@@ -24,7 +24,7 @@ Run it with a list of local repo directories.  It will traverse into each direct
 
 - second_party_urls.txt is the subset of repo_urls.txt that come from organizations close enough to the Open edX project, that the repos might need to be moved into the openedx organization.
 
-I run it in a tree of all repos, with these commands to example all the repos branched for Olive::
+I run it in a tree of all repos, with these commands to examine all the repos branched for Olive::
 
     $ export OLIVE_DIRS=$(gittreeif origin/open-release/olive.master -q pwd)
     $ find_dependencies $OLIVE_DIRS

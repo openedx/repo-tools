@@ -19,7 +19,11 @@ Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
 import colorsys
 import datetime
 import itertools
+import re
+import time
 
+import requests
+import yaml
 
 def css_to_rgb(hex):
     assert hex[0] == "#"
@@ -135,14 +139,14 @@ class GsheetCalendar(BaseCalendar):
                 for (m = 0; m < 12; m++) {{
                     sheet.getRange({monthrow}, {iyear}+m).setValue("JFMAMJJASOND"[m]);
                 }}
-                """);
+                """)
         print(f"""\
             sheet.getRange({yearrow}, 1, 1, {self.width})
                 .setFontWeight("bold")
                 .setHorizontalAlignment("center");
             sheet.getRange({monthrow}, 1, 1, {self.width})
                 .setHorizontalAlignment("center");
-            """);
+            """)
         print(f"""\
             var rules = sheet.getConditionalFormatRules();
             rules.push(
@@ -245,6 +249,52 @@ class GsheetCalendar(BaseCalendar):
     def write(self):
         self.epilog()
 
+def get_defaults_from_tutor():
+    """
+    Fetches default configurations from tutor repository.
+    Returns:
+        object: Default configurations as Python object
+    """
+    url = "https://raw.githubusercontent.com/overhangio/tutor/master/tutor/templates/config/defaults.yml"
+    while True:
+        try:
+            resp = requests.get(url, timeout=10)
+        except requests.RequestException as exc:
+            print(f"Couldn't fetch {url}: {exc}")
+            raise
+        if resp.status_code == 429:
+            wait = int(resp.headers.get("Retry-After", 10))
+            time.sleep(wait + 1)
+        else:
+            break
+
+    if resp.status_code == 200:
+        return yaml.safe_load(resp.text)
+    resp.raise_for_status()
+
+def parse_version_number(line):
+    """
+    Get version number in line from YAML file.
+    Note that this only captures major and minor version (not patch number).
+    e.g. "docker.io/elasticsearch:7.17.9" -> "7.17"
+    """
+    match = re.search(r'(?P<version_number>\d+(\.\d+)?)', line)
+    if match is not None:
+        version_number = match.group("version_number")
+        return version_number
+    raise ValueError(f"Couldn't get version number from {line!r}")
+
+def parse_version_name(line):
+    """
+    Get openedx version name in line from YAML file.
+    e.g.1 "open-release/palm.1" -> "Palm"
+    e.g.2 "open-release/palm.master" -> "Palm"
+    """
+    match = re.search(r'/(?P<version_name>[A-Za-z]+)\.', line)
+    if match is not None:
+        version_name = match.group("version_name")
+        return version_name.capitalize()
+    raise ValueError(f"Couldn't get version name from {line!r}")
 
 # ==== Editable content ====
 
@@ -253,17 +303,19 @@ START_YEAR = 2020
 END_YEAR = 2027
 LTS_ONLY = True
 
+versions = get_defaults_from_tutor()
+
 # The current versions of everything.  Use the same strings as the keys in the various sections below.
 CURRENT = {
-    "Open edX": "Palm",
+    "Open edX": parse_version_name(versions['OPENEDX_COMMON_VERSION']),
     "Python": "3.8",
     "Django": "3.2",
     "Ubuntu": "20.04",
     "Node": "16.x",
-    "Mongo": "4.2",
-    "MySQL": "5.7",
-    "Elasticsearch": "7.10",
-    "Redis": "5.6",
+    "Mongo": parse_version_number(versions['DOCKER_IMAGE_MONGODB']),
+    "MySQL": parse_version_number(versions['DOCKER_IMAGE_MYSQL']),
+    "Elasticsearch": parse_version_number(versions['DOCKER_IMAGE_ELASTICSEARCH']),
+    "Redis": parse_version_number(versions['DOCKER_IMAGE_REDIS']),
     "Ruby": "3.0",
 }
 
@@ -440,11 +492,12 @@ es_releases = [
     # ('2.4', 2016, 8, 2018, 2),
     # ('5.6', 2017, 9, 2019, 3),
     # ('6.8', 2019, 5, 2020, 11),
-    ('7.8', 2020, 6, 2021, 12),
+    # ('7.8', 2020, 6, 2021, 12),
     ('7.10', 2020, 11, 2022, 5),
     ('7.11', 2021, 2, 2022, 8),
     ('7.12', 2021, 3, 2022, 9),
     ('7.13', 2021, 5, 2022, 11),
+    ('7.17', 2022, 2, 2023, 8),
 ]
 for name, syear, smonth, eyear, emonth in es_releases:
     cal.bar(f"Elasticsearch {name}", start=(syear, smonth), end=(eyear, emonth), color="#4595ba", current=(name==CURRENT["Elasticsearch"]))
