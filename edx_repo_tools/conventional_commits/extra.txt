@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-alembic==1.11.1
+alembic==1.11.2
     # via dataset
 banal==1.0.6
     # via dataset
@@ -14,13 +14,13 @@ cycler==0.11.0
     # via matplotlib
 dataset==1.6.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-fonttools==4.41.1
+fonttools==4.42.0
     # via matplotlib
 greenlet==2.0.2
     # via sqlalchemy
 importlib-metadata==6.8.0
     # via alembic
-importlib-resources==6.0.0
+importlib-resources==6.0.1
     # via
     #   alembic
     #   matplotlib
