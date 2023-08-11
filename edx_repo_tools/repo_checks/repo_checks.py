@@ -106,6 +106,7 @@ class Check:
         self.api = api
         self.org_name = org
         self.repo_name = repo
+        self._repo_cache: dict[tuple[str, str], object] = {}
 
     def is_relevant(self) -> bool:
         """
@@ -149,6 +150,21 @@ class Check:
         """
         raise NotImplementedError
 
+    @cache
+    @property
+    def repo(self) -> object:
+        """
+        Metadata for the checked repo, loaded from the GitHub API.
+
+        Cached (...per check instance! It would be nice to globally cache this, but check fixes
+                are likely to alter repo metadata, so a global repo metadata cache would fall
+                out of date during the lifetime of this script.)
+        """
+        key = (self.org_name, self.repo_name)
+        if key not in self._repo_cache:
+            self._repo_cache[key] = self.api.repos.get(self.org_name, self.repo_name)
+        return self._repo_cache[key]
+
 
 class EnsureWorkflowTemplates(Check):
     """
@@ -188,8 +204,7 @@ class EnsureWorkflowTemplates(Check):
         as the default templates in the `.github` repo.
         """
         # Get the current default branch.
-        repo = self.api.repos.get(self.org_name, self.repo_name)
-        default_branch = repo.default_branch
+        default_branch = self.repo.default_branch
 
         files_that_differ, files_that_are_missing = self._check_branch(default_branch)
         # Return False and save the list of files that need to be updated.
@@ -288,8 +303,7 @@ class EnsureWorkflowTemplates(Check):
                 raise  # For any other unexpected errors.
 
         # Get the hash of the default branch.
-        repo = self.api.repos.get(self.org_name, self.repo_name)
-        default_branch = repo.default_branch
+        default_branch = self.repo.default_branch
         default_branch_sha = self.api.git.get_ref(
             self.org_name,
             self.repo_name,
@@ -668,8 +682,7 @@ class RequiredCLACheck(Check):
         """
         Is the CLA required on the repo? If not, what's wrong?
         """
-        repo = self.api.repos.get(self.org_name, self.repo_name)
-        default_branch = repo.default_branch
+        default_branch = self.repo.default_branch
         # Branch protection rule might not exist.
         try:
             branch_protection = self.api.repos.get_branch_protection(
@@ -723,8 +736,7 @@ class RequiredCLACheck(Check):
             if self.required_checks_has_cla_required:
                 return steps
 
-            repo = self.api.repos.get(self.org_name, self.repo_name)
-            default_branch = repo.default_branch
+            default_branch = self.repo.default_branch
 
             # While the API docs claim that "contexts" is a required part
             # of the put body, it is only required if "checks" is not supplied.
@@ -834,8 +846,7 @@ class RequiredCLACheck(Check):
         """
 
         # TODO: Could use Glom here in the future, but didn't need it.
-        repo = self.api.repos.get(self.org_name, self.repo_name)
-        default_branch = repo.default_branch
+        default_branch = self.repo.default_branch
         protection = self.api.repos.get_branch_protection(
             self.org_name, self.repo_name, default_branch
         )
@@ -880,11 +891,63 @@ class RequiredCLACheck(Check):
         return params
 
 
+class ApplyCatalogInfo:
+    """
+    If catalog-info.yml exists, apply the description and first link as the repo's description and link.
+    """
+
+    def __init__(self):
+        self.catalog_description: str | None = None
+        self.catalog_link: str | None = None
+
+    @cache
+    @property
+    def catalog_info(self) -> dict | None:
+        """
+        Returns a YAML dict if catalog-info.yml exists, or None if it doesn't or can't be parsed.
+        """
+        try:
+            get_github_file_contents(self.org_name, self.repo_name, self.repo.default_branch, "catalog-info.yml")
+        except:
+            # TODO more targeted error handling
+            return None
+
+    @property
+    def catalog_description(self) -> str | None:
+
+    def is_relevant(self) -> bool:
+        return bool(self.catalog_info)
+
+    def check(self):
+        """
+        TODO
+        """
+        self.catalog_description = (self.catalog_info or {}).get("metadata", {}).get("description")
+        links = (self.catalog_info or {}).get("metadata", {}).get("links")
+        if links:
+            self.catalog_link = links[0]
+        repo_description = ... # TODO
+        repo_link = ... # TODO
+        # TODO compare the two
+
+    def fix(self):
+        """
+        TODO
+        """
+
+    def dry_run(self):
+        """
+        TODO
+        """
+
+
+
 CHECKS = [
     RequiredCLACheck,
     RequireTriageTeamAccess,
     EnsureLabels,
     EnsureWorkflowTemplates,
+    ApplyCatalogInfoDescription,
 ]
 CHECKS_BY_NAME = {check_cls.__name__: check_cls for check_cls in CHECKS}
 CHECKS_BY_NAME_LOWER = {check_cls.__name__.lower(): check_cls for check_cls in CHECKS}
