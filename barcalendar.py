@@ -524,7 +524,7 @@ ruby_releases = [
     ('2.5', 2017, 12, 2021, 3),
     ('2.6', 2018, 12, 2022, 3),
     ('2.7', 2019, 12, 2023, 3),
-    ('3.0', 2020, 12, 2024, 3, "Updated to Ruby 3 in https://github.com/openedx/cs_comments_service/pull/392, but not updated on edx.org"),
+    ('3.0', 2020, 12, 2024, 3),
     ('3.1', 2021, 12, 2025, 3),
 ]
 for name, syear, smonth, eyear, emonth, *more in ruby_releases:
