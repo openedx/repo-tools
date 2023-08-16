@@ -166,7 +166,17 @@ class GsheetCalendar(BaseCalendar):
             sheet.setConditionalFormatRules(rules);
             """)
 
-    def rawbar(self, istart, iend, name, color=None, text_color=None, current=False, indefinite=False, note=None):
+    def rawbar(
+        self,
+        istart,
+        iend,
+        name,
+        color=None,
+        text_color=None,
+        current=False,
+        indefinite=False,
+        note=None,
+    ):
         formatting = ""
         if color:
             if current:
@@ -419,7 +429,13 @@ python_releases = [
     ('3.12', 2023, 10, 2028, 10),       # https://peps.python.org/pep-0693/
 ]
 for name, syear, smonth, eyear, emonth in python_releases:
-    cal.bar(f"Python {name}", start=(syear, smonth), end=(eyear, emonth), color="#ffd545", current=(name==CURRENT["Python"]))
+    cal.bar(
+        f"Python {name}",
+        start=(syear, smonth),
+        end=(eyear, emonth),
+        color="#ffd545",
+        current=(name==CURRENT["Python"]),
+    )
 cal.gap_line()
 
 # Ubuntu releases
@@ -440,7 +456,14 @@ for year, month in itertools.product(range(START_YEAR % 100, END_YEAR % 100), [4
     nick = ubuntu_nicks.get(name, '')
     if nick:
         nick = f" {nick}"
-    cal.bar(f"Ubuntu {name}{nick}", (2000+year, month), length=length, color=color, text_color="white", current=(name==CURRENT["Ubuntu"]))
+    cal.bar(
+        f"Ubuntu {name}{nick}",
+        (2000+year, month),
+        length=length,
+        color=color,
+        text_color="white",
+        current=(name==CURRENT["Ubuntu"]),
+    )
 cal.gap_line()
 
 # Node releases
@@ -455,7 +478,14 @@ node_releases = [
     ('18.x', 2022, 4, 2025, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
-    cal.bar(f"Node {name}", start=(syear, smonth), end=(eyear, emonth), color="#2f6c1b", text_color="white", current=(name==CURRENT["Node"]))
+    cal.bar(
+        f"Node {name}",
+        start=(syear, smonth),
+        end=(eyear, emonth),
+        color="#2f6c1b",
+        text_color="white",
+        current=(name==CURRENT["Node"]),
+    )
 cal.gap_line()
 
 # Mongo releases
@@ -470,7 +500,13 @@ mongo_releases = [
     ('4.4', 2020, 7, 2024, 2),
 ]
 for name, syear, smonth, eyear, emonth in mongo_releases:
-    cal.bar(f"Mongo {name}", start=(syear, smonth), end=(eyear, emonth), color="#4da65a", current=(name==CURRENT["Mongo"]))
+    cal.bar(
+        f"Mongo {name}",
+        start=(syear, smonth),
+        end=(eyear, emonth),
+        color="#4da65a",
+        current=(name==CURRENT["Mongo"]),
+    )
 cal.gap_line()
 
 # MySQL releases
@@ -481,7 +517,13 @@ mysql_releases = [
     ('8.0', 2018, 4, 2026, 4),
 ]
 for name, syear, smonth, eyear, emonth in mysql_releases:
-    cal.bar(f"MySQL {name}", start=(syear, smonth), end=(eyear, emonth), color="#b9dc48", current=(name==CURRENT["MySQL"]))
+    cal.bar(
+        f"MySQL {name}",
+        start=(syear, smonth),
+        end=(eyear, emonth),
+        color="#b9dc48",
+        current=(name==CURRENT["MySQL"]),
+    )
 cal.gap_line()
 
 # elasticsearch releases
@@ -500,7 +542,13 @@ es_releases = [
     ('7.17', 2022, 2, 2023, 8),
 ]
 for name, syear, smonth, eyear, emonth in es_releases:
-    cal.bar(f"Elasticsearch {name}", start=(syear, smonth), end=(eyear, emonth), color="#4595ba", current=(name==CURRENT["Elasticsearch"]))
+    cal.bar(
+        f"Elasticsearch {name}",
+        start=(syear, smonth),
+        end=(eyear, emonth),
+        color="#4595ba",
+        current=(name==CURRENT["Elasticsearch"]),
+    )
 cal.gap_line()
 
 # Redis
@@ -513,7 +561,14 @@ redis_releases = [
     ('7.0', 2022, 4, 2025, 4),
 ]
 for name, syear, smonth, eyear, emonth in redis_releases:
-    cal.bar(f"Redis {name}", start=(syear, smonth), end=(eyear, emonth), color="#963029", text_color="white", current=(name==CURRENT["Redis"]))
+    cal.bar(
+        f"Redis {name}",
+        start=(syear, smonth),
+        end=(eyear, emonth),
+        color="#963029",
+        text_color="white",
+        current=(name==CURRENT["Redis"]),
+    )
 cal.gap_line()
 
 # ruby
