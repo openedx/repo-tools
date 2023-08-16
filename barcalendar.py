@@ -174,9 +174,11 @@ class GsheetCalendar(BaseCalendar):
         color=None,
         text_color=None,
         current=False,
+        alternate=False,
         indefinite=False,
         note=None,
     ):
+        text = name
         formatting = ""
         if color:
             if current:
@@ -185,11 +187,15 @@ class GsheetCalendar(BaseCalendar):
         if text_color:
             formatting += f""".setFontColor({text_color!r})"""
         if current:
-            formatting += f""".setBorder(true, true, true, true, null, null, "black", SpreadsheetApp.BorderStyle.SOLID_MEDIUM)"""
-            formatting += f""".setFontWeight("bold")"""
+            formatting += """.setBorder(true, true, true, true, null, null, "black", SpreadsheetApp.BorderStyle.SOLID_MEDIUM)"""
+            formatting += """.setFontWeight("bold")"""
+        elif alternate:
+            formatting += """.setBorder(true, true, true, true, null, null, "black", SpreadsheetApp.BorderStyle.SOLID)"""
+            formatting += """.setFontWeight("bold")"""
+            formatting += """.setFontStyle("italic")"""
+            text = f"** {text} **"
         if indefinite:
             iend = self.width - 24
-        text = name
         if note:
             self.footnotes.append(note)
             text = f"{text} (note {len(self.footnotes)})"
@@ -329,6 +335,19 @@ CURRENT = {
     "Ruby": "3.0",
 }
 
+EDX = {
+    "Python": "3.8",
+    "Django": "3.2",
+    "Ubuntu": "20.04",
+    "Node": "16.x",
+    "Mongo": "4.2",
+    "MySQL": "5.7",
+    "Elasticsearch": "7.10",
+    "Redis": "5.6",
+    "Ruby": "3.0",
+}
+
+
 cal = GsheetCalendar(START_YEAR, END_YEAR)
 cal.years_months()
 
@@ -411,6 +430,7 @@ for name, year, month, lts, *more in django_releases:
         length=length,
         color=color,
         current=(name==CURRENT["Django"]),
+        alternate=(name==EDX["Django"]),
         note=(more[0] if more else None),
     )
 cal.gap_line()
@@ -435,6 +455,7 @@ for name, syear, smonth, eyear, emonth in python_releases:
         end=(eyear, emonth),
         color="#ffd545",
         current=(name==CURRENT["Python"]),
+        alternate=(name==EDX["Python"]),
     )
 cal.gap_line()
 
@@ -463,6 +484,7 @@ for year, month in itertools.product(range(START_YEAR % 100, END_YEAR % 100), [4
         color=color,
         text_color="white",
         current=(name==CURRENT["Ubuntu"]),
+        alternate=(name==EDX["Ubuntu"]),
     )
 cal.gap_line()
 
@@ -485,6 +507,7 @@ for name, syear, smonth, eyear, emonth in node_releases:
         color="#2f6c1b",
         text_color="white",
         current=(name==CURRENT["Node"]),
+        alternate=(name==EDX["Node"]),
     )
 cal.gap_line()
 
@@ -506,6 +529,7 @@ for name, syear, smonth, eyear, emonth in mongo_releases:
         end=(eyear, emonth),
         color="#4da65a",
         current=(name==CURRENT["Mongo"]),
+        alternate=(name==EDX["Mongo"]),
     )
 cal.gap_line()
 
@@ -523,6 +547,7 @@ for name, syear, smonth, eyear, emonth in mysql_releases:
         end=(eyear, emonth),
         color="#b9dc48",
         current=(name==CURRENT["MySQL"]),
+        alternate=(name==EDX["MySQL"]),
     )
 cal.gap_line()
 
@@ -548,6 +573,7 @@ for name, syear, smonth, eyear, emonth in es_releases:
         end=(eyear, emonth),
         color="#4595ba",
         current=(name==CURRENT["Elasticsearch"]),
+        alternate=(name==EDX["Elasticsearch"]),
     )
 cal.gap_line()
 
@@ -568,6 +594,7 @@ for name, syear, smonth, eyear, emonth in redis_releases:
         color="#963029",
         text_color="white",
         current=(name==CURRENT["Redis"]),
+        alternate=(name==EDX["Redis"]),
     )
 cal.gap_line()
 
@@ -589,6 +616,7 @@ for name, syear, smonth, eyear, emonth, *more in ruby_releases:
         end=(eyear, emonth),
         color="#DE3F24",
         current=(name==CURRENT["Ruby"]),
+        alternate=(name==EDX["Ruby"]),
         note=(more[0] if more else None),
     )
 cal.gap_line()
