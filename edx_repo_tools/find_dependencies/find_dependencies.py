@@ -111,7 +111,7 @@ def find_real_url(url: str) -> Optional[str]:
     """Find the eventual real url for a redirected url."""
     while True:
         try:
-            resp = requests.head(url, timeout=60)
+            resp = requests.head(url, timeout=60, allow_redirects=True)
         except requests.RequestException as exc:
             print(f"Couldn't fetch {url}: {exc}")
             return None
@@ -303,12 +303,24 @@ def process_directory():
             repo_urls.update(check_py_dependencies())
     return repo_urls
 
+FIRST_PARTY_ORGS = ["openedx"]
+
 SECOND_PARTY_ORGS = [
     "edx", "edx-unsupported", "edx-solutions",
     "mitodl",
     "overhangio",
     "open-craft", "eduNEXT", "raccoongang",
 ]
+
+def urls_in_orgs(urls, orgs):
+    """
+    Find urls that are in any of the `orgs`.
+    """
+    return sorted(
+        url for url in urls
+        if any(f"/{org}/" in url for org in orgs)
+    )
+
 
 def main(dirs=None):
     """
@@ -331,11 +343,10 @@ def main(dirs=None):
 
     write_list(WORK_DIR / "repo_urls.txt", sorted(repo_urls))
 
-    seconds = sorted(
-        url for url in repo_urls
-        if any(f"/{org}/" in url for org in SECOND_PARTY_ORGS)
-    )
-    write_list(WORK_DIR / "second_party_urls.txt", sorted(seconds))
+    firsts = urls_in_orgs(repo_urls, FIRST_PARTY_ORGS)
+    write_list(WORK_DIR / "first_party_urls.txt", firsts)
+    seconds = urls_in_orgs(repo_urls, SECOND_PARTY_ORGS)
+    write_list(WORK_DIR / "second_party_urls.txt", seconds)
 
     print("== DONE ==============")
     print("Second-party:")
