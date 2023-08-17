@@ -534,11 +534,12 @@ for name, syear, smonth, eyear, emonth in mongo_releases:
 cal.gap_line()
 
 # MySQL releases
-cal.section_note("https://endoflife.software/applications/databases/mysql")
+cal.section_note("https://endoflife.date/mysql")
 mysql_releases = [
     ('5.6', 2013, 2, 2021, 2),
     ('5.7', 2015, 10, 2023, 10),
     ('8.0', 2018, 4, 2026, 4),
+    ('8.1', 2023, 6, 2024, 9),  # Not sure of the real support dates.
 ]
 for name, syear, smonth, eyear, emonth in mysql_releases:
     cal.bar(
