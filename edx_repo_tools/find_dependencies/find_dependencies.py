@@ -241,9 +241,12 @@ def repo_url_from_tgz(tgz_path: str) -> Optional[str]:
 
 
 SOURCE_URL_REGEXES = [
+    # These regexes are tried in order. The first group is the extracted URL.
     r"(?i)^Project-URL: Source.*,\s*(.*)$",
     r"(?i)^Home-page: (.*)$",
     r"(?i)^Project-URL: Home.*,\s*(.*)$",
+    # If we can't find a URL marked as home, then use any GitHub repo URL.
+    r"(?i)^Project-URL: [^,]+,\s*(https?://github.com/[^/]+/[^/]+)$",
 ]
 
 def repo_url_from_metadata(filename, metadata):
