@@ -343,7 +343,7 @@ EDX = {
     "Mongo": "4.2",
     "MySQL": "5.7",
     "Elasticsearch": "7.10",
-    "Redis": "5.6",
+    "Redis": "6.2",
     "Ruby": "3.0",
 }
 
