@@ -14,11 +14,11 @@ markdown-it-py==3.0.0
     # via rich
 mdurl==0.1.2
     # via markdown-it-py
-pygments==2.15.1
+pygments==2.16.1
     # via rich
 requests==2.31.0
     # via -r edx_repo_tools/find_dependencies/extra.in
-rich==13.4.2
+rich==13.5.2
     # via -r edx_repo_tools/find_dependencies/extra.in
 typing-extensions==4.7.1
     # via rich
