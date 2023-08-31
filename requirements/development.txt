@@ -36,7 +36,7 @@ charset-normalizer==3.2.0
     # via
     #   -r requirements/base.txt
     #   requests
-click==8.1.6
+click==8.1.7
     # via
     #   -r requirements/base.txt
     #   bowler
@@ -49,7 +49,7 @@ click-log==0.4.0
     # via edx-lint
 code-annotations==1.5.0
     # via edx-lint
-cryptography==41.0.2
+cryptography==41.0.3
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -65,7 +65,7 @@ docutils==0.20.1
     #   statistics
 edx-lint==5.3.4
     # via -r requirements/development.in
-exceptiongroup==1.1.2
+exceptiongroup==1.1.3
     # via
     #   -r requirements/base.txt
     #   pytest
@@ -73,7 +73,7 @@ execnet==2.0.2
     # via
     #   -r requirements/base.txt
     #   pytest-xdist
-filelock==3.12.2
+filelock==3.12.3
     # via
     #   -r requirements/base.txt
     #   tox
@@ -112,7 +112,7 @@ markupsafe==2.1.3
     # via jinja2
 mccabe==0.7.0
     # via pylint
-more-itertools==10.0.0
+more-itertools==10.1.0
     # via -r requirements/base.txt
 moreorless==0.4.0
     # via
@@ -136,14 +136,14 @@ path-py==12.5.0
     # via -r requirements/base.txt
 pbr==5.11.1
     # via stevedore
-pip-tools==7.1.0
+pip-tools==7.3.0
     # via -r requirements/development.in
-platformdirs==3.9.1
+platformdirs==3.10.0
     # via
     #   -r requirements/base.txt
     #   pylint
     #   virtualenv
-pluggy==1.2.0
+pluggy==1.3.0
     # via
     #   -r requirements/base.txt
     #   pytest
@@ -208,7 +208,7 @@ requests==2.31.0
     #   cachecontrol
     #   github3-py
     #   responses
-responses==0.23.2
+responses==0.23.3
     # via -r requirements/development.in
 ruamel-yaml==0.17.32
     # via -r requirements/base.txt
@@ -241,19 +241,21 @@ tomli==2.0.1
     #   pyproject-hooks
     #   pytest
     #   tox
-tomlkit==0.11.8
+tomlkit==0.12.1
     # via pylint
 tox==3.28.0
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/base.txt
-tqdm==4.65.0
+tqdm==4.66.1
     # via -r requirements/base.txt
 types-pyyaml==6.0.12.11
     # via responses
 typing-extensions==4.7.1
     # via
+    #   -r requirements/base.txt
     #   astroid
+    #   filelock
     #   pylint
 uritemplate==4.1.1
     # via
@@ -266,7 +268,7 @@ urllib3==2.0.4
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.24.2
+virtualenv==20.24.4
     # via
     #   -r requirements/base.txt
     #   tox
@@ -274,7 +276,7 @@ volatile==2.1.0
     # via
     #   -r requirements/base.txt
     #   bowler
-wheel==0.41.0
+wheel==0.41.2
     # via pip-tools
 wrapt==1.15.0
     # via astroid
