@@ -20,7 +20,7 @@ backports-csv==1.0.7
     # via -r requirements/base.txt
 bowler==0.9.0
     # via -r requirements/base.txt
-build==0.10.0
+build==1.0.3
     # via pip-tools
 cachecontrol==0.13.1
     # via -r requirements/base.txt
@@ -88,12 +88,14 @@ gitdb==4.0.10
     #   gitpython
 github3-py==4.0.1
     # via -r requirements/base.txt
-gitpython==3.1.32
+gitpython==3.1.34
     # via -r requirements/base.txt
 idna==3.4
     # via
     #   -r requirements/base.txt
     #   requests
+importlib-metadata==6.8.0
+    # via build
 iniconfig==2.0.0
     # via
     #   -r requirements/base.txt
@@ -176,7 +178,7 @@ pylint-plugin-utils==0.8.2
     #   pylint-django
 pyproject-hooks==1.0.0
     # via build
-pytest==7.4.0
+pytest==7.4.1
     # via
     #   -r requirements/base.txt
     #   -r requirements/development.in
@@ -280,6 +282,8 @@ wheel==0.41.2
     # via pip-tools
 wrapt==1.15.0
     # via astroid
+zipp==3.16.2
+    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip

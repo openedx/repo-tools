@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-alembic==1.11.3
+alembic==1.12.0
     # via dataset
 banal==1.0.6
     # via dataset
@@ -49,7 +49,7 @@ python-dateutil==2.8.2
     # via
     #   matplotlib
     #   pandas
-pytz==2023.3
+pytz==2023.3.post1
     # via pandas
 six==1.16.0
     # via python-dateutil
