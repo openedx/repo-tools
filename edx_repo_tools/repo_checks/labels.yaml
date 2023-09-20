@@ -16,6 +16,12 @@
 #   Describe your color with a comment so it's easier to review.
 
 
+### LABELS USED FOR MANAGING A TEMPORARY STATE OR
+### PROBLEM ACROSS REPOSITORIES
+- name: "business-specific"
+  color: "d93f0b"  # scarlet red...
+  description: "Code that relates to a specific user and should be refactored and removed."
+
 ### LABELS INDICATING HOW ISSUES CAN BE ENAGAGED WITH.
 
 - name: "good first issue"
