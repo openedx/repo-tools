@@ -87,6 +87,7 @@ setup(
             'add_common_constraint = edx_repo_tools.add_common_constraint:main',
             'add_dependabot_ecosystem = edx_repo_tools.dependabot_yml:main',
             'add_django32_settings = edx_repo_tools.codemods.django3.add_new_django32_settings:main',
+            'audit_users = edx_repo_tools.audit_gh_users.audit_users:main',
             'clone_org = edx_repo_tools.dev.clone_org:main',
             'conventional_commits = edx_repo_tools.conventional_commits.commitstats:main',
             'find_dependencies = edx_repo_tools.find_dependencies.find_dependencies:main',
