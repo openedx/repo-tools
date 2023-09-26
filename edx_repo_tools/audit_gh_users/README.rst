@@ -25,7 +25,7 @@ There are a few ways to do this; one way is::
 
   python3 -m venv venv
   . venv/bin/activate
-  pip install -e .[repo_checks]
+  pip install -e .[audit_gh_users]
 
 Then, run the script::
 
@@ -38,6 +38,8 @@ Contributing
 
 * CI will run tests for you, but not linting, so ensure your changes don't break pylint: ``pylint edx_repo_tools/audit_users``.
 
-* Ping ``#ask-axim`` for review.
+* Ping `#ask-axim`__ on Slack for review.
+
+__ https://openedx.slack.com/archives/C0497NQCLBT
 
 * Once approved, apply and merge (non-Axim engineers: ask your Axim reviewer to do this part for you).
