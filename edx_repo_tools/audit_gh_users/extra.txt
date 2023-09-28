@@ -5,11 +5,11 @@
 #    make upgrade
 #
 click==8.1.7
-    # via -r edx_repo_tools/repo_checks/extra.in
+    # via -r edx_repo_tools/audit_gh_users/extra.in
 fastcore==1.5.29
     # via ghapi
 ghapi==1.0.4
-    # via -r edx_repo_tools/repo_checks/extra.in
+    # via -r edx_repo_tools/audit_gh_users/extra.in
 packaging==23.1
     # via
     #   fastcore
