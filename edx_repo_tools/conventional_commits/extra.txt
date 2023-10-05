@@ -10,13 +10,13 @@ banal==1.0.6
     # via dataset
 contourpy==1.1.1
     # via matplotlib
-cycler==0.11.0
+cycler==0.12.0
     # via matplotlib
 dataset==1.6.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-fonttools==4.42.1
+fonttools==4.43.0
     # via matplotlib
-greenlet==2.0.2
+greenlet==3.0.0
     # via sqlalchemy
 importlib-metadata==6.8.0
     # via alembic
@@ -37,7 +37,7 @@ numpy==1.24.4
     #   contourpy
     #   matplotlib
     #   pandas
-packaging==23.1
+packaging==23.2
     # via matplotlib
 pandas==2.0.3
     # via -r edx_repo_tools/conventional_commits/extra.in

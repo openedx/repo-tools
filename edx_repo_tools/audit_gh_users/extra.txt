@@ -10,7 +10,7 @@ fastcore==1.5.29
     # via ghapi
 ghapi==1.0.4
     # via -r edx_repo_tools/audit_gh_users/extra.in
-packaging==23.1
+packaging==23.2
     # via
     #   fastcore
     #   ghapi
