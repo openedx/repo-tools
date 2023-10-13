@@ -245,6 +245,8 @@ SOURCE_URL_REGEXES = [
     r"(?i)^Project-URL: Source.*,\s*(.*)$",
     r"(?i)^Home-page: (.*)$",
     r"(?i)^Project-URL: Home.*,\s*(.*)$",
+    # If they point to GitHub issues, that's their repo.
+    r"(?i)^Project-URL: [^,]+,\s*(https?://github.com/[^/]+/[^/]+)/issues/?$",
     # If we can't find a URL marked as home, then use any GitHub repo URL.
     r"(?i)^Project-URL: [^,]+,\s*(https?://github.com/[^/]+/[^/]+)$",
 ]
