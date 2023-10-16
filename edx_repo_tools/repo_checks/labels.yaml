@@ -102,6 +102,12 @@
 ### YOU CAN SEE THE CURRENT PROJECT MANAGERS HERE:
 ### https://openedx.atlassian.net/wiki/spaces/COMM/pages/3548807177/Community+Contributions+Project+Manager#Current-OSPR-Project-Managers
 
+# This label is a manually applied by PR authors or others to indicate that the
+# pull request is backporting a change on main to a named release.
+- name: "backport"
+  color: "354d73"  # violet blue
+  description: "PR backports a change from main to a named release."
+
 # Waiting for the author to respond to change requests, feedback, failing
 # tests, etc. Usually this label is used for PRs in board statuses other
 # than “Waiting for Author” (e.g. the pull request is “In Eng Review”
