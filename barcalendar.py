@@ -492,10 +492,10 @@ django_releases = [
     # ('2.0', 2018, 1, False),
     # ('2.1', 2018, 8, False),
     ('2.2', 2019, 4, True),
-    ('3.0', 2020, 1, False),
-    ('3.1', 2020, 8, False),
+    # ('3.0', 2020, 1, False),
+    # ('3.1', 2020, 8, False),
     ('3.2', 2021, 4, True),
-    ('4.0', 2022, 1, False),
+    ('4.0', 2021, 12, False),
     ('4.1', 2022, 8, False),
     ('4.2', 2023, 4, True, "Django 4.2 work is being tracked in https://github.com/openedx/platform-roadmap/issues/269"),
 ]
@@ -578,9 +578,10 @@ node_releases = [
     #('8.x', 2017, 5, 2019, 12),
     # ('10.x', 2018, 4, 2021, 4),
     # ('12.x', 2019, 4, 2022, 4),
-    ('14.x', 2020, 4, 2023, 4),
-    ('16.x', 2021, 4, 2023, 9),     # https://nodejs.org/en/blog/announcements/nodejs16-eol/
-    ('18.x', 2022, 4, 2025, 4),
+    ('14', 2020, 4, 2023, 4),
+    ('16', 2021, 4, 2023, 9),     # https://nodejs.org/en/blog/announcements/nodejs16-eol/
+    ('18', 2022, 4, 2025, 4),
+    ('20', 2023, 4, 2026, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
     eyear, emonth = validate_version_date("NodeJS", name, eyear, emonth)
@@ -605,6 +606,7 @@ mongo_releases = [
     ('4.0', 2018, 6, 2022, 4),
     ('4.2', 2019, 8, 2023, 4),
     ('4.4', 2020, 7, 2024, 2),
+    ('5.0', 2021, 7, 2024, 10),
 ]
 for name, syear, smonth, eyear, emonth in mongo_releases:
     eyear, emonth = validate_version_date("mongo", name, eyear, emonth)
@@ -624,7 +626,7 @@ mysql_releases = [
     ('5.6', 2013, 2, 2021, 2),
     ('5.7', 2015, 10, 2023, 10),
     ('8.0', 2018, 4, 2026, 4),
-    ('8.1', 2023, 6, 2024, 9),  # Not sure of the real support dates.
+    ('8.1', 2023, 6, 2023, 10),
 ]
 for name, syear, smonth, eyear, emonth in mysql_releases:
     eyear, emonth = validate_version_date("MySQL", name, eyear, emonth)
@@ -669,8 +671,7 @@ cal.gap_line()
 cal.section_note("https://docs.redis.com/latest/rs/administering/product-lifecycle/#endoflife-schedule")
 # https://endoflife.date/redis
 redis_releases = [
-    ('5.6', 2020, 4, 2021, 10),
-    ('6.0', 2020, 5, 2022, 5),
+    ('6.0', 2020, 5, 2023, 8),
     ('6.2', 2021, 8, 2024, 4),
     ('7.0', 2022, 4, 2025, 4),
 ]
