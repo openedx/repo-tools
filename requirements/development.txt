@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==2.15.8
+astroid==3.0.1
     # via
     #   pylint
     #   pylint-celery
@@ -24,15 +24,23 @@ build==1.0.3
     # via pip-tools
 cachecontrol==0.13.1
     # via -r requirements/base.txt
+cachetools==5.3.2
+    # via
+    #   -r requirements/base.txt
+    #   tox
 certifi==2023.7.22
     # via
     #   -r requirements/base.txt
     #   requests
-cffi==1.15.1
+cffi==1.16.0
     # via
     #   -r requirements/base.txt
     #   cryptography
-charset-normalizer==3.2.0
+chardet==5.2.0
+    # via
+    #   -r requirements/base.txt
+    #   tox
+charset-normalizer==3.3.2
     # via
     #   -r requirements/base.txt
     #   requests
@@ -49,7 +57,11 @@ click-log==0.4.0
     # via edx-lint
 code-annotations==1.5.0
     # via edx-lint
-cryptography==41.0.4
+colorama==0.4.6
+    # via
+    #   -r requirements/base.txt
+    #   tox
+cryptography==41.0.5
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -63,7 +75,7 @@ docutils==0.20.1
     # via
     #   -r requirements/base.txt
     #   statistics
-edx-lint==5.3.4
+edx-lint==5.3.6
     # via -r requirements/development.in
 exceptiongroup==1.1.3
     # via
@@ -73,7 +85,7 @@ execnet==2.0.2
     # via
     #   -r requirements/base.txt
     #   pytest-xdist
-filelock==3.12.4
+filelock==3.13.1
     # via
     #   -r requirements/base.txt
     #   tox
@@ -82,13 +94,13 @@ fissix==21.11.13
     # via
     #   -r requirements/base.txt
     #   bowler
-gitdb==4.0.10
+gitdb==4.0.11
     # via
     #   -r requirements/base.txt
     #   gitpython
 github3-py==4.0.1
     # via -r requirements/base.txt
-gitpython==3.1.37
+gitpython==3.1.40
     # via -r requirements/base.txt
 idna==3.4
     # via
@@ -106,8 +118,6 @@ jinja2==3.1.2
     # via code-annotations
 lazy==1.6
     # via -r requirements/base.txt
-lazy-object-proxy==1.9.0
-    # via astroid
 lockfile==0.12.2
     # via -r requirements/base.txt
 markupsafe==2.1.3
@@ -120,14 +130,15 @@ moreorless==0.4.0
     # via
     #   -r requirements/base.txt
     #   bowler
-msgpack==1.0.6
+msgpack==1.0.7
     # via
     #   -r requirements/base.txt
     #   cachecontrol
-packaging==23.1
+packaging==23.2
     # via
     #   -r requirements/base.txt
     #   build
+    #   pyproject-api
     #   pytest
     #   tox
 path==16.7.1
@@ -136,23 +147,21 @@ path==16.7.1
     #   path-py
 path-py==12.5.0
     # via -r requirements/base.txt
-pbr==5.11.1
+pbr==6.0.0
     # via stevedore
 pip-tools==7.3.0
     # via -r requirements/development.in
-platformdirs==3.10.0
+platformdirs==3.11.0
     # via
+    #   -c requirements/common_constraints.txt
     #   -r requirements/base.txt
     #   pylint
+    #   tox
     #   virtualenv
 pluggy==1.3.0
     # via
     #   -r requirements/base.txt
     #   pytest
-    #   tox
-py==1.11.0
-    # via
-    #   -r requirements/base.txt
     #   tox
 pycparser==2.21
     # via
@@ -162,7 +171,8 @@ pyjwt[crypto]==2.8.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==2.17.6
+    #   pyjwt
+pylint==3.0.2
     # via
     #   edx-lint
     #   pylint-celery
@@ -170,15 +180,19 @@ pylint==2.17.6
     #   pylint-plugin-utils
 pylint-celery==0.3
     # via edx-lint
-pylint-django==2.5.3
+pylint-django==2.5.5
     # via edx-lint
 pylint-plugin-utils==0.8.2
     # via
     #   pylint-celery
     #   pylint-django
+pyproject-api==1.6.1
+    # via
+    #   -r requirements/base.txt
+    #   tox
 pyproject-hooks==1.0.0
     # via build
-pytest==7.4.2
+pytest==7.4.3
     # via
     #   -r requirements/base.txt
     #   -r requirements/development.in
@@ -187,9 +201,9 @@ pytest==7.4.2
     #   pytest-xdist
 pytest-logging==2015.11.4
     # via -r requirements/base.txt
-pytest-mock==3.11.1
+pytest-mock==3.12.0
     # via -r requirements/development.in
-pytest-xdist==3.3.1
+pytest-xdist==3.4.0
     # via -r requirements/base.txt
 python-dateutil==2.8.2
     # via
@@ -210,11 +224,11 @@ requests==2.31.0
     #   cachecontrol
     #   github3-py
     #   responses
-responses==0.23.3
+responses==0.24.1
     # via -r requirements/development.in
-ruamel-yaml==0.17.32
+ruamel-yaml==0.18.5
     # via -r requirements/base.txt
-ruamel-yaml-clib==0.2.7
+ruamel-yaml-clib==0.2.8
     # via
     #   -r requirements/base.txt
     #   ruamel-yaml
@@ -223,7 +237,6 @@ six==1.16.0
     #   -r requirements/base.txt
     #   edx-lint
     #   python-dateutil
-    #   tox
 smmap==5.0.1
     # via
     #   -r requirements/base.txt
@@ -240,19 +253,16 @@ tomli==2.0.1
     #   build
     #   pip-tools
     #   pylint
+    #   pyproject-api
     #   pyproject-hooks
     #   pytest
     #   tox
-tomlkit==0.12.1
+tomlkit==0.12.3
     # via pylint
-tox==3.28.0
-    # via
-    #   -c requirements/common_constraints.txt
-    #   -r requirements/base.txt
+tox==4.11.3
+    # via -r requirements/base.txt
 tqdm==4.66.1
     # via -r requirements/base.txt
-types-pyyaml==6.0.12.12
-    # via responses
 typing-extensions==4.8.0
     # via
     #   astroid
@@ -261,14 +271,14 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-urllib3==2.0.5
+urllib3==2.1.0
     # via
     #   -r requirements/base.txt
     #   requests
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.24.5
+virtualenv==20.24.6
     # via
     #   -r requirements/base.txt
     #   tox
@@ -276,10 +286,8 @@ volatile==2.1.0
     # via
     #   -r requirements/base.txt
     #   bowler
-wheel==0.41.2
+wheel==0.41.3
     # via pip-tools
-wrapt==1.15.0
-    # via astroid
 zipp==3.17.0
     # via importlib-metadata
 
