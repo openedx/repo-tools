@@ -4,9 +4,11 @@
 #
 #    make upgrade
 #
-greenlet==3.0.0
-    # via playwright
-playwright==1.39.0
+greenlet==3.0.1
+    # via
+    #   -c edx_repo_tools/repo_access_scraper/../../requirements/constraints.txt
+    #   playwright
+playwright==1.18.1
     # via -r edx_repo_tools/repo_access_scraper/extra.in
 pyee==11.0.1
     # via playwright
@@ -14,3 +16,5 @@ typing-extensions==4.8.0
     # via
     #   playwright
     #   pyee
+websockets==12.0
+    # via playwright
