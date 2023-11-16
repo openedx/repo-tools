@@ -7,7 +7,7 @@ from os.path import exists
 from pathlib import Path
 
 import click
-from ruamel.yaml.main import round_trip_load as yaml_load
+from ruamel.yaml import YAML
 
 from edx_repo_tools.utils import YamlLoader
 
@@ -26,7 +26,8 @@ class GithubNodeReleaseWorkflowModernizer(YamlLoader):
 
     def _add_setup_nodejs_env_step(self, step_elements, step_index):
         if self._does_nvmrc_exists():
-            fetch_node_version_step = yaml_load(FETCH_NODE_VERSION_STEP)
+            yaml = YAML()
+            fetch_node_version_step = yaml.load(FETCH_NODE_VERSION_STEP)
             step_elements.insert(
                 step_index, fetch_node_version_step)
         return step_elements
