@@ -6,7 +6,7 @@ Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
 2. Open a Google Sheet, either the existing Support Windows spreadsheet
     (https://docs.google.com/spreadsheets/d/11DheEtMDGrbA9hsUvZ2SEd4Cc8CaC4mAfoV8SVaLBGI)
     or a new spreadsheet.
-3. If the current tab isn't empty, open a new tab (Add Sheet).
+3. Select the "Support Windows" sheet or create a new sheet if it doesn't exist already.
 4. Open the script editor (Extensions - Apps Script).
 5. If there's any code there, delete it.
 6. Paste the JavaScript code this program wrote.
@@ -562,7 +562,7 @@ for year, month in itertools.product(range(START_YEAR % 100, END_YEAR % 100), [4
     year, month = validate_version_date("Ubuntu", name, 2000+year, month, check_start=True)
     cal.bar(
         f"Ubuntu {name}{nick}",
-        (2000+year, month),
+        (year, month),
         length=length,
         color=color,
         text_color="white",
