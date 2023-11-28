@@ -14,7 +14,7 @@ cycler==0.12.1
     # via matplotlib
 dataset==1.6.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-fonttools==4.44.3
+fonttools==4.45.0
     # via matplotlib
 greenlet==3.0.1
     # via
@@ -32,7 +32,7 @@ mako==1.3.0
     # via alembic
 markupsafe==2.1.3
     # via mako
-matplotlib==3.7.3
+matplotlib==3.7.4
     # via -r edx_repo_tools/conventional_commits/extra.in
 numpy==1.24.4
     # via
