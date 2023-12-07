@@ -61,7 +61,7 @@ colorama==0.4.6
     # via
     #   -r requirements/base.txt
     #   tox
-cryptography==41.0.5
+cryptography==41.0.7
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -102,11 +102,11 @@ github3-py==4.0.1
     # via -r requirements/base.txt
 gitpython==3.1.40
     # via -r requirements/base.txt
-idna==3.4
+idna==3.6
     # via
     #   -r requirements/base.txt
     #   requests
-importlib-metadata==6.8.0
+importlib-metadata==7.0.0
     # via build
 iniconfig==2.0.0
     # via
@@ -141,7 +141,7 @@ packaging==23.2
     #   pyproject-api
     #   pytest
     #   tox
-path==16.7.1
+path==16.9.0
     # via
     #   -r requirements/base.txt
     #   path-py
@@ -151,9 +151,8 @@ pbr==6.0.0
     # via stevedore
 pip-tools==7.3.0
     # via -r requirements/development.in
-platformdirs==3.11.0
+platformdirs==4.1.0
     # via
-    #   -c requirements/common_constraints.txt
     #   -r requirements/base.txt
     #   pylint
     #   tox
@@ -259,7 +258,7 @@ tomli==2.0.1
     #   tox
 tomlkit==0.12.3
     # via pylint
-tox==4.11.3
+tox==4.11.4
     # via -r requirements/base.txt
 tqdm==4.66.1
     # via -r requirements/base.txt
@@ -278,7 +277,7 @@ urllib3==2.1.0
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.24.7
+virtualenv==20.25.0
     # via
     #   -r requirements/base.txt
     #   tox
@@ -286,7 +285,7 @@ volatile==2.1.0
     # via
     #   -r requirements/base.txt
     #   bowler
-wheel==0.41.3
+wheel==0.42.0
     # via pip-tools
 zipp==3.17.0
     # via importlib-metadata
