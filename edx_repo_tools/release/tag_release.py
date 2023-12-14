@@ -52,6 +52,23 @@ def nice_tqdm(iterable, desc):
     return tqdm(iterable, desc=desc.ljust(27))
 
 
+def catalog_info_file(hub, orgs=None, branches=None):
+    orgs = orgs or OPENEDX_ORGS
+    repos = {}
+
+    for repo, data in tqdm(iter_openedx_yaml('catalog-info.yaml', hub, orgs=orgs, branches=branches), desc='Find repos'):
+        # Check if 'metadata' key exists and has 'annotations'
+        if 'metadata' in data and 'annotations' in data['metadata']:
+            annotations = data['metadata']['annotations']
+            
+            # Check if 'openedx.org/release' is present in annotations
+            if 'openedx.org/release' in annotations:
+                repo = repo.refresh()
+                repos[repo] = data
+
+    return repos
+
+
 def openedx_release_repos(hub, orgs=None, branches=None):
     """
     Return a subset of the repos with openedx.yaml files: the repos
@@ -70,12 +87,12 @@ def openedx_release_repos(hub, orgs=None, branches=None):
 
     """
     orgs = orgs or OPENEDX_ORGS
-    repos = {}
-
-    for repo, data in tqdm(iter_openedx_yaml(hub, orgs=orgs, branches=branches), desc='Find repos'):
-        if data.get('openedx-release'):
-            repo = repo.refresh()
-            repos[repo] = data
+    repos = catalog_info_file(hub, orgs=orgs, branches=branches)
+    if not repos:
+        for repo, data in tqdm(iter_openedx_yaml('openedx.yaml', hub, orgs=orgs, branches=branches), desc='Find repos'):
+            if data.get('openedx-release'):
+                repo = repo.refresh()
+                repos[repo] = data
 
     return repos
 
@@ -180,7 +197,10 @@ def override_repo_refs(repos, override_ref=None, overrides=None):
         for repo, repo_data in repos.items():
             local_override = overrides.get(repo.full_name, override_ref)
             if local_override:
-                repo_data["openedx-release"]["ref"] = local_override
+                if "metadata" in repo_data:
+                    repo_data["metadata"]["annotations"]["openedx.org/release"] = local_override
+                elif "openedx-release" in repo_data:
+                    repo_data["openedx-release"]["ref"] = local_override    
     return repos
 
 
@@ -219,11 +239,19 @@ def commit_ref_info(repos, skip_invalid=False):
         }
 
     """
-
     ref_info = {}
     for repo, repo_data in nice_tqdm(repos.items(), desc='Find commits'):
         # are we specifying a ref?
-        ref = repo_data["openedx-release"].get("ref")
+
+        if 'metadata' in repo_data:
+            annotations = repo_data['metadata'].get('annotations', {})
+            ref = annotations.get('openedx.org/release')
+         
+        # Check if 'openedx-release' is present in repo_data and get the ref
+        # This check will be remove once we will just support catalog_info.yaml and remove openedx.yaml
+        elif 'openedx-release' in repo_data:
+            ref = repo_data['openedx-release'].get('ref')
+
         if ref:
             try:
                 ref_info[repo] = get_latest_commit_for_ref(repo, ref)
@@ -748,13 +776,14 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
                 dumped = [{"repo": repo.as_dict(), "data": data} for repo, data in repos.items()]
                 json.dump(dumped, f, indent=2, sort_keys=True)
     if not repos:
-        raise ValueError("No repos marked for openedx-release in their openedx.yaml files!")
+        raise ValueError("No repos marked for openedx-release neither in openedx.yaml nor catalog_info files!")
 
     if included_repos:
         repos = include_only_repos(repos, included_repos)
-    repos = trim_skipped_repos(repos, skip_repos)
-    repos = trim_dependent_repos(repos)
-    repos = trim_indecisive_repos(repos)
+    if 'openedx-release' in repos:    
+        repos = trim_skipped_repos(repos, skip_repos)
+        repos = trim_dependent_repos(repos)
+        repos = trim_indecisive_repos(repos)
     repos = override_repo_refs(
         repos,
         override_ref=override_ref,
