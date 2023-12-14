@@ -12,7 +12,7 @@ playwright==1.40.0
     # via -r edx_repo_tools/repo_access_scraper/extra.in
 pyee==11.0.1
     # via playwright
-typing-extensions==4.8.0
+typing-extensions==4.9.0
     # via
     #   playwright
     #   pyee
