@@ -405,7 +405,7 @@ versions = get_defaults_from_tutor()
 CURRENT = {
     "Open edX": parse_version_name(versions['OPENEDX_COMMON_VERSION']),
     "Python": "3.8",
-    "Django": "3.2",
+    "Django": "4.2",
     "Ubuntu": "20.04",
     "Node": "16.x",
     "Mongo": parse_version_number(versions['DOCKER_IMAGE_MONGODB']),
@@ -417,7 +417,7 @@ CURRENT = {
 
 EDX = {
     "Python": "3.8",
-    "Django": "3.2",
+    "Django": "4.2",
     "Ubuntu": "20.04",
     "Node": "16.x",
     "Mongo": "4.2",
@@ -453,9 +453,10 @@ names = [
     ("Nutmeg", 2022, 6),
     ("Olive", 2022, 12),
     ("Palm", 2023, 6),
+    ("Quince", 2023, 12),
     ]
 # https://www.treenames.net/common_tree_names.html
-future = ["Quince", "Redwood", "Sumac", "Teak"] + list("UVWXYZ")
+future = ["Redwood", "Sumac", "Teak"] + list("UVWXYZ")
 target_length = 6 # months per release
 
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
