@@ -7,6 +7,7 @@ import yaml
 logging.basicConfig()
 LOGGER = logging.getLogger(__name__)
 OPEN_EDX_YAML = 'openedx.yaml'
+CATALOG_INFO_YAML = 'catalog-info.yaml'
 
 
 def iter_nonforks(hub, orgs):
@@ -28,9 +29,30 @@ def iter_nonforks(hub, orgs):
                 yield repo
 
 
-def iter_openedx_yaml(filename, hub, orgs, branches=None):
+def find_file_content(repo, branch):
     """
-    Yield the data from all openedx.yaml files found in repositories in ``orgs``
+    Finds the data from all catalog-info.yaml or openedx.yaml files found in repositories in ``repo``
+    on any of ``branches``.
+    First, we check for catalog-info.yaml, If catalog-info.yaml is not found, we look for openedx.yaml file.
+
+    """
+
+    file_names = [CATALOG_INFO_YAML, OPEN_EDX_YAML]    
+    contents = None
+    for file_name in file_names:
+        try:
+            contents = repo.file_contents(file_name, ref=branch)
+            break
+        except NotFoundError:
+            contents = None
+            pass
+
+    return contents   
+
+
+def iter_openedx_release_yaml(hub, orgs, branches=None):
+    """
+    Yield the data from all catalog-info.yaml or openedx.yaml files found in repositories in ``orgs``
     on any of ``branches``.
 
     Arguments:
@@ -45,19 +67,17 @@ def iter_openedx_yaml(filename, hub, orgs, branches=None):
         Repositories (:class:`~github3.Repository)
 
     """
+    
     for repo in iter_nonforks(hub, orgs):
         for branch in (branches or [repo.default_branch]):
-            try:
-                contents = repo.file_contents(filename, ref=branch)
-            except NotFoundError:
-                contents = None
+            contents = find_file_content(repo, branch)
 
             if contents is not None:
-                LOGGER.debug("Found %s at %s:%s", filename, repo.full_name, branch)
+                LOGGER.debug("Found %s at %s:%s", contents, repo.full_name, branch)
                 try:
                     data = yaml.safe_load(contents.decoded)
                 except Exception as exc:
-                    LOGGER.error("Couldn't parse %s from %s:%s, skipping repo", filename, repo.full_name, branch, exc_info=True)
+                    LOGGER.error("Couldn't parse %s from %s:%s, skipping repo", contents, repo.full_name, branch, exc_info=True)
                 else:
                     if data is not None:
                         yield repo, data

@@ -8,7 +8,7 @@ import logging
 import yaml
 
 from edx_repo_tools.auth import pass_github
-from edx_repo_tools.data import iter_openedx_yaml
+from edx_repo_tools.data import iter_openedx_release_yaml
 
 
 logging.basicConfig()
@@ -27,11 +27,11 @@ LOGGER = logging.getLogger(__name__)
 )
 def implode(hub, org, branch):
     """
-    Implode all openedx.yaml files, and print the results as formatted output.
+    Implode all catalog-info.yaml or openedx.yaml files, and print the results as formatted output.
     """
     data = {
         repo.full_name: openedx_yaml
         for repo, openedx_yaml
-        in iter_openedx_yaml(hub, org, branch)
+        in iter_openedx_release_yaml(hub, org, branch)
     }
     click.echo(yaml.safe_dump(data, encoding=None, indent=4))

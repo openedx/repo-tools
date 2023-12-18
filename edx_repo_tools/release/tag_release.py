@@ -26,7 +26,7 @@ from github3.repos.repo import ShortRepository
 from tqdm import tqdm
 
 from edx_repo_tools.auth import pass_github
-from edx_repo_tools.data import iter_openedx_yaml
+from edx_repo_tools.data import iter_openedx_release_yaml
 from edx_repo_tools.utils import dry, dry_echo
 
 log = logging.getLogger(__name__)
@@ -52,23 +52,6 @@ def nice_tqdm(iterable, desc):
     return tqdm(iterable, desc=desc.ljust(27))
 
 
-def catalog_info_file(hub, orgs=None, branches=None):
-    orgs = orgs or OPENEDX_ORGS
-    repos = {}
-
-    for repo, data in tqdm(iter_openedx_yaml('catalog-info.yaml', hub, orgs=orgs, branches=branches), desc='Find repos'):
-        # Check if 'metadata' key exists and has 'annotations'
-        if 'metadata' in data and 'annotations' in data['metadata']:
-            annotations = data['metadata']['annotations']
-            
-            # Check if 'openedx.org/release' is present in annotations
-            if 'openedx.org/release' in annotations:
-                repo = repo.refresh()
-                repos[repo] = data
-
-    return repos
-
-
 def openedx_release_repos(hub, orgs=None, branches=None):
     """
     Return a subset of the repos with openedx.yaml files: the repos
@@ -87,12 +70,21 @@ def openedx_release_repos(hub, orgs=None, branches=None):
 
     """
     orgs = orgs or OPENEDX_ORGS
-    repos = catalog_info_file(hub, orgs=orgs, branches=branches)
-    if not repos:
-        for repo, data in tqdm(iter_openedx_yaml('openedx.yaml', hub, orgs=orgs, branches=branches), desc='Find repos'):
-            if data.get('openedx-release'):
-                repo = repo.refresh()
-                repos[repo] = data
+    repos = {}
+    for repo, data in tqdm(iter_openedx_release_yaml(hub, orgs=orgs, branches=branches), desc='Find repos'):
+        
+        if 'metadata' in data:
+            if 'annotations' in data['metadata']:
+                annotations = data['metadata']['annotations']
+            
+                # Check if 'openedx.org/release' is present in annotations
+                if 'openedx.org/release' in annotations:
+                    repo = repo.refresh()
+                    repos[repo] = data
+
+        elif 'openedx-release' in data:
+            repo = repo.refresh()
+            repos[repo] = data
 
     return repos
 
@@ -776,7 +768,7 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
                 dumped = [{"repo": repo.as_dict(), "data": data} for repo, data in repos.items()]
                 json.dump(dumped, f, indent=2, sort_keys=True)
     if not repos:
-        raise ValueError("No repos marked for openedx-release neither in openedx.yaml nor catalog_info files!")
+        raise ValueError("No repos marked for openedx-release neither in openedx.yaml nor catalog_info.yaml files!")
 
     if included_repos:
         repos = include_only_repos(repos, included_repos)
