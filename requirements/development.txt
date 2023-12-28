@@ -106,7 +106,7 @@ idna==3.6
     # via
     #   -r requirements/base.txt
     #   requests
-importlib-metadata==7.0.0
+importlib-metadata==7.0.1
     # via build
 iniconfig==2.0.0
     # via

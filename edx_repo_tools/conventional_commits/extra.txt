@@ -16,11 +16,11 @@ dataset==1.6.2
     # via -r edx_repo_tools/conventional_commits/extra.in
 fonttools==4.47.0
     # via matplotlib
-greenlet==3.0.2
+greenlet==3.0.3
     # via
     #   -c edx_repo_tools/conventional_commits/../../requirements/constraints.txt
     #   sqlalchemy
-importlib-metadata==7.0.0
+importlib-metadata==7.0.1
     # via alembic
 importlib-resources==6.1.1
     # via
