@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.in
     #   fissix
-attrs==23.1.0
+attrs==23.2.0
     # via bowler
 backports-csv==1.0.7
     # via -r requirements/base.in
@@ -94,7 +94,7 @@ pyjwt[crypto]==2.8.0
     #   pyjwt
 pyproject-api==1.6.1
     # via tox
-pytest==7.4.3
+pytest==7.4.4
     # via
     #   -r requirements/base.in
     #   pytest-logging
