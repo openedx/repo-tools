@@ -32,6 +32,6 @@ def implode(hub, org, branch):
     data = {
         repo.full_name: openedx_yaml
         for repo, openedx_yaml
-        in iter_openedx_release_yaml(hub, org, branch)
+        in iter_openedx_yaml(hub, org, branch)
     }
     click.echo(yaml.safe_dump(data, encoding=None, indent=4))
