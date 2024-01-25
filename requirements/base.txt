@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.in
     #   fissix
-attrs==23.1.0
+attrs==23.2.0
     # via bowler
 backports-csv==1.0.7
     # via -r requirements/base.in
@@ -33,7 +33,7 @@ click==8.1.7
     #   moreorless
 colorama==0.4.6
     # via tox
-cryptography==41.0.7
+cryptography==42.0.1
     # via pyjwt
 distlib==0.3.8
     # via virtualenv
@@ -53,7 +53,7 @@ gitdb==4.0.11
     # via gitpython
 github3-py==4.0.1
     # via -r requirements/base.in
-gitpython==3.1.40
+gitpython==3.1.41
     # via -r requirements/base.in
 idna==3.6
     # via requests
@@ -63,7 +63,7 @@ lazy==1.6
     # via -r requirements/base.in
 lockfile==0.12.2
     # via -r requirements/base.in
-more-itertools==10.1.0
+more-itertools==10.2.0
     # via -r requirements/base.in
 moreorless==0.4.0
     # via bowler
@@ -82,7 +82,7 @@ platformdirs==4.1.0
     # via
     #   tox
     #   virtualenv
-pluggy==1.3.0
+pluggy==1.4.0
     # via
     #   pytest
     #   tox
@@ -94,7 +94,7 @@ pyjwt[crypto]==2.8.0
     #   pyjwt
 pyproject-api==1.6.1
     # via tox
-pytest==7.4.3
+pytest==7.4.4
     # via
     #   -r requirements/base.in
     #   pytest-logging
@@ -107,7 +107,7 @@ python-dateutil==2.8.2
     # via
     #   -r requirements/base.in
     #   github3-py
-python-dotenv==1.0.0
+python-dotenv==1.0.1
     # via -r requirements/base.in
 pyyaml==6.0.1
     # via -r requirements/base.in
@@ -131,7 +131,7 @@ tomli==2.0.1
     #   pyproject-api
     #   pytest
     #   tox
-tox==4.11.4
+tox==4.12.1
     # via -r requirements/base.in
 tqdm==4.66.1
     # via -r requirements/base.in
