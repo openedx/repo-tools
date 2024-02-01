@@ -55,17 +55,17 @@ click==8.1.7
     #   pip-tools
 click-log==0.4.0
     # via edx-lint
-code-annotations==1.5.0
+code-annotations==1.6.0
     # via edx-lint
 colorama==0.4.6
     # via
     #   -r requirements/base.txt
     #   tox
-cryptography==42.0.1
+cryptography==42.0.2
     # via
     #   -r requirements/base.txt
     #   pyjwt
-dill==0.3.7
+dill==0.3.8
     # via pylint
 distlib==0.3.8
     # via
@@ -151,7 +151,7 @@ pbr==6.0.0
     # via stevedore
 pip-tools==7.3.0
     # via -r requirements/development.in
-platformdirs==4.1.0
+platformdirs==4.2.0
     # via
     #   -r requirements/base.txt
     #   pylint
@@ -191,7 +191,7 @@ pyproject-api==1.6.1
     #   tox
 pyproject-hooks==1.0.0
     # via build
-pytest==7.4.4
+pytest==8.0.0
     # via
     #   -r requirements/base.txt
     #   -r requirements/development.in
@@ -210,7 +210,7 @@ python-dateutil==2.8.2
     #   github3-py
 python-dotenv==1.0.1
     # via -r requirements/base.txt
-python-slugify==8.0.1
+python-slugify==8.0.3
     # via code-annotations
 pyyaml==6.0.1
     # via
@@ -270,7 +270,7 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-urllib3==2.1.0
+urllib3==2.2.0
     # via
     #   -r requirements/base.txt
     #   requests

@@ -33,7 +33,7 @@ click==8.1.7
     #   moreorless
 colorama==0.4.6
     # via tox
-cryptography==42.0.1
+cryptography==42.0.2
     # via pyjwt
 distlib==0.3.8
     # via virtualenv
@@ -78,7 +78,7 @@ path==16.9.0
     # via path-py
 path-py==12.5.0
     # via -r requirements/base.in
-platformdirs==4.1.0
+platformdirs==4.2.0
     # via
     #   tox
     #   virtualenv
@@ -94,7 +94,7 @@ pyjwt[crypto]==2.8.0
     #   pyjwt
 pyproject-api==1.6.1
     # via tox
-pytest==7.4.4
+pytest==8.0.0
     # via
     #   -r requirements/base.in
     #   pytest-logging
@@ -139,7 +139,7 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.in
     #   github3-py
-urllib3==2.1.0
+urllib3==2.2.0
     # via requests
 urlobject==2.4.3
     # via -r requirements/base.in
