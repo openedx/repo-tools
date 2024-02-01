@@ -28,7 +28,7 @@ importlib-resources==6.1.1
     #   matplotlib
 kiwisolver==1.4.5
     # via matplotlib
-mako==1.3.1
+mako==1.3.2
     # via alembic
 markupsafe==2.1.4
     # via mako
@@ -51,7 +51,7 @@ python-dateutil==2.8.2
     # via
     #   matplotlib
     #   pandas
-pytz==2023.3.post1
+pytz==2023.4
     # via pandas
 six==1.16.0
     # via python-dateutil
