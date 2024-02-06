@@ -8,7 +8,7 @@ import logging
 import yaml
 
 from edx_repo_tools.auth import pass_github
-from edx_repo_tools.data import iter_openedx_release_yaml
+from edx_repo_tools.data import iter_openedx_yaml
 
 
 logging.basicConfig()
