@@ -14,7 +14,7 @@ cycler==0.12.1
     # via matplotlib
 dataset==1.6.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-fonttools==4.47.2
+fonttools==4.48.1
     # via matplotlib
 greenlet==3.0.3
     # via
@@ -30,7 +30,7 @@ kiwisolver==1.4.5
     # via matplotlib
 mako==1.3.2
     # via alembic
-markupsafe==2.1.4
+markupsafe==2.1.5
     # via mako
 matplotlib==3.7.4
     # via -r edx_repo_tools/conventional_commits/extra.in
@@ -51,7 +51,7 @@ python-dateutil==2.8.2
     # via
     #   matplotlib
     #   pandas
-pytz==2023.4
+pytz==2024.1
     # via pandas
 six==1.16.0
     # via python-dateutil
