@@ -14,6 +14,7 @@ from __future__ import annotations
 import importlib.resources
 import re
 import textwrap
+from base64 import b64decode
 from functools import lru_cache
 from itertools import chain
 from pprint import pformat
@@ -50,6 +51,7 @@ def all_paged_items(func, *args, **kwargs):
     return chain.from_iterable(paged(func, *args, per_page=100, **kwargs))
 
 
+@cache
 def is_security_private_fork(api, org, repo):
     """
     Check to see if a specific repo is a private security fork.
@@ -61,6 +63,7 @@ def is_security_private_fork(api, org, repo):
     return is_private and HAS_GHSA_SUFFIX.match(repo)
 
 
+@cache
 def is_public(api, org, repo):
     """
     Check to see if a specific repo is public.
@@ -71,6 +74,7 @@ def is_public(api, org, repo):
     return not is_private
 
 
+@cache
 def is_empty(api, org, repo):
     """
     Check to see if a specific repo is empty and has no commits yet.
@@ -91,13 +95,99 @@ def is_empty(api, org, repo):
 
 
 @cache
-def get_github_file_contents(api, org, repo, path, ref):
+def get_github_file_contents(api: GhApi, org: str, repo: str, path: str, ref: str|None = None) -> str:
     """
     A caching proxy for the get repository content api endpoint.
 
-    It returns the content of the file as a string.
+    It returns the content of the file as a Base64-encoded string.
+
+    `ref=None` means default branch.
     """
     return api.repos.get_content(org, repo, path, ref).content
+
+
+@cache
+def get_github_file_text(api: GhApi, org: str, repo: str, path: str, ref: str|None = None) -> str|None:
+    """
+    TODO
+    """
+    try:
+        contents = get_github_file_contents(api, org, repo, path, ref)
+    except HTTP4xxClientError as err:
+        return None
+    else:
+        return b64decode(contents)
+
+
+@cache
+def should_be_tagged_for_release(api: GhApi, org: str, repo: str, include_maybe: bool) -> bool:
+    """
+    Takes the union of the _old and _new versions of this function.
+
+    TODO: Remove the _old stuff and combine this into one function once
+          the openedx.yaml->catalog-info.yaml transition is finished, as specified by
+          https://github.com/openedx/open-edx-proposals/pull/526
+    """
+    return (
+        should_be_tagged_for_release_old(api, org, repo, include_maybe) or
+        should_be_tagged_for_release_new(api, org, repo, include_maybe)
+    )
+
+
+@cache
+def should_be_tagged_for_release_old(api: GhApi, org: str, repo: str, include_maybe) -> bool:
+    """
+    Is this repo marked for direct inclusion in the openedx release (using openedx.yaml)? Cached.
+
+    Checks the "old" way:
+    https://docs.openedx.org/projects/openedx-proposals/en/latest/archived/oep-0002-bp-repo-metadata.html
+    """
+    openedx_yaml = get_github_file_text(api, org, repo, "openedx.yaml")
+    if openedx_yaml:
+        try:
+            openedx_dict = yaml.safe_load(openedx_yaml)
+        except:  # pylint: disable=bare-except:
+            # if the yaml is malformed, then it won't be released, so it's OK to just move on.
+            pass
+        else:
+            if isinstance(openedx_dict, dict):
+                openedx_release = openedx_dict.get("openedx-release")
+                if isinstance(openedx_release, dict):
+                    ref = openedx_dict.get("openedx-release", {}).get("ref")
+                    maybe = openedx_dict.get("openedx-release", {}).get("maybe")
+                    if ref and (include_maybe or (not maybe)):
+                        return True
+    return False
+
+
+@cache
+def should_be_tagged_for_release_new(api: GhApi, org: str, repo: str, include_maybe: bool) -> bool:
+    """
+    Is this repo marked for direct inclusion in the openedx release (using catalog-info.yaml)? Cached.
+
+    Checks the "new" way:
+    https://docs.openedx.org/projects/openedx-proposals/en/latest/processes/oep-0055/decisions/0004-release-data-in-catalog-info-files.html
+    """
+    catalog_yaml = get_github_file_text(api, org, repo, "catalog-info.yaml")
+    if catalog_yaml:
+        try:
+            catalog_dict = yaml.safe_load(catalog_yaml)
+        except:  # pylint: disable=bare-except:
+            # if the yaml is malformed, then it won't be released, so it's OK to just move on.
+            pass
+        else:
+            if isinstance(catalog_dict, dict):
+                metadata = catalog_dict.get("metadata")
+                if isinstance(metadata, dict):
+                    annotations = metadata.get("annotations")
+                    if isinstance(annotations, dict):
+                        if "openedx.org/release" in annotations:
+                            # if there's an annotation, then null->False, nonnull->True
+                            return bool(annotations["openedx.org/release"])
+                        else:
+                            # lack of annotation means "maybe"
+                            return include_maybe
+    return False
 
 
 class Check:
@@ -139,22 +229,44 @@ class Check:
 
         raise NotImplementedError
 
-    def fix(self):
+    def fix(self) -> list[str]:
         """
         Make an idempotent change to resolve the issue.
 
         Expects that `check` has already been run.
+        Returns a list of steps taken, for the log.
         """
 
         raise NotImplementedError
 
-    def dry_run(self):
+    def dry_run(self) -> list[str]:
         """
         See what will happen without making any changes.
 
         Expects that `check` has already been run.
+        Returns a list of steps that would have been taken, for the log.
         """
         raise NotImplementedError
+
+
+class NamespacedBranches(Check):
+    """
+    TODO
+    """
+    def is_relevant(self):
+        """
+        Eventually all repos are relevant, but for right now we care about release-tagged repos.
+        """
+        return should_be_tagged_for_release(self.api, self.org_name, self.repo_name, include_maybe=False)
+
+    def check(self):
+        return False, "TODO -- this repo is in the release. We need to check its branches"
+
+    def fix(self):
+        return []
+
+    def dry_run(self):
+        return []
 
 
 class EnsureWorkflowTemplates(Check):
@@ -883,6 +995,7 @@ CHECKS = [
     RequireTriageTeamAccess,
     EnsureLabels,
     EnsureWorkflowTemplates,
+    NamespacedBranches,
 ]
 CHECKS_BY_NAME = {check_cls.__name__: check_cls for check_cls in CHECKS}
 CHECKS_BY_NAME_LOWER = {check_cls.__name__.lower(): check_cls for check_cls in CHECKS}
