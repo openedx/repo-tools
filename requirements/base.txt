@@ -133,7 +133,7 @@ tomli==2.0.1
     #   tox
 tox==4.12.1
     # via -r requirements/base.in
-tqdm==4.66.1
+tqdm==4.66.2
     # via -r requirements/base.in
 uritemplate==4.1.1
     # via

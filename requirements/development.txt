@@ -210,7 +210,7 @@ python-dateutil==2.8.2
     #   github3-py
 python-dotenv==1.0.1
     # via -r requirements/base.txt
-python-slugify==8.0.3
+python-slugify==8.0.4
     # via code-annotations
 pyyaml==6.0.1
     # via
@@ -223,7 +223,7 @@ requests==2.31.0
     #   cachecontrol
     #   github3-py
     #   responses
-responses==0.24.1
+responses==0.25.0
     # via -r requirements/development.in
 ruamel-yaml==0.18.6
     # via -r requirements/base.txt
@@ -260,7 +260,7 @@ tomlkit==0.12.3
     # via pylint
 tox==4.12.1
     # via -r requirements/base.txt
-tqdm==4.66.1
+tqdm==4.66.2
     # via -r requirements/base.txt
 typing-extensions==4.9.0
     # via
