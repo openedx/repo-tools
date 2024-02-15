@@ -5,7 +5,7 @@ from configparser import NoSectionError, ConfigParser
 from unittest import TestCase
 import shutil
 import uuid
-from edx_repo_tools.codemods.django3 import ConfigReader
+from edx_repo_tools.codemods.python312 import ConfigReader
 
 
 class TestToxModernizer(TestCase):
@@ -33,27 +33,20 @@ class TestToxModernizer(TestCase):
         parser = self._get_parser(config_file)
         dependencies = parser['testenv']['deps']
 
-        self.assertIn("django32:", dependencies)
-        self.assertIn("django40:", dependencies)
+        self.assertNotIn("django32:", dependencies)
+        self.assertIn("django42:", dependencies)
 
     def _assert_replaces_python_interpreters(self, config_file):
         parser = self._get_parser(config_file)
         env_list = parser['tox']['envlist']
 
-        self.assertNotRegex("py{27}", env_list)
-        self.assertNotIn("py{27,35}", env_list)
-        self.assertNotIn("py{27,35,36}", env_list)
-        self.assertNotIn("py{27,35,36,37}", env_list)
-        self.assertIn("py38", env_list)
+        self.assertIn("py{38, 312}", env_list)
 
     def _assert_replaces_django_runners(self, config_file):
         parser = self._get_parser(config_file)
         env_list = parser['tox']['envlist']
 
-        self.assertNotIn("django{111}", env_list)
-        self.assertNotIn("django{111,20}", env_list)
-        self.assertNotIn("django{111,20,21}", env_list)
-        self.assertIn("django{32,40}", env_list)
+        self.assertIn("django{42}", env_list)
 
     def _assert_replaces_django_dependencies(self, config_file):
         self._assert_django_dependencies_replaced(config_file)
@@ -63,7 +56,7 @@ class TestToxModernizer(TestCase):
         parser.read(config_file)
 
         dependencies = parser['testenv']['deps']
-        dependencies = re.sub("[^\n]*django32.*\n", '', dependencies)
+        dependencies = re.sub("[^\n]*django42.*\n", '', dependencies)
         parser['testenv']['deps'] = dependencies
 
         with open(config_file, 'w') as configfile:

@@ -98,7 +98,7 @@ setup(
             'modernize_node_workflow = edx_repo_tools.codemods.node16.gha_ci_modernizer:main',
             'modernize_openedx_yaml = edx_repo_tools.modernize_openedx_yaml:main',
             'modernize_setup_file = edx_repo_tools.codemods.django3.setup_file_modernizer:main',
-            'modernize_tox = edx_repo_tools.codemods.django3.tox_modernizer:main',
+            'modernize_tox = edx_repo_tools.codemods.python312.tox_modernizer:main',
             'modernize_travis = edx_repo_tools.codemods.django3.travis_modernizer:main',
             'no_yaml = edx_repo_tools.ospr.no_yaml:no_yaml',
             'oep2 = edx_repo_tools.oep2:_cli',
