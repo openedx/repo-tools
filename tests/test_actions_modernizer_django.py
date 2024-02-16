@@ -5,7 +5,7 @@ import os
 import shutil
 from os.path import basename, dirname, join
 
-from edx_repo_tools.codemods.django3 import GithubCIDjangoModernizer
+from edx_repo_tools.codemods.python312 import GithubCIModernizer
 from edx_repo_tools.utils import YamlLoader
 
 
@@ -18,7 +18,7 @@ def setup_local_copy(filepath, tmpdir):
 
 
 def get_updated_yaml_elements(file_path):
-    modernizer = GithubCIDjangoModernizer(file_path)
+    modernizer = GithubCIModernizer(file_path)
     modernizer.modernize()
     yaml_loader = YamlLoader(file_path)
     return yaml_loader.elements
@@ -32,8 +32,8 @@ def test_matrix_items(tmpdir):
     ci_elements = get_updated_yaml_elements(test_file)
     tox_envs = ci_elements['jobs']['run_tests']['strategy']['matrix']['toxenv']
 
-    assert 'django32' in tox_envs
-    assert 'django40' in tox_envs
+    assert 'django32' not in tox_envs
+    assert 'django42' in tox_envs
 
 
 def test_matrix_items_multiple_jobs(tmpdir):
@@ -45,18 +45,17 @@ def test_matrix_items_multiple_jobs(tmpdir):
 
     # test the case with django env present in one job
     job1_tox_envs = ci_elements['jobs']['build']['strategy']['matrix']['tox-env']
-    assert 'django32' in job1_tox_envs
-    assert 'django40' in job1_tox_envs
+    assert 'django32' not in job1_tox_envs
+    assert 'django42' in job1_tox_envs
 
     # test the case with django env present in second job
     job2_tox_envs = ci_elements['jobs']['django_test']['strategy']['matrix']['django-version']
-    assert 'django32' in job2_tox_envs
-    assert 'django40' in job2_tox_envs
+    assert 'django32' not in job2_tox_envs
+    assert 'django42' in job2_tox_envs
 
     # test the case with no django env present in third job.
     job3_tox_envs = ci_elements['jobs']['test']['strategy']['matrix']['tox']
-    assert 'django32' not in job3_tox_envs
-    assert 'django40' not in job3_tox_envs
+    assert 'django42' in job3_tox_envs
 
 def test_include_exclude_list(tmpdir):
     """
@@ -69,6 +68,6 @@ def test_include_exclude_list(tmpdir):
 
     for item in list(include_list) + list(exclude_list):
         if 'django-version' in item:
-            assert item['django-version'] != '3.1'
+            assert item['django-version'] != '3.2'
         if 'toxenv' in item:
-            assert item['toxenv'] != 'django30'
+            assert item['toxenv'] != 'django42'
