@@ -93,7 +93,7 @@ setup(
             'find_dependencies = edx_repo_tools.find_dependencies.find_dependencies:main',
             'get_org_repo_urls = edx_repo_tools.dev.get_org_repo_urls:main',
             'modernize_github_actions = edx_repo_tools.codemods.django3.github_actions_modernizer:main',
-            'modernize_github_actions_django = edx_repo_tools.codemods.django3.github_actions_django_modernizer:main',
+            'modernize_github_actions_django = edx_repo_tools.codemods.django3.github_actions_modernizer_django:main',
             'modernize_node_release_workflow = edx_repo_tools.codemods.node16.gha_release_workflow_modernizer:main',
             'modernize_node_workflow = edx_repo_tools.codemods.node16.gha_ci_modernizer:main',
             'modernize_openedx_yaml = edx_repo_tools.modernize_openedx_yaml:main',
