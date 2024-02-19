@@ -113,6 +113,8 @@ setup(
             'modernize_tox_django42 = edx_repo_tools.codemods.django42.tox_moderniser_django42:main',
             'modernize_github_actions_django42 = edx_repo_tools.codemods.django42.github_actions_modernizer_django42:main',
             'remove_providing_args = edx_repo_tools.codemods.django42.remove_providing_args_arg:main',
+            'python312_gh_actions_modernizer = edx_repo_tools.codemods.python312.gh_actions_modernizer:main',
+            'python312_tox_modernizer = edx_repo_tools.codemods.python312.tox_modernizer:main',
         ],
     },
     package_data={

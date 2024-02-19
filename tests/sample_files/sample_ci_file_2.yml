@@ -13,19 +13,19 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-20.04]
-        python-version: ['3.5', '3.6', '3.7', '3.8']
+        python-version: ['3.5', '3.6', '3.7', '3.8', '3.12']
         django-version: ['3.2']
         include:
-          - python-version: "3.5"
-            toxenv: 'quality'
-            ubuntu: 20.04
+        - python-version: "3.5"
+          toxenv: 'quality'
+          ubuntu: 20.04
         exclude:
-          - python-version: "3.5"
-            toxenv: 'quality'
-          - python-version: "3.7"
-            toxenv: 'docs'
-          - python-version: "3.8"
-            toxenv: 'pii_check'
+        - python-version: "3.5"
+          toxenv: 'quality'
+        - python-version: "3.7"
+          toxenv: 'docs'
+        - python-version: "3.8"
+          toxenv: 'pii_check'
     steps:
     - uses: actions/checkout@v2
     - name: setup python
@@ -45,8 +45,8 @@ jobs:
       run: tox
 
     - name: Run Coverage
-      if: matrix.python-version == '3.8' && matrix.toxenv=='django32'
-      uses: codecov/codecov-action@v1
+      if: matrix.python-version == '3.8' && matrix.toxenv=='django42'
+      uses: codecov/codecov-action@v2
       with:
         flags: unittests
         fail_ci_if_error: true
