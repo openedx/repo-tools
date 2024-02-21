@@ -169,8 +169,14 @@
 # Open edX product managers will add this label to PRs which require
 # product review.
 - name: "product review"
-  color: "c97bf7"  # light puple
+  color: "c97bf7"  # light purple
   description: "PR requires product review before merging"
+
+# Open edX product managers will add this label to PRs which have completed
+# product review.
+- name: "product review complete"
+  color: "7bf7d8"  # light teal
+  description: "PR has gone through product review"
 
 # As of May 2023, 2U has a "blended" development structure through which they design, fund &
 # review contributions from other community providers. Their own tools or project managers
