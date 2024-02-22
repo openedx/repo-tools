@@ -61,7 +61,7 @@ colorama==0.4.6
     # via
     #   -r requirements/base.txt
     #   tox
-cryptography==42.0.2
+cryptography==42.0.4
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -100,7 +100,7 @@ gitdb==4.0.11
     #   gitpython
 github3-py==4.0.1
     # via -r requirements/base.txt
-gitpython==3.1.41
+gitpython==3.1.42
     # via -r requirements/base.txt
 idna==3.6
     # via
@@ -149,7 +149,7 @@ path-py==12.5.0
     # via -r requirements/base.txt
 pbr==6.0.0
     # via stevedore
-pip-tools==7.3.0
+pip-tools==7.4.0
     # via -r requirements/development.in
 platformdirs==4.2.0
     # via
@@ -170,7 +170,6 @@ pyjwt[crypto]==2.8.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-    #   pyjwt
 pylint==3.0.3
     # via
     #   edx-lint
@@ -190,8 +189,10 @@ pyproject-api==1.6.1
     #   -r requirements/base.txt
     #   tox
 pyproject-hooks==1.0.0
-    # via build
-pytest==8.0.0
+    # via
+    #   build
+    #   pip-tools
+pytest==8.0.1
     # via
     #   -r requirements/base.txt
     #   -r requirements/development.in
@@ -258,7 +259,7 @@ tomli==2.0.1
     #   tox
 tomlkit==0.12.3
     # via pylint
-tox==4.12.1
+tox==4.13.0
     # via -r requirements/base.txt
 tqdm==4.66.2
     # via -r requirements/base.txt
@@ -270,14 +271,14 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-urllib3==2.2.0
+urllib3==2.2.1
     # via
     #   -r requirements/base.txt
     #   requests
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.25.0
+virtualenv==20.25.1
     # via
     #   -r requirements/base.txt
     #   tox
