@@ -78,8 +78,11 @@ class GithubCIModernizer(YamlLoader):
     '--path', default='.github/workflows/ci.yml',
     help="Path to default CI workflow file")
 def main(path):
-    modernizer = GithubCIModernizer(path)
-    modernizer.modernize()
+    if os.path.exists(path):
+        modernizer = GithubCIModernizer(path)
+        modernizer.modernize()
+    else:
+        print("ci.yml not found on specified path")
 
 
 if __name__ == '__main__':

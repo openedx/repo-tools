@@ -110,8 +110,11 @@ class ToxModernizer:
     '--path', default='tox.ini',
     help="Path to target tox config file")
 def main(path):
-    modernizer = ConfigReader(path).get_modernizer()
-    modernizer.modernize()
+    if os.path.exists(path):
+        modernizer = ConfigReader(path).get_modernizer()
+        modernizer.modernize()
+    else:
+        print("tox.ini not found on specified path")
 
 
 if __name__ == '__main__':
