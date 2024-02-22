@@ -1,6 +1,7 @@
 """
 Github Actions CI Modernizer to add Python 3.12 and drop Django 3.2 testing
 """
+import os
 from copy import deepcopy
 import click
 from edx_repo_tools.utils import YamlLoader
