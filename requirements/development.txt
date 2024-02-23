@@ -290,7 +290,3 @@ wheel==0.42.0
     # via pip-tools
 zipp==3.17.0
     # via importlib-metadata
-
-# The following packages are considered to be unsafe in a requirements file:
-# pip
-# setuptools
