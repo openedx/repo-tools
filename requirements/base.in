@@ -24,6 +24,7 @@ uritemplate
 urlobject
 ruamel.yaml
 bowler
+setuptools
 
 # pytest is used by `edx_report_tools.oep2` directly
 pytest
