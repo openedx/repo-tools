@@ -6,3 +6,4 @@ pip-tools
 pytest
 pytest-mock
 responses
+setuptools
