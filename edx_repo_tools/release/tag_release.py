@@ -91,11 +91,10 @@ def openedx_repos_with_catalog_info(hub, orgs=None, branches=None):
     orgs = orgs or OPENEDX_ORGS
     repos = {}
     for repo, data in tqdm(iter_openedx_yaml('catalog-info.yaml', hub, orgs=orgs, branches=branches), desc='Find repos'):
-        
+
         if 'metadata' in data:
-            if 'annotations' in data['metadata']:
-                annotations = data['metadata']['annotations']
-            
+            annotations = data['metadata'].get('annotations')
+            if annotations:
                 # Check if 'openedx.org/release' is present in annotations
                 if 'openedx.org/release' in annotations:
                     repo = repo.refresh()
