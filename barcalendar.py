@@ -63,7 +63,7 @@ def validate_version_date(project, version, year, month, check_start=False):
     """
     Validates the end-of-life(EOL) or release date for a project version.
     Returns the correct EOL/releaseDate in case of a conflict with api value.
-    
+
     Parameters:
     project (str): The name of the project.
     version (str): The version of the project.
@@ -79,11 +79,11 @@ def validate_version_date(project, version, year, month, check_start=False):
             url=f"https://endoflife.date/api/{project}/{version}.json",
             headers={'Accept': 'application/json'}
         )
-        
+
         if response.status_code != 200:
             eol_logger.error(f"Project not Found: {project}/{version} not found on endoflife.date")
             return (year, month)
-        
+
         version_info = response.json()
         if check_start:
             eol_year, eol_month, _ = version_info['releaseDate'].split("-")
@@ -91,10 +91,10 @@ def validate_version_date(project, version, year, month, check_start=False):
         else:
             if version_info['eol'] == False:
                 eol_logger.warning(f"No EOL found for {project} {version}")
-                return (year, month)                
+                return (year, month)
             eol_year, eol_month, _ = version_info['eol'].split("-")
             date_type = "eol"
-        
+
         if (year, month) == (int(eol_year), int(eol_month)):
             return (year, month)
         else:
@@ -405,7 +405,7 @@ versions = get_defaults_from_tutor()
 CURRENT = {
     "Open edX": parse_version_name(versions['OPENEDX_COMMON_VERSION']),
     "Python": "3.8",
-    "Django": "3.2",
+    "Django": "4.2",
     "Ubuntu": "20.04",
     "Node": "16.x",
     "Mongo": parse_version_number(versions['DOCKER_IMAGE_MONGODB']),
@@ -417,7 +417,7 @@ CURRENT = {
 
 EDX = {
     "Python": "3.8",
-    "Django": "3.2",
+    "Django": "4.2",
     "Ubuntu": "20.04",
     "Node": "16.x",
     "Mongo": "4.2",
@@ -449,9 +449,14 @@ names = [
     ('Juniper', 2020, 6),
     ("Koa", 2020, 12),
     ("Lilac", 2021, 6),
+    ("Maple", 2021, 12),
+    ("Nutmeg", 2022, 6),
+    ("Olive", 2022, 12),
+    ("Palm", 2023, 6),
+    ("Quince", 2023, 12),
     ]
 # https://www.treenames.net/common_tree_names.html
-future = ["Maple", "Nutmeg", "Olive", "Palm", "Quince", "Redwood"] + list("STUVWXYZ")
+future = ["Redwood", "Sumac", "Teak"] + list("UVWXYZ")
 target_length = 6 # months per release
 
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))

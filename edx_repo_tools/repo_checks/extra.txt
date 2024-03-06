@@ -6,7 +6,7 @@
 #
 cache-to-disk==2.0.0
     # via -r edx_repo_tools/repo_checks/extra.in
-certifi==2023.11.17
+certifi==2024.2.2
     # via requests
 charset-normalizer==3.3.2
     # via requests
@@ -16,7 +16,7 @@ fastcore==1.5.29
     # via ghapi
 ghapi==1.0.4
     # via -r edx_repo_tools/repo_checks/extra.in
-idna==3.4
+idna==3.6
     # via requests
 packaging==23.2
     # via
@@ -26,7 +26,7 @@ pyyaml==6.0.1
     # via -r edx_repo_tools/repo_checks/extra.in
 requests==2.31.0
     # via -r edx_repo_tools/repo_checks/extra.in
-urllib3==2.1.0
+urllib3==2.2.1
     # via requests
 
 # The following packages are considered to be unsafe in a requirements file:
