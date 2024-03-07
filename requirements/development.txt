@@ -20,7 +20,7 @@ backports-csv==1.0.7
     # via -r requirements/base.txt
 bowler==0.9.0
     # via -r requirements/base.txt
-build==1.0.3
+build==1.1.1
     # via pip-tools
 cachecontrol==0.14.0
     # via -r requirements/base.txt
@@ -130,7 +130,7 @@ moreorless==0.4.0
     # via
     #   -r requirements/base.txt
     #   bowler
-msgpack==1.0.7
+msgpack==1.0.8
     # via
     #   -r requirements/base.txt
     #   cachecontrol
@@ -149,7 +149,7 @@ path-py==12.5.0
     # via -r requirements/base.txt
 pbr==6.0.0
     # via stevedore
-pip-tools==7.4.0
+pip-tools==7.4.1
     # via -r requirements/development.in
 platformdirs==4.2.0
     # via
@@ -205,7 +205,7 @@ pytest-mock==3.12.0
     # via -r requirements/development.in
 pytest-xdist==3.5.0
     # via -r requirements/base.txt
-python-dateutil==2.8.2
+python-dateutil==2.9.0.post0
     # via
     #   -r requirements/base.txt
     #   github3-py
@@ -259,7 +259,7 @@ tomli==2.0.1
     #   tox
 tomlkit==0.12.4
     # via pylint
-tox==4.13.0
+tox==4.14.1
     # via -r requirements/base.txt
 tqdm==4.66.2
     # via -r requirements/base.txt
