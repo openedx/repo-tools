@@ -67,7 +67,7 @@ more-itertools==10.2.0
     # via -r requirements/base.in
 moreorless==0.4.0
     # via bowler
-msgpack==1.0.7
+msgpack==1.0.8
     # via cachecontrol
 packaging==23.2
     # via
@@ -101,7 +101,7 @@ pytest-logging==2015.11.4
     # via -r requirements/base.in
 pytest-xdist==3.5.0
     # via -r requirements/base.in
-python-dateutil==2.8.2
+python-dateutil==2.9.0.post0
     # via
     #   -r requirements/base.in
     #   github3-py
@@ -129,7 +129,7 @@ tomli==2.0.1
     #   pyproject-api
     #   pytest
     #   tox
-tox==4.13.0
+tox==4.14.1
     # via -r requirements/base.in
 tqdm==4.66.2
     # via -r requirements/base.in
@@ -145,3 +145,6 @@ virtualenv==20.25.1
     # via tox
 volatile==2.1.0
     # via bowler
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools
