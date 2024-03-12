@@ -157,6 +157,72 @@ class Check:
         raise NotImplementedError
 
 
+class EnsureNoAdminOrMaintainTeams(Check):
+    """
+    Teams should not be granted `admin` or `maintain` access to a repository unless the access
+    is exceptional and it is noted here.  All other `admin` and `maintain` access is downgraded to
+    `write` access.
+    """
+
+    def __init__(self, api: GhApi, org: str, repo: str):
+        super().__init__(api, org, repo)
+        self.teams_to_downgrade = []
+
+    def is_relevant(self) -> bool:
+        """
+        All non security fork repos, public or private.
+        """
+        return not is_security_private_fork(self.api, self.org_name, self.repo_name)
+
+    def check(self) -> tuple[bool, str]:
+        """
+        Verify whether or not the check is failing.
+
+        This should not change anything and should not have a side-effect
+        other than populating `self` with any data that is needed later for
+        `fix` or `dry_run`.
+
+        The string in the return tuple should be a human readable reason
+        that the check failed.
+        """
+        teams = all_paged_items(
+            self.api.repos.list_teams, owner=self.org_name, repo=self.repo_name
+        )
+        for team in teams:
+            if team.permission in ["admin", "maintain"]:
+                self.teams_to_downgrade.append(team)
+
+        if self.teams_to_downgrade:
+            team_and_permissions = list({f"{team.slug}: {team.permission}" for team in self.teams_to_downgrade})
+            return (
+                False,
+                f"Some teams have excessive permissions:\n\t\t" + "\n\t\t".join(team_and_permissions),
+            )
+
+        return (True, "No teams with `admin` or `maintain` permissions.")
+
+    def dry_run(self):
+        return self.fix(dry_run=True)
+
+    def fix(self, dry_run=False):
+        steps = []
+        for team in self.teams_to_downgrade:
+            if not dry_run:
+                self.api.teams.add_or_update_repo_permissions_in_org(
+                    self.org_name,
+                    team.slug,
+                    self.org_name,
+                    self.repo_name,
+                    "push",
+                )
+
+            steps.append(
+                f"Reduced permission of `{team.slug}` from `{team.permission}` to `push`"
+            )
+
+        return steps
+
+
 class EnsureWorkflowTemplates(Check):
     """
     There are certain github action workflows that we to exist on all
@@ -883,6 +949,7 @@ CHECKS = [
     RequireTriageTeamAccess,
     EnsureLabels,
     EnsureWorkflowTemplates,
+    EnsureNoAdminOrMaintainTeams,
 ]
 CHECKS_BY_NAME = {check_cls.__name__: check_cls for check_cls in CHECKS}
 CHECKS_BY_NAME_LOWER = {check_cls.__name__.lower(): check_cls for check_cls in CHECKS}
