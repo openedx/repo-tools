@@ -1,6 +1,7 @@
 import glob
 import os.path
 import re
+import sys
 
 import setuptools
 from setuptools import setup
@@ -47,12 +48,16 @@ def is_requirement(line):
 
 VERSION = get_version('edx_repo_tools', '__init__.py')
 
+
 # Find our extra requirements. A subdirectory of edx_repo_tools can have an
 # extra.in file. It will be pip-compiled to extra.txt.  Here we find them all
 # and register them as extras.
 EXTRAS_REQUIRE = {}
 for fextra in glob.glob("edx_repo_tools/*/extra.txt"):
     slug = fextra.split("/")[1]
+    if sys.version_info >= (3, 12) and glob.glob(f'edx_repo_tools/{slug}/extra-py312.txt'):
+        fextra = f'edx_repo_tools/{slug}/extra-py312.txt'
+
     EXTRAS_REQUIRE[slug] = load_requirements(fextra)
 
 # To run tests & linting across the entire repo, we need to install the union
