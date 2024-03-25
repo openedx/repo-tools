@@ -109,7 +109,7 @@ class Check:
     (is_relevant, check, fix, and dry_run).
     """
 
-    def __init__(self, api, org, repo):
+    def __init__(self, api: GhApi, org: str, repo: str):
         self.api = api
         self.org_name = org
         self.repo_name = repo
@@ -157,6 +157,94 @@ class Check:
         raise NotImplementedError
 
 
+class EnsureRepoSettings(Check):
+    """
+    There are certain settings that we agree we want to be set a specific way on all repos.  This check
+    will ensure that those settings are set correctly on all non-security repos.
+
+    Settings:
+    - Issues should be enabled.
+    - Wikis should be disabled.  The confluence wiki should be used.
+    - Allow auto-merge to be used. (Does not enable auto-merge, just allows committers to enable it on a per PR basis.)
+    - Branches should be deleted on merge.
+    """
+
+    def __init__(self, api: GhApi, org: str, repo: str):
+        super().__init__(api, org, repo)
+        self.expected_settings = {
+            "has_issues": True,
+            "has_wiki": False,
+            "allow_auto_merge": True,
+            "delete_branch_on_merge": True,
+        }
+
+    def is_relevant(self) -> bool:
+        """
+        All non security fork repos, public or private.
+        """
+        return not is_security_private_fork(self.api, self.org_name, self.repo_name)
+
+    def check(self) -> tuple[bool, str]:
+        """
+        Verify whether or not the check is failing.
+
+        This should not change anything and should not have a side-effect
+        other than populating `self` with any data that is needed later for
+        `fix` or `dry_run`.
+
+        The string in the return tuple should be a human readable reason
+        that the check failed.
+        """
+        repo = self.api.repos.get(owner=self.org_name, repo=self.repo_name)
+
+        self.settings_that_dont_match = []
+        for setting in self.expected_settings:
+            actual_value = repo.get(setting)
+            if actual_value != self.expected_settings[setting]:
+                self.settings_that_dont_match.append((setting, actual_value))
+
+        if self.settings_that_dont_match:
+            # Looks like this:
+            #     Some settings don't match our expectations:
+            #             allow_auto_merge: False
+            #             delete_branch_on_merge: False
+            return (
+                False,
+                f"Some settings don't match our expectations:\n\t\t"
+                + "\n\t\t".join(
+                    [
+                        f"{setting[0]}: {setting[1]}"
+                        for setting in self.settings_that_dont_match
+                    ]
+                ),
+            )
+
+        return (True, "All expected settings are set correctly.")
+
+    def dry_run(self):
+        return self.fix(dry_run=True)
+
+    def fix(self, dry_run=False):
+        steps = []
+        if self.settings_that_dont_match:
+            if not dry_run:
+                self.api.repos.update(
+                    self.org_name, self.repo_name, **self.expected_settings
+                )
+            steps.append(
+                f"Updated repo settings to match expectations.\n\t"
+                + "\n\t".join(
+                    [
+                        f"{setting[0]}: {self.expected_settings[setting[0]]}"
+                        for setting in self.settings_that_dont_match
+                    ]
+                )
+            )
+        else:
+            steps.append("No changes needed.")
+        return steps
+
+
 class EnsureNoAdminOrMaintainTeams(Check):
     """
     Teams should not be granted `admin` or `maintain` access to a repository unless the access
@@ -193,10 +281,13 @@ class EnsureNoAdminOrMaintainTeams(Check):
                 self.teams_to_downgrade.append(team)
 
         if self.teams_to_downgrade:
-            team_and_permissions = list({f"{team.slug}: {team.permission}" for team in self.teams_to_downgrade})
+            team_and_permissions = list(
+                {f"{team.slug}: {team.permission}" for team in self.teams_to_downgrade}
+            )
             return (
                 False,
-                f"Some teams have excessive permissions:\n\t\t" + "\n\t\t".join(team_and_permissions),
+                f"Some teams have excessive permissions:\n\t\t"
+                + "\n\t\t".join(team_and_permissions),
             )
 
         return (True, "No teams with `admin` or `maintain` permissions.")
@@ -950,6 +1041,7 @@ CHECKS = [
     EnsureLabels,
     EnsureWorkflowTemplates,
     EnsureNoAdminOrMaintainTeams,
+    EnsureRepoSettings,
 ]
 CHECKS_BY_NAME = {check_cls.__name__: check_cls for check_cls in CHECKS}
 CHECKS_BY_NAME_LOWER = {check_cls.__name__.lower(): check_cls for check_cls in CHECKS}
