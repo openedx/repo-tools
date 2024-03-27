@@ -64,6 +64,13 @@ To work on these tools:
    there with third-party requirements intended just for your tool.  This will
    automatically create an installable "extra" for your requirements.
 
+Active Tools
+============
+
+repo_checks
+-----------
+
+See the `repo_checks README <edx_repo_tools/repo_checks/README.rst>`_ in its subfolder.
 
 Older Tools
 ===========
