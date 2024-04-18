@@ -8,9 +8,9 @@ click==8.1.7
     # via -r edx_repo_tools/audit_gh_users/extra.in
 fastcore==1.5.29
     # via ghapi
-ghapi==1.0.4
+ghapi==1.0.5
     # via -r edx_repo_tools/audit_gh_users/extra.in
-packaging==23.2
+packaging==24.0
     # via
     #   fastcore
     #   ghapi
