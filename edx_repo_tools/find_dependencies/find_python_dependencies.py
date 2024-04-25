@@ -53,19 +53,19 @@ def main(dirs=None, org=None):
     """
     packages_url = [] 
     if dirs is None:
-        repo_dir = sys.argv[1]
+        repo_dirs = json.loads(sys.argv[1])
 
-    with open(repo_dir) as fbase:
-        # Read each line (package name) in the file
-        for req in requirements.parse(fbase):
-            print(req.name)
-            home_page = request_package_info_url(req.name)
-            if home_page is not None:
-                if match := urls_in_orgs([home_page], SECOND_PARTY_ORGS):
-                    packages_url.append(home_page)
+    for repo_dir in repo_dirs:
+        with open(repo_dir) as fbase:
+            # Read each line (package name) in the file
+            for req in requirements.parse(fbase):
+                home_page = request_package_info_url(req.name)
+                if home_page is not None:
+                    if match := urls_in_orgs([home_page], SECOND_PARTY_ORGS):
+                        packages_url.append(home_page)
 
     print("== DONE ==============")
-    print("Second-party:")
+    print("Second party packages:")
     print("\n".join(packages_url))
     
     if packages_url:
