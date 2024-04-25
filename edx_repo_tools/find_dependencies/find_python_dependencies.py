@@ -55,7 +55,7 @@ def main(dirs=None, org=None):
     if dirs is None:
          dirs = sys.argv[1:]
 
-    for repo_dir in dirs:
+    for i_dir, repo_dir in enumerate(dirs, start=1):
         with open(repo_dir) as fbase:
             # Read each line (package name) in the file
             for req in requirements.parse(fbase):
