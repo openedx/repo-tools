@@ -53,9 +53,9 @@ def main(dirs=None, org=None):
     """
     packages_url = [] 
     if dirs is None:
-        repo_dirs = json.loads(sys.argv[1])
+         dirs = sys.argv[1:]
 
-    for repo_dir in repo_dirs:
+    for repo_dir in dirs:
         with open(repo_dir) as fbase:
             # Read each line (package name) in the file
             for req in requirements.parse(fbase):
