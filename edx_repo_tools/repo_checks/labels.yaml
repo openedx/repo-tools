@@ -18,9 +18,11 @@
 
 ### LABELS USED FOR MANAGING A TEMPORARY STATE OR
 ### PROBLEM ACROSS REPOSITORIES
+
 - name: "business-specific"
   color: "d93f0b"  # scarlet red...
   description: "Code that relates to a specific user and should be refactored and removed."
+
 
 ### LABELS INDICATING HOW ISSUES CAN BE ENAGAGED WITH.
 
@@ -31,6 +33,10 @@
 - name: "help wanted"
   color: "54976d"  # fenway green
   description: "Ready to be picked up by anyone in the community"
+
+- name: "release testing"
+  color: "ff00ff"  # magenta
+  description: "Affects the upcoming release (attention needed)"
 
 
 ### LABELS INDICATING BROAD THEMES OF WORK.
