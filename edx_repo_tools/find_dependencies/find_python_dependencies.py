@@ -18,23 +18,6 @@ PY_REQS = [
     "requirements.txt",
 ]
 
-# Files that indicate a repo is a Python project:
-PY_INDICATORS = [
-    "setup.py",
-    "setup.cfg",
-    "pyproject.toml",
-]
-
-def find_py_reqs():
-    """Find the Python requirements file to use."""
-    for fname in PY_REQS:
-        possible_req = Path(fname)
-        if possible_req.exists():
-            return possible_req
-    if any(Path(ind).exists() for ind in PY_INDICATORS):
-        print(f"WARNING: {os.getcwd()} is likely a Python package, but we can't find its dependencies.")
-    return None
-
 def request_package_info_url(package):
         base_url = "https://pypi.org/pypi/"
         url = f"{base_url}{package}/json"
@@ -71,9 +54,8 @@ def main(dirs=None, org=None):
     packages_url = [] 
     if dirs is None:
         repo_dir = sys.argv[1]
-    print("path --> ")
-    print(f'{repo_dir}/base.txt')
-    with open(f'{repo_dir}/base.txt') as fbase:
+
+    with open(repo_dir) as fbase:
         # Read each line (package name) in the file
         for req in requirements.parse(fbase):
             print(req.name)
