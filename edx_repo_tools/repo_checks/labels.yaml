@@ -35,7 +35,7 @@
   description: "Ready to be picked up by anyone in the community"
 
 - name: "release testing"
-  color: "ff00ff"
+  color: "ff00ff"  # magenta
   description: "Affects the upcoming release (attention needed)"
 
 
