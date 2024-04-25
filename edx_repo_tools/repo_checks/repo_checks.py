@@ -15,7 +15,7 @@ import importlib.resources
 import re
 import textwrap
 from functools import lru_cache
-from itertools import chainf
+from itertools import chain
 from pprint import pformat
 
 import click
