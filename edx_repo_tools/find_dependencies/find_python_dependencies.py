@@ -42,8 +42,7 @@ def request_package_info_url(package):
         if response.status_code == 200:
             data_dict = response.json()
             info = data_dict["info"]
-            home_page = info["home_page"]
-            return home_page
+            return info["home_page"]            
         else:
             print(f"Failed to retrieve data for package {package}. Status code:", response.status_code)    
 
@@ -67,13 +66,13 @@ def urls_in_orgs(urls, orgs):
 
 def main(dirs=None, org=None):
     """
-    Analyze the requirements in all of the directories mentioned on the command line.
-    If arguments have newlines, treat each line as a separate directory.
+    Analyze the requirements in input directory mentioned on the command line.    
     """
     packages_url = [] 
     if dirs is None:
         repo_dir = sys.argv[1]
-    
+    print("path --> ")
+    print(f'{repo_dir}/base.txt')
     with open(f'{repo_dir}/base.txt') as fbase:
         # Read each line (package name) in the file
         for req in requirements.parse(fbase):
