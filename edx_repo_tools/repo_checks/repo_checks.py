@@ -174,7 +174,10 @@ class EnsureRepoSettings(Check):
         self.expected_settings = {
             "has_issues": True,
             "has_wiki": False,
-            "allow_auto_merge": True,
+            # The goal is to have allow_auto_merge==True for all repos, but for now we need
+            # to turn it off for edx-platform due to some unresolved issues with its complex
+            # system of checks: https://github.com/openedx/axim-engineering/issues/1096
+            "allow_auto_merge": self.repo_name != "edx-platform",
             "delete_branch_on_merge": True,
         }
 
