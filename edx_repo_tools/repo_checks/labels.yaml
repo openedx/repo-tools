@@ -200,8 +200,15 @@
   color: "ffd700"  # gold!
   description: "PR author is a Core Contributor (who may or may not have write access to this repo)."
 
+
+## LABELS FOR AUTOMATED TOOLING
+
 # The OSPR bot will recognize "jira:company" labels and make Jira issues for
 # pull requests labelled with them.
 - name: "jira:2u"
   color: "1475D4" # 2Blue
   description: "We want an issue in the 2U Jira instance"
+
+- name: "create-sandbox"
+  color: "fdee73"  # sandy yellow
+  description: "open-craft-grove should create a sandbox environment from this PR"
