@@ -147,4 +147,5 @@ volatile==2.1.0
     # via bowler
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools
+setuptools==69.5.1
+    # via -r requirements/base.in
