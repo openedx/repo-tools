@@ -12,10 +12,8 @@ importlib-metadata==6.11.0
     # via
     #   -c requirements/common_constraints.txt
     #   build
-packaging==23.2
-    # via
-    #   -c requirements/constraints.txt
-    #   build
+packaging==24.0
+    # via build
 pip-tools==7.4.1
     # via -r requirements/pip-tools.in
 pyproject-hooks==1.1.0
