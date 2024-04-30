@@ -26,6 +26,9 @@ jobs:
     - name: Install pip
       run: pip install -r requirements/pip.txt
 
+    - name: upgrade setuptool
+      run: pip install --upgrade setuptools
+
     - name: Install Dependencies
       run: make dev-install
 
