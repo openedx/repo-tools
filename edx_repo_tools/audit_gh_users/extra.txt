@@ -16,4 +16,5 @@ packaging==24.0
     #   ghapi
 
 # The following packages are considered to be unsafe in a requirements file:
-# pip
+pip==24.0
+    # via ghapi

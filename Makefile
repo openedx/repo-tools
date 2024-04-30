@@ -36,7 +36,7 @@ upgrade: $(COMMON_CONSTRAINTS_TXT)  ## update the requirements/*.txt files with 
 	pip install -qr requirements/pip-tools.txt
 	pip-compile --upgrade --allow-unsafe -o requirements/base.txt requirements/base.in
 	pip-compile --upgrade -o requirements/development.txt requirements/development.in
-	for fextra in edx_repo_tools/*/extra*.in; do pip-compile --upgrade -o $${fextra%.in}.txt $$fextra; done
+	for fextra in edx_repo_tools/*/extra*.in; do pip-compile --upgrade --allow-unsafe -o $${fextra%.in}.txt $$fextra; done
 
 lint:				## run pylint
 	pylint *.py edx_repo_tools tests
