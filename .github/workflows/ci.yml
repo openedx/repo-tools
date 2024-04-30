@@ -30,7 +30,9 @@ jobs:
       run: pip install --upgrade setuptools
 
     - name: Install Dependencies
-      run: make dev-install
+      run: |
+        python -m pip install --upgrade pip
+        make dev-install
 
     - name: Run Tests
       run: make test
