@@ -12,13 +12,13 @@ charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via -r edx_repo_tools/repo_checks/extra.in
-fastcore==1.5.29
+fastcore==1.5.32
     # via ghapi
-ghapi==1.0.4
+ghapi==1.0.5
     # via -r edx_repo_tools/repo_checks/extra.in
-idna==3.6
+idna==3.7
     # via requests
-packaging==23.2
+packaging==24.0
     # via
     #   fastcore
     #   ghapi
