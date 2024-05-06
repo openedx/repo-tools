@@ -33,7 +33,7 @@ click==8.1.7
     #   moreorless
 colorama==0.4.6
     # via tox
-cryptography==42.0.5
+cryptography==42.0.6
     # via pyjwt
 distlib==0.3.8
     # via virtualenv
@@ -131,7 +131,7 @@ tomli==2.0.1
     #   tox
 tox==4.15.0
     # via -r requirements/base.in
-tqdm==4.66.2
+tqdm==4.66.4
     # via -r requirements/base.in
 uritemplate==4.1.1
     # via
@@ -145,7 +145,3 @@ virtualenv==20.26.1
     # via tox
 volatile==2.1.0
     # via bowler
-
-# The following packages are considered to be unsafe in a requirements file:
-setuptools==69.5.1
-    # via -r requirements/base.in

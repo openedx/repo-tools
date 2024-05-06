@@ -6,7 +6,7 @@
 #
 click==8.1.7
     # via -r edx_repo_tools/audit_gh_users/extra.in
-fastcore==1.5.32
+fastcore==1.5.33
     # via ghapi
 ghapi==1.0.5
     # via -r edx_repo_tools/audit_gh_users/extra.in
@@ -16,5 +16,4 @@ packaging==24.0
     #   ghapi
 
 # The following packages are considered to be unsafe in a requirements file:
-pip==24.0
-    # via ghapi
+# pip
