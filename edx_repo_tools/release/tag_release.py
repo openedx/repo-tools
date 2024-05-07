@@ -68,6 +68,10 @@ def filter_repos(openedx_repo, catalog_repo):
         else:
             result_dict[repo_key] = openedx_data 
 
+    for repo_key, catalog_data in catalog_repo.items():
+        if repo_key not in result_dict:
+            result_dict[repo_key] = catalog_data
+
     return result_dict        
 
  
