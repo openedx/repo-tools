@@ -100,8 +100,15 @@ def openedx_repos_with_catalog_info(hub, orgs=None, branches=None):
             annotations = data['metadata'].get('annotations')
             if annotations:
                 # Check if 'openedx.org/release' is present in annotations
-                if 'openedx.org/release' in annotations:
+                release_annotation = 'openedx.org/release'
+
+                if release_annotation in annotations:
                     repo = repo.refresh()
+
+                    # Defaulting to the repo's default branch
+                    if not annotations.get(release_annotation, None):
+                        annotations['openedx.org/release'] = repo.default_branch
+
                     repos[repo] = data
 
     return repos
