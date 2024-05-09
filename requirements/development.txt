@@ -20,7 +20,7 @@ backports-csv==1.0.7
     # via -r requirements/base.txt
 bowler==0.9.0
     # via -r requirements/base.txt
-build==1.1.1
+build==1.2.1
     # via pip-tools
 cachecontrol==0.14.0
     # via -r requirements/base.txt
@@ -55,13 +55,13 @@ click==8.1.7
     #   pip-tools
 click-log==0.4.0
     # via edx-lint
-code-annotations==1.6.0
+code-annotations==1.8.0
     # via edx-lint
 colorama==0.4.6
     # via
     #   -r requirements/base.txt
     #   tox
-cryptography==42.0.5
+cryptography==42.0.7
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -77,20 +77,20 @@ docutils==0.20.1
     #   statistics
 edx-lint==5.3.6
     # via -r requirements/development.in
-exceptiongroup==1.2.0
+exceptiongroup==1.2.1
     # via
     #   -r requirements/base.txt
     #   pytest
-execnet==2.0.2
+execnet==2.1.1
     # via
     #   -r requirements/base.txt
     #   pytest-xdist
-filelock==3.13.1
+filelock==3.14.0
     # via
     #   -r requirements/base.txt
     #   tox
     #   virtualenv
-fissix==21.11.13
+fissix==24.4.24
     # via
     #   -r requirements/base.txt
     #   bowler
@@ -100,21 +100,23 @@ gitdb==4.0.11
     #   gitpython
 github3-py==4.0.1
     # via -r requirements/base.txt
-gitpython==3.1.42
+gitpython==3.1.43
     # via -r requirements/base.txt
-idna==3.6
+idna==3.7
     # via
     #   -r requirements/base.txt
     #   requests
-importlib-metadata==7.0.1
-    # via build
+importlib-metadata==6.11.0
+    # via
+    #   -c requirements/common_constraints.txt
+    #   build
 iniconfig==2.0.0
     # via
     #   -r requirements/base.txt
     #   pytest
 isort==5.13.2
     # via pylint
-jinja2==3.1.3
+jinja2==3.1.4
     # via code-annotations
 lazy==1.6
     # via -r requirements/base.txt
@@ -134,14 +136,14 @@ msgpack==1.0.8
     # via
     #   -r requirements/base.txt
     #   cachecontrol
-packaging==23.2
+packaging==24.0
     # via
     #   -r requirements/base.txt
     #   build
     #   pyproject-api
     #   pytest
     #   tox
-path==16.10.0
+path==16.14.0
     # via
     #   -r requirements/base.txt
     #   path-py
@@ -151,18 +153,18 @@ pbr==6.0.0
     # via stevedore
 pip-tools==7.4.1
     # via -r requirements/development.in
-platformdirs==4.2.0
+platformdirs==4.2.1
     # via
     #   -r requirements/base.txt
     #   pylint
     #   tox
     #   virtualenv
-pluggy==1.4.0
+pluggy==1.5.0
     # via
     #   -r requirements/base.txt
     #   pytest
     #   tox
-pycparser==2.21
+pycparser==2.22
     # via
     #   -r requirements/base.txt
     #   cffi
@@ -188,11 +190,11 @@ pyproject-api==1.6.1
     # via
     #   -r requirements/base.txt
     #   tox
-pyproject-hooks==1.0.0
+pyproject-hooks==1.1.0
     # via
     #   build
     #   pip-tools
-pytest==8.0.2
+pytest==8.2.0
     # via
     #   -r requirements/base.txt
     #   -r requirements/development.in
@@ -201,9 +203,9 @@ pytest==8.0.2
     #   pytest-xdist
 pytest-logging==2015.11.4
     # via -r requirements/base.txt
-pytest-mock==3.12.0
+pytest-mock==3.14.0
     # via -r requirements/development.in
-pytest-xdist==3.5.0
+pytest-xdist==3.6.1
     # via -r requirements/base.txt
 python-dateutil==2.9.0.post0
     # via
@@ -254,16 +256,15 @@ tomli==2.0.1
     #   pip-tools
     #   pylint
     #   pyproject-api
-    #   pyproject-hooks
     #   pytest
     #   tox
-tomlkit==0.12.4
+tomlkit==0.12.5
     # via pylint
-tox==4.14.1
+tox==4.15.0
     # via -r requirements/base.txt
-tqdm==4.66.2
+tqdm==4.66.4
     # via -r requirements/base.txt
-typing-extensions==4.10.0
+typing-extensions==4.11.0
     # via
     #   astroid
     #   pylint
@@ -278,7 +279,7 @@ urllib3==2.2.1
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.25.1
+virtualenv==20.26.1
     # via
     #   -r requirements/base.txt
     #   tox
@@ -286,7 +287,11 @@ volatile==2.1.0
     # via
     #   -r requirements/base.txt
     #   bowler
-wheel==0.42.0
+wheel==0.43.0
     # via pip-tools
-zipp==3.17.0
+zipp==3.18.1
     # via importlib-metadata
+
+# The following packages are considered to be unsafe in a requirements file:
+# pip
+# setuptools
