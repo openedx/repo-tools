@@ -1038,6 +1038,63 @@ class RequiredCLACheck(Check):
         return params
 
 
+class EnsureNoDirectRepoAccessToUsers(Check):
+    """
+    Users should not have direct repo access
+    """
+
+    def __init__(self, api: GhApi, org: str, repo: str):
+        super().__init__(api, org, repo)
+        self.users_list = []
+
+    def is_relevant(self) -> bool:
+        """
+        All non security fork repos, public or private.
+        """
+        return not is_security_private_fork(self.api, self.org_name, self.repo_name)
+
+    def check(self) -> tuple[bool, str]:
+        """
+        Verify whether or not the check is failing.
+
+        This should not change anything and should not have a side-effect
+        other than populating `self` with any data that is needed later for
+        `fix` or `dry_run`.
+
+        The string in the return tuple should be a human readable reason
+        that the check failed.
+        """
+        self.users_list = list(all_paged_items(
+            self.api.repos.list_collaborators, owner=self.org_name, repo=self.repo_name, affiliation='direct'
+        ))
+        users = [f"{user.login}: {user.role_name}" for user in self.users_list]
+        if users:
+            return (
+                False,
+                f"Some users have direct repo access:\n\t\t"
+                + "\n\t\t".join(users),
+            )
+        return (True, "No user has direct repo access.")
+
+    def dry_run(self):
+        return self.fix(dry_run=True)
+
+    def fix(self, dry_run=False):
+        steps = []
+        for user in self.users_list:
+            if not dry_run:
+                self.api.repos.remove_collaborator(
+                    owner=self.org_name,
+                    repo=self.repo_name,
+                    username=user.login,
+                )
+            steps.append(
+                f"Removed direct access to the repository for user {user.login}"
+            )
+
+        return steps
+
+
 CHECKS = [
     RequiredCLACheck,
     RequireTriageTeamAccess,
@@ -1045,6 +1102,7 @@ CHECKS = [
     EnsureWorkflowTemplates,
     EnsureNoAdminOrMaintainTeams,
     EnsureRepoSettings,
+    EnsureNoDirectRepoAccessToUsers,
 ]
 CHECKS_BY_NAME = {check_cls.__name__: check_cls for check_cls in CHECKS}
 CHECKS_BY_NAME_LOWER = {check_cls.__name__.lower(): check_cls for check_cls in CHECKS}
