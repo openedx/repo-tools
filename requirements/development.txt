@@ -271,8 +271,9 @@ types-setuptools==69.5.0.20240513
     # via
     #   -r requirements/base.txt
     #   requirements-parser
-typing-extensions==4.11.0
+typing-extensions==4.10.0
     # via
+    #   -c requirements/constraints.txt
     #   astroid
     #   pylint
 uritemplate==4.1.1
