@@ -16,8 +16,15 @@
 #   Describe your color with a comment so it's easier to review.
 
 
-### LABELS USED FOR MANAGING A TEMPORARY STATE OR
-### PROBLEM ACROSS REPOSITORIES
+### LABELS USED FOR TRACKING PROJECT-WIDE CONCERNS
+
+- name: "release testing"
+  color: "aa66aa"  # magenta?
+  description: "Affects the upcoming release (attention needed)"
+
+- name: "release blocker"
+  color: "bb33bb"  # MAGENTA!
+  description: "Blocks the upcoming release (fix needed)"
 
 - name: "business-specific"
   color: "d93f0b"  # scarlet red...
@@ -33,10 +40,6 @@
 - name: "help wanted"
   color: "54976d"  # fenway green
   description: "Ready to be picked up by anyone in the community"
-
-- name: "release testing"
-  color: "ff00ff"  # magenta
-  description: "Affects the upcoming release (attention needed)"
 
 
 ### LABELS INDICATING BROAD THEMES OF WORK.
@@ -159,6 +162,13 @@
 - name: "needs test run"
   color: "f5424b"  # crimson red
   description: "Author's first PR to this repository, awaiting test authorization from Axim"
+
+# This helps with PR triage and providing better visibility to CCs for PRs that don't have reviewers,
+# or PRs that have reviewers assigned that the project managers can't remove
+# (e.g. reviewers who have since abandoned the PR or that are no longer responsible for that repo).
+- name: "needs reviewer assigned"
+  color: "e3735e"  # terra cotta
+  description: "PR needs to be (re-)assigned a new reviewer"
 
 # Automatically added by bot to PRs coming from community contributors
 # other than (a) Axim itself or (b) those under 2U's entity CLA.
