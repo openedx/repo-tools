@@ -136,8 +136,9 @@ msgpack==1.0.8
     # via
     #   -r requirements/base.txt
     #   cachecontrol
-packaging==24.0
+packaging==23.2
     # via
+    #   -c requirements/constraints.txt
     #   -r requirements/base.txt
     #   build
     #   pyproject-api

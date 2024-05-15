@@ -37,8 +37,10 @@ numpy==1.24.4
     #   contourpy
     #   matplotlib
     #   pandas
-packaging==24.0
-    # via matplotlib
+packaging==23.2
+    # via
+    #   -c edx_repo_tools/conventional_commits/../../requirements/constraints.txt
+    #   matplotlib
 pandas==2.0.3
     # via -r edx_repo_tools/conventional_commits/extra.in
 pillow==10.3.0
