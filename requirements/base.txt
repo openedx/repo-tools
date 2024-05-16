@@ -69,9 +69,8 @@ moreorless==0.4.0
     # via bowler
 msgpack==1.0.8
     # via cachecontrol
-packaging==23.2
+packaging==24.0
     # via
-    #   -c requirements/constraints.txt
     #   pyproject-api
     #   pytest
     #   tox
