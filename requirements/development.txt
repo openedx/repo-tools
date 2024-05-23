@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.txt
     #   fissix
-astroid==3.2.0
+astroid==3.2.2
     # via
     #   pylint
     #   pylint-celery
@@ -172,7 +172,7 @@ pyjwt[crypto]==2.8.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==3.2.0
+pylint==3.2.2
     # via
     #   edx-lint
     #   pylint-celery
@@ -194,7 +194,7 @@ pyproject-hooks==1.1.0
     # via
     #   build
     #   pip-tools
-pytest==8.2.0
+pytest==8.2.1
     # via
     #   -r requirements/base.txt
     #   -r requirements/development.in
@@ -220,7 +220,7 @@ pyyaml==6.0.1
     #   -r requirements/base.txt
     #   code-annotations
     #   responses
-requests==2.31.0
+requests==2.32.2
     # via
     #   -r requirements/base.txt
     #   cachecontrol
@@ -289,7 +289,7 @@ volatile==2.1.0
     #   bowler
 wheel==0.43.0
     # via pip-tools
-zipp==3.18.1
+zipp==3.18.2
     # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:

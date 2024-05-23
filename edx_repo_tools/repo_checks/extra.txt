@@ -12,7 +12,7 @@ charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via -r edx_repo_tools/repo_checks/extra.in
-fastcore==1.5.35
+fastcore==1.5.38
     # via ghapi
 ghapi==1.0.5
     # via -r edx_repo_tools/repo_checks/extra.in
@@ -24,7 +24,7 @@ packaging==24.0
     #   ghapi
 pyyaml==6.0.1
     # via -r edx_repo_tools/repo_checks/extra.in
-requests==2.31.0
+requests==2.32.2
     # via -r edx_repo_tools/repo_checks/extra.in
 urllib3==2.2.1
     # via requests
