@@ -109,7 +109,7 @@ python-dotenv==1.0.1
     # via -r requirements/base.in
 pyyaml==6.0.1
     # via -r requirements/base.in
-requests==2.32.2
+requests==2.32.3
     # via
     #   -r requirements/base.in
     #   cachecontrol
