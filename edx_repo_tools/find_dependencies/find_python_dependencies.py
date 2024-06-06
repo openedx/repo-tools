@@ -1,8 +1,9 @@
 """
 Spider and catalog dependencies.
-$ python find_python_dependencies.py $FILE_PATH
+$ python find_python_dependencies.py --req-file $FILE_PATH
 """
 
+import click
 import json
 import os
 import requirements
@@ -12,12 +13,6 @@ import requests
 
 
 # The first of these we find is the requirements file we'll examine:
-PY_REQS = [
-    "requirements/edx/base.txt",
-    "requirements/base.txt",
-    "requirements.txt",
-]
-
 def request_package_info_url(package):
         base_url = "https://pypi.org/pypi/"
         url = f"{base_url}{package}/json"
@@ -47,29 +42,41 @@ def urls_in_orgs(urls, orgs):
         if any(f"/{org}/" in url for org in orgs)
     )
 
-def main(dirs=None, org=None):
+@click.command()
+@click.option(
+    '--req-file', 'directories',
+    multiple=True,
+    required=True,
+    help="The absolute file paths to locate Python dependencies" 
+        "within a particular repository. You can provide this "
+        "option multiple times to include multiple requirement files.",
+)
+@click.option(
+    '--ignore', 'ignore_paths',
+    multiple=True,
+    help="Dependency Repo URL to ignore even if it's"
+            "outside of your organization's approved list",
+)
+
+def main(directories=None, ignore_paths=None):
     """
     Analyze the requirements in input directory mentioned on the command line.    
     """
-    packages_url = [] 
-    if dirs is None:
-         dirs = sys.argv[1:]
 
-    for i_dir, repo_dir in enumerate(dirs, start=1):
-        with open(repo_dir) as fbase:
-            # Read each line (package name) in the file
+    home_page = set()
+    for directory in directories:
+        with open(directory) as fbase:
             for req in requirements.parse(fbase):
-                home_page = request_package_info_url(req.name)
-                if home_page is not None:
-                    if match := urls_in_orgs([home_page], SECOND_PARTY_ORGS):
-                        packages_url.append(home_page)
-
-    print("== DONE ==============")
-    print("Second party packages:")
-    print("\n".join(packages_url))
+                url = request_package_info_url(req.name)
+                if url is not None:
+                    home_page.add(url)
+                    
+    packages_urls = set(urls_in_orgs(home_page, SECOND_PARTY_ORGS))
     
-    if packages_url:
-        sys.exit(1)
+    if diff:= packages_urls.symmetric_difference(set(ignore_paths)):
+            print("The following packages are from 2nd party orgs and should not be added as a core dependency, they can be added as an optional dependency operationally or they can be transferred to the openedx org before they are included:")
+            print("\n".join(diff))
+            exit(1)
 
 if __name__ == "__main__":
     main()
