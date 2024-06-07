@@ -129,7 +129,7 @@ tomli==2.0.1
     #   pyproject-api
     #   pytest
     #   tox
-tox==4.15.0
+tox==4.15.1
     # via -r requirements/base.in
 tqdm==4.66.4
     # via -r requirements/base.in

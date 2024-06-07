@@ -172,7 +172,7 @@ pyjwt[crypto]==2.8.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==3.2.2
+pylint==3.2.3
     # via
     #   edx-lint
     #   pylint-celery
@@ -226,7 +226,7 @@ requests==2.32.3
     #   cachecontrol
     #   github3-py
     #   responses
-responses==0.25.0
+responses==0.25.2
     # via -r requirements/development.in
 ruamel-yaml==0.18.6
     # via -r requirements/base.txt
@@ -260,7 +260,7 @@ tomli==2.0.1
     #   tox
 tomlkit==0.12.5
     # via pylint
-tox==4.15.0
+tox==4.15.1
     # via -r requirements/base.txt
 tqdm==4.66.4
     # via -r requirements/base.txt
