@@ -28,7 +28,7 @@ cachetools==5.3.3
     # via
     #   -r requirements/base.txt
     #   tox
-certifi==2024.2.2
+certifi==2024.6.2
     # via
     #   -r requirements/base.txt
     #   requests
@@ -61,7 +61,7 @@ colorama==0.4.6
     # via
     #   -r requirements/base.txt
     #   tox
-cryptography==42.0.7
+cryptography==42.0.8
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -172,7 +172,7 @@ pyjwt[crypto]==2.8.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==3.2.2
+pylint==3.2.3
     # via
     #   edx-lint
     #   pylint-celery
@@ -194,7 +194,7 @@ pyproject-hooks==1.1.0
     # via
     #   build
     #   pip-tools
-pytest==8.2.1
+pytest==8.2.2
     # via
     #   -r requirements/base.txt
     #   -r requirements/development.in
@@ -220,13 +220,13 @@ pyyaml==6.0.1
     #   -r requirements/base.txt
     #   code-annotations
     #   responses
-requests==2.32.2
+requests==2.32.3
     # via
     #   -r requirements/base.txt
     #   cachecontrol
     #   github3-py
     #   responses
-responses==0.25.0
+responses==0.25.2
     # via -r requirements/development.in
 ruamel-yaml==0.18.6
     # via -r requirements/base.txt
@@ -260,11 +260,11 @@ tomli==2.0.1
     #   tox
 tomlkit==0.12.5
     # via pylint
-tox==4.15.0
+tox==4.15.1
     # via -r requirements/base.txt
 tqdm==4.66.4
     # via -r requirements/base.txt
-typing-extensions==4.11.0
+typing-extensions==4.12.1
     # via
     #   astroid
     #   pylint
@@ -289,7 +289,7 @@ volatile==2.1.0
     #   bowler
 wheel==0.43.0
     # via pip-tools
-zipp==3.18.2
+zipp==3.19.2
     # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
