@@ -41,7 +41,7 @@ numpy==1.24.4
     #   contourpy
     #   matplotlib
     #   pandas
-packaging==24.0
+packaging==24.1
     # via matplotlib
 pandas==2.0.3
     # via -r edx_repo_tools/conventional_commits/extra.in
@@ -61,7 +61,7 @@ sqlalchemy==1.4.52
     # via
     #   alembic
     #   dataset
-typing-extensions==4.12.1
+typing-extensions==4.12.2
     # via alembic
 tzdata==2024.1
     # via pandas
