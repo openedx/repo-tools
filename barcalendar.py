@@ -4,7 +4,7 @@ Write JavaScript code to be pasted into a Google Sheet to draw a calendar.
 0. Update the data. Search for "Editable content" below.
 1. Run this program.  It prints JavaScript code. Copy it.
 2. Open a Google Sheet, either the existing Support Windows spreadsheet
-    (https://docs.google.com/spreadsheets/d/11DheEtMDGrbA9hsUvZ2SEd4Cc8CaC4mAfoV8SVaLBGI)
+    (https://docs.google.com/spreadsheets/d/1wtpoypH1XOPc_G6h9AUNXJ6XiNKD6dlkMP3lubdpE9I)
     or a new spreadsheet.
 3. Select the "Support Windows" sheet or create a new sheet if it doesn't exist already.
 4. Open the script editor (Extensions - Apps Script).
