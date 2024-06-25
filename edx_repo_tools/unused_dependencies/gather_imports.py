@@ -71,7 +71,7 @@ def gather_imports( path, imports = set()):
     files = [f for f in content if isfile(join(path, f))]
     for file in files:
         if file.endswith('.py'):
-            imports.update(manually_parse_imports(join(path, file)))
+            imports.update(parse_imports(join(path, file)))
 
     dirs = {d for d in content if isdir(join(path, d))}
     for dir in dirs - blacklist:

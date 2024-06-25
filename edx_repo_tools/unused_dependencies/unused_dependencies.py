@@ -16,7 +16,8 @@ def unused_dependencies(path):
     requirements = populate_requirements(join(path, 'requirements'))
     imports = gather_imports(path)
 
-    print(requirements)
-    print(imports)
+    # print(requirements)
+    # print(imports)
     unused = (requirements - imports) - whitelist
-    assert len(unused) == 0, "The following packages are unused: {}".format(unused)
+    print(unused)
+    # assert len(unused) == 0, "The following packages are unused: {}".format(unused)
