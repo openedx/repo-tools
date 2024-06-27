@@ -85,7 +85,7 @@ execnet==2.1.1
     # via
     #   -r requirements/base.txt
     #   pytest-xdist
-filelock==3.14.0
+filelock==3.15.4
     # via
     #   -r requirements/base.txt
     #   tox
@@ -126,7 +126,7 @@ markupsafe==2.1.5
     # via jinja2
 mccabe==0.7.0
     # via pylint
-more-itertools==10.2.0
+more-itertools==10.3.0
     # via -r requirements/base.txt
 moreorless==0.4.0
     # via
@@ -136,7 +136,7 @@ msgpack==1.0.8
     # via
     #   -r requirements/base.txt
     #   cachecontrol
-packaging==24.0
+packaging==24.1
     # via
     #   -r requirements/base.txt
     #   build
@@ -172,7 +172,7 @@ pyjwt[crypto]==2.8.0
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==3.2.3
+pylint==3.2.4
     # via
     #   edx-lint
     #   pylint-celery
@@ -186,7 +186,7 @@ pylint-plugin-utils==0.8.2
     # via
     #   pylint-celery
     #   pylint-django
-pyproject-api==1.6.1
+pyproject-api==1.7.1
     # via
     #   -r requirements/base.txt
     #   tox
@@ -226,7 +226,7 @@ requests==2.32.3
     #   cachecontrol
     #   github3-py
     #   responses
-responses==0.25.2
+responses==0.25.3
     # via -r requirements/development.in
 ruamel-yaml==0.18.6
     # via -r requirements/base.txt
@@ -264,7 +264,7 @@ tox==4.15.1
     # via -r requirements/base.txt
 tqdm==4.66.4
     # via -r requirements/base.txt
-typing-extensions==4.12.1
+typing-extensions==4.12.2
     # via
     #   astroid
     #   pylint
@@ -272,14 +272,14 @@ uritemplate==4.1.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-urllib3==2.2.1
+urllib3==2.2.2
     # via
     #   -r requirements/base.txt
     #   requests
     #   responses
 urlobject==2.4.3
     # via -r requirements/base.txt
-virtualenv==20.26.2
+virtualenv==20.26.3
     # via
     #   -r requirements/base.txt
     #   tox
