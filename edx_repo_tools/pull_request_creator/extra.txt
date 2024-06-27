@@ -18,7 +18,7 @@ deprecated==1.2.14
     # via pygithub
 idna==3.7
     # via requests
-packaging==24.0
+packaging==24.1
     # via -r edx_repo_tools/pull_request_creator/extra.in
 pycparser==2.22
     # via cffi
@@ -30,9 +30,9 @@ pynacl==1.5.0
     # via pygithub
 requests==2.32.3
     # via pygithub
-typing-extensions==4.12.1
+typing-extensions==4.12.2
     # via pygithub
-urllib3==2.2.1
+urllib3==2.2.2
     # via
     #   pygithub
     #   requests
