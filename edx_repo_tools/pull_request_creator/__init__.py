@@ -619,7 +619,7 @@ class PullRequestCreator:
         if self.output_pr_url_for_github_action:
             # using print rather than logger to avoid the logger
             # prepending anything past which github actions wouldn't parse
-            print(f'::set-output name=generated_pr::https://github.com/{self.repository.full_name}/pull/{pr.number}')
+            print(f'generated_pr=https://github.com/{self.repository.full_name}/pull/{pr.number} >> $GITHUB_OUTPUT')
 
     def delete_old_pull_requests(self):
         logger.info("Checking if there's any old pull requests to delete")
