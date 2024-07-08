@@ -20,7 +20,7 @@ The ``repo_checks`` command line tool lets you execute these checks, either as d
 Usage
 *****
 
-You will need a GH personal access token with the following scopes:
+You will need a GH personal access token (classic, not "Fine-grained tokens") with the following scopes:
 
 *  admin:org
 *  repo
