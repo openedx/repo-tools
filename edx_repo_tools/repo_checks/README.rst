@@ -47,7 +47,9 @@ Finally, when you're ready, you can actually apply the fixes to GitHub::
 
   repo_checks --no-dry-run <... same args you used above ...>
 
-Contributing
+Note this will open pull requests in the relevant repos. Some repos intentionally don't have certain workflows (for example, ``docs.openedx.org`` does not use ``commitlint``), so please tag maintainers on the pull requests so they can decide whether or not to use the added or changed workflows.
+
+  Contributing
 ************
 
 * Make changes on your branch.
