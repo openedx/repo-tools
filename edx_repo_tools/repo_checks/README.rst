@@ -49,7 +49,7 @@ Finally, when you're ready, you can actually apply the fixes to GitHub::
 
 Note this will open pull requests in the relevant repos. Some repos intentionally don't have certain workflows (for example, ``docs.openedx.org`` does not use ``commitlint``), so please tag maintainers on the pull requests so they can decide whether or not to use the added or changed workflows.
 
-  Contributing
+Contributing
 ************
 
 * Make changes on your branch.
