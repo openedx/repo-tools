@@ -20,7 +20,7 @@ The ``repo_checks`` command line tool lets you execute these checks, either as d
 Usage
 *****
 
-You will need a GH personal access token with the following scopes:
+You will need a GH personal access token (classic, not "Fine-grained tokens") with the following scopes:
 
 *  admin:org
 *  repo
@@ -46,6 +46,8 @@ Then, dry-run the script (one of these)::
 Finally, when you're ready, you can actually apply the fixes to GitHub::
 
   repo_checks --no-dry-run <... same args you used above ...>
+
+Note this will open pull requests in the relevant repos. Some repos intentionally don't have certain workflows (for example, ``docs.openedx.org`` does not use ``commitlint``), so please tag maintainers on the pull requests so they can decide whether or not to use the added or changed workflows.
 
 Contributing
 ************
