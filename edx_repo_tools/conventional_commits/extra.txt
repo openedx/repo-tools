@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-alembic==1.13.1
+alembic==1.13.2
     # via dataset
 banal==1.0.6
     # via dataset
@@ -14,7 +14,7 @@ cycler==0.12.1
     # via matplotlib
 dataset==1.6.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-fonttools==4.53.0
+fonttools==4.53.1
     # via matplotlib
 greenlet==3.0.3
     # via
@@ -41,11 +41,11 @@ numpy==1.24.4
     #   contourpy
     #   matplotlib
     #   pandas
-packaging==24.0
+packaging==24.1
     # via matplotlib
 pandas==2.0.3
     # via -r edx_repo_tools/conventional_commits/extra.in
-pillow==10.3.0
+pillow==10.4.0
     # via matplotlib
 pyparsing==3.1.2
     # via matplotlib
@@ -61,7 +61,7 @@ sqlalchemy==1.4.52
     # via
     #   alembic
     #   dataset
-typing-extensions==4.12.1
+typing-extensions==4.12.2
     # via alembic
 tzdata==2024.1
     # via pandas
