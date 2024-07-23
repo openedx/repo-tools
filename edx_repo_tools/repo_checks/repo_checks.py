@@ -174,10 +174,7 @@ class EnsureRepoSettings(Check):
         self.expected_settings = {
             "has_issues": True,
             "has_wiki": False,
-            # The goal is to have allow_auto_merge==True for all repos, but for now we need
-            # to turn it off for edx-platform due to some unresolved issues with its complex
-            # system of checks: https://github.com/openedx/axim-engineering/issues/1096
-            "allow_auto_merge": self.repo_name != "edx-platform",
+            "allow_auto_merge": True,
             "delete_branch_on_merge": True,
         }
 
@@ -336,6 +333,13 @@ class EnsureWorkflowTemplates(Check):
             "add-remove-label-on-comment.yml",
         ]
 
+        # A lost of repos and workflows that should not be added to them.
+        self.exceptions = {
+            # We don't want commitlint on the docs.openedx.org repo because we want to encourage
+            # contributions from non-technical contributors and reduce their barriar to entry.
+            "docs.openedx.org": ["commitlint.yml"],
+        }
+
         self.branch_name = "repo_checks/ensure_workflows"
 
         self.files_to_create = []
@@ -359,6 +363,22 @@ class EnsureWorkflowTemplates(Check):
         default_branch = repo.default_branch
 
         files_that_differ, files_that_are_missing = self._check_branch(default_branch)
+
+        extra_message = "No repo specific workflows to ignore."
+        # Update based on repo specific exceptions
+        if self.repo_name in self.exceptions:
+            extra_message = (
+                "Ignoring repo specific exceptions: {!r}".format(
+                    self.exceptions[self.repo_name]
+                )
+            )
+            # We have exceptions for this repo, remove them from the two lists above.
+            for item in self.exceptions[self.repo_name]:
+                if item in files_that_differ:
+                    files_that_differ.remove(item)
+                if item in files_that_are_missing:
+                    files_that_are_missing.remove(item)
+
         # Return False and save the list of files that need to be updated.
         if files_that_differ or files_that_are_missing:
             self.files_to_create = files_that_are_missing
@@ -366,12 +386,14 @@ class EnsureWorkflowTemplates(Check):
             return (
                 False,
                 f"Some workflows in this repo don't match the template.\n"
-                f"\t\t{files_that_differ=}\n\t\t{files_that_are_missing=}",
+                f"\t\t{files_that_differ=}\n\t\t{files_that_are_missing=}\n"
+                f"\t\t{extra_message}",
             )
 
         return (
             True,
-            "All desired workflows are in sync with what's in the .github repo.",
+            "All desired workflows are in sync with what's in the .github repo.\n"
+            f"\t\t{extra_message}",
         )
 
     def _check_branch(self, branch_name) -> tuple[list[str], list[str]]:
