@@ -244,7 +244,7 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
         assert print_mock.call_count == 1
         found_matching_call = False
         for call in print_mock.call_args_list:
-            if '$GITHUB_OUTPUT' in call.args[0]:
+            if 'set-output' in call.args[0]:
                 found_matching_call = True
         assert found_matching_call
 
