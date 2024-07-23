@@ -16,6 +16,21 @@
 #   Describe your color with a comment so it's easier to review.
 
 
+### LABELS USED FOR TRACKING PROJECT-WIDE CONCERNS
+
+- name: "release testing"
+  color: "aa66aa"  # magenta?
+  description: "Affects the upcoming release (attention needed)"
+
+- name: "release blocker"
+  color: "bb33bb"  # MAGENTA!
+  description: "Blocks the upcoming release (fix needed)"
+
+- name: "business-specific"
+  color: "d93f0b"  # scarlet red...
+  description: "Code that relates to a specific user and should be refactored and removed."
+
+
 ### LABELS INDICATING HOW ISSUES CAN BE ENAGAGED WITH.
 
 - name: "good first issue"
@@ -96,6 +111,12 @@
 ### YOU CAN SEE THE CURRENT PROJECT MANAGERS HERE:
 ### https://openedx.atlassian.net/wiki/spaces/COMM/pages/3548807177/Community+Contributions+Project+Manager#Current-OSPR-Project-Managers
 
+# This label is a manually applied by PR authors or others to indicate that the
+# pull request is backporting a change on main to a named release.
+- name: "backport"
+  color: "354d73"  # violet blue
+  description: "PR backports a change from main to a named release."
+
 # Waiting for the author to respond to change requests, feedback, failing
 # tests, etc. Usually this label is used for PRs in board statuses other
 # than “Waiting for Author” (e.g. the pull request is “In Eng Review”
@@ -142,6 +163,13 @@
   color: "f5424b"  # crimson red
   description: "Author's first PR to this repository, awaiting test authorization from Axim"
 
+# This helps with PR triage and providing better visibility to CCs for PRs that don't have reviewers,
+# or PRs that have reviewers assigned that the project managers can't remove
+# (e.g. reviewers who have since abandoned the PR or that are no longer responsible for that repo).
+- name: "needs reviewer assigned"
+  color: "e3735e"  # terra cotta
+  description: "PR needs to be (re-)assigned a new reviewer"
+
 # Automatically added by bot to PRs coming from community contributors
 # other than (a) Axim itself or (b) those under 2U's entity CLA.
 - name: "open-source-contribution"
@@ -157,8 +185,14 @@
 # Open edX product managers will add this label to PRs which require
 # product review.
 - name: "product review"
-  color: "c97bf7"  # light puple
+  color: "c97bf7"  # light purple
   description: "PR requires product review before merging"
+
+# Open edX product managers will add this label to PRs which have completed
+# product review.
+- name: "product review complete"
+  color: "7bf7d8"  # light teal
+  description: "PR has gone through product review"
 
 # As of May 2023, 2U has a "blended" development structure through which they design, fund &
 # review contributions from other community providers. Their own tools or project managers
@@ -176,3 +210,15 @@
   color: "ffd700"  # gold!
   description: "PR author is a Core Contributor (who may or may not have write access to this repo)."
 
+
+## LABELS FOR AUTOMATED TOOLING
+
+# The OSPR bot will recognize "jira:company" labels and make Jira issues for
+# pull requests labelled with them.
+- name: "jira:2u"
+  color: "1475D4" # 2Blue
+  description: "We want an issue in the 2U Jira instance"
+
+- name: "create-sandbox"
+  color: "fdee73"  # sandy yellow
+  description: "open-craft-grove should create a sandbox environment from this PR"

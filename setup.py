@@ -1,6 +1,7 @@
 import glob
 import os.path
 import re
+import sys
 
 import setuptools
 from setuptools import setup
@@ -47,18 +48,22 @@ def is_requirement(line):
 
 VERSION = get_version('edx_repo_tools', '__init__.py')
 
+
 # Find our extra requirements. A subdirectory of edx_repo_tools can have an
 # extra.in file. It will be pip-compiled to extra.txt.  Here we find them all
 # and register them as extras.
 EXTRAS_REQUIRE = {}
 for fextra in glob.glob("edx_repo_tools/*/extra.txt"):
     slug = fextra.split("/")[1]
+    if sys.version_info >= (3, 12) and glob.glob(f'edx_repo_tools/{slug}/extra-py312.txt'):
+        fextra = f'edx_repo_tools/{slug}/extra-py312.txt'
+
     EXTRAS_REQUIRE[slug] = load_requirements(fextra)
 
 # To run tests & linting across the entire repo, we need to install the union
 # of *all* extra requirements lists *plus* the dev-specific requirements.
 # If this list contains conflicting pins, then installing it will fail;
-# that is intentional. 
+# that is intentional.
 EXTRAS_REQUIRE["dev"] = sorted({
     *load_requirements("requirements/development.txt"),
     *(extra_pin for extra_reqs in EXTRAS_REQUIRE.values() for extra_pin in extra_reqs),
@@ -87,9 +92,11 @@ setup(
             'add_common_constraint = edx_repo_tools.add_common_constraint:main',
             'add_dependabot_ecosystem = edx_repo_tools.dependabot_yml:main',
             'add_django32_settings = edx_repo_tools.codemods.django3.add_new_django32_settings:main',
+            'audit_users = edx_repo_tools.audit_gh_users.audit_users:main',
             'clone_org = edx_repo_tools.dev.clone_org:main',
             'conventional_commits = edx_repo_tools.conventional_commits.commitstats:main',
             'find_dependencies = edx_repo_tools.find_dependencies.find_dependencies:main',
+            'find_python_dependencies = edx_repo_tools.find_dependencies.find_python_dependencies:main',
             'get_org_repo_urls = edx_repo_tools.dev.get_org_repo_urls:main',
             'modernize_github_actions = edx_repo_tools.codemods.django3.github_actions_modernizer:main',
             'modernize_github_actions_django = edx_repo_tools.codemods.django3.github_actions_modernizer_django:main',
@@ -101,6 +108,7 @@ setup(
             'modernize_travis = edx_repo_tools.codemods.django3.travis_modernizer:main',
             'no_yaml = edx_repo_tools.ospr.no_yaml:no_yaml',
             'oep2 = edx_repo_tools.oep2:_cli',
+            'pull_request_creator = edx_repo_tools.pull_request_creator:main',
             'remove_python2_unicode_compatible = edx_repo_tools.codemods.django3.remove_python2_unicode_compatible:main',
             'replace_render_to_response = edx_repo_tools.codemods.django3.replace_render_to_response:main',
             'replace_static = edx_repo_tools.codemods.django3.replace_static:main',
@@ -112,6 +120,9 @@ setup(
             'modernize_tox_django42 = edx_repo_tools.codemods.django42.tox_moderniser_django42:main',
             'modernize_github_actions_django42 = edx_repo_tools.codemods.django42.github_actions_modernizer_django42:main',
             'update_cache = edx_repo_tools.codemods.django42.update_pymemcache:main',
+            'remove_providing_args = edx_repo_tools.codemods.django42.remove_providing_args_arg:main',
+            'python312_gh_actions_modernizer = edx_repo_tools.codemods.python312.gh_actions_modernizer:main',
+            'python312_tox_modernizer = edx_repo_tools.codemods.python312.tox_modernizer:main',
         ],
     },
     package_data={

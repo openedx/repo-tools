@@ -111,7 +111,7 @@ def find_real_url(url: str) -> Optional[str]:
     """Find the eventual real url for a redirected url."""
     while True:
         try:
-            resp = requests.head(url, timeout=60)
+            resp = requests.head(url, timeout=60, allow_redirects=True)
         except requests.RequestException as exc:
             print(f"Couldn't fetch {url}: {exc}")
             return None
@@ -241,9 +241,14 @@ def repo_url_from_tgz(tgz_path: str) -> Optional[str]:
 
 
 SOURCE_URL_REGEXES = [
+    # These regexes are tried in order. The first group is the extracted URL.
     r"(?i)^Project-URL: Source.*,\s*(.*)$",
     r"(?i)^Home-page: (.*)$",
     r"(?i)^Project-URL: Home.*,\s*(.*)$",
+    # If they point to GitHub issues, that's their repo.
+    r"(?i)^Project-URL: [^,]+,\s*(https?://github.com/[^/]+/[^/]+)/issues/?$",
+    # If we can't find a URL marked as home, then use any GitHub repo URL.
+    r"(?i)^Project-URL: [^,]+,\s*(https?://github.com/[^/]+/[^/]+)$",
 ]
 
 def repo_url_from_metadata(filename, metadata):
@@ -278,7 +283,7 @@ def find_py_reqs():
         if possible_req.exists():
             return possible_req
     if any(Path(ind).exists() for ind in PY_INDICATORS):
-        print(f"WARNING: {repo_name} is likely a Python package, but we can't find its dependencies.")
+        print(f"WARNING: {os.getcwd()} is likely a Python package, but we can't find its dependencies.")
     return None
 
 
@@ -303,12 +308,24 @@ def process_directory():
             repo_urls.update(check_py_dependencies())
     return repo_urls
 
+FIRST_PARTY_ORGS = ["openedx"]
+
 SECOND_PARTY_ORGS = [
     "edx", "edx-unsupported", "edx-solutions",
     "mitodl",
     "overhangio",
     "open-craft", "eduNEXT", "raccoongang",
 ]
+
+def urls_in_orgs(urls, orgs):
+    """
+    Find urls that are in any of the `orgs`.
+    """
+    return sorted(
+        url for url in urls
+        if any(f"/{org}/" in url for org in orgs)
+    )
+
 
 def main(dirs=None):
     """
@@ -331,11 +348,10 @@ def main(dirs=None):
 
     write_list(WORK_DIR / "repo_urls.txt", sorted(repo_urls))
 
-    seconds = sorted(
-        url for url in repo_urls
-        if any(f"/{org}/" in url for org in SECOND_PARTY_ORGS)
-    )
-    write_list(WORK_DIR / "second_party_urls.txt", sorted(seconds))
+    firsts = urls_in_orgs(repo_urls, FIRST_PARTY_ORGS)
+    write_list(WORK_DIR / "first_party_urls.txt", firsts)
+    seconds = urls_in_orgs(repo_urls, SECOND_PARTY_ORGS)
+    write_list(WORK_DIR / "second_party_urls.txt", seconds)
 
     print("== DONE ==============")
     print("Second-party:")

@@ -1,6 +1,6 @@
 # Source this file to define some useful aliases for working with many git
 # repos at once.
-# Originally from: 
+# Originally from:
 # https://github.com/nedbat/dot/blob/a517603c4969b017d5604418d05babc4a0f323f8/.rc.sh#L126
 
 
@@ -38,7 +38,9 @@ gittreeif() {
     fi
     find . -name .git -type d -prune | while read d; do
         local d=$(dirname "$d")
-        git -C "$d" rev-parse --verify -q "$test_branch" >& /dev/null || continue
+        if [[ "$test_branch" != "" ]]; then
+            git -C "$d" rev-parse --verify -q "$test_branch" >& /dev/null || continue
+        fi
         if [[ $show_dir == true ]]; then
             echo "---- $d ----"
         fi
@@ -54,6 +56,6 @@ gittreeif() {
 }
 
 gittree() {
-    # @ is in every repo, so this runs on all repos
-    gittreeif @ "$@"
+    # Run a command on all git repos.
+    gittreeif "" "$@"
 }

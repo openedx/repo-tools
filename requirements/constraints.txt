@@ -1,4 +1,4 @@
 -c common_constraints.txt
 
-# dataset isn't compatible with alembic 1.11: https://github.com/pudo/dataset/issues/419
-alembic<1.11
+# playwright and sqlalchemy requirements conflict for greenlet<=3.0.1
+greenlet>3.0.1

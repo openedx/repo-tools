@@ -27,7 +27,7 @@ LOGGER = logging.getLogger(__name__)
 )
 def implode(hub, org, branch):
     """
-    Implode all openedx.yaml files, and print the results as formatted output.
+    Implode all catalog-info.yaml or openedx.yaml files, and print the results as formatted output.
     """
     data = {
         repo.full_name: openedx_yaml

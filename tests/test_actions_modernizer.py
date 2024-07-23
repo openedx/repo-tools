@@ -6,7 +6,7 @@ import shutil
 import uuid
 from unittest import TestCase
 
-from edx_repo_tools.codemods.django3 import GithubCIModernizer
+from edx_repo_tools.codemods.python312 import GithubCIModernizer
 from edx_repo_tools.utils import YamlLoader
 
 
@@ -37,22 +37,16 @@ class TestGithubActionsModernizer(TestCase):
         python_versions = ci_elements['jobs']['run_tests']['strategy']['matrix']['python-version']
 
         self.assertIsInstance(python_versions, list)
-        self.assertNotIn('3.5', python_versions)
+        self.assertIn('3.8', python_versions)
+        self.assertIn('3.12', python_versions)
 
     def test_python_matrix_items_build_tag(self):
         ci_elements = TestGithubActionsModernizer._get_updated_yaml_elements(self.test_file3)
         python_versions = ci_elements['jobs']['build']['strategy']['matrix']['python-version']
 
         self.assertIsInstance(python_versions, list)
-        self.assertNotIn('3.5', python_versions)
-
-    def test_include_exclude_list(self):
-        ci_elements = TestGithubActionsModernizer._get_updated_yaml_elements(self.test_file2)
-        include_list = ci_elements['jobs']['run_tests']['strategy']['matrix'].get('include', {})
-        exclude_list = ci_elements['jobs']['run_tests']['strategy']['matrix'].get('exclude', {})
-
-        for item in list(include_list) + list(exclude_list):
-            self.assertNotEqual(item['python-version'], '3.5')
+        self.assertIn('3.8', python_versions)
+        self.assertIn('3.12', python_versions)
 
     def tearDown(self):
         os.remove(self.test_file1)

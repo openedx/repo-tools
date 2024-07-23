@@ -1,0 +1,6 @@
+# additional dependencies needed by pull_request_creator
+
+-c ../../requirements/constraints.txt
+
+PyGithub
+packaging             # used in create pull request script to compare package versions
