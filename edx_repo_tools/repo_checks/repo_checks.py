@@ -335,9 +335,11 @@ class EnsureWorkflowTemplates(Check):
 
         # A lost of repos and workflows that should not be added to them.
         self.exceptions = {
-            # We don't want commitlint on the docs.openedx.org repo because we want to encourage
-            # contributions from non-technical contributors and reduce their barriar to entry.
+            # We don't want commitlint on the docs.openedx.org and edx-documentation repos because
+            # we want to encourage contributions from non-technical contributors and reduce their
+            # barriar to entry.
             "docs.openedx.org": ["commitlint.yml"],
+            "edx-documentation": ["commitlint.yml"],
         }
 
         self.branch_name = "repo_checks/ensure_workflows"
