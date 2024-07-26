@@ -1136,6 +1136,64 @@ class NoDirectUsers(Check):
         return steps
 
 
+@Check.register
+class EnsureNoOutsideCollaborators(Check):
+    """
+    Repository shouldn't have outside collaborators
+    """
+
+    def __init__(self, api: GhApi, org: str, repo: str):
+        super().__init__(api, org, repo)
+        self.users_list = []
+
+    def is_relevant(self) -> bool:
+        """
+        All non security fork repos, public or private.
+        """
+        return not is_security_private_fork(self.api, self.org_name, self.repo_name)
+
+    def check(self) -> tuple[bool, str]:
+        """
+        Verify whether or not the check is failing.
+
+        This should not change anything and should not have a side-effect
+        other than populating `self` with any data that is needed later for
+        `fix` or `dry_run`.
+
+        The string in the return tuple should be a human readable reason
+        that the check failed.
+        """
+        self.users_list = list(all_paged_items(
+            self.api.repos.list_collaborators, owner=self.org_name, repo=self.repo_name, affiliation='outside'
+        ))
+        users = [f"{user.login}: {user.role_name}" for user in self.users_list]
+        if users:
+            return (
+                False,
+                f"The repo has some outside collaborators:\n\t\t"
+                + "\n\t\t".join(users),
+            )
+        return (True, "The repo doesn't have any outside collaborators.")
+
+    def dry_run(self):
+        return self.fix(dry_run=True)
+
+    def fix(self, dry_run=False):
+        steps = []
+        for user in self.users_list:
+            if not dry_run:
+                self.api.repos.remove_collaborator(
+                    owner=self.org_name,
+                    repo=self.repo_name,
+                    username=user.login,
+                )
+            steps.append(
+                f"Removed outside collaborator {user.login}"
+            )
+
+        return steps
+
+
 @click.command()
 @click.option(
     "--github-token",
