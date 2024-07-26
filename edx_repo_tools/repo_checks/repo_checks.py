@@ -337,7 +337,7 @@ class EnsureWorkflowTemplates(Check):
         self.exceptions = {
             # We don't want commitlint on the docs.openedx.org and edx-documentation repos because
             # we want to encourage contributions from non-technical contributors and reduce their
-            # barriar to entry.
+            # barrier to entry.
             "docs.openedx.org": ["commitlint.yml"],
             "edx-documentation": ["commitlint.yml"],
         }
