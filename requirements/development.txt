@@ -135,7 +135,7 @@ packaging==24.1
     #   pyproject-api
     #   pytest
     #   tox
-path==16.14.0
+path==17.0.0
     # via
     #   -r requirements/base.txt
     #   path-py
@@ -186,7 +186,7 @@ pyproject-hooks==1.1.0
     # via
     #   build
     #   pip-tools
-pytest==8.3.1
+pytest==8.3.2
     # via
     #   -r requirements/base.txt
     #   -r requirements/development.in
