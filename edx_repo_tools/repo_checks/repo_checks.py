@@ -14,6 +14,7 @@ from __future__ import annotations
 import importlib.resources
 import re
 import textwrap
+import typing as t
 from functools import cache
 from itertools import chain
 from pprint import pformat
@@ -104,10 +105,24 @@ class Check:
     (is_relevant, check, fix, and dry_run).
     """
 
+    _registered = {}
+
     def __init__(self, api: GhApi, org: str, repo: str):
         self.api = api
         self.org_name = org
         self.repo_name = repo
+
+    @staticmethod
+    def register(subclass: type[t.Self]) -> type[t.Self]:
+        """
+        Decorate a Check subclass so that it will be available in main()
+        """
+        Check._registered[subclass.__name__] = subclass
+        return subclass
+
+    @staticmethod
+    def get_registered_checks() -> dict[str, type[t.Self]]:
+        return Check._registered.copy()
 
     def is_relevant(self) -> bool:
         """
@@ -152,6 +167,7 @@ class Check:
         raise NotImplementedError
 
 
+@Check.register
 class EnsureRepoSettings(Check):
     """
     There are certain settings that we agree we want to be set a specific way on all repos.  This check
@@ -240,6 +256,7 @@ class EnsureRepoSettings(Check):
         return steps
 
 
+@Check.register
 class EnsureNoAdminOrMaintainTeams(Check):
     """
     Teams should not be granted `admin` or `maintain` access to a repository unless the access
@@ -309,6 +326,7 @@ class EnsureNoAdminOrMaintainTeams(Check):
         return steps
 
 
+@Check.register
 class EnsureWorkflowTemplates(Check):
     """
     There are certain github action workflows that we to exist on all
@@ -594,6 +612,7 @@ class EnsureWorkflowTemplates(Check):
         return steps
 
 
+@Check.register
 class EnsureLabels(Check):
     """
     All repos in the org should have certain labels.
@@ -782,6 +801,7 @@ class RequireTeamPermission(Check):
             raise
 
 
+@Check.register
 class RequireTriageTeamAccess(RequireTeamPermission):
     """
     Ensure that the openedx-triage team grants Triage access to every public repo in the org.
@@ -797,6 +817,7 @@ class RequireTriageTeamAccess(RequireTeamPermission):
         return is_public(self.api, self.org_name, self.repo_name)
 
 
+@Check.register
 class RequiredCLACheck(Check):
     """
     This class validates the following:
@@ -1057,6 +1078,7 @@ class RequiredCLACheck(Check):
         return params
 
 
+@Check.register
 class EnsureNoDirectRepoAccessToUsers(Check):
     """
     Users should not have direct repo access
@@ -1114,19 +1136,6 @@ class EnsureNoDirectRepoAccessToUsers(Check):
         return steps
 
 
-CHECKS = [
-    RequiredCLACheck,
-    RequireTriageTeamAccess,
-    EnsureLabels,
-    EnsureWorkflowTemplates,
-    EnsureNoAdminOrMaintainTeams,
-    EnsureRepoSettings,
-    EnsureNoDirectRepoAccessToUsers,
-]
-CHECKS_BY_NAME = {check_cls.__name__: check_cls for check_cls in CHECKS}
-CHECKS_BY_NAME_LOWER = {check_cls.__name__.lower(): check_cls for check_cls in CHECKS}
-
-
 @click.command()
 @click.option(
     "--github-token",
@@ -1154,7 +1163,7 @@ CHECKS_BY_NAME_LOWER = {check_cls.__name__.lower(): check_cls for check_cls in C
     "check_names",
     default=None,
     multiple=True,
-    type=click.Choice(CHECKS_BY_NAME.keys(), case_sensitive=False),
+    type=click.Choice(Check.get_registered_checks().keys(), case_sensitive=False),
     help=f"Limit to specific check(s), case-insensitive.",
 )
 @click.option(
@@ -1193,9 +1202,9 @@ def main(org, dry_run, _github_token, check_names, repos, start_at):
         click.secho("No Actual Changes Being Made", fg="yellow")
 
     if check_names:
-        active_checks = [CHECKS_BY_NAME[check_name] for check_name in check_names]
+        active_checks = [Check.get_registered_checks()[check_name] for check_name in check_names]
     else:
-        active_checks = CHECKS
+        active_checks = list(Check.get_registered_checks().values())
     click.secho(f"The following checks will be run:", fg="magenta", bold=True)
     active_checks_string = "\n".join(
         "\t" + check_cls.__name__ for check_cls in active_checks
