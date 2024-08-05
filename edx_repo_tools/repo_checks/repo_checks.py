@@ -168,7 +168,7 @@ class Check:
 
 
 @Check.register
-class EnsureRepoSettings(Check):
+class Settings(Check):
     """
     There are certain settings that we agree we want to be set a specific way on all repos.  This check
     will ensure that those settings are set correctly on all non-security repos.
@@ -257,7 +257,7 @@ class EnsureRepoSettings(Check):
 
 
 @Check.register
-class EnsureNoAdminOrMaintainTeams(Check):
+class NoAdminOrMaintainTeams(Check):
     """
     Teams should not be granted `admin` or `maintain` access to a repository unless the access
     is exceptional and it is noted here.  All other `admin` and `maintain` access is downgraded to
@@ -327,7 +327,7 @@ class EnsureNoAdminOrMaintainTeams(Check):
 
 
 @Check.register
-class EnsureWorkflowTemplates(Check):
+class Workflows(Check):
     """
     There are certain github action workflows that we to exist on all
     repos exactly as they are defined in the `.github` repo in the org.
@@ -613,7 +613,7 @@ class EnsureWorkflowTemplates(Check):
 
 
 @Check.register
-class EnsureLabels(Check):
+class Labels(Check):
     """
     All repos in the org should have certain labels.
     """
@@ -728,12 +728,12 @@ class EnsureLabels(Check):
         return simplified_label
 
 
-class RequireTeamPermission(Check):
+class TeamAccess(Check):
     """
     Require that a team has a certain level of access to a repository.
 
     To use this class as a check, create a subclass that specifies a particular
-    team and permission level, such as RequireTriageTeamAccess below.
+    team and permission level, such as TriageTeam below.
     """
 
     def __init__(self, api: GhApi, org: str, repo: str, team: str, permission: str):
@@ -802,7 +802,7 @@ class RequireTeamPermission(Check):
 
 
 @Check.register
-class RequireTriageTeamAccess(RequireTeamPermission):
+class TriageTeam(TeamAccess):
     """
     Ensure that the openedx-triage team grants Triage access to every public repo in the org.
     """
@@ -818,7 +818,7 @@ class RequireTriageTeamAccess(RequireTeamPermission):
 
 
 @Check.register
-class RequiredCLACheck(Check):
+class EnforceCLA(Check):
     """
     This class validates the following:
 
@@ -838,7 +838,7 @@ class RequiredCLACheck(Check):
         self.cla_team = "cla-checker"
         self.cla_team_permission = "push"
 
-        self.team_check = RequireTeamPermission(
+        self.team_check = TeamAccess(
             api,
             org,
             repo,
@@ -1079,7 +1079,7 @@ class RequiredCLACheck(Check):
 
 
 @Check.register
-class EnsureNoDirectRepoAccessToUsers(Check):
+class NoDirectUsers(Check):
     """
     Users should not have direct repo access
     """
