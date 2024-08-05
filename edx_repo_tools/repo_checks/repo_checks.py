@@ -14,7 +14,7 @@ from __future__ import annotations
 import importlib.resources
 import re
 import textwrap
-from functools import lru_cache
+from functools import cache
 from itertools import chain
 from pprint import pformat
 
@@ -36,11 +36,6 @@ from ghapi.all import GhApi, paged
 HAS_GHSA_SUFFIX = re.compile(r".*?-ghsa-\w{4}-\w{4}-\w{4}$")
 
 LABELS_YAML_FILENAME = "./labels.yaml"
-
-# Note: This is functionally equivalent to `from functools import cache`,
-# which becomes available in Python 3.9.
-# https://docs.python.org/3/library/functools.html#functools.cache
-cache = lru_cache(maxsize=None)
 
 
 def all_paged_items(func, *args, **kwargs):
