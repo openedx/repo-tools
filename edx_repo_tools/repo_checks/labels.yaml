@@ -73,6 +73,10 @@
   color: "038E8E" # tealish
   description: "Relates to an Axim Funded Contribution project"
 
+- name: "performance"
+  color: "4a03fc" # blue-purple
+  description: "Relates to improving latency/throughput or reducing resource usage"
+
 
 ### LABELS INDICATING THE SCOPE OR FUNCTION OF THE ISSUE.
 ### AT MOST ONE OF THESE SHOULD BE USED AT A TIME.
