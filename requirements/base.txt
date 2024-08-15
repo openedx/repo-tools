@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.in
     #   fissix
-attrs==23.2.0
+attrs==24.2.0
     # via bowler
 backports-csv==1.0.7
     # via -r requirements/base.in
@@ -20,7 +20,7 @@ cachetools==5.4.0
     # via tox
 certifi==2024.7.4
     # via requests
-cffi==1.16.0
+cffi==1.17.0
     # via cryptography
 chardet==5.2.0
     # via tox
@@ -61,7 +61,7 @@ lazy==1.6
     # via -r requirements/base.in
 lockfile==0.12.2
     # via -r requirements/base.in
-more-itertools==10.3.0
+more-itertools==10.4.0
     # via -r requirements/base.in
 moreorless==0.4.0
     # via bowler
@@ -72,7 +72,7 @@ packaging==24.1
     #   pyproject-api
     #   pytest
     #   tox
-path==16.14.0
+path==17.0.0
     # via path-py
 path-py==12.5.0
     # via -r requirements/base.in
@@ -86,11 +86,11 @@ pluggy==1.5.0
     #   tox
 pycparser==2.22
     # via cffi
-pyjwt[crypto]==2.8.0
+pyjwt[crypto]==2.9.0
     # via github3-py
 pyproject-api==1.7.1
     # via tox
-pytest==8.3.1
+pytest==8.3.2
     # via
     #   -r requirements/base.in
     #   pytest-logging
@@ -105,7 +105,7 @@ python-dateutil==2.9.0.post0
     #   github3-py
 python-dotenv==1.0.1
     # via -r requirements/base.in
-pyyaml==6.0.1
+pyyaml==6.0.2
     # via -r requirements/base.in
 requests==2.32.3
     # via
@@ -122,9 +122,9 @@ smmap==5.0.1
     # via gitdb
 statistics==1.0.3.5
     # via -r requirements/base.in
-tox==4.16.0
+tox==4.18.0
     # via -r requirements/base.in
-tqdm==4.66.4
+tqdm==4.66.5
     # via -r requirements/base.in
 uritemplate==4.1.1
     # via
