@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
-from edx_repo_tools.repo_checks.repo_checks import EnsureLabels
+from edx_repo_tools.repo_checks import repo_checks
 
 
 @pytest.fixture
@@ -35,12 +35,12 @@ labels_yaml = [
 ]
 
 
-@patch.object(EnsureLabels, "labels", labels_yaml)
-class TestEnsureLabels:
+@patch.object(repo_checks.Labels, "labels", labels_yaml)
+class TestLabelsCheck:
     def test_check_for_no_change(self, maintenance_label):
         api = MagicMock()
         api.issues.list_labels_for_repo.side_effect = [[maintenance_label], None]
-        check_cls = EnsureLabels(api, "test_org", "test_repo")
+        check_cls = repo_checks.Labels(api, "test_org", "test_repo")
 
         # Make sure that the check returns True, indicating that no changes need to be made.
         assert check_cls.check()[0]
@@ -48,7 +48,7 @@ class TestEnsureLabels:
     def test_addition(self, maintenance_label):
         api = MagicMock()
         api.issues.list_labels_for_repo.return_value = []
-        check_cls = EnsureLabels(api, "test_org", "test_repo")
+        check_cls = repo_checks.Labels(api, "test_org", "test_repo")
 
         # The check should be false because the maintenance label should be missing.
         assert check_cls.check()[0] == False
@@ -72,7 +72,7 @@ class TestEnsureLabels:
         api = MagicMock()
         api.issues.list_labels_for_repo.side_effect = [[maintenance_label], None]
 
-        check_cls = EnsureLabels(api, "test_org", "test_repo")
+        check_cls = repo_checks.Labels(api, "test_org", "test_repo")
 
         assert check_cls.check()[0] == False
         check_cls.fix()
