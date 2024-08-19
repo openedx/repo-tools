@@ -412,7 +412,7 @@ CURRENT = {
     "MySQL": parse_version_number(versions['DOCKER_IMAGE_MYSQL']),
     "Elasticsearch": parse_version_number(versions['DOCKER_IMAGE_ELASTICSEARCH']),
     "Redis": parse_version_number(versions['DOCKER_IMAGE_REDIS']),
-    "Ruby": "3.0",
+    "Ruby": "3.3",
 }
 
 EDX = {
@@ -497,13 +497,17 @@ django_releases = [
     # ('1.11', 2017, 4, True),
     # ('2.0', 2018, 1, False),
     # ('2.1', 2018, 8, False),
-    ('2.2', 2019, 4, True),
+    # ('2.2', 2019, 4, True),
     # ('3.0', 2020, 1, False),
     # ('3.1', 2020, 8, False),
     ('3.2', 2021, 4, True),
     ('4.0', 2021, 12, False),
     ('4.1', 2022, 8, False),
     ('4.2', 2023, 4, True, "Django 4.2 work is being tracked in https://github.com/openedx/platform-roadmap/issues/269"),
+    ('5.0', 2023, 12, False),
+    ('5.1', 2024, 8, False),
+    ('5.2', 2025, 4, True),
+
 ]
 for name, year, month, lts, *more in django_releases:
     year, month = validate_version_date("Django", name, year, month, check_start=True)
@@ -553,6 +557,7 @@ ubuntu_nicks = {                        # https://wiki.ubuntu.com/Releases
     '18.04': 'Bionic Beaver',
     '20.04': 'Focal Fossa',
     '22.04': 'Jammy Jellyfish',
+    '24.04': 'Noble Numbat',
 }
 
 for year, month in itertools.product(range(START_YEAR % 100, END_YEAR % 100), [4, 10]):
@@ -588,6 +593,7 @@ node_releases = [
     ('16', 2021, 4, 2023, 9),     # https://nodejs.org/en/blog/announcements/nodejs16-eol/
     ('18', 2022, 4, 2025, 4),
     ('20', 2023, 4, 2026, 4),
+    ('22', 2024, 4, 2027, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
     eyear, emonth = validate_version_date("NodeJS", name, eyear, emonth)
@@ -613,6 +619,7 @@ mongo_releases = [
     ('4.2', 2019, 8, 2023, 4),
     ('4.4', 2020, 7, 2024, 2),
     ('5.0', 2021, 7, 2024, 10),
+    ('7.0', 2023, 8, 2026, 8),
 ]
 for name, syear, smonth, eyear, emonth in mongo_releases:
     eyear, emonth = validate_version_date("mongo", name, eyear, emonth)
@@ -633,6 +640,8 @@ mysql_releases = [
     ('5.7', 2015, 10, 2023, 10),
     ('8.0', 2018, 4, 2026, 4),
     ('8.1', 2023, 6, 2023, 10),
+    ('8.4', 2024, 4, 2032, 4),
+    ('9.0', 2024, 7, 2025, 7),
 ]
 for name, syear, smonth, eyear, emonth in mysql_releases:
     eyear, emonth = validate_version_date("MySQL", name, eyear, emonth)
@@ -678,8 +687,10 @@ cal.section_note("https://docs.redis.com/latest/rs/administering/product-lifecyc
 # https://endoflife.date/redis
 redis_releases = [
     ('6.0', 2020, 5, 2023, 8),
-    ('6.2', 2021, 8, 2024, 4),
-    ('7.0', 2022, 4, 2025, 4),
+    ('6.2', 2021, 8, 2024, 8),
+    ('7.0', 2022, 4, 2024, 7),
+    ('7.2', 2023, 8, 2024, 8),
+    ('7.4', 2024, 7, 2025, 7),
 ]
 for name, syear, smonth, eyear, emonth in redis_releases:
     eyear, emonth = validate_version_date("Redis", name, eyear, emonth)
@@ -699,11 +710,13 @@ cal.section_note("https://www.ruby-lang.org/en/downloads/branches/")
 ruby_releases = [
     #('2.3', 2015, 12, 2019, 3),
     #('2.4', 2016, 12, 2020, 3),
-    ('2.5', 2017, 12, 2021, 3),
-    ('2.6', 2018, 12, 2022, 3),
+    #('2.5', 2017, 12, 2021, 3),
+    #('2.6', 2018, 12, 2022, 3),
     ('2.7', 2019, 12, 2023, 3),
     ('3.0', 2020, 12, 2024, 3),
     ('3.1', 2021, 12, 2025, 3),
+    ('3.2', 2022, 12, 2026, 3),
+    ('3.3', 2023, 12, 2027, 3),
 ]
 for name, syear, smonth, eyear, emonth, *more in ruby_releases:
     eyear, emonth = validate_version_date("Ruby", name, eyear, emonth)
