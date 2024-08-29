@@ -8,21 +8,23 @@ certifi==2024.7.4
     # via requests
 charset-normalizer==3.3.2
     # via requests
-idna==3.7
+idna==3.8
     # via requests
 markdown-it-py==3.0.0
     # via rich
 mdurl==0.1.2
     # via markdown-it-py
+packaging==24.1
+    # via requirements-parser
 pygments==2.18.0
     # via rich
 requests==2.32.3
     # via -r edx_repo_tools/find_dependencies/extra.in
-requirements-parser==0.10.1
+requirements-parser==0.11.0
     # via -r edx_repo_tools/find_dependencies/extra.in
-rich==13.7.1
+rich==13.8.0
     # via -r edx_repo_tools/find_dependencies/extra.in
-types-setuptools==71.1.0.20240723
+types-setuptools==73.0.0.20240822
     # via requirements-parser
 urllib3==2.2.2
     # via requests
