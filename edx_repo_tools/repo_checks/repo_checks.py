@@ -14,7 +14,8 @@ from __future__ import annotations
 import importlib.resources
 import re
 import textwrap
-from functools import lru_cache
+import typing as t
+from functools import cache
 from itertools import chain
 from pprint import pformat
 
@@ -36,11 +37,6 @@ from ghapi.all import GhApi, paged
 HAS_GHSA_SUFFIX = re.compile(r".*?-ghsa-\w{4}-\w{4}-\w{4}$")
 
 LABELS_YAML_FILENAME = "./labels.yaml"
-
-# Note: This is functionally equivalent to `from functools import cache`,
-# which becomes available in Python 3.9.
-# https://docs.python.org/3/library/functools.html#functools.cache
-cache = lru_cache(maxsize=None)
 
 
 def all_paged_items(func, *args, **kwargs):
@@ -109,10 +105,24 @@ class Check:
     (is_relevant, check, fix, and dry_run).
     """
 
+    _registered = {}
+
     def __init__(self, api: GhApi, org: str, repo: str):
         self.api = api
         self.org_name = org
         self.repo_name = repo
+
+    @staticmethod
+    def register(subclass: type[t.Self]) -> type[t.Self]:
+        """
+        Decorate a Check subclass so that it will be available in main()
+        """
+        Check._registered[subclass.__name__] = subclass
+        return subclass
+
+    @staticmethod
+    def get_registered_checks() -> dict[str, type[t.Self]]:
+        return Check._registered.copy()
 
     def is_relevant(self) -> bool:
         """
@@ -157,7 +167,8 @@ class Check:
         raise NotImplementedError
 
 
-class EnsureRepoSettings(Check):
+@Check.register
+class Settings(Check):
     """
     There are certain settings that we agree we want to be set a specific way on all repos.  This check
     will ensure that those settings are set correctly on all non-security repos.
@@ -245,7 +256,8 @@ class EnsureRepoSettings(Check):
         return steps
 
 
-class EnsureNoAdminOrMaintainTeams(Check):
+@Check.register
+class NoAdminOrMaintainTeams(Check):
     """
     Teams should not be granted `admin` or `maintain` access to a repository unless the access
     is exceptional and it is noted here.  All other `admin` and `maintain` access is downgraded to
@@ -314,7 +326,8 @@ class EnsureNoAdminOrMaintainTeams(Check):
         return steps
 
 
-class EnsureWorkflowTemplates(Check):
+@Check.register
+class Workflows(Check):
     """
     There are certain github action workflows that we to exist on all
     repos exactly as they are defined in the `.github` repo in the org.
@@ -599,7 +612,8 @@ class EnsureWorkflowTemplates(Check):
         return steps
 
 
-class EnsureLabels(Check):
+@Check.register
+class Labels(Check):
     """
     All repos in the org should have certain labels.
     """
@@ -714,12 +728,12 @@ class EnsureLabels(Check):
         return simplified_label
 
 
-class RequireTeamPermission(Check):
+class TeamAccess(Check):
     """
     Require that a team has a certain level of access to a repository.
 
     To use this class as a check, create a subclass that specifies a particular
-    team and permission level, such as RequireTriageTeamAccess below.
+    team and permission level, such as TriageTeam below.
     """
 
     def __init__(self, api: GhApi, org: str, repo: str, team: str, permission: str):
@@ -787,7 +801,8 @@ class RequireTeamPermission(Check):
             raise
 
 
-class RequireTriageTeamAccess(RequireTeamPermission):
+@Check.register
+class TriageTeam(TeamAccess):
     """
     Ensure that the openedx-triage team grants Triage access to every public repo in the org.
     """
@@ -802,7 +817,8 @@ class RequireTriageTeamAccess(RequireTeamPermission):
         return is_public(self.api, self.org_name, self.repo_name)
 
 
-class RequiredCLACheck(Check):
+@Check.register
+class EnforceCLA(Check):
     """
     This class validates the following:
 
@@ -822,7 +838,7 @@ class RequiredCLACheck(Check):
         self.cla_team = "cla-checker"
         self.cla_team_permission = "push"
 
-        self.team_check = RequireTeamPermission(
+        self.team_check = TeamAccess(
             api,
             org,
             repo,
@@ -1062,7 +1078,8 @@ class RequiredCLACheck(Check):
         return params
 
 
-class EnsureNoDirectRepoAccessToUsers(Check):
+@Check.register
+class NoDirectUsers(Check):
     """
     Users should not have direct repo access
     """
@@ -1119,17 +1136,62 @@ class EnsureNoDirectRepoAccessToUsers(Check):
         return steps
 
 
-CHECKS = [
-    RequiredCLACheck,
-    RequireTriageTeamAccess,
-    EnsureLabels,
-    EnsureWorkflowTemplates,
-    EnsureNoAdminOrMaintainTeams,
-    EnsureRepoSettings,
-    EnsureNoDirectRepoAccessToUsers,
-]
-CHECKS_BY_NAME = {check_cls.__name__: check_cls for check_cls in CHECKS}
-CHECKS_BY_NAME_LOWER = {check_cls.__name__.lower(): check_cls for check_cls in CHECKS}
+@Check.register
+class EnsureNoOutsideCollaborators(Check):
+    """
+    Repository shouldn't have outside collaborators
+    """
+
+    def __init__(self, api: GhApi, org: str, repo: str):
+        super().__init__(api, org, repo)
+        self.users_list = []
+
+    def is_relevant(self) -> bool:
+        """
+        All non security fork repos, public or private.
+        """
+        return not is_security_private_fork(self.api, self.org_name, self.repo_name)
+
+    def check(self) -> tuple[bool, str]:
+        """
+        Verify whether or not the check is failing.
+
+        This should not change anything and should not have a side-effect
+        other than populating `self` with any data that is needed later for
+        `fix` or `dry_run`.
+
+        The string in the return tuple should be a human readable reason
+        that the check failed.
+        """
+        self.users_list = list(all_paged_items(
+            self.api.repos.list_collaborators, owner=self.org_name, repo=self.repo_name, affiliation='outside'
+        ))
+        users = [f"{user.login}: {user.role_name}" for user in self.users_list]
+        if users:
+            return (
+                False,
+                f"The repo has some outside collaborators:\n\t\t"
+                + "\n\t\t".join(users),
+            )
+        return (True, "The repo doesn't have any outside collaborators.")
+
+    def dry_run(self):
+        return self.fix(dry_run=True)
+
+    def fix(self, dry_run=False):
+        steps = []
+        for user in self.users_list:
+            if not dry_run:
+                self.api.repos.remove_collaborator(
+                    owner=self.org_name,
+                    repo=self.repo_name,
+                    username=user.login,
+                )
+            steps.append(
+                f"Removed outside collaborator {user.login}"
+            )
+
+        return steps
 
 
 @click.command()
@@ -1159,7 +1221,7 @@ CHECKS_BY_NAME_LOWER = {check_cls.__name__.lower(): check_cls for check_cls in C
     "check_names",
     default=None,
     multiple=True,
-    type=click.Choice(CHECKS_BY_NAME.keys(), case_sensitive=False),
+    type=click.Choice(Check.get_registered_checks().keys(), case_sensitive=False),
     help=f"Limit to specific check(s), case-insensitive.",
 )
 @click.option(
@@ -1198,9 +1260,9 @@ def main(org, dry_run, _github_token, check_names, repos, start_at):
         click.secho("No Actual Changes Being Made", fg="yellow")
 
     if check_names:
-        active_checks = [CHECKS_BY_NAME[check_name] for check_name in check_names]
+        active_checks = [Check.get_registered_checks()[check_name] for check_name in check_names]
     else:
-        active_checks = CHECKS
+        active_checks = list(Check.get_registered_checks().values())
     click.secho(f"The following checks will be run:", fg="magenta", bold=True)
     active_checks_string = "\n".join(
         "\t" + check_cls.__name__ for check_cls in active_checks
