@@ -3,7 +3,7 @@
 """
 
 import logging
-import pkg_resources
+import importlib.resources
 import sys
 
 import click
@@ -33,7 +33,7 @@ def cli(hub, trace, pytest_args):
     """
     args = [
         '--pyargs', 'edx_repo_tools.oep2.checks',
-        '-c', pkg_resources.resource_filename(__name__, 'oep2-report.ini'),
+        '-c', importlib.resources.files(__name__) / 'oep2-report.ini',
     ]
 
     if trace:
