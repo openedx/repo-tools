@@ -89,6 +89,10 @@
   color: "d93f0b"  # scarlet red...
   description: "Report of or fix for something that isn't working as intended"
 
+- name: "flaky-test"
+  color: "006b75"  # teal
+  description: "Details a test removed as part of the flaky test process" 
+
 - name: "discovery"
   color: "d876e3"  # a curious shade of lavendar
   description: "Pre-work to determine if an idea is feasible"
