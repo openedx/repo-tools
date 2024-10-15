@@ -41,6 +41,10 @@
   color: "54976d"  # fenway green
   description: "Ready to be picked up by anyone in the community"
 
+- name: "hacktoberfest-accepted"
+  color: "e2ba53"  # golden-yellow
+  description: "Issue accepted for hacktoberfest participants"
+
 
 ### LABELS INDICATING BROAD THEMES OF WORK.
 ### MORE THAN ONE OF THESE MAY APPLY AT A TIME.
