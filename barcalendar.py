@@ -668,7 +668,8 @@ es_releases = [
     ('7.11', 2021, 2, 2022, 8),
     ('7.12', 2021, 3, 2022, 9),
     ('7.13', 2021, 5, 2022, 11),
-    ('7.17', 2022, 2, 2023, 8),
+    ('7.17', 2022, 2, 2025, 1),
+    ('8.15', 2022, 2, 2026, 2),
 ]
 for name, syear, smonth, eyear, emonth in es_releases:
     eyear, emonth = validate_version_date("ElasticSearch", name, eyear, emonth)
