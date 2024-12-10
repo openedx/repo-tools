@@ -4,21 +4,16 @@
 #
 #    make upgrade
 #
-build==1.2.1
-    # via pip-tools
 click==8.1.7
-    # via pip-tools
+    # via -r edx_repo_tools/audit_gh_users/extra.in
+fastcore==1.5.54
+    # via ghapi
+ghapi==1.0.5
+    # via -r edx_repo_tools/audit_gh_users/extra.in
 packaging==24.1
-    # via build
-pip-tools==7.4.1
-    # via -r requirements/pip-tools.in
-pyproject-hooks==1.1.0
     # via
-    #   build
-    #   pip-tools
-wheel==0.43.0
-    # via pip-tools
+    #   fastcore
+    #   ghapi
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
-# setuptools

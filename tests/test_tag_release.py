@@ -88,6 +88,13 @@ def expected_repos():
                 'ref': 'master',
             }
         },
+        mock_repository('edx/edx-package'): {
+            'metadata': {
+                'annotations': {
+                    'openedx.org/release': 'master',
+                }
+            }
+        },
         mock_repository('edx/XBlock'): {
             'openedx-release': {
                 'parent-repo': 'edx/edx-platform',
@@ -115,6 +122,14 @@ def expected_commits():
             'message': 'commit message for edx-platform release commit',
         },
         mock_repository('edx/configuration'): {
+            'committer': {'name': 'Dev 2'},
+            'author': {'name': 'Dev 2'},
+            'sha': '12345deadbeef',
+            'ref_type': 'branch',
+            'ref': 'master',
+            'message': 'commit message for configuration master commit',
+        },
+        mock_repository('edx/edx-package'): {
             'committer': {'name': 'Dev 2'},
             'author': {'name': 'Dev 2'},
             'sha': '12345deadbeef',
@@ -159,6 +174,7 @@ def test_get_ref_for_repos_not_exist():
     repos = [
         mock_repository('edx/edx-platform'),
         mock_repository('edx/configuration'),
+        mock_repository('edx/edx-package'),
         mock_repository('edx/XBlock'),
     ]
     for repo in repos:
@@ -172,16 +188,20 @@ def test_commit_ref_info(expected_repos):
 
     edx_edx_platform = find_repo(expected_repos, 'edx/edx-platform')
     edx_configuration = find_repo(expected_repos, 'edx/configuration')
+    edx_edx_package = find_repo(expected_repos, 'edx/edx-package')
     edx_edx_platform.branch.assert_called_once_with('release')
     assert not edx_edx_platform.ref.called
     edx_configuration.branch.assert_called_once_with('master')
     assert not edx_configuration.ref.called
+    edx_edx_package.branch.assert_called_once_with('master')
+    assert not edx_edx_package.ref.called
 
     # The XBlock repo shouldn't have been examined at all.
     assert not find_repo(expected_repos, 'edx/XBlock').branch.called
 
     edx_platform_commit = edx_edx_platform.git_commit().refresh()
     configuration_commit = edx_configuration.git_commit().refresh()
+    edx_edx_package_commit = edx_edx_package.git_commit().refresh()
 
     expected_commits = {
         edx_edx_platform: {
@@ -200,6 +220,14 @@ def test_commit_ref_info(expected_repos):
             'ref': 'master',
             'message': configuration_commit.message,
         },
+        edx_edx_package: {
+            'committer': edx_edx_package_commit.committer,
+            'author': edx_edx_package_commit.author,
+            'sha': edx_edx_package_commit.sha,
+            'ref_type': 'branch',
+            'ref': 'master',
+            'message': edx_edx_package_commit.message,
+        },
     }
 
     assert result == expected_commits
@@ -214,6 +242,7 @@ def test_overrides_global_ref(expected_repos):
     result = override_repo_refs(expected_repos, override_ref="abcdef")
     assert find_repo_data(result, "edx/edx-platform")["openedx-release"]["ref"] == "abcdef"
     assert find_repo_data(result, "edx/configuration")["openedx-release"]["ref"] == "abcdef"
+    assert find_repo_data(result, "edx/edx-package")["metadata"]["annotations"]["openedx.org/release"] == "abcdef"
 
 
 def test_overrides_dict(expected_repos):
@@ -221,10 +250,12 @@ def test_overrides_dict(expected_repos):
         "edx/edx-platform": "xyz",
         "edx/configuration": "refs/branch/no-way",
         "edx/does-not-exist": "does-not-matter",
+        "edx/edx-package": "release"
     }
     result = override_repo_refs(expected_repos, overrides=overrides)
     assert find_repo_data(result, "edx/edx-platform")["openedx-release"]["ref"] == "xyz"
     assert find_repo_data(result, "edx/configuration")["openedx-release"]["ref"] == "refs/branch/no-way"
+    assert find_repo_data(result, "edx/edx-package")["metadata"]["annotations"]["openedx.org/release"] == "release"
 
 
 def test_overrides_global_ref_and_dict(expected_repos):
@@ -240,6 +271,7 @@ def test_overrides_global_ref_and_dict(expected_repos):
     )
     assert find_repo_data(result, "edx/edx-platform")["openedx-release"]["ref"] == "xyz"
     assert find_repo_data(result, "edx/configuration")["openedx-release"]["ref"] == "fakie-mcfakerson"
+    assert find_repo_data(result, "edx/edx-package")["metadata"]["annotations"]["openedx.org/release"] == "fakie-mcfakerson"
 
 
 def test_create_happy_path(expected_commits):

@@ -6,7 +6,6 @@ import yaml
 
 logging.basicConfig()
 LOGGER = logging.getLogger(__name__)
-OPEN_EDX_YAML = 'openedx.yaml'
 
 
 def iter_nonforks(hub, orgs):
@@ -28,9 +27,9 @@ def iter_nonforks(hub, orgs):
                 yield repo
 
 
-def iter_openedx_yaml(hub, orgs, branches=None):
+def iter_openedx_yaml(file_name, hub, orgs, branches=None):
     """
-    Yield the data from all openedx.yaml files found in repositories in ``orgs``
+    Yield the data from all catalog-info.yaml or openedx.yaml files found in repositories in ``orgs``
     on any of ``branches``.
 
     Arguments:
@@ -45,19 +44,20 @@ def iter_openedx_yaml(hub, orgs, branches=None):
         Repositories (:class:`~github3.Repository)
 
     """
+    
     for repo in iter_nonforks(hub, orgs):
         for branch in (branches or [repo.default_branch]):
             try:
-                contents = repo.file_contents(OPEN_EDX_YAML, ref=branch)
+                contents = repo.file_contents(file_name, ref=branch)
             except NotFoundError:
                 contents = None
 
             if contents is not None:
-                LOGGER.debug("Found openedx.yaml at %s:%s", repo.full_name, branch)
+                LOGGER.debug("Found %s at %s:%s", file_name, repo.full_name, branch)
                 try:
                     data = yaml.safe_load(contents.decoded)
                 except Exception as exc:
-                    LOGGER.error("Couldn't parse openedx.yaml from %s:%s, skipping repo", repo.full_name, branch, exc_info=True)
+                    LOGGER.error("Couldn't parse %s from %s:%s, skipping repo", file_name, repo.full_name, branch, exc_info=True)
                 else:
                     if data is not None:
                         yield repo, data
