@@ -617,8 +617,6 @@ class PullRequestCreator:
             pr.number,
         )
         if self.output_pr_url_for_github_action:
-            pr_url = f"https://github.com/{self.repository.full_name}/pull/{pr.number}"
-
             # need to append to the special file that GitHub actions exposes
             # as using print here won't set the output, it simply logs the message
             github_output_path = os.environ.get("GITHUB_OUTPUT")
@@ -626,7 +624,7 @@ class PullRequestCreator:
                 logger.warning("GITHUB_OUTPUT not set, failed to write action output.")
             else:
                 with open(github_output_path, "a", encoding="utf-8") as out_file:
-                    out_file.write(f"generated_pr={pr_url}\n")
+                    out_file.write(f"generated_pr=https://github.com/{self.repository.full_name}/pull/{pr.number}\n")
 
     def delete_old_pull_requests(self):
         logger.info("Checking if there's any old pull requests to delete")
