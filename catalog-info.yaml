@@ -14,7 +14,7 @@ metadata:
   annotations:
     # (Optional) We use the below annotation to indicate whether or not this
     # repository should be tagged for openedx releases and which branch is tagged.
-    openedx.org/release: "master"
+    openedx.org/release: null
 spec:
 
   # (Required) This can be a group (`group:<github_group_name>`) or a user (`user:<github_username>`).
