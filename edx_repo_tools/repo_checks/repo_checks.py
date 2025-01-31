@@ -818,6 +818,22 @@ class TriageTeam(TeamAccess):
 
 
 @Check.register
+class MaintainersAtLargeTeam(TeamAccess):
+    """
+    Ensure that the committers-maintainers-at-large team grants Push access to every public repo in the org.
+    """
+
+    def __init__(self, api, org, repo):
+        team = "committers-maintainers-at-large"
+        permission = "push"
+        super().__init__(api, org, repo, team, permission)
+
+    def is_relevant(self):
+        # Need to be a public repo.
+        return is_public(self.api, self.org_name, self.repo_name)
+
+
+@Check.register
 class EnforceCLA(Check):
     """
     This class validates the following:
