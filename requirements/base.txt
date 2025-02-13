@@ -8,52 +8,52 @@ appdirs==1.4.4
     # via
     #   -r requirements/base.in
     #   fissix
-attrs==23.2.0
+attrs==25.1.0
     # via bowler
 backports-csv==1.0.7
     # via -r requirements/base.in
 bowler==0.9.0
     # via -r requirements/base.in
-cachecontrol==0.14.0
+cachecontrol==0.14.2
     # via -r requirements/base.in
-cachetools==5.4.0
+cachetools==5.5.1
     # via tox
-certifi==2024.7.4
+certifi==2025.1.31
     # via requests
-cffi==1.16.0
+cffi==1.17.1
     # via cryptography
 chardet==5.2.0
     # via tox
-charset-normalizer==3.3.2
+charset-normalizer==3.4.1
     # via requests
-click==8.1.7
+click==8.1.8
     # via
     #   -r requirements/base.in
     #   bowler
     #   moreorless
 colorama==0.4.6
     # via tox
-cryptography==43.0.0
+cryptography==44.0.1
     # via pyjwt
-distlib==0.3.8
+distlib==0.3.9
     # via virtualenv
 docutils==0.21.2
     # via statistics
 execnet==2.1.1
     # via pytest-xdist
-filelock==3.15.4
+filelock==3.17.0
     # via
     #   tox
     #   virtualenv
 fissix==24.4.24
     # via bowler
-gitdb==4.0.11
+gitdb==4.0.12
     # via gitpython
 github3-py==4.0.1
     # via -r requirements/base.in
-gitpython==3.1.43
+gitpython==3.1.44
     # via -r requirements/base.in
-idna==3.7
+idna==3.10
     # via requests
 iniconfig==2.0.0
     # via pytest
@@ -61,22 +61,22 @@ lazy==1.6
     # via -r requirements/base.in
 lockfile==0.12.2
     # via -r requirements/base.in
-more-itertools==10.3.0
+more-itertools==10.6.0
     # via -r requirements/base.in
 moreorless==0.4.0
     # via bowler
-msgpack==1.0.8
+msgpack==1.1.0
     # via cachecontrol
-packaging==24.1
+packaging==24.2
     # via
     #   pyproject-api
     #   pytest
     #   tox
-path==16.14.0
+path==17.1.0
     # via path-py
 path-py==12.5.0
     # via -r requirements/base.in
-platformdirs==4.2.2
+platformdirs==4.3.6
     # via
     #   tox
     #   virtualenv
@@ -86,11 +86,11 @@ pluggy==1.5.0
     #   tox
 pycparser==2.22
     # via cffi
-pyjwt[crypto]==2.8.0
+pyjwt[crypto]==2.10.1
     # via github3-py
-pyproject-api==1.7.1
+pyproject-api==1.9.0
     # via tox
-pytest==8.3.1
+pytest==8.3.4
     # via
     #   -r requirements/base.in
     #   pytest-logging
@@ -105,36 +105,38 @@ python-dateutil==2.9.0.post0
     #   github3-py
 python-dotenv==1.0.1
     # via -r requirements/base.in
-pyyaml==6.0.1
+pyyaml==6.0.2
     # via -r requirements/base.in
 requests==2.32.3
     # via
     #   -r requirements/base.in
     #   cachecontrol
     #   github3-py
-ruamel-yaml==0.18.6
+ruamel-yaml==0.18.10
     # via -r requirements/base.in
-ruamel-yaml-clib==0.2.8
+ruamel-yaml-clib==0.2.12
     # via ruamel-yaml
-six==1.16.0
+six==1.17.0
     # via python-dateutil
-smmap==5.0.1
+smmap==5.0.2
     # via gitdb
 statistics==1.0.3.5
     # via -r requirements/base.in
-tox==4.16.0
+tox==4.24.1
     # via -r requirements/base.in
-tqdm==4.66.4
+tqdm==4.67.1
     # via -r requirements/base.in
 uritemplate==4.1.1
     # via
     #   -r requirements/base.in
     #   github3-py
-urllib3==2.2.2
-    # via requests
+urllib3==2.2.3
+    # via
+    #   -c requirements/common_constraints.txt
+    #   requests
 urlobject==2.4.3
     # via -r requirements/base.in
-virtualenv==20.26.3
+virtualenv==20.29.2
     # via tox
 volatile==2.1.0
     # via bowler
