@@ -1,6 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring
 
-from os import path
+import os
 from unittest import TestCase
 from unittest.mock import MagicMock, Mock, mock_open, patch
 
@@ -199,9 +199,9 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
         create_pr_mock.diff_url = "/"
         create_pr_mock.repository.name = 'repo-health-data'
 
-        basepath = path.dirname(__file__)
+        basepath = os.path.dirname(__file__)
 
-        filepath = path.abspath(path.join(basepath, "pull_request_creator_test_data", "diff.txt"))
+        filepath = os.path.abspath(os.path.join(basepath, "pull_request_creator_test_data", "diff.txt"))
         with open(filepath, "r") as f:
             content = f.read().encode('utf-8')
             with patch('requests.get') as mock_request:
@@ -224,8 +224,9 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
     @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.update_list_of_files', return_value=None)
     @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_pull_request')
     @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_branch', return_value=None)
-    @patch('builtins.print')
-    def test_outputs_url_on_success(self, print_mock, create_branch_mock, create_pr_mock,
+    @patch.dict(os.environ, {"GITHUB_OUTPUT": "/tmp/fake_github_output"})
+    @patch("builtins.open", new_callable=mock_open)
+    def test_outputs_url_on_success(self,  mock_file, create_branch_mock, create_pr_mock,
                                     update_files_mock, branch_exists_mock, *args):
         """
         Ensure that a successful run outputs the URL consumable by github actions
@@ -241,12 +242,12 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
         assert update_files_mock.called
         self.assertEqual(update_files_mock.call_count, 1)
         assert create_pr_mock.called
-        assert print_mock.call_count == 1
-        found_matching_call = False
-        for call in print_mock.call_args_list:
-            if '$GITHUB_OUTPUT' in call.args[0]:
-                found_matching_call = True
-        assert found_matching_call
+
+        mock_file.assert_called_once_with("/tmp/fake_github_output", "a", encoding="utf-8")
+        handle = mock_file()
+        all_writes = "".join(call_args[0][0] for call_args in handle.write.call_args_list)
+
+        assert "generated_pr=" in all_writes, f"Expected 'generated_pr=' in writes, but got: {all_writes}"
 
     @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.close_existing_pull_requests',
            return_value=[])
@@ -295,7 +296,6 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
     @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_pull_request')
     @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_branch', return_value=None)
     @patch('edx_repo_tools.pull_request_creator.GitHubHelper.delete_branch', return_value=None)
-    @patch('builtins.print')
     def test_branch_deletion(self, create_branch_mock, create_pr_mock,
                              update_files_mock, branch_exists_mock, delete_branch_mock, *args):
         """
@@ -314,8 +314,8 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
         assert create_pr_mock.called
 
     def test_compare_upgrade_difference_with_major_changes(self):
-        basepath = path.dirname(__file__)
-        filepath = path.abspath(path.join(basepath, "pull_request_creator_test_data", "diff.txt"))
+        basepath = os.path.dirname(__file__)
+        filepath = os.path.abspath(os.path.join(basepath, "pull_request_creator_test_data", "diff.txt"))
         with open(filepath, "r") as f:
             valid, suspicious = GitHubHelper().compare_pr_differnce(f.read())
             assert sorted(
@@ -327,8 +327,8 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
             ) == [g['name'] for g in suspicious]
 
     def test_compare_upgrade_difference_with_minor_changes(self):
-        basepath = path.dirname(__file__)
-        filepath = path.abspath(path.join(basepath, "pull_request_creator_test_data", "minor_diff.txt"))
+        basepath = os.path.dirname(__file__)
+        filepath = os.path.abspath(os.path.join(basepath, "pull_request_creator_test_data", "minor_diff.txt"))
         with open(filepath, "r") as f:
             valid, suspicious = GitHubHelper().compare_pr_differnce(f.read())
             assert sorted(
@@ -414,9 +414,9 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
         create_pr_mock.diff_url = "/"
         create_pr_mock.repository.name = 'xblock-lti-consumer'
 
-        basepath = path.dirname(__file__)
+        basepath = os.path.dirname(__file__)
 
-        filepath = path.abspath(path.join(basepath, "pull_request_creator_test_data", "minor_diff.txt"))
+        filepath = os.path.abspath(os.path.join(basepath, "pull_request_creator_test_data", "minor_diff.txt"))
         with open(filepath, "r") as f:
             content = f.read().encode('utf-8')
             with patch('requests.get') as mock_request:
