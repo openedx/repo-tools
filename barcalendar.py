@@ -433,7 +433,7 @@ cal.years_months()
 
 
 # Open edX releases
-cal.section_note("https://edx.readthedocs.io/projects/edx-developer-docs/en/latest/named_releases.html")
+cal.section_note("https://docs.openedx.org/en/latest/community/release_notes/index.html")
 cal.set_cycling(3)
 names = [
     # (Name, Year, Month) when the release happened.
@@ -455,9 +455,10 @@ names = [
     ("Palm", 2023, 6),
     ("Quince", 2023, 12),
     ("Redwood", 2024, 6),
+    ("Sumac", 2024, 12),
     ]
 # https://www.treenames.net/common_tree_names.html
-future = ["Sumac", "Teak"] + list("UVWXYZ")
+future = ["Teak", "Ulmo", "Verawood"] + list("WXYZ")
 target_length = 6 # months per release
 
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
