@@ -25,10 +25,5 @@ urlobject
 ruamel.yaml
 bowler
 
-# pytest is used by `edx_report_tools.oep2` directly
-pytest
-pytest-logging
-pytest-xdist
-
 # tox is used by the OEP10 checker
 tox
