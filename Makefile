@@ -6,7 +6,6 @@ help:				## display this help message
 
 clean:				## remove transient artifacts
 	rm -rf .*cache *.egg-info .coverage build/ htmlcov/
-	rm -rf .oep2-workspace/
 	find . -name '__pycache__' -exec rm -rf {} +
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
