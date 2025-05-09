@@ -30,6 +30,9 @@
   color: "d93f0b"  # scarlet red...
   description: "Code that relates to a specific user and should be refactored and removed."
 
+- name: "mao-onboarding"
+  color: "FFF991"  # Axim yellow
+  description: "Reviewing this will help onboard devs from an Axim mission-aligned organization (MAO)."
 
 ### LABELS INDICATING HOW ISSUES CAN BE ENAGAGED WITH.
 
