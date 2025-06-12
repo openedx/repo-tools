@@ -70,10 +70,10 @@ def main(directories=None, ignore_paths=None):
                 url = request_package_info_url(req.name)
                 if url is not None:
                     home_page.add(url)
-                    
+
     packages_urls = set(urls_in_orgs(home_page, SECOND_PARTY_ORGS))
-    
-    if diff:= packages_urls.symmetric_difference(set(ignore_paths)):
+
+    if diff := packages_urls - set(ignore_paths):
             print("The following packages are from 2nd party orgs and should not be added as a core dependency, they can be added as an optional dependency operationally or they can be transferred to the openedx org before they are included:")
             print("\n".join(diff))
             exit(1)
