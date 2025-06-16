@@ -34,6 +34,28 @@
   color: "FFF991"  # Axim yellow
   description: "Reviewing this will help onboard devs from an Axim mission-aligned organization (MAO)."
 
+### LABELS USED TO TRACK NAMED RELEASE DELIVERIES
+
+- name: "redwood"
+  color: "f3411b"  # red
+  description: "Released in Redwood"
+
+- name: "sumac"
+  color: "f1ab45"  # light brown
+  description: "Released in Sumac"
+
+- name: "teak"
+  color: "0997ed"  # blue
+  description: "Released in Teak"
+
+- name: "ulmo"
+  color: "51b219"  # green
+  description: "Released in Ulmo"
+
+- name: "verawood"
+  color: "ca38f9"  # purple
+  description: "Released in Verawood"
+
 ### LABELS INDICATING HOW ISSUES CAN BE ENAGAGED WITH.
 
 - name: "good first issue"
