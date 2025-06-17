@@ -373,7 +373,6 @@ https://github.com/edx/edx-name-affirmation
 https://github.com/edx/frontend-component-footer-edx
 https://github.com/edx/getsmarter-api-clients
 https://github.com/edx/learner-pathway-progress
-https://github.com/edx/new-relic-source-map-webpack-plugin
 https://github.com/edx/outcome-surveys
 https://github.com/edx/ux-pattern-library
 https://github.com/mitodl/edx-sga
