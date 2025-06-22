@@ -6,16 +6,16 @@
 #
 appdirs==1.4.4
     # via
-    #   -r requirements/base.in
+    #   -r base.in
     #   fissix
 attrs==23.2.0
     # via bowler
 backports-csv==1.0.7
-    # via -r requirements/base.in
+    # via -r base.in
 bowler==0.9.0
-    # via -r requirements/base.in
+    # via -r base.in
 cachecontrol==0.14.0
-    # via -r requirements/base.in
+    # via -r base.in
 cachetools==5.4.0
     # via tox
 certifi==2024.7.4
@@ -28,12 +28,12 @@ charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via
-    #   -r requirements/base.in
+    #   -r base.in
     #   bowler
     #   moreorless
 colorama==0.4.6
     # via tox
-cryptography==43.0.0
+cryptography==43.0.1
     # via pyjwt
 distlib==0.3.8
     # via virtualenv
@@ -50,19 +50,19 @@ fissix==24.4.24
 gitdb==4.0.11
     # via gitpython
 github3-py==4.0.1
-    # via -r requirements/base.in
+    # via -r base.in
 gitpython==3.1.43
-    # via -r requirements/base.in
+    # via -r base.in
 idna==3.7
     # via requests
 iniconfig==2.0.0
     # via pytest
 lazy==1.6
-    # via -r requirements/base.in
+    # via -r base.in
 lockfile==0.12.2
-    # via -r requirements/base.in
+    # via -r base.in
 more-itertools==10.3.0
-    # via -r requirements/base.in
+    # via -r base.in
 moreorless==0.4.0
     # via bowler
 msgpack==1.0.8
@@ -75,7 +75,7 @@ packaging==24.1
 path==16.14.0
     # via path-py
 path-py==12.5.0
-    # via -r requirements/base.in
+    # via -r base.in
 platformdirs==4.2.2
     # via
     #   tox
@@ -92,28 +92,28 @@ pyproject-api==1.7.1
     # via tox
 pytest==8.3.1
     # via
-    #   -r requirements/base.in
+    #   -r base.in
     #   pytest-logging
     #   pytest-xdist
 pytest-logging==2015.11.4
-    # via -r requirements/base.in
+    # via -r base.in
 pytest-xdist==3.6.1
-    # via -r requirements/base.in
+    # via -r base.in
 python-dateutil==2.9.0.post0
     # via
-    #   -r requirements/base.in
+    #   -r base.in
     #   github3-py
 python-dotenv==1.0.1
-    # via -r requirements/base.in
+    # via -r base.in
 pyyaml==6.0.1
-    # via -r requirements/base.in
+    # via -r base.in
 requests==2.32.3
     # via
-    #   -r requirements/base.in
+    #   -r base.in
     #   cachecontrol
     #   github3-py
 ruamel-yaml==0.18.6
-    # via -r requirements/base.in
+    # via -r base.in
 ruamel-yaml-clib==0.2.8
     # via ruamel-yaml
 six==1.16.0
@@ -121,19 +121,19 @@ six==1.16.0
 smmap==5.0.1
     # via gitdb
 statistics==1.0.3.5
-    # via -r requirements/base.in
+    # via -r base.in
 tox==4.16.0
-    # via -r requirements/base.in
+    # via -r base.in
 tqdm==4.66.4
-    # via -r requirements/base.in
+    # via -r base.in
 uritemplate==4.1.1
     # via
-    #   -r requirements/base.in
+    #   -r base.in
     #   github3-py
 urllib3==2.2.2
     # via requests
 urlobject==2.4.3
-    # via -r requirements/base.in
+    # via -r base.in
 virtualenv==20.26.3
     # via tox
 volatile==2.1.0
