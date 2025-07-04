@@ -10,6 +10,7 @@ import io
 from itertools import chain
 import click
 from ghapi.all import GhApi, paged
+import requests
 
 
 @click.command()
@@ -64,8 +65,33 @@ def main(org, _github_token, csv_repo, csv_path):
     # Find all the people that are in the org but not in sales force.
     extra_org_users = set(current_org_users) - set(csv_github_users)
 
+    # Exclude any users that are only in the triage team or are not in any teams
+    extra_org_users_not_triage = []
+    for user in extra_org_users:
+        json = { 'query' : f"""{{
+                    organization(login:"openedx"){{
+                        teams(userLogins:"{user}",first:10) {{
+                            nodes {{name}}
+                            totalCount
+                        }}
+                    }}
+                }}"""}
+        headers = {'Authorization': f'token {_github_token}'}
+
+        r = requests.post(url='https://api.github.com/graphql', json=json, headers=headers)
+
+        result = r.json()
+        team_data = result['data']['organization']['teams']
+        if team_data['totalCount'] > 1:
+            team_list = []
+            for team in team_data['nodes']:
+                team_list.append(team['name'])
+            extra_org_users_not_triage.append(f"{user} - teams: {team_list}")
+        elif team_data['totalCount'] == 1 and team_data['nodes'][0]['name'] != 'openedx-triage':
+            extra_org_users_not_triage.append(f"{user} - teams: ['{team_data['nodes'][0]['name']}']")
+
     # List the users we need to investigate
-    print("\n".join(sorted(extra_org_users)))
+    print("\n" + "\n".join(extra_org_users_not_triage))
 
 
 if __name__ == "__main__":
