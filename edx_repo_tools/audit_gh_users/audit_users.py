@@ -65,7 +65,7 @@ def main(org, _github_token, csv_repo, csv_path):
     # Find all the people that are in the org but not in sales force.
     extra_org_users = set(current_org_users) - set(csv_github_users)
 
-    # Exclude any users that are only in the triage team or are not in any teams
+    # Find users who are in multiple teams or a single non-triage team
     extra_org_users_not_triage = []
     for user in extra_org_users:
         json = { 'query' : f"""{{
@@ -91,7 +91,7 @@ def main(org, _github_token, csv_repo, csv_path):
             extra_org_users_not_triage.append(f"{user} - teams: ['{team_data['nodes'][0]['name']}']")
 
     # List the users we need to investigate
-    print("\n" + "\n".join(extra_org_users_not_triage))
+    print("\n" + "\n".join(sorted(extra_org_users_not_triage)))
 
 
 if __name__ == "__main__":
