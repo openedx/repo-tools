@@ -92,6 +92,7 @@ def main(org, _github_token, csv_repo, csv_path):
             extra_org_users_not_triage.append(f"{user} - teams: ['{team_data['nodes'][0]['name']}']")
 
     # List the users we need to investigate
+    print("\n" + "Users to investigate (first 10 teams listed):")
     print("\n" + "\n".join(sorted(extra_org_users_not_triage)))
 
 
