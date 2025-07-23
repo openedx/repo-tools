@@ -66,6 +66,7 @@ def main(org, _github_token, csv_repo, csv_path):
     extra_org_users = set(current_org_users) - set(csv_github_users)
 
     # Find users who are in multiple teams or a single non-triage team
+    # Using the GraphQL API because there is no good GitHub rest API for this.
     extra_org_users_not_triage = []
     for user in extra_org_users:
         json = { 'query' : f"""{{
