@@ -406,11 +406,11 @@ CURRENT = {
     "Open edX": parse_version_name(versions['OPENEDX_COMMON_VERSION']),
     "Python": "3.11",
     "Django": "4.2",
-    "Ubuntu": "20.04",
-    "Node": "18.x",
+    "Ubuntu": "24.04",
+    "Node": "20",
     "Mongo": parse_version_number(versions['DOCKER_IMAGE_MONGODB']),
     "MySQL": parse_version_number(versions['DOCKER_IMAGE_MYSQL']),
-    "Elasticsearch": parse_version_number(versions['DOCKER_IMAGE_ELASTICSEARCH']),
+    "Elasticsearch": "7.17",
     "Redis": parse_version_number(versions['DOCKER_IMAGE_REDIS']),
     "Ruby": "3.3",
 }
@@ -419,7 +419,7 @@ EDX = {
     "Python": "3.11",
     "Django": "4.2",
     "Ubuntu": "20.04",
-    "Node": "18.x",
+    "Node": "18",
     "Mongo": "4.2",
     "MySQL": "5.7",
     "Elasticsearch": "7.10",
@@ -456,9 +456,12 @@ names = [
     ("Quince", 2023, 12),
     ("Redwood", 2024, 6),
     ("Sumac", 2024, 12),
+    ("Teak", 2025, 6),
+    ("Ulmo", 2025, 12),
+    ("Verawood", 2026, 6),
     ]
 # https://www.treenames.net/common_tree_names.html
-future = ["Teak", "Ulmo", "Verawood"] + list("WXYZ")
+future = list("WXYZ")
 target_length = 6 # months per release
 
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
@@ -595,6 +598,7 @@ node_releases = [
     ('18', 2022, 4, 2025, 4),
     ('20', 2023, 4, 2026, 4),
     ('22', 2024, 4, 2027, 4),
+    ('24', 2026, 10, 2028, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
     eyear, emonth = validate_version_date("NodeJS", name, eyear, emonth)
@@ -669,8 +673,9 @@ es_releases = [
     ('7.11', 2021, 2, 2022, 8),
     ('7.12', 2021, 3, 2022, 9),
     ('7.13', 2021, 5, 2022, 11),
-    ('7.17', 2022, 2, 2025, 1),
-    ('8.15', 2022, 2, 2026, 2),
+    ('7.17', 2022, 2, 2026, 1),
+    ('8.15', 2022, 2, 2027, 7),
+    ('9.1', 2025, 4, 2028, 7),
 ]
 for name, syear, smonth, eyear, emonth in es_releases:
     eyear, emonth = validate_version_date("ElasticSearch", name, eyear, emonth)
@@ -692,7 +697,8 @@ redis_releases = [
     ('6.2', 2021, 8, 2024, 8),
     ('7.0', 2022, 4, 2024, 7),
     ('7.2', 2023, 8, 2024, 8),
-    ('7.4', 2024, 7, 2025, 7),
+    ('7.4', 2024, 7, 2026, 11),
+    ('8.0', 2025, 5, 2028, 11),
 ]
 for name, syear, smonth, eyear, emonth in redis_releases:
     eyear, emonth = validate_version_date("Redis", name, eyear, emonth)
