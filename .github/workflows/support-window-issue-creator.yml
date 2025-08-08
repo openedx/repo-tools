@@ -14,7 +14,6 @@ jobs:
         uses: imjohnbo/issue-bot@v3
         with:
           assignees: "usamasadiq"
-          labels: "arbi-bom"
           close-previous: true
           title: "Support Window Update"
           body: |
