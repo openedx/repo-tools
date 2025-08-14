@@ -40,7 +40,7 @@ chardet==5.2.0
     # via
     #   -r requirements/base.txt
     #   tox
-charset-normalizer==3.4.2
+charset-normalizer==3.4.3
     # via
     #   -r requirements/base.txt
     #   requests
@@ -135,7 +135,7 @@ path==17.1.1
     #   path-py
 path-py==12.5.0
     # via -r requirements/base.txt
-pbr==6.1.1
+pbr==7.0.0
     # via stevedore
 pip-tools==7.5.0
     # via -r requirements/development.in
@@ -160,7 +160,7 @@ pyjwt[crypto]==2.10.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==3.3.7
+pylint==3.3.8
     # via
     #   edx-lint
     #   pylint-celery
@@ -207,7 +207,7 @@ requests==2.32.4
     #   cachecontrol
     #   github3-py
     #   responses
-responses==0.25.7
+responses==0.25.8
     # via -r requirements/development.in
 ruamel-yaml==0.18.14
     # via -r requirements/base.txt
@@ -247,7 +247,7 @@ urllib3==2.5.0
     #   responses
 urlobject==3.0.0
     # via -r requirements/base.txt
-virtualenv==20.33.1
+virtualenv==20.34.0
     # via
     #   -r requirements/base.txt
     #   tox
