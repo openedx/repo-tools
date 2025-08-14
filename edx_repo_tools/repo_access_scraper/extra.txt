@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-greenlet==3.2.3
+greenlet==3.2.4
     # via
     #   -c edx_repo_tools/repo_access_scraper/../../requirements/constraints.txt
     #   playwright
