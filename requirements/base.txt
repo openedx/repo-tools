@@ -24,7 +24,7 @@ cffi==1.17.1
     # via cryptography
 chardet==5.2.0
     # via tox
-charset-normalizer==3.4.2
+charset-normalizer==3.4.3
     # via requests
 click==8.2.1
     # via
@@ -39,7 +39,7 @@ distlib==0.4.0
     # via virtualenv
 docutils==0.22
     # via statistics
-filelock==3.18.0
+filelock==3.19.1
     # via
     #   tox
     #   virtualenv
@@ -91,12 +91,12 @@ python-dotenv==1.1.1
     # via -r requirements/base.in
 pyyaml==6.0.2
     # via -r requirements/base.in
-requests==2.32.4
+requests==2.32.5
     # via
     #   -r requirements/base.in
     #   cachecontrol
     #   github3-py
-ruamel-yaml==0.18.14
+ruamel-yaml==0.18.15
     # via -r requirements/base.in
 ruamel-yaml-clib==0.2.12
     # via ruamel-yaml
@@ -118,7 +118,7 @@ urllib3==2.5.0
     # via requests
 urlobject==3.0.0
     # via -r requirements/base.in
-virtualenv==20.33.1
+virtualenv==20.34.0
     # via tox
 volatile==2.1.0
     # via bowler
