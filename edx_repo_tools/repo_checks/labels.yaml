@@ -177,7 +177,7 @@
 
 # Used by review teams to indicate that a PR or Issue specifically needs the attention of the maintainers
 # and can't be handled by CCs.  The PR Triage team is not expected to use this label. It is expecetd to
-# be used by teams that coordinate upgrades such as the Arbi-BOM team or by triagers at the team level who
+# be used by teams that coordinate upgrades or by triagers at the team level who
 # filter work that needs to be done by the maintaining team vs CCs.
 - name: "needs maintainer attention"
   color: "ebb134" # orange
