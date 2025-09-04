@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-alembic==1.16.4
+alembic==1.16.5
     # via dataset
 banal==1.0.6
     # via dataset
@@ -14,19 +14,19 @@ cycler==0.12.1
     # via matplotlib
 dataset==1.6.2
     # via -r edx_repo_tools/conventional_commits/extra.in
-fonttools==4.59.0
+fonttools==4.59.2
     # via matplotlib
-greenlet==3.2.3
+greenlet==3.2.4
     # via
     #   -c edx_repo_tools/conventional_commits/../../requirements/constraints.txt
     #   sqlalchemy
-kiwisolver==1.4.8
+kiwisolver==1.4.9
     # via matplotlib
 mako==1.3.10
     # via alembic
 markupsafe==3.0.2
     # via mako
-matplotlib==3.10.5
+matplotlib==3.10.6
     # via -r edx_repo_tools/conventional_commits/extra.in
 numpy==2.3.2
     # via
@@ -35,7 +35,7 @@ numpy==2.3.2
     #   pandas
 packaging==25.0
     # via matplotlib
-pandas==2.3.1
+pandas==2.3.2
     # via -r edx_repo_tools/conventional_commits/extra.in
 pillow==11.3.0
     # via matplotlib
@@ -53,7 +53,7 @@ sqlalchemy==1.4.54
     # via
     #   alembic
     #   dataset
-typing-extensions==4.14.1
+typing-extensions==4.15.0
     # via alembic
 tzdata==2025.2
     # via pandas
