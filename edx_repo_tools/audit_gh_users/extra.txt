@@ -6,7 +6,7 @@
 #
 click==8.2.1
     # via -r edx_repo_tools/audit_gh_users/extra.in
-fastcore==1.8.7
+fastcore==1.8.8
     # via ghapi
 ghapi==1.0.6
     # via -r edx_repo_tools/audit_gh_users/extra.in
