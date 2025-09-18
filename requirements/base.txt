@@ -16,15 +16,15 @@ bowler==0.9.0
     # via -r requirements/base.in
 cachecontrol==0.14.3
     # via -r requirements/base.in
-cachetools==6.1.0
+cachetools==6.2.0
     # via tox
 certifi==2025.8.3
     # via requests
-cffi==1.17.1
+cffi==2.0.0
     # via cryptography
 chardet==5.2.0
     # via tox
-charset-normalizer==3.4.2
+charset-normalizer==3.4.3
     # via requests
 click==8.2.1
     # via
@@ -33,13 +33,13 @@ click==8.2.1
     #   moreorless
 colorama==0.4.6
     # via tox
-cryptography==45.0.6
+cryptography==46.0.1
     # via pyjwt
 distlib==0.4.0
     # via virtualenv
-docutils==0.22
+docutils==0.22.1
     # via statistics
-filelock==3.18.0
+filelock==3.19.1
     # via
     #   tox
     #   virtualenv
@@ -57,7 +57,7 @@ lazy==1.6
     # via -r requirements/base.in
 lockfile==0.12.2
     # via -r requirements/base.in
-more-itertools==10.7.0
+more-itertools==10.8.0
     # via -r requirements/base.in
 moreorless==0.5.0
     # via bowler
@@ -71,13 +71,13 @@ path==17.1.1
     # via path-py
 path-py==12.5.0
     # via -r requirements/base.in
-platformdirs==4.3.8
+platformdirs==4.4.0
     # via
     #   tox
     #   virtualenv
 pluggy==1.6.0
     # via tox
-pycparser==2.22
+pycparser==2.23
     # via cffi
 pyjwt[crypto]==2.10.1
     # via github3-py
@@ -91,12 +91,12 @@ python-dotenv==1.1.1
     # via -r requirements/base.in
 pyyaml==6.0.2
     # via -r requirements/base.in
-requests==2.32.4
+requests==2.32.5
     # via
     #   -r requirements/base.in
     #   cachecontrol
     #   github3-py
-ruamel-yaml==0.18.14
+ruamel-yaml==0.18.15
     # via -r requirements/base.in
 ruamel-yaml-clib==0.2.12
     # via ruamel-yaml
@@ -106,7 +106,7 @@ smmap==5.0.2
     # via gitdb
 statistics==1.0.3.5
     # via -r requirements/base.in
-tox==4.28.4
+tox==4.30.2
     # via -r requirements/base.in
 tqdm==4.67.1
     # via -r requirements/base.in
@@ -118,7 +118,7 @@ urllib3==2.5.0
     # via requests
 urlobject==3.0.0
     # via -r requirements/base.in
-virtualenv==20.33.1
+virtualenv==20.34.0
     # via tox
 volatile==2.1.0
     # via bowler
