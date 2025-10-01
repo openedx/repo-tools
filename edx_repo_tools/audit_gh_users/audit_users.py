@@ -68,33 +68,38 @@ def main(org, _github_token, csv_repo, csv_path):
     # Find users who are in multiple teams or a single non-triage team
     # Using the GraphQL API because there is no good GitHub rest API for this.
     extra_org_users_not_triage = []
-    for user in extra_org_users:
-        json = { 'query' : f"""{{
-                    organization(login:"openedx"){{
-                        teams(userLogins:"{user}",first:10) {{
-                            nodes {{name}}
-                            totalCount
+    try:
+        for user in extra_org_users:
+            json = { 'query' : f"""{{
+                        organization(login:"openedx"){{
+                            teams(userLogins:"{user}",first:10) {{
+                                nodes {{name}}
+                                totalCount
+                            }}
                         }}
-                    }}
-                }}"""}
-        headers = {'Authorization': f'token {_github_token}'}
+                    }}"""}
+            headers = {'Authorization': f'token {_github_token}'}
 
-        r = requests.post(url='https://api.github.com/graphql', json=json, headers=headers)
+            r = requests.post(url='https://api.github.com/graphql', json=json, headers=headers)
 
-        result = r.json()
-        team_data = result['data']['organization']['teams']
-        if team_data['totalCount'] > 1:
-            team_list = []
-            for team in team_data['nodes']:
-                team_list.append(team['name'])
-            extra_org_users_not_triage.append(f"{user} - teams: {team_list}")
-        elif team_data['totalCount'] == 1 and team_data['nodes'][0]['name'] != 'openedx-triage':
-            extra_org_users_not_triage.append(f"{user} - teams: ['{team_data['nodes'][0]['name']}']")
+            result = r.json()
+            team_data = result['data']['organization']['teams']
+            if team_data['totalCount'] > 1:
+                team_list = []
+                for team in team_data['nodes']:
+                    team_list.append(team['name'])
+                extra_org_users_not_triage.append(f"{user} - teams: {team_list}")
+            elif team_data['totalCount'] == 1 and team_data['nodes'][0]['name'] != 'openedx-triage':
+                extra_org_users_not_triage.append(f"{user} - teams: ['{team_data['nodes'][0]['name']}']")
+    except:
+        pass
 
     # List the users we need to investigate
-    print("\n" + "Users to investigate (first 10 teams listed):")
-    print("\n" + "\n".join(sorted(extra_org_users_not_triage)))
-
+    if extra_org_users_not_triage:
+        print("\n" + "Users to investigate (first 10 teams listed):")
+        print("\n" + "\n".join(sorted(extra_org_users_not_triage)))
+    else:
+        print("\n" + "\n".join(sorted(extra_org_users)))
 
 if __name__ == "__main__":
     main()  # pylint: disable=no-value-for-parameter
