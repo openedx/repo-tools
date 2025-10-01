@@ -18,8 +18,6 @@ jobs:
           title: "Support Window Update"
           body: |
             ### Description
-            Copy the link of the current issue and add it to the [Arbi-bom GitHub Project](https://github.com/orgs/edx/projects/12).
-
             Follow the steps mentioned in the `repo_tools/barcalendar.py` and check following points for the [Support Window Sheet](https://docs.google.com/spreadsheets/u/2/d/11DheEtMDGrbA9hsUvZ2SEd4Cc8CaC4mAfoV8SVaLBGI/edit#gid=195838733) update.
             For reference, use the respective end of life dates from [endoflife.date](https://endoflife.date/).
             
