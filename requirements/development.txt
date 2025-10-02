@@ -24,7 +24,7 @@ build==1.3.0
     # via pip-tools
 cachecontrol==0.14.3
     # via -r requirements/base.txt
-cachetools==6.1.0
+cachetools==6.2.0
     # via
     #   -r requirements/base.txt
     #   tox
@@ -32,7 +32,7 @@ certifi==2025.8.3
     # via
     #   -r requirements/base.txt
     #   requests
-cffi==1.17.1
+cffi==2.0.0
     # via
     #   -r requirements/base.txt
     #   cryptography
@@ -40,11 +40,11 @@ chardet==5.2.0
     # via
     #   -r requirements/base.txt
     #   tox
-charset-normalizer==3.4.2
+charset-normalizer==3.4.3
     # via
     #   -r requirements/base.txt
     #   requests
-click==8.2.1
+click==8.3.0
     # via
     #   -r requirements/base.txt
     #   bowler
@@ -61,7 +61,7 @@ colorama==0.4.6
     # via
     #   -r requirements/base.txt
     #   tox
-cryptography==45.0.6
+cryptography==46.0.2
     # via
     #   -r requirements/base.txt
     #   pyjwt
@@ -71,13 +71,13 @@ distlib==0.4.0
     # via
     #   -r requirements/base.txt
     #   virtualenv
-docutils==0.22
+docutils==0.22.2
     # via
     #   -r requirements/base.txt
     #   statistics
 edx-lint==5.6.0
     # via -r requirements/development.in
-filelock==3.18.0
+filelock==3.19.1
     # via
     #   -r requirements/base.txt
     #   tox
@@ -100,7 +100,7 @@ idna==3.10
     #   requests
 iniconfig==2.1.0
     # via pytest
-isort==6.0.1
+isort==6.1.0
     # via pylint
 jinja2==3.1.6
     # via code-annotations
@@ -108,11 +108,11 @@ lazy==1.6
     # via -r requirements/base.txt
 lockfile==0.12.2
     # via -r requirements/base.txt
-markupsafe==3.0.2
+markupsafe==3.0.3
     # via jinja2
 mccabe==0.7.0
     # via pylint
-more-itertools==10.7.0
+more-itertools==10.8.0
     # via -r requirements/base.txt
 moreorless==0.5.0
     # via
@@ -135,11 +135,9 @@ path==17.1.1
     #   path-py
 path-py==12.5.0
     # via -r requirements/base.txt
-pbr==6.1.1
-    # via stevedore
 pip-tools==7.5.0
     # via -r requirements/development.in
-platformdirs==4.3.8
+platformdirs==4.4.0
     # via
     #   -r requirements/base.txt
     #   pylint
@@ -150,7 +148,7 @@ pluggy==1.6.0
     #   -r requirements/base.txt
     #   pytest
     #   tox
-pycparser==2.22
+pycparser==2.23
     # via
     #   -r requirements/base.txt
     #   cffi
@@ -160,7 +158,7 @@ pyjwt[crypto]==2.10.1
     # via
     #   -r requirements/base.txt
     #   github3-py
-pylint==3.3.7
+pylint==3.3.8
     # via
     #   edx-lint
     #   pylint-celery
@@ -182,11 +180,11 @@ pyproject-hooks==1.2.0
     # via
     #   build
     #   pip-tools
-pytest==8.4.1
+pytest==8.4.2
     # via
     #   -r requirements/development.in
     #   pytest-mock
-pytest-mock==3.14.1
+pytest-mock==3.15.1
     # via -r requirements/development.in
 python-dateutil==2.9.0.post0
     # via
@@ -196,22 +194,22 @@ python-dotenv==1.1.1
     # via -r requirements/base.txt
 python-slugify==8.0.4
     # via code-annotations
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via
     #   -r requirements/base.txt
     #   code-annotations
     #   responses
-requests==2.32.4
+requests==2.32.5
     # via
     #   -r requirements/base.txt
     #   cachecontrol
     #   github3-py
     #   responses
-responses==0.25.7
+responses==0.25.8
     # via -r requirements/development.in
-ruamel-yaml==0.18.14
+ruamel-yaml==0.18.15
     # via -r requirements/base.txt
-ruamel-yaml-clib==0.2.12
+ruamel-yaml-clib==0.2.14
     # via
     #   -r requirements/base.txt
     #   ruamel-yaml
@@ -226,13 +224,13 @@ smmap==5.0.2
     #   gitdb
 statistics==1.0.3.5
     # via -r requirements/base.txt
-stevedore==5.4.1
+stevedore==5.5.0
     # via code-annotations
 text-unidecode==1.3
     # via python-slugify
 tomlkit==0.13.3
     # via pylint
-tox==4.28.4
+tox==4.30.2
     # via -r requirements/base.txt
 tqdm==4.67.1
     # via -r requirements/base.txt
@@ -247,7 +245,7 @@ urllib3==2.5.0
     #   responses
 urlobject==3.0.0
     # via -r requirements/base.txt
-virtualenv==20.33.1
+virtualenv==20.34.0
     # via
     #   -r requirements/base.txt
     #   tox
