@@ -413,7 +413,6 @@ CURRENT = {
     "MySQL": parse_version_number(versions['DOCKER_IMAGE_MYSQL']),
     "Elasticsearch": "7.17",
     "Redis": parse_version_number(versions['DOCKER_IMAGE_REDIS']),
-    "Ruby": "3.3",
 }
 
 EDX = {
@@ -426,7 +425,6 @@ EDX = {
     "MySQL": "5.7",
     "Elasticsearch": "7.10",
     "Redis": "6.2",
-    "Ruby": "3.0",
 }
 
 
@@ -737,32 +735,6 @@ for name, syear, smonth, eyear, emonth in redis_releases:
         text_color="white",
         current=(name==CURRENT["Redis"]),
         alternate=(name==EDX["Redis"]),
-    )
-cal.gap_line()
-
-# ruby
-cal.section_note("https://www.ruby-lang.org/en/downloads/branches/")
-ruby_releases = [
-    #('2.3', 2015, 12, 2019, 3),
-    #('2.4', 2016, 12, 2020, 3),
-    #('2.5', 2017, 12, 2021, 3),
-    #('2.6', 2018, 12, 2022, 3),
-    ('2.7', 2019, 12, 2023, 3),
-    ('3.0', 2020, 12, 2024, 3),
-    ('3.1', 2021, 12, 2025, 3),
-    ('3.2', 2022, 12, 2026, 3),
-    ('3.3', 2023, 12, 2027, 3),
-]
-for name, syear, smonth, eyear, emonth, *more in ruby_releases:
-    eyear, emonth = validate_version_date("Ruby", name, eyear, emonth)
-    cal.bar(
-        f"Ruby {name}",
-        start=(syear, smonth),
-        end=(eyear, emonth),
-        color="#DE3F24",
-        current=(name==CURRENT["Ruby"]),
-        alternate=(name==EDX["Ruby"]),
-        note=(more[0] if more else None),
     )
 cal.gap_line()
 

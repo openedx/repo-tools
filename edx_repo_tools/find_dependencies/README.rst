@@ -79,7 +79,6 @@ It reports on its progress and failures, like this::
     Repo URL is UNKNOWN in files/pyjwkest-1.4.2.tar.gz
     Examining tar.gz     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00 8/8
     Getting real URLs    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00 93/93
-    -- /src/ghorg/openedx/cs_comments_service ----------
     -- /src/ghorg/openedx/devstack ----------
     Checking Python dependencies
     Creating venv
