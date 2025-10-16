@@ -415,19 +415,6 @@ CURRENT = {
     "Redis": parse_version_number(versions['DOCKER_IMAGE_REDIS']),
 }
 
-EDX = {
-    "Python": "3.11",
-    "Django": "4.2",
-    "Ubuntu": "20.04",
-    "Node": "18",
-    "React": "16",
-    "Mongo": "4.2",
-    "MySQL": "5.7",
-    "Elasticsearch": "7.10",
-    "Redis": "6.2",
-}
-
-
 cal = GsheetCalendar(START_YEAR, END_YEAR)
 cal.years_months()
 
@@ -529,7 +516,6 @@ for name, year, month, lts, *more in django_releases:
         length=length,
         color=color,
         current=(name==CURRENT["Django"]),
-        alternate=(name==EDX["Django"]),
         note=(more[0] if more else None),
     )
 cal.gap_line()
@@ -556,7 +542,6 @@ for name, syear, smonth, eyear, emonth in python_releases:
         end=(eyear, emonth),
         color="#ffd545",
         current=(name==CURRENT["Python"]),
-        alternate=(name==EDX["Python"]),
     )
 cal.gap_line()
 
@@ -588,7 +573,6 @@ for year, month in itertools.product(range(START_YEAR % 100, END_YEAR % 100), [4
         color=color,
         text_color="white",
         current=(name==CURRENT["Ubuntu"]),
-        alternate=(name==EDX["Ubuntu"]),
     )
 cal.gap_line()
 
@@ -615,7 +599,6 @@ for name, syear, smonth, eyear, emonth in node_releases:
         color="#2f6c1b",
         text_color="white",
         current=(name==CURRENT["Node"]),
-        alternate=(name==EDX["Node"]),
     )
 cal.gap_line()
 
@@ -638,7 +621,6 @@ for name, syear, smonth, eyear, emonth in react_releases:
         end=(eyear, emonth),
         color="#61DAFB",
         current=(name==CURRENT["React"]),
-        alternate=(name==EDX["React"]),
     )
 cal.gap_line()
 
@@ -664,7 +646,6 @@ for name, syear, smonth, eyear, emonth in mongo_releases:
         end=(eyear, emonth),
         color="#4da65a",
         current=(name==CURRENT["Mongo"]),
-        alternate=(name==EDX["Mongo"]),
     )
 cal.gap_line()
 
@@ -686,7 +667,6 @@ for name, syear, smonth, eyear, emonth in mysql_releases:
         end=(eyear, emonth),
         color="#b9dc48",
         current=(name==CURRENT["MySQL"]),
-        alternate=(name==EDX["MySQL"]),
     )
 cal.gap_line()
 
@@ -715,7 +695,6 @@ for name, syear, smonth, eyear, emonth in es_releases:
         end=(eyear, emonth),
         color="#4595ba",
         current=(name==CURRENT["Elasticsearch"]),
-        alternate=(name==EDX["Elasticsearch"]),
     )
 cal.gap_line()
 
@@ -740,7 +719,6 @@ for name, syear, smonth, eyear, emonth in redis_releases:
         color="#963029",
         text_color="white",
         current=(name==CURRENT["Redis"]),
-        alternate=(name==EDX["Redis"]),
     )
 cal.gap_line()
 
