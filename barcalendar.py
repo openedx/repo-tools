@@ -605,11 +605,15 @@ cal.gap_line()
 # React releases
 cal.section_note("https://endoflife.date/react")
 react_releases = [
+    # The EOL dates below are for active support not for security support which
+    # React is currently maintaining for all versions listed below.
+    # Starting with verison 18, we display the security support in the calendar
+    # leave the active suppport date in a comment here for reference.
     # (Version, Start_Year, Start_Month, End_Year, End_Month)
     # ('15', 2016, 4, 2020, 10),   # Released April 2016, EOL October 2020
     # ('16', 2017, 9, 2020, 10),   # Released September 2017, EOL October 2020
     # ('17', 2020, 10, 2022, 3),   # Released October 2020, EOL March 2022
-    ('18', 2022, 3, 2024, 12),   # Released March 2022, EOL December 2024
+    ('18', 2022, 3, 3000, 1),   # Released March 2022, EOL December 2024
     ('19', 2024, 12, 3000, 1),   # Released December 2024, current major version
 ]
 for name, syear, smonth, eyear, emonth in react_releases:
