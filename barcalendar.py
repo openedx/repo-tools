@@ -408,7 +408,7 @@ CURRENT = {
     "Django": "5.2",
     "Ubuntu": "24.04",
     "Node": "24",
-    "React": "18",
+    "React": "16",
     "Mongo": parse_version_number(versions['DOCKER_IMAGE_MONGODB']),
     "MySQL": parse_version_number(versions['DOCKER_IMAGE_MYSQL']),
     "Elasticsearch": "7.17",
