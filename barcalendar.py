@@ -395,8 +395,8 @@ eol_logger = setup_custom_logging()
 # ==== Editable content ====
 
 # Global Options
-START_YEAR = 2020
-END_YEAR = 2027
+START_YEAR = 2022
+END_YEAR = 2030
 LTS_ONLY = True
 
 versions = get_defaults_from_tutor()
@@ -405,28 +405,15 @@ versions = get_defaults_from_tutor()
 CURRENT = {
     "Open edX": parse_version_name(versions['OPENEDX_COMMON_VERSION']),
     "Python": "3.11",
-    "Django": "4.2",
+    "Django": "5.2",
     "Ubuntu": "24.04",
-    "Node": "20",
+    "Node": "24",
     "React": "16",
     "Mongo": parse_version_number(versions['DOCKER_IMAGE_MONGODB']),
     "MySQL": parse_version_number(versions['DOCKER_IMAGE_MYSQL']),
     "Elasticsearch": "7.17",
     "Redis": parse_version_number(versions['DOCKER_IMAGE_REDIS']),
 }
-
-EDX = {
-    "Python": "3.11",
-    "Django": "4.2",
-    "Ubuntu": "20.04",
-    "Node": "18",
-    "React": "16",
-    "Mongo": "4.2",
-    "MySQL": "5.7",
-    "Elasticsearch": "7.10",
-    "Redis": "6.2",
-}
-
 
 cal = GsheetCalendar(START_YEAR, END_YEAR)
 cal.years_months()
@@ -504,13 +491,17 @@ django_releases = [
     # ('2.2', 2019, 4, True),
     # ('3.0', 2020, 1, False),
     # ('3.1', 2020, 8, False),
-    ('3.2', 2021, 4, True),
-    ('4.0', 2021, 12, False),
-    ('4.1', 2022, 8, False),
+    # ('3.2', 2021, 4, True),
+    # ('4.0', 2021, 12, False),
+    # ('4.1', 2022, 8, False),
     ('4.2', 2023, 4, True),
     ('5.0', 2023, 12, False),
     ('5.1', 2024, 8, False),
-    ('5.2', 2025, 4, True, "Django 5.2 work is being tracked in https://github.com/openedx/public-engineering/issues/339"),
+    ('5.2', 2025, 4, True),
+    ('6.0', 2025, 12, False),
+    ('6.1', 2026, 8, False),
+    ('6.2', 2027, 4, True),
+    ('7.0', 2027, 12, False),
 
 ]
 for name, year, month, lts, *more in django_releases:
@@ -525,7 +516,6 @@ for name, year, month, lts, *more in django_releases:
         length=length,
         color=color,
         current=(name==CURRENT["Django"]),
-        alternate=(name==EDX["Django"]),
         note=(more[0] if more else None),
     )
 cal.gap_line()
@@ -537,11 +527,12 @@ python_releases = [
     # ('3.5', 2015, 9, 2020, 9),          # https://www.python.org/dev/peps/pep-0478/
     #('3.6', 2016, 12, 2021, 12),        # https://www.python.org/dev/peps/pep-0494/
     #('3.7', 2018, 6, 2023, 6),          # https://www.python.org/dev/peps/pep-0537/
-    ('3.8', 2019, 10, 2024, 10),        # https://www.python.org/dev/peps/pep-0569/
+    #('3.8', 2019, 10, 2024, 10),        # https://www.python.org/dev/peps/pep-0569/
     #('3.9', 2020, 10, 2025, 10),        # https://www.python.org/dev/peps/pep-0596/
-    ('3.10', 2021, 10, 2026, 10),       # https://www.python.org/dev/peps/pep-0619/
+    #('3.10', 2021, 10, 2026, 10),       # https://www.python.org/dev/peps/pep-0619/
     ('3.11', 2022, 10, 2027, 10),       # https://peps.python.org/pep-0664/
     ('3.12', 2023, 10, 2028, 10),       # https://peps.python.org/pep-0693/
+    ('3.14', 2025, 10, 2030, 10),       # https://peps.python.org/pep-0693/
 ]
 for name, syear, smonth, eyear, emonth in python_releases:
     eyear, emonth = validate_version_date("Python", name, eyear, emonth)
@@ -551,16 +542,15 @@ for name, syear, smonth, eyear, emonth in python_releases:
         end=(eyear, emonth),
         color="#ffd545",
         current=(name==CURRENT["Python"]),
-        alternate=(name==EDX["Python"]),
     )
 cal.gap_line()
 
 # Ubuntu releases
 ubuntu_nicks = {                        # https://wiki.ubuntu.com/Releases
     #'16.04': 'Xenial Xerus',
-    '18.04': 'Bionic Beaver',
-    '20.04': 'Focal Fossa',
-    '22.04': 'Jammy Jellyfish',
+    #'18.04': 'Bionic Beaver',
+    #'20.04': 'Focal Fossa',
+    #'22.04': 'Jammy Jellyfish',
     '24.04': 'Noble Numbat',
     '25.04': "Plucky Puffin",
 }
@@ -583,7 +573,6 @@ for year, month in itertools.product(range(START_YEAR % 100, END_YEAR % 100), [4
         color=color,
         text_color="white",
         current=(name==CURRENT["Ubuntu"]),
-        alternate=(name==EDX["Ubuntu"]),
     )
 cal.gap_line()
 
@@ -594,12 +583,12 @@ node_releases = [
     #('8.x', 2017, 5, 2019, 12),
     # ('10.x', 2018, 4, 2021, 4),
     # ('12.x', 2019, 4, 2022, 4),
-    ('14', 2020, 4, 2023, 4),
-    ('16', 2021, 4, 2023, 9),     # https://nodejs.org/en/blog/announcements/nodejs16-eol/
-    ('18', 2022, 4, 2025, 4),
-    ('20', 2023, 4, 2026, 4),
+    #('14', 2020, 4, 2023, 4),
+    #('16', 2021, 4, 2023, 9),     # https://nodejs.org/en/blog/announcements/nodejs16-eol/
+    #('18', 2022, 4, 2025, 4),
+    #('20', 2023, 4, 2026, 4),
     ('22', 2024, 4, 2027, 4),
-    ('24', 2026, 10, 2028, 4),
+    ('24', 2025, 5, 2028, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
     eyear, emonth = validate_version_date("NodeJS", name, eyear, emonth)
@@ -610,18 +599,21 @@ for name, syear, smonth, eyear, emonth in node_releases:
         color="#2f6c1b",
         text_color="white",
         current=(name==CURRENT["Node"]),
-        alternate=(name==EDX["Node"]),
     )
 cal.gap_line()
 
 # React releases
 cal.section_note("https://endoflife.date/react")
 react_releases = [
+    # The EOL dates below are for active support not for security support which
+    # React is currently maintaining for all versions listed below.
+    # Starting with verison 18, we display the security support in the calendar
+    # leave the active suppport date in a comment here for reference.
     # (Version, Start_Year, Start_Month, End_Year, End_Month)
-    ('15', 2016, 4, 2020, 10),   # Released April 2016, EOL October 2020
-    ('16', 2017, 9, 2020, 10),   # Released September 2017, EOL October 2020
-    ('17', 2020, 10, 2022, 3),   # Released October 2020, EOL March 2022
-    ('18', 2022, 3, 2024, 12),   # Released March 2022, EOL December 2024
+    # ('15', 2016, 4, 2020, 10),   # Released April 2016, EOL October 2020
+    # ('16', 2017, 9, 2020, 10),   # Released September 2017, EOL October 2020
+    # ('17', 2020, 10, 2022, 3),   # Released October 2020, EOL March 2022
+    ('18', 2022, 3, 3000, 1),   # Released March 2022, EOL December 2024
     ('19', 2024, 12, 3000, 1),   # Released December 2024, current major version
 ]
 for name, syear, smonth, eyear, emonth in react_releases:
@@ -633,7 +625,6 @@ for name, syear, smonth, eyear, emonth in react_releases:
         end=(eyear, emonth),
         color="#61DAFB",
         current=(name==CURRENT["React"]),
-        alternate=(name==EDX["React"]),
     )
 cal.gap_line()
 
@@ -645,10 +636,11 @@ mongo_releases = [
     #('3.4', 2016, 11, 2020, 1),
     #('3.6', 2017, 11, 2021, 4),
     # ('4.0', 2018, 6, 2022, 4),
-    ('4.2', 2019, 8, 2023, 4),
-    ('4.4', 2020, 7, 2024, 2),
-    ('5.0', 2021, 7, 2024, 10),
+    # ('4.2', 2019, 8, 2023, 4),
+    # ('4.4', 2020, 7, 2024, 2),
+    # ('5.0', 2021, 7, 2024, 10),
     ('7.0', 2023, 8, 2027, 8),
+    ('8.0', 2024, 10, 2029, 10),
 ]
 for name, syear, smonth, eyear, emonth in mongo_releases:
     eyear, emonth = validate_version_date("mongo", name, eyear, emonth)
@@ -658,19 +650,18 @@ for name, syear, smonth, eyear, emonth in mongo_releases:
         end=(eyear, emonth),
         color="#4da65a",
         current=(name==CURRENT["Mongo"]),
-        alternate=(name==EDX["Mongo"]),
     )
 cal.gap_line()
 
 # MySQL releases
 cal.section_note("https://endoflife.date/mysql")
 mysql_releases = [
-    ('5.6', 2013, 2, 2021, 2),
-    ('5.7', 2015, 10, 2023, 10),
-    ('8.0', 2018, 4, 2026, 4),
-    ('8.1', 2023, 6, 2023, 10),
+    # ('5.6', 2013, 2, 2021, 2),
+    # ('5.7', 2015, 10, 2023, 10),
+    # ('8.0', 2018, 4, 2026, 4),
+    # ('8.1', 2023, 6, 2023, 10),
     ('8.4', 2024, 4, 2032, 4),
-    ('9.0', 2024, 7, 2034, 10),
+    ('9.4', 2025, 7, 3000, 1),
 ]
 for name, syear, smonth, eyear, emonth in mysql_releases:
     eyear, emonth = validate_version_date("MySQL", name, eyear, emonth)
@@ -680,7 +671,6 @@ for name, syear, smonth, eyear, emonth in mysql_releases:
         end=(eyear, emonth),
         color="#b9dc48",
         current=(name==CURRENT["MySQL"]),
-        alternate=(name==EDX["MySQL"]),
     )
 cal.gap_line()
 
@@ -693,10 +683,10 @@ es_releases = [
     # ('5.6', 2017, 9, 2019, 3),
     # ('6.8', 2019, 5, 2020, 11),
     # ('7.8', 2020, 6, 2021, 12),
-    ('7.10', 2020, 11, 2022, 5),
-    ('7.11', 2021, 2, 2022, 8),
-    ('7.12', 2021, 3, 2022, 9),
-    ('7.13', 2021, 5, 2022, 11),
+    # ('7.10', 2020, 11, 2022, 5),
+    # ('7.11', 2021, 2, 2022, 8),
+    # ('7.12', 2021, 3, 2022, 9),
+    # ('7.13', 2021, 5, 2022, 11),
     ('7.17', 2022, 2, 2026, 1),
     ('8.17', 2024, 12, 2027, 7),
     ('9.0', 2025, 4, 2028, 10),
@@ -709,7 +699,6 @@ for name, syear, smonth, eyear, emonth in es_releases:
         end=(eyear, emonth),
         color="#4595ba",
         current=(name==CURRENT["Elasticsearch"]),
-        alternate=(name==EDX["Elasticsearch"]),
     )
 cal.gap_line()
 
@@ -717,13 +706,13 @@ cal.gap_line()
 cal.section_note("https://docs.redis.com/latest/rs/administering/product-lifecycle/#endoflife-schedule")
 # https://endoflife.date/redis
 redis_releases = [
-    ('6.0', 2020, 5, 2023, 8),
-    ('6.2', 2021, 8, 2024, 8),
-    ('7.0', 2022, 4, 2024, 7),
-    ('7.2', 2023, 8, 2024, 8),
+    # ('6.0', 2020, 5, 2023, 8),
+    # ('6.2', 2021, 8, 2024, 8),
+    # ('7.0', 2022, 4, 2024, 7),
+    # ('7.2', 2023, 8, 2024, 8),
     ('7.4', 2024, 7, 2026, 11),
-    ('8.0', 2025, 5, 2028, 11),
-    ('8.2', 2025, 4, 2030, 5),
+    ('8.0', 2025, 5, 3000, 1),
+    ('8.2', 2025, 4, 3000, 1),
 ]
 for name, syear, smonth, eyear, emonth in redis_releases:
     eyear, emonth = validate_version_date("Redis", name, eyear, emonth)
@@ -734,7 +723,6 @@ for name, syear, smonth, eyear, emonth in redis_releases:
         color="#963029",
         text_color="white",
         current=(name==CURRENT["Redis"]),
-        alternate=(name==EDX["Redis"]),
     )
 cal.gap_line()
 
