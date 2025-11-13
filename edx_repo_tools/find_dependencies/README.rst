@@ -187,7 +187,6 @@ It reports on its progress and failures, like this::
     Getting real URLs    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00 56/56
     -- /src/ghorg/openedx/edx-platform ----------
     Checking JavaScript dependencies
-    edx-proctoring-proctortrack@1.1.1: https://registry.npmjs.org/edx-proctoring-proctortrack/1.1.1 -> 404
     edx@0.1.0: https://registry.npmjs.org/edx/0.1.0 -> 404
     Getting npm URLs     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00 2045/2045
     Getting real URLs    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00 1393/1393
