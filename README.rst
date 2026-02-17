@@ -67,6 +67,15 @@ To work on these tools:
 Active Tools
 ============
 
+check_requirements_failures
+----------------------------
+
+Check repositories in a GitHub organization for the status of their automated
+Python requirements upgrade workflows. This tool helps identify repositories
+where the upgrade workflow may be failing or stalled.
+
+See the `check_requirements_failures README <edx_repo_tools/check_requirements_failures/README.rst>`_ in its subfolder.
+
 repo_checks
 -----------
 
