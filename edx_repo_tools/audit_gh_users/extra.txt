@@ -4,11 +4,11 @@
 #
 #    make upgrade
 #
-click==8.2.1
+click==8.3.0
     # via -r edx_repo_tools/audit_gh_users/extra.in
-fastcore==1.8.7
+fastcore==1.8.14
     # via ghapi
-ghapi==1.0.6
+ghapi==1.0.8
     # via -r edx_repo_tools/audit_gh_users/extra.in
 packaging==25.0
     # via
