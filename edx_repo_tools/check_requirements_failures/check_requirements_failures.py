@@ -10,9 +10,11 @@ This helps identify repositories where the automated requirements upgrade
 workflow may be failing or stalled.
 """
 
+import csv
 import json
 import subprocess
 from datetime import datetime
+from pathlib import Path
 
 import click
 
@@ -165,7 +167,7 @@ def get_last_release(org, repo):
             "--limit",
             "1",
             "--json",
-            "tagName,publishedAt,url",
+            "tagName,publishedAt,name,isLatest",
         ]
     )
 
@@ -180,7 +182,8 @@ def get_last_release(org, repo):
             return {
                 "date": formatted_date,
                 "version": release.get("tagName"),
-                "url": release.get("url"),
+                "name": release.get("name"),
+                "isLatest": release.get("isLatest"),
             }
 
     return None
@@ -243,13 +246,13 @@ def get_org_repositories(org, include_archived=False):
     help="Specific repository name(s) to check. If not provided, checks all repos in the org.",
 )
 @click.option(
-    "--csv",
-    "output_csv",
-    is_flag=True,
-    default=False,
-    help="Output results in CSV format",
+    "--output-path",
+    "output_path",
+    type=click.Path(file_okay=False, dir_okay=True, writable=True),
+    default=None,
+    help="Directory path to write CSV output file. If not provided, outputs to stdout in human-readable format.",
 )
-def main(org, include_archived, repos, output_csv):
+def main(org, include_archived, repos, output_path):
     """
     Check repositories for Python requirements upgrade workflow status.
 
@@ -316,34 +319,60 @@ def main(org, include_archived, repos, output_csv):
         )
         return 0
 
-    if output_csv:
-        # CSV output
-        click.echo(
-            "Repository,Total Runs,Failed Runs,Success Runs,Last PR Date,PR Number,PR URL,Last Release Date,Release Version,Release URL"
-        )
-        for result in results:
-            repo = result["repo"]
-            stats = result["workflow_stats"]
-            pr = result["last_pr"]
-            release = result["last_release"]
+    if output_path:
+        # CSV output to file
+        # Create output directory if it doesn't exist
+        output_dir = Path(output_path)
+        output_dir.mkdir(parents=True, exist_ok=True)
 
-            total_runs = stats["total_runs"]
-            failed_runs = stats["failed_runs"]
-            success_runs = stats["success_runs"]
+        # Generate filename with timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"requirements_check_{org}_{timestamp}.csv"
+        filepath = output_dir / filename
 
-            pr_date = pr["date"] if pr else "N/A"
-            pr_number = pr["pr_number"] if pr else "N/A"
-            pr_url = pr["url"] if pr else "N/A"
+        # Write CSV file
+        with open(filepath, "w", newline="", encoding="utf-8") as csvfile:
+            fieldnames = [
+                "Repository",
+                "Total Runs",
+                "Failed Runs",
+                "Success Runs",
+                "Last PR Date",
+                "PR Number",
+                "PR URL",
+                "Last Release Date",
+                "Release Version",
+                "Release Name",
+                "Release Is Latest",
+            ]
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
 
-            release_date = release["date"] if release else "N/A"
-            release_version = release["version"] if release else "N/A"
-            release_url = release["url"] if release else "N/A"
+            for result in results:
+                repo = result["repo"]
+                stats = result["workflow_stats"]
+                pr = result["last_pr"]
+                release = result["last_release"]
 
-            click.echo(
-                f"{repo},{total_runs},{failed_runs},{success_runs},{pr_date},{pr_number},{pr_url},{release_date},{release_version},{release_url}"
-            )
+                writer.writerow(
+                    {
+                        "Repository": repo,
+                        "Total Runs": stats["total_runs"],
+                        "Failed Runs": stats["failed_runs"],
+                        "Success Runs": stats["success_runs"],
+                        "Last PR Date": pr["date"] if pr else "N/A",
+                        "PR Number": pr["pr_number"] if pr else "N/A",
+                        "PR URL": pr["url"] if pr else "N/A",
+                        "Last Release Date": release["date"] if release else "N/A",
+                        "Release Version": release["version"] if release else "N/A",
+                        "Release Name": release["name"] if release else "N/A",
+                        "Release Is Latest": release["isLatest"] if release else "N/A",
+                    }
+                )
+
+        click.echo(f"\nCSV report written to: {filepath}")
     else:
-        # Human-readable output
+        # Human-readable output to stdout
         click.echo("\n" + "=" * 80)
         click.echo("RESULTS")
         click.echo("=" * 80 + "\n")
@@ -365,7 +394,7 @@ def main(org, include_archived, repos, output_csv):
                 click.echo(f"    Other:   {stats['other_runs']}")
 
             if pr:
-                click.echo("  Last Merged Requirements PR:")
+                click.echo("  Last Requirements PR:")
                 click.echo(f"    Date: {pr['date']}")
                 click.echo(f"    PR #: {pr['pr_number']}")
                 click.echo(f"    URL:  {pr['url']}")
@@ -374,9 +403,10 @@ def main(org, include_archived, repos, output_csv):
 
             if release:
                 click.echo("  Last Release:")
-                click.echo(f"    Date:    {release['date']}")
-                click.echo(f"    Version: {release['version']}")
-                click.echo(f"    URL:     {release['url']}")
+                click.echo(f"    Date:     {release['date']}")
+                click.echo(f"    Version:  {release['version']}")
+                click.echo(f"    Name:     {release['name']}")
+                click.echo(f"    isLatest: {release['isLatest']}")
             else:
                 click.echo("  Last Release: None found")
 
