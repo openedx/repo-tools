@@ -43,33 +43,59 @@ def run_gh_command(command):
         return None
 
 
-def check_workflow_exists(org, repo):
+def get_workflow_run_stats(org, repo):
     """
-    Check if the upgrade-python-requirements.yml workflow exists in the repo.
+    Get statistics about the last 10 runs of the upgrade-python-requirements.yml workflow.
 
     Args:
         org: GitHub organization name
         repo: Repository name
 
     Returns:
-        bool: True if the workflow file exists, False otherwise
+        dict: Dictionary with 'total_runs', 'failed_runs', 'success_runs', 'other_runs' keys
+        None: If the workflow doesn't exist or no runs found
     """
+    # Use gh run list with the workflow file name
+    # This will return 404/empty if the workflow doesn't exist
     result = run_gh_command(
         [
-            "workflow",
+            "run",
             "list",
             "--repo",
             f"{org}/{repo}",
+            "--workflow",
+            "upgrade-python-requirements.yml",
+            "--limit",
+            "10",
             "--json",
-            "name",
+            "conclusion,status",
         ]
     )
-    if not result:
-        return False
-    for r in result:
-        if r["name"] == "Upgrade Requirements":
-            return True
-    return False
+
+    if not result or len(result) == 0:
+        return None
+
+    # Count the different outcomes
+    failed_runs = 0
+    success_runs = 0
+    other_runs = 0
+
+    for run in result:
+        conclusion = run.get("conclusion")
+        if conclusion == "failure":
+            failed_runs += 1
+        elif conclusion == "success":
+            success_runs += 1
+        else:
+            # Could be: cancelled, skipped, timed_out, action_required, neutral, etc.
+            other_runs += 1
+
+    return {
+        "total_runs": len(result),
+        "failed_runs": failed_runs,
+        "success_runs": success_runs,
+        "other_runs": other_runs,
+    }
 
 
 def get_last_requirements_pr(org, repo):
@@ -261,20 +287,27 @@ def main(org, include_archived, repos, output_csv):
     for repo in repo_list:
         click.echo(f"Checking {repo}...", err=True)
 
-        # Check if workflow exists
-        has_workflow = check_workflow_exists(org, repo)
+        # Get workflow run statistics (also checks if workflow exists)
+        workflow_stats = get_workflow_run_stats(org, repo)
 
-        if not has_workflow:
-            click.echo("  No upgrade workflow found, skipping\n", err=True)
+        if not workflow_stats:
+            click.echo("  No upgrade workflow found or no runs, skipping\n", err=True)
             continue
 
-        # Get last requirements PR
+        # Get last merged requirements PR
         last_pr = get_last_requirements_pr(org, repo)
 
         # Get last release
         last_release = get_last_release(org, repo)
 
-        results.append({"repo": repo, "last_pr": last_pr, "last_release": last_release})
+        results.append(
+            {
+                "repo": repo,
+                "workflow_stats": workflow_stats,
+                "last_pr": last_pr,
+                "last_release": last_release,
+            }
+        )
 
     # Output results
     if not results:
@@ -286,12 +319,17 @@ def main(org, include_archived, repos, output_csv):
     if output_csv:
         # CSV output
         click.echo(
-            "Repository,Last PR Date,PR Number,PR URL,Last Release Date,Release Version,Release URL"
+            "Repository,Total Runs,Failed Runs,Success Runs,Last PR Date,PR Number,PR URL,Last Release Date,Release Version,Release URL"
         )
         for result in results:
             repo = result["repo"]
+            stats = result["workflow_stats"]
             pr = result["last_pr"]
             release = result["last_release"]
+
+            total_runs = stats["total_runs"]
+            failed_runs = stats["failed_runs"]
+            success_runs = stats["success_runs"]
 
             pr_date = pr["date"] if pr else "N/A"
             pr_number = pr["pr_number"] if pr else "N/A"
@@ -302,7 +340,7 @@ def main(org, include_archived, repos, output_csv):
             release_url = release["url"] if release else "N/A"
 
             click.echo(
-                f"{repo},{pr_date},{pr_number},{pr_url},{release_date},{release_version},{release_url}"
+                f"{repo},{total_runs},{failed_runs},{success_runs},{pr_date},{pr_number},{pr_url},{release_date},{release_version},{release_url}"
             )
     else:
         # Human-readable output
@@ -312,14 +350,22 @@ def main(org, include_archived, repos, output_csv):
 
         for result in results:
             repo = result["repo"]
+            stats = result["workflow_stats"]
             pr = result["last_pr"]
             release = result["last_release"]
 
             click.echo(f"Repository: {org}/{repo}")
             click.echo("-" * 80)
 
+            # Show workflow run statistics
+            click.echo(f"  Workflow Runs (last {stats['total_runs']}):")
+            click.echo(f"    Failed:  {stats['failed_runs']}")
+            click.echo(f"    Success: {stats['success_runs']}")
+            if stats["other_runs"] > 0:
+                click.echo(f"    Other:   {stats['other_runs']}")
+
             if pr:
-                click.echo("  Last Requirements PR:")
+                click.echo("  Last Merged Requirements PR:")
                 click.echo(f"    Date: {pr['date']}")
                 click.echo(f"    PR #: {pr['pr_number']}")
                 click.echo(f"    URL:  {pr['url']}")
