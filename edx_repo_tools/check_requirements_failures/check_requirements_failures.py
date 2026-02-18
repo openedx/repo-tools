@@ -13,10 +13,42 @@ workflow may be failing or stalled.
 import csv
 import json
 import subprocess
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import click
+
+
+class CheckFailedException(click.ClickException):
+    """
+    Exception raised when check mode finds repositories with stale requirements.
+
+    This exception is raised instead of returning an exit code, following Click conventions.
+    """
+
+    def __init__(self, failed_repos, output_path):
+        self.failed_repos = failed_repos
+        self.output_path = output_path
+        self.exit_code = 1
+
+    def show(self, file=None):
+        """Display the failure message with list of failed repositories."""
+        click.echo("\n" + "!" * 80, err=True)
+        click.echo("CHECK FAILED", err=True)
+        click.echo("!" * 80, err=True)
+        click.echo(
+            f"\n{len(self.failed_repos)} repositories have not merged a requirements PR in 4+ weeks:",
+            err=True,
+        )
+        for result in self.failed_repos:
+            repo = result["repo"]
+            pr = result["last_pr"]
+            if pr:
+                click.echo(f"  - {repo}: Last PR merged {pr['date']}", err=True)
+            else:
+                click.echo(f"  - {repo}: No PR ever merged", err=True)
+        if self.output_path:
+            click.echo("\nSee failed repos CSV for details.", err=True)
 
 
 def run_gh_command(command):
@@ -156,7 +188,7 @@ def get_last_release(org, repo):
         repo: Repository name
 
     Returns:
-        dict: Dictionary with 'date', 'version', and 'url' keys, or None if no releases
+        dict: Dictionary with 'date', 'version', 'name', and 'isLatest' keys, or None if no releases
     """
     result = run_gh_command(
         [
@@ -231,8 +263,139 @@ def get_org_repositories(org, include_archived=False):
         return []
 
 
+def write_csv_report(output_dir, org, timestamp, results, suffix=""):
+    """
+    Write CSV report with repository results.
+
+    Args:
+        output_dir: Path object for output directory
+        org: Organization name
+        timestamp: Timestamp string for filename
+        results: List of result dictionaries
+        suffix: Optional suffix to add to filename (e.g., "_FAILED")
+
+    Returns:
+        Path to the created CSV file
+    """
+    filename = f"requirements_check_{org}_{timestamp}{suffix}.csv"
+    filepath = output_dir / filename
+    # Define CSV fieldnames (defined here to match write_csv_report)
+    fieldnames = [
+        "Repository",
+        "Total Runs",
+        "Failed Runs",
+        "Success Runs",
+        "Last PR Date",
+        "PR Number",
+        "PR URL",
+        "Last Release Date",
+        "Release Version",
+        "Release Name",
+        "Release Is Latest",
+    ]
+
+    with open(filepath, "w", newline="", encoding="utf-8") as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+
+        for result in results:
+            repo = result["repo"]
+            stats = result["workflow_stats"]
+            pr = result["last_pr"]
+            release = result["last_release"]
+
+            writer.writerow(
+                {
+                    "Repository": repo,
+                    "Total Runs": stats["total_runs"],
+                    "Failed Runs": stats["failed_runs"],
+                    "Success Runs": stats["success_runs"],
+                    "Last PR Date": pr["date"] if pr else "N/A",
+                    "PR Number": pr["pr_number"] if pr else "N/A",
+                    "PR URL": pr["url"] if pr else "N/A",
+                    "Last Release Date": release["date"] if release else "N/A",
+                    "Release Version": release["version"] if release else "N/A",
+                    "Release Name": release["name"] if release else "N/A",
+                    "Release Is Latest": release["isLatest"] if release else "N/A",
+                }
+            )
+
+    return filepath
+
+
+def display_human_readable_results(org, results):
+    """
+    Display results in human-readable format to stdout.
+
+    Args:
+        org: Organization name
+        results: List of result dictionaries
+    """
+    click.echo("\n" + "=" * 80)
+    click.echo("RESULTS")
+    click.echo("=" * 80 + "\n")
+
+    for result in results:
+        repo = result["repo"]
+        stats = result["workflow_stats"]
+        pr = result["last_pr"]
+        release = result["last_release"]
+
+        click.echo(f"Repository: {org}/{repo}")
+        click.echo("-" * 80)
+
+        # Show workflow run statistics
+        click.echo(f"  Workflow Runs (last {stats['total_runs']}):")
+        click.echo(f"    Failed:  {stats['failed_runs']}")
+        click.echo(f"    Success: {stats['success_runs']}")
+        if stats["other_runs"] > 0:
+            click.echo(f"    Other:   {stats['other_runs']}")
+
+        if pr:
+            click.echo("  Last Requirements PR:")
+            click.echo(f"    Date: {pr['date']}")
+            click.echo(f"    PR #: {pr['pr_number']}")
+            click.echo(f"    URL:  {pr['url']}")
+        else:
+            click.echo("  Last Requirements PR: None found")
+
+        if release:
+            click.echo("  Last Release:")
+            click.echo(f"    Date:     {release['date']}")
+            click.echo(f"    Version:  {release['version']}")
+            click.echo(f"    Name:     {release['name']}")
+            click.echo(f"    isLatest: {release['isLatest']}")
+        else:
+            click.echo("  Last Release: None found")
+
+        click.echo()
+
+
+def display_check_mode_summary(failed_repos, output_path):
+    """
+    Display check mode pass/fail summary and raise exception if failures found.
+
+    Args:
+        failed_repos: List of failed result dictionaries (empty list if all passed)
+        output_path: Output path for CSV files (or None)
+
+    Raises:
+        CheckFailedException: If any repositories have failed the check
+    """
+    if failed_repos:
+        raise CheckFailedException(failed_repos, output_path)
+    else:
+        click.echo("\n" + "=" * 80, err=True)
+        click.echo("CHECK PASSED", err=True)
+        click.echo("=" * 80, err=True)
+        click.echo(
+            "\nAll repositories have merged a requirements PR within the last 4 weeks.",
+            err=True,
+        )
+
+
 @click.command()
-@click.option("--org", required=True, help="GitHub organization name to check")
+@click.option("--org", default="openedx", help="GitHub organization name to check")
 @click.option(
     "--include-archived",
     is_flag=True,
@@ -252,7 +415,14 @@ def get_org_repositories(org, include_archived=False):
     default=None,
     help="Directory path to write CSV output file. If not provided, outputs to stdout in human-readable format.",
 )
-def main(org, include_archived, repos, output_path):
+@click.option(
+    "--check",
+    "check_mode",
+    is_flag=True,
+    default=False,
+    help="Check mode: Identify repos with no requirements PR merged in 4+ weeks and write to separate failed CSV. Exit with -1 if any failures found.",
+)
+def main(org, include_archived, repos, output_path, check_mode):
     """
     Check repositories for Python requirements upgrade workflow status.
 
@@ -317,7 +487,23 @@ def main(org, include_archived, repos, output_path):
         click.echo(
             "\nNo repositories found with the upgrade-python-requirements.yml workflow."
         )
-        return 0
+        return
+
+    # In check mode, identify failed repositories (no PR merged in 4+ weeks)
+    failed_repos = []
+    if check_mode:
+        four_weeks_ago = datetime.now() - timedelta(weeks=4)
+
+        for result in results:
+            pr = result["last_pr"]
+            if pr is None:
+                # No PR ever merged - this is a failure
+                failed_repos.append(result)
+            else:
+                # Check if PR is older than 4 weeks
+                pr_date = datetime.strptime(pr["date"], "%Y-%m-%d")
+                if pr_date < four_weeks_ago:
+                    failed_repos.append(result)
 
     if output_path:
         # CSV output to file
@@ -327,92 +513,28 @@ def main(org, include_archived, repos, output_path):
 
         # Generate filename with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"requirements_check_{org}_{timestamp}.csv"
-        filepath = output_dir / filename
 
-        # Write CSV file
-        with open(filepath, "w", newline="", encoding="utf-8") as csvfile:
-            fieldnames = [
-                "Repository",
-                "Total Runs",
-                "Failed Runs",
-                "Success Runs",
-                "Last PR Date",
-                "PR Number",
-                "PR URL",
-                "Last Release Date",
-                "Release Version",
-                "Release Name",
-                "Release Is Latest",
-            ]
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
-
-            for result in results:
-                repo = result["repo"]
-                stats = result["workflow_stats"]
-                pr = result["last_pr"]
-                release = result["last_release"]
-
-                writer.writerow(
-                    {
-                        "Repository": repo,
-                        "Total Runs": stats["total_runs"],
-                        "Failed Runs": stats["failed_runs"],
-                        "Success Runs": stats["success_runs"],
-                        "Last PR Date": pr["date"] if pr else "N/A",
-                        "PR Number": pr["pr_number"] if pr else "N/A",
-                        "PR URL": pr["url"] if pr else "N/A",
-                        "Last Release Date": release["date"] if release else "N/A",
-                        "Release Version": release["version"] if release else "N/A",
-                        "Release Name": release["name"] if release else "N/A",
-                        "Release Is Latest": release["isLatest"] if release else "N/A",
-                    }
-                )
-
+        # Write main CSV report
+        filepath = write_csv_report(output_dir, org, timestamp, results)
         click.echo(f"\nCSV report written to: {filepath}")
+
+        # In check mode, also write failed repos CSV
+        if check_mode and failed_repos:
+            failed_filepath = write_csv_report(
+                output_dir, org, timestamp, failed_repos, suffix="_FAILED"
+            )
+            click.echo(f"FAILED repos CSV written to: {failed_filepath}", err=True)
+            click.echo(
+                f"Found {len(failed_repos)} repositories with no requirements PR merged in 4+ weeks",
+                err=True,
+            )
     else:
         # Human-readable output to stdout
-        click.echo("\n" + "=" * 80)
-        click.echo("RESULTS")
-        click.echo("=" * 80 + "\n")
+        display_human_readable_results(org, results)
 
-        for result in results:
-            repo = result["repo"]
-            stats = result["workflow_stats"]
-            pr = result["last_pr"]
-            release = result["last_release"]
-
-            click.echo(f"Repository: {org}/{repo}")
-            click.echo("-" * 80)
-
-            # Show workflow run statistics
-            click.echo(f"  Workflow Runs (last {stats['total_runs']}):")
-            click.echo(f"    Failed:  {stats['failed_runs']}")
-            click.echo(f"    Success: {stats['success_runs']}")
-            if stats["other_runs"] > 0:
-                click.echo(f"    Other:   {stats['other_runs']}")
-
-            if pr:
-                click.echo("  Last Requirements PR:")
-                click.echo(f"    Date: {pr['date']}")
-                click.echo(f"    PR #: {pr['pr_number']}")
-                click.echo(f"    URL:  {pr['url']}")
-            else:
-                click.echo("  Last Requirements PR: None found")
-
-            if release:
-                click.echo("  Last Release:")
-                click.echo(f"    Date:     {release['date']}")
-                click.echo(f"    Version:  {release['version']}")
-                click.echo(f"    Name:     {release['name']}")
-                click.echo(f"    isLatest: {release['isLatest']}")
-            else:
-                click.echo("  Last Release: None found")
-
-            click.echo()
-
-    return 0
+    # In check mode, show summary and raise exception if any failures
+    if check_mode:
+        display_check_mode_summary(failed_repos, output_path)
 
 
 if __name__ == "__main__":
