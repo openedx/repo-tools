@@ -26,9 +26,10 @@ class CheckFailedException(click.ClickException):
     This exception is raised instead of returning an exit code, following Click conventions.
     """
 
-    def __init__(self, failed_repos, output_path):
+    def __init__(self, failed_repos, output_path, weeks):
         self.failed_repos = failed_repos
         self.output_path = output_path
+        self.weeks = weeks
         self.exit_code = 1
 
     def show(self, file=None):
@@ -37,7 +38,7 @@ class CheckFailedException(click.ClickException):
         click.echo("CHECK FAILED", err=True)
         click.echo("!" * 80, err=True)
         click.echo(
-            f"\n{len(self.failed_repos)} repositories have not merged a requirements PR in 4+ weeks:",
+            f"\n{len(self.failed_repos)} repositories have not merged a requirements PR in {self.weeks}+ weeks:",
             err=True,
         )
         for result in self.failed_repos:
@@ -371,25 +372,26 @@ def display_human_readable_results(org, results):
         click.echo()
 
 
-def display_check_mode_summary(failed_repos, output_path):
+def display_check_mode_summary(failed_repos, output_path, weeks):
     """
     Display check mode pass/fail summary and raise exception if failures found.
 
     Args:
         failed_repos: List of failed result dictionaries (empty list if all passed)
         output_path: Output path for CSV files (or None)
+        weeks: Number of weeks threshold used for the check
 
     Raises:
         CheckFailedException: If any repositories have failed the check
     """
     if failed_repos:
-        raise CheckFailedException(failed_repos, output_path)
+        raise CheckFailedException(failed_repos, output_path, weeks)
     else:
         click.echo("\n" + "=" * 80, err=True)
         click.echo("CHECK PASSED", err=True)
         click.echo("=" * 80, err=True)
         click.echo(
-            "\nAll repositories have merged a requirements PR within the last 4 weeks.",
+            f"\nAll repositories have merged a requirements PR within the last {weeks} weeks.",
             err=True,
         )
 
@@ -420,9 +422,15 @@ def display_check_mode_summary(failed_repos, output_path):
     "check_mode",
     is_flag=True,
     default=False,
-    help="Check mode: Identify repos with no requirements PR merged in 4+ weeks and write to separate failed CSV. Exit with -1 if any failures found.",
+    help="Check mode: Identify repos with no requirements PR merged in N+ weeks and write to separate failed CSV. Exit with -1 if any failures found.",
 )
-def main(org, include_archived, repos, output_path, check_mode):
+@click.option(
+    "--weeks",
+    default=4,
+    type=int,
+    help="Number of weeks threshold for check mode (default: 4). Only used when --check is enabled.",
+)
+def main(org, include_archived, repos, output_path, check_mode, weeks):
     """
     Check repositories for Python requirements upgrade workflow status.
 
@@ -489,10 +497,10 @@ def main(org, include_archived, repos, output_path, check_mode):
         )
         return
 
-    # In check mode, identify failed repositories (no PR merged in 4+ weeks)
+    # In check mode, identify failed repositories (no PR merged in N+ weeks)
     failed_repos = []
     if check_mode:
-        four_weeks_ago = datetime.now() - timedelta(weeks=4)
+        threshold_date = datetime.now() - timedelta(weeks=weeks)
 
         for result in results:
             pr = result["last_pr"]
@@ -500,9 +508,9 @@ def main(org, include_archived, repos, output_path, check_mode):
                 # No PR ever merged - this is a failure
                 failed_repos.append(result)
             else:
-                # Check if PR is older than 4 weeks
+                # Check if PR is older than threshold
                 pr_date = datetime.strptime(pr["date"], "%Y-%m-%d")
-                if pr_date < four_weeks_ago:
+                if pr_date < threshold_date:
                     failed_repos.append(result)
 
     if output_path:
@@ -525,7 +533,7 @@ def main(org, include_archived, repos, output_path, check_mode):
             )
             click.echo(f"FAILED repos CSV written to: {failed_filepath}", err=True)
             click.echo(
-                f"Found {len(failed_repos)} repositories with no requirements PR merged in 4+ weeks",
+                f"Found {len(failed_repos)} repositories with no requirements PR merged in {weeks}+ weeks",
                 err=True,
             )
     else:
@@ -534,7 +542,7 @@ def main(org, include_archived, repos, output_path, check_mode):
 
     # In check mode, show summary and raise exception if any failures
     if check_mode:
-        display_check_mode_summary(failed_repos, output_path)
+        display_check_mode_summary(failed_repos, output_path, weeks)
 
 
 if __name__ == "__main__":
