@@ -1,9 +1,15 @@
 version: 2
 updates:
-    # Adding new check for github-actions
+  # Adding new check for github-actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-        interval: "weekly"
+      interval: "weekly"
     reviewers:
       - "feanil"
+
+  # Python dependencies (pyproject.toml)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"

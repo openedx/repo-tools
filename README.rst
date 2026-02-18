@@ -29,13 +29,22 @@ the token that appears. Paste it into your ~/.netrc in the "password" entry.
 Working in the repo
 ===================
 
+This project uses `uv <https://docs.astral.sh/uv/>`_ for dependency management.
+See details at `UV_QUICK_REFERENCE <UV_QUICK_REFERENCE.md>`_
+
 To work on these tools:
 
-1. Use a virtualenv.
+1. Install uv if you haven't already::
+
+    curl -LsSf https://astral.sh/uv/install.sh | sh
 
 2. Install dependencies::
 
-    make dev-install
+    make sync
+
+   Or directly with uv::
+
+    uv sync --all-extras --dev
 
 3. Run tests::
 
@@ -43,26 +52,68 @@ To work on these tools:
 
 4. Older tools were Python files run from the root of the repo.  Now we are
    being more disciplined and putting code into importable modules with entry
-   points in setup.py.
+   points in pyproject.toml.
 
 5. Simple tools can go into an existing subdirectory of edx_repo_tools.  Follow
    the structure of existing tools you find here.  More complex tools, or ones
    that need unusual third-party requirements, should go into a new
    subdirectory of edx_repo_tools.
 
-6. Add a new `entry_point` in setup.py for your command:
+6. Add a new entry point in pyproject.toml under ``[project.scripts]`` for your command:
 
    .. code::
 
-        entry_points={
-            'console_scripts': [
-                ...
-                'new_tool = edx_repo_tools.new_tool_dir.new_tool:main',
-                ...
+        [project.scripts]
+        new_tool = "edx_repo_tools.new_tool_dir.new_tool:main"
 
-7. If your tool is in its own directory, you can create an `extra.in` file
-   there with third-party requirements intended just for your tool.  This will
-   automatically create an installable "extra" for your requirements.
+7. If your tool needs additional third-party requirements, add them to the
+   ``[project.optional-dependencies]`` section in pyproject.toml with a name
+   matching your tool. For example::
+
+        [project.optional-dependencies]
+        new_tool = [
+            "some-package",
+            "another-package",
+        ]
+
+   Users can then install your tool with::
+
+        uv sync --extra new_tool
+
+Updating Dependencies
+=====================
+
+To update all dependencies to their latest compatible versions::
+
+    make upgrade
+
+This command will:
+1. Sync common constraints from edx-lint repository
+2. Update the ``uv.lock`` file with the latest versions
+
+Or you can run the steps manually::
+
+    make sync-constraints  # Sync organization-wide constraints
+    uv lock --upgrade      # Update lock file
+
+Managing Constraints
+====================
+
+This repository uses organization-wide constraints from the edx-lint repository
+to ensure consistency across all Open edX projects. These constraints (like
+``Django<6.0``) are automatically downloaded and applied.
+
+To manually sync constraints::
+
+    make sync-constraints
+
+Or directly::
+
+    uv run python sync_constraints.py
+
+**Important**: Do not manually edit the ``[tool.uv.constraint-dependencies]``
+section in pyproject.toml. Use the ``sync_constraints.py`` script to update
+constraints, which preserves local constraints while updating common ones.
 
 Active Tools
 ============

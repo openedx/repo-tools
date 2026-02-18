@@ -1,3 +1,6 @@
+# DEPRECATED: This file is no longer used. Dependencies are now managed in pyproject.toml
+# See [project.optional-dependencies.repo_access_scraper] in pyproject.toml
+
 # The repo_access_scraper code needs some extra packages installed that are
 # large and unusual, so we keep them separate here.
 

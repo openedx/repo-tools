@@ -6,11 +6,10 @@ This tool spiders through requirements/base.txt and package-lock.json files to f
 Installation
 ************
 
-#. Create a Python 3.8 virtualenv.
+#. Install repo-tools (https://github.com/openedx/repo-tools) dependencies, including the "find_dependencies" extra::
 
-#. Install repo-tools (https://github.com/openedx/repo-tools) into your virtualenv, including the "find_dependencies" extra requirements::
-
-   $ python -m pip install '/path/to/repo-tools[find_dependencies]'
+   $ cd /path/to/repo-tools
+   $ uv sync --extra find_dependencies
 
 
 Running
@@ -27,13 +26,13 @@ Run it with a list of local repo directories.  It will traverse into each direct
 I run it in a tree of all repos, with these commands to examine all the repos branched for Olive::
 
     $ export OLIVE_DIRS=$(gittreeif origin/open-release/olive.master -q pwd)
-    $ find_dependencies $OLIVE_DIRS
+    $ uv run find_dependencies $OLIVE_DIRS
 
 (gittreeif is from https://github.com/openedx/repo-tools/gittools.sh)
 
 It reports on its progress and failures, like this::
 
-    % find_dependencies $OLIVE_DIRS
+    % uv run find_dependencies $OLIVE_DIRS
     Creating new work directory: /tmp/unpack_reqs
     -- /src/ghorg/openedx/DoneXBlock ----------
     Checking Python dependencies

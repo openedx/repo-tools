@@ -3,11 +3,12 @@ Commit Stats
 
 This directory has code to collect and report statistics about conventional commit compliance.  After cloning a number of repos, you use these tools to collect data into a commits.db database, then query and graph the data.
 
-#. Create a Python 3.8 virtualenv, and a new directory into which to clone the repos.
+#. Create a new directory into which to clone the repos.
 
-#. Install repo-tools (https://github.com/openedx/repo-tools) into your virtualenv, including the "conventional_commits" extra requirements::
+#. Install repo-tools (https://github.com/openedx/repo-tools) dependencies, including the "conventional_commits" extra::
 
-   $ python -m pip install '/path/to/repo-tools[conventional_commits]'
+   $ cd /path/to/repo-tools
+   $ uv sync --extra conventional_commits
 
 #. Change to your work directory.
 
@@ -28,10 +29,10 @@ This directory has code to collect and report statistics about conventional comm
 #. Collect commit stats. Consider every edx repo, ignore the ones ending in
    "-private", and include all the ones that have an openedx.yaml file::
 
-   $ conventional_commits collect --ignore='*-private' --require=openedx.yaml edx/*
+   $ uv run conventional_commits collect --ignore='*-private' --require=openedx.yaml edx/*
 
 #. Now commits.db is a SQLite database with a table called "commits".  You can query this directly with SQLite-compatible tools if you like.
 
 #. Draw a chart::
 
-   $ conventional_commits plot
+   $ uv run conventional_commits plot
