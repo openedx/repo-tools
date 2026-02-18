@@ -1,3 +1,6 @@
+# DEPRECATED: This file is no longer used. Dependencies are now managed in pyproject.toml
+# See [project.optional-dependencies.repo_checks] in pyproject.toml
+
 -c ../../requirements/constraints.txt
 
 cache_to_disk

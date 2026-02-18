@@ -1,4 +1,0 @@
--c common_constraints.txt
-
-# playwright and sqlalchemy requirements conflict for greenlet<=3.0.1
-greenlet>3.0.1

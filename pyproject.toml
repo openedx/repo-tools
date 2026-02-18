@@ -78,13 +78,6 @@ repo_checks = [
     "PyYAML",
     "requests",
 ]
-dev = [
-    "edx-lint",
-    "pip-tools",
-    "pytest",
-    "pytest-mock",
-    "responses",
-]
 
 [project.urls]
 Homepage = "https://github.com/openedx/repo-tools"
@@ -102,14 +95,19 @@ find_dependencies = "edx_repo_tools.find_dependencies.find_dependencies:main"
 find_python_dependencies = "edx_repo_tools.find_dependencies.find_python_dependencies:main"
 get_org_repo_urls = "edx_repo_tools.dev.get_org_repo_urls:main"
 modernize_github_actions = "edx_repo_tools.codemods.django3.github_actions_modernizer:main"
+modernize_github_actions_django42 = "edx_repo_tools.codemods.django42.github_actions_modernizer_django42:main"
 modernize_github_actions_django = "edx_repo_tools.codemods.django3.github_actions_modernizer_django:main"
 modernize_node_release_workflow = "edx_repo_tools.codemods.node16.gha_release_workflow_modernizer:main"
 modernize_node_workflow = "edx_repo_tools.codemods.node16.gha_ci_modernizer:main"
 modernize_openedx_yaml = "edx_repo_tools.modernize_openedx_yaml:main"
 modernize_setup_file = "edx_repo_tools.codemods.django3.setup_file_modernizer:main"
 modernize_tox = "edx_repo_tools.codemods.django3.tox_modernizer:main"
+modernize_tox_django42 = "edx_repo_tools.codemods.django42.tox_moderniser_django42:main"
 modernize_travis = "edx_repo_tools.codemods.django3.travis_modernizer:main"
 pull_request_creator = "edx_repo_tools.pull_request_creator:main"
+python312_gh_actions_modernizer = "edx_repo_tools.codemods.python312.gh_actions_modernizer:main"
+python312_tox_modernizer = "edx_repo_tools.codemods.python312.tox_modernizer:main"
+remove_providing_args = "edx_repo_tools.codemods.django42.remove_providing_args_arg:main"
 remove_python2_unicode_compatible = "edx_repo_tools.codemods.django3.remove_python2_unicode_compatible:main"
 replace_render_to_response = "edx_repo_tools.codemods.django3.replace_render_to_response:main"
 replace_static = "edx_repo_tools.codemods.django3.replace_static:main"
@@ -119,11 +117,6 @@ repo_checks = "edx_repo_tools.repo_checks.repo_checks:main"
 show_hooks = "edx_repo_tools.dev.show_hooks:main"
 tag_release = "edx_repo_tools.release.tag_release:main"
 tag_release_v2 = "edx_repo_tools.release.tag_release_v2:main"
-modernize_tox_django42 = "edx_repo_tools.codemods.django42.tox_moderniser_django42:main"
-modernize_github_actions_django42 = "edx_repo_tools.codemods.django42.github_actions_modernizer_django42:main"
-remove_providing_args = "edx_repo_tools.codemods.django42.remove_providing_args_arg:main"
-python312_gh_actions_modernizer = "edx_repo_tools.codemods.python312.gh_actions_modernizer:main"
-python312_tox_modernizer = "edx_repo_tools.codemods.python312.tox_modernizer:main"
 
 [tool.setuptools]
 zip-safe = false
@@ -139,3 +132,22 @@ include = ["edx_repo_tools*"]
 [tool.setuptools.package-data]
 "edx_repo_tools.repo_checks" = ["labels.yaml"]
 "*" = ["*.html", "*.png", "*.gif", "*.js", "*.css", "*.jpg", "*.jpeg", "*.svg"]
+
+[dependency-groups]
+dev = [
+    "edx-lint",
+    "pytest",
+    "pytest-mock",
+    "responses",
+]
+
+[tool.uv]
+constraint-dependencies = [
+    # Downloaded from edx-lint common_constraints.txt
+    # DO NOT EDIT - Use 'python sync_constraints.py' to update
+    "Django<6.0",
+    "elasticsearch<7.14.0",
+    "pip<26.0",
+    # Local constraint
+    "greenlet>3.0.1",  # playwright and sqlalchemy requirements conflict for greenlet<=3.0.1
+]

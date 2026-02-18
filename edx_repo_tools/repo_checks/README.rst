@@ -28,24 +28,25 @@ You will need a GH personal access token (classic, not "Fine-grained tokens") wi
 *  workflow
 
 First, set up repo-tools as described in `the root README <../../README.rst>`_.
-There are a few ways to do this; one way is::
+
+Export your GitHub token::
 
   export GITHUB_TOKEN="$(pass github-token)"  # assumes you have passwordstore.org
 
-  python3 -m venv venv
-  . venv/bin/activate
-  pip install -e .[repo_checks]
+Install dependencies with uv::
+
+  uv sync --extra repo_checks
 
 Then, dry-run the script (one of these)::
 
-  repo_checks                                      # all repos & checks
-  repo_checks -r edx-platform -r frontend-platform # limit repos
-  repo_checks -c EnsureLabels -c RequiredCLACheck  # limit checks
-  repo_checks -c EnsureLabels -r edx-platform      # single repo & check
+  uv run repo_checks                                      # all repos & checks
+  uv run repo_checks -r edx-platform -r frontend-platform # limit repos
+  uv run repo_checks -c EnsureLabels -c RequiredCLACheck  # limit checks
+  uv run repo_checks -c EnsureLabels -r edx-platform      # single repo & check
 
 Finally, when you're ready, you can actually apply the fixes to GitHub::
 
-  repo_checks --no-dry-run <... same args you used above ...>
+  uv run repo_checks --no-dry-run <... same args you used above ...>
 
 Note this will open pull requests in the relevant repos. Some repos intentionally don't have certain workflows (for example, ``docs.openedx.org`` does not use ``commitlint``), so please tag maintainers on the pull requests so they can decide whether or not to use the added or changed workflows.
 
@@ -55,9 +56,9 @@ to be out of compliance.
 A note about rate-limiting, if your run is halted due to rate-limiting, note the last repo that the check was running on
 in the output and restart the job from there once your rate limit has been reset::
 
-    repo_checks ...                                      # original run
-    ...                                                  # rate limiting or other error halts the run
-    repo_checks ... --start-at "<last_repo_in_output>"   # Re run starting from where we halted.
+    uv run repo_checks ...                                      # original run
+    ...                                                         # rate limiting or other error halts the run
+    uv run repo_checks ... --start-at "<last_repo_in_output>"   # Re run starting from where we halted.
 
 Contributing
 ************

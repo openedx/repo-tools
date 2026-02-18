@@ -1,3 +1,6 @@
+# DEPRECATED: This file is no longer used. Dependencies are now managed in pyproject.toml
+# See [project.optional-dependencies.pull_request_creator] in pyproject.toml
+
 # additional dependencies needed by pull_request_creator
 
 -c ../../requirements/constraints.txt

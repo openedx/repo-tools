@@ -3,15 +3,14 @@ Repo Access Scraper
 
 This tool records who is granted write (or admin) access to a repo.  It writes a .md file with teams and people who have write access to each repo. It also captures screenshots of the GitHub access settings pages for each involved repo and team.
 
-#. Create a Python 3.8 virtualenv.
+#. Install repo-tools (https://github.com/openedx/repo-tools) dependencies, including the "repo_access_scraper" extra::
 
-#. Install repo-tools (https://github.com/openedx/repo-tools) into your virtualenv, including the "repo_access_scraper" extra requirements::
-
-   $ python -m pip install '/path/to/repo-tools[repo_access_scraper]'
+   $ cd /path/to/repo-tools
+   $ uv sync --extra repo_access_scraper
 
 #. You may need to install the playwright headless browsers::
 
-   $ playwright install
+   $ uv run playwright install
 
 #. Generate a GitHub personal access token, and define it in the environment::
 
@@ -21,7 +20,7 @@ This tool records who is granted write (or admin) access to a repo.  It writes a
 
    .. code::
 
-       $ repo_access_scraper \
+       $ uv run repo_access_scraper \
            openedx/course-discovery \
            openedx/frontend-app-publisher \
            openedx/ecommerce \
