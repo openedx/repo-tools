@@ -1307,6 +1307,12 @@ audit-gh-users = [
     { name = "click", version = "8.3.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "ghapi" },
 ]
+confluence-inactive-users = [
+    { name = "click", version = "8.1.8", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "click", version = "8.3.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "requests", version = "2.32.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
+    { name = "requests", version = "2.32.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
+]
 conventional-commits = [
     { name = "alembic", version = "1.14.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
     { name = "alembic", version = "1.16.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.9.*'" },
@@ -1364,6 +1370,7 @@ requires-dist = [
     { name = "cachecontrol" },
     { name = "click" },
     { name = "click", marker = "extra == 'audit-gh-users'" },
+    { name = "click", marker = "extra == 'confluence-inactive-users'" },
     { name = "click", marker = "extra == 'repo-checks'" },
     { name = "dataset", marker = "extra == 'conventional-commits'" },
     { name = "ghapi", marker = "extra == 'audit-gh-users'" },
@@ -1384,6 +1391,7 @@ requires-dist = [
     { name = "pyyaml" },
     { name = "pyyaml", marker = "extra == 'repo-checks'" },
     { name = "requests" },
+    { name = "requests", marker = "extra == 'confluence-inactive-users'" },
     { name = "requests", marker = "extra == 'find-dependencies'" },
     { name = "requests", marker = "extra == 'repo-checks'" },
     { name = "requirements-parser", marker = "extra == 'find-dependencies'" },
@@ -1395,7 +1403,7 @@ requires-dist = [
     { name = "uritemplate" },
     { name = "urlobject" },
 ]
-provides-extras = ["audit-gh-users", "conventional-commits", "find-dependencies", "pull-request-creator", "repo-access-scraper", "repo-checks"]
+provides-extras = ["audit-gh-users", "conventional-commits", "find-dependencies", "pull-request-creator", "repo-access-scraper", "repo-checks", "confluence-inactive-users"]
 
 [package.metadata.requires-dev]
 dev = [
