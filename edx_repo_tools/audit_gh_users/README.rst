@@ -19,16 +19,22 @@ You will need a GH pesonal access token with the following scopes:
 * repo
 
 First, set up repo-tools as described in `the root README <../../README.rst>`_.
-There are a few ways to do this; one way is::
+
+Export your GitHub token::
 
   export GITHUB_TOKEN="$(pass github-token)"  # assumes you have passwordstore.org
 
-  python3 -m venv venv
-  . venv/bin/activate
-  pip install -e .[audit_gh_users]
+Install dependencies with uv::
+
+  uv sync --extra audit_gh_users
 
 Then, run the script::
 
+  uv run audit_users
+
+Or if you prefer to activate the virtual environment::
+
+  source .venv/bin/activate
   audit_users
 
 Contributing

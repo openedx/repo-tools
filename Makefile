@@ -1,4 +1,4 @@
-.PHONY: help clean test dev-install install upgrade lint
+.PHONY: help clean test dev-install install upgrade lint sync sync-constraints
 
 help:				## display this help message
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -12,30 +12,23 @@ clean:				## remove transient artifacts
 	find . -name '*~' -exec rm -f {} +
 
 test:				## run the tests
-	pytest
+	uv run pytest
 
-dev-install:			## install everything to develop here
-	pip install -e .[dev]
+dev-install:			## install everything to develop here (legacy command, use 'sync' instead)
+	uv sync --all-extras --dev
 
 install:			## install everything to run the tools
-	pip install -r requirements/base.txt
-	pip install -e .
+	uv sync
 
-COMMON_CONSTRAINTS_TXT=requirements/common_constraints.txt
-.PHONY: $(COMMON_CONSTRAINTS_TXT)
-$(COMMON_CONSTRAINTS_TXT):
-	wget -O "$(@)" https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt || touch "$(@)"
+sync:				## sync dependencies from uv.lock file
+	uv sync --all-extras --dev
+
+sync-constraints:		## download and sync common_constraints.txt to pyproject.toml
+	uv run python sync_constraints.py
 
 upgrade: export CUSTOM_COMPILE_COMMAND=make upgrade
-upgrade: $(COMMON_CONSTRAINTS_TXT)  ## update the requirements/*.txt files with the latest packages satisfying requirements/*.in
-	pip install -qr requirements/pip-tools.txt
-	pip-compile --upgrade --allow-unsafe --rebuild -o requirements/pip.txt requirements/pip.in
-	pip-compile --upgrade -o requirements/pip-tools.txt requirements/pip-tools.in
-	pip install -qr requirements/pip.txt
-	pip install -qr requirements/pip-tools.txt
-	pip-compile --upgrade -o requirements/base.txt requirements/base.in
-	pip-compile --upgrade -o requirements/development.txt requirements/development.in
-	for fextra in edx_repo_tools/*/extra.in; do pip-compile --upgrade -o $${fextra%.in}.txt $$fextra; done
+upgrade: sync-constraints	## update the uv.lock file with the latest packages (syncs constraints first)
+	uv lock --upgrade
 
 lint:				## run pylint
-	pylint *.py edx_repo_tools tests
+	uv run pylint *.py edx_repo_tools tests

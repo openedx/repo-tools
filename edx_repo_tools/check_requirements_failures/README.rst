@@ -28,7 +28,14 @@ This tool requires the GitHub CLI (``gh``) to be installed and authenticated:
 Installation
 ------------
 
-This tool is installed as part of the ``edx-repo-tools`` package::
+This tool is installed as part of the ``edx-repo-tools`` package.
+
+To install from source with uv::
+
+    cd /path/to/repo-tools
+    uv sync
+
+Or to install from PyPI::
 
     pip install edx-repo-tools
 
@@ -37,23 +44,23 @@ Usage
 
 Basic usage to get the status of all repositories in an organization::
 
-    check_requirements_failures --org openedx
+    uv run check_requirements_failures --org openedx
 
 Check specific repositories::
 
-    check_requirements_failures --org openedx --repo repo1 --repo repo2
+    uv run check_requirements_failures --org openedx --repo repo1 --repo repo2
 
 Output results to CSV file::
 
-    check_requirements_failures --org openedx --output-path ./reports
+    uv run check_requirements_failures --org openedx --output-path ./reports
 
 Include archived repositories::
 
-    check_requirements_failures --org openedx --include-archived
+    uv run check_requirements_failures --org openedx --include-archived
 
 Check mode (return non-0 if any repos haven't merged requirements PR in X+ weeks, see more below)::
 
-    check_requirements_failures --org openedx --output-path ./reports --check --weeks 4
+    uv run check_requirements_failures --org openedx --output-path ./reports --check --weeks 4
 
 Options
 -------
@@ -145,7 +152,7 @@ Example workflow::
 
     # Create a reports directory and generate CSV
     mkdir -p reports
-    check_requirements_failures --org openedx --output-path ./reports
+    uv run check_requirements_failures --org openedx --output-path ./reports
 
     # The tool will create a file like:
     # reports/requirements_check_openedx_20240115_143022.csv
@@ -161,7 +168,7 @@ Use check mode in CI/CD pipelines to automatically fail if repositories
 haven't updated their requirements in 4+ weeks::
 
     # In your CI script or GitHub Actions workflow
-    check_requirements_failures --org openedx --output-path ./reports --check
+    uv run check_requirements_failures --org openedx --output-path ./reports --check
 
     # This will:
     # 1. Create requirements_check_openedx_TIMESTAMP.csv with all repos
@@ -172,7 +179,7 @@ Example GitHub Actions workflow::
 
     - name: Check requirements status
       run: |
-        check_requirements_failures --org openedx --output-path ./reports --check
+        uv run check_requirements_failures --org openedx --output-path ./reports --check
       continue-on-error: false  # Fail the workflow if check fails
 
     - name: Upload reports

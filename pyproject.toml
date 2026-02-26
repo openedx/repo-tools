@@ -1,0 +1,158 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edx-repo-tools"
+dynamic = ["version"]
+description = "This repo contains a number of tools Open edX uses for working with GitHub repositories."
+readme = "README.rst"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "edX", email = "oscm@edx.org"}
+]
+keywords = ["edx", "repo", "tools"]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "appdirs",
+    "backports.csv",
+    "bowler",
+    "CacheControl",
+    "click",
+    "github3.py",
+    "gitpython",
+    "lazy",
+    "lockfile",
+    "more_itertools",
+    "path.py",
+    "python-dateutil",
+    "python-dotenv",
+    "PyYAML",
+    "requests",
+    "ruamel.yaml",
+    "statistics",
+    "tox",
+    "tqdm",
+    "uritemplate",
+    "urlobject",
+]
+
+[project.optional-dependencies]
+audit_gh_users = [
+    "click",
+    "ghapi",
+]
+conventional_commits = [
+    "alembic",
+    "dataset",
+    "matplotlib",
+    "pandas",
+]
+find_dependencies = [
+    "requests",
+    "requirements-parser",
+    "rich",
+]
+pull_request_creator = [
+    "packaging",
+    "pygithub",
+]
+repo_access_scraper = [
+    "playwright",
+]
+repo_checks = [
+    "cache-to-disk",
+    "click",
+    "ghapi",
+    "PyYAML",
+    "requests",
+]
+confluence_inactive_users = [
+    "click",
+    "requests",
+]
+
+[project.urls]
+Homepage = "https://github.com/openedx/repo-tools"
+Repository = "https://github.com/openedx/repo-tools"
+
+[project.scripts]
+add_common_constraint = "edx_repo_tools.add_common_constraint:main"
+add_dependabot_ecosystem = "edx_repo_tools.dependabot_yml:main"
+add_django32_settings = "edx_repo_tools.codemods.django3.add_new_django32_settings:main"
+audit_users = "edx_repo_tools.audit_gh_users.audit_users:main"
+check_requirements_failures = "edx_repo_tools.check_requirements_failures.check_requirements_failures:main"
+deactivate_inactive_confluence_users = "edx_repo_tools.confluence_inactive_users.deactivate_inactive_users:main"
+clone_org = "edx_repo_tools.dev.clone_org:main"
+conventional_commits = "edx_repo_tools.conventional_commits.commitstats:main"
+find_dependencies = "edx_repo_tools.find_dependencies.find_dependencies:main"
+find_python_dependencies = "edx_repo_tools.find_dependencies.find_python_dependencies:main"
+get_org_repo_urls = "edx_repo_tools.dev.get_org_repo_urls:main"
+modernize_github_actions = "edx_repo_tools.codemods.django3.github_actions_modernizer:main"
+modernize_github_actions_django42 = "edx_repo_tools.codemods.django42.github_actions_modernizer_django42:main"
+modernize_github_actions_django = "edx_repo_tools.codemods.django3.github_actions_modernizer_django:main"
+modernize_node_release_workflow = "edx_repo_tools.codemods.node16.gha_release_workflow_modernizer:main"
+modernize_node_workflow = "edx_repo_tools.codemods.node16.gha_ci_modernizer:main"
+modernize_openedx_yaml = "edx_repo_tools.modernize_openedx_yaml:main"
+modernize_setup_file = "edx_repo_tools.codemods.django3.setup_file_modernizer:main"
+modernize_tox = "edx_repo_tools.codemods.django3.tox_modernizer:main"
+modernize_tox_django42 = "edx_repo_tools.codemods.django42.tox_moderniser_django42:main"
+modernize_travis = "edx_repo_tools.codemods.django3.travis_modernizer:main"
+pull_request_creator = "edx_repo_tools.pull_request_creator:main"
+python312_gh_actions_modernizer = "edx_repo_tools.codemods.python312.gh_actions_modernizer:main"
+python312_tox_modernizer = "edx_repo_tools.codemods.python312.tox_modernizer:main"
+remove_providing_args = "edx_repo_tools.codemods.django42.remove_providing_args_arg:main"
+remove_python2_unicode_compatible = "edx_repo_tools.codemods.django3.remove_python2_unicode_compatible:main"
+replace_render_to_response = "edx_repo_tools.codemods.django3.replace_render_to_response:main"
+replace_static = "edx_repo_tools.codemods.django3.replace_static:main"
+replace_unicode_with_str = "edx_repo_tools.codemods.django3.replace_unicode_with_str:main"
+repo_access_scraper = "edx_repo_tools.repo_access_scraper.repo_access_scraper:main"
+repo_checks = "edx_repo_tools.repo_checks.repo_checks:main"
+show_hooks = "edx_repo_tools.dev.show_hooks:main"
+tag_release = "edx_repo_tools.release.tag_release:main"
+tag_release_v2 = "edx_repo_tools.release.tag_release_v2:main"
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "edx_repo_tools.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["edx_repo_tools*"]
+
+[tool.setuptools.package-data]
+"edx_repo_tools.repo_checks" = ["labels.yaml"]
+"*" = ["*.html", "*.png", "*.gif", "*.js", "*.css", "*.jpg", "*.jpeg", "*.svg"]
+
+[dependency-groups]
+dev = [
+    "edx-lint",
+    "pytest",
+    "pytest-mock",
+    "responses",
+]
+
+[tool.uv]
+constraint-dependencies = [
+    # Downloaded from edx-lint common_constraints.txt
+    # DO NOT EDIT - Use 'python sync_constraints.py' to update
+    "Django<6.0",
+    "elasticsearch<7.14.0",
+    "pip<26.0",
+    # Local constraint
+    "greenlet>3.0.1",  # playwright and sqlalchemy requirements conflict for greenlet<=3.0.1
+]

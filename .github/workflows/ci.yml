@@ -7,26 +7,28 @@ on:
 
 jobs:
   build:
-
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]
         python-version:
-        - '3.12'
+          - "3.12"
 
     steps:
-    - uses: actions/checkout@v4
-    - name: setup python
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
+      - uses: actions/checkout@v4
 
-    - name: Install pip
-      run: pip install -r requirements/pip.txt
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Install Dependencies
-      run: make dev-install
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
 
-    - name: Run Tests
-      run: make test
+      - name: Install Dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Run Tests
+        run: uv run pytest
