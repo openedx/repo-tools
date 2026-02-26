@@ -56,6 +56,14 @@
   color: "ca38f9"  # purple
   description: "Released in Verawood"
 
+- name: "willow"
+  color: "fffdd0" # a nice cream
+  description: "Released in Willow"
+
+- name: "xylon"
+  color: "8b4513" # brown, for trees
+  description: "Released in Xylon"
+
 ### LABELS INDICATING HOW ISSUES CAN BE ENAGAGED WITH.
 
 - name: "good first issue"
