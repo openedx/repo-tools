@@ -17,7 +17,7 @@ Django<6.0
 # elasticsearch>=7.14.0 includes breaking changes in it which caused issues in discovery upgrade process.
 # elastic search changelog: https://www.elastic.co/guide/en/enterprise-search/master/release-notes-7.14.0.html
 # See https://github.com/openedx/edx-platform/issues/35126 for more info
-elasticsearch<7.14.0
+elasticsearch<9.2.0
 
 # pip 26 is incompatible with pip-tools hence causing failures during the build process
 # Make upgrade command and all requirements upgrade jobs are broken due to this.
