@@ -25,9 +25,9 @@ PLAT-1198 Reduce risk of losing navigation events
 If the new branch and commits look good and get integrated to the branched repo you can re-run gitgraft to search for additional changes at any time. Subsequent runs will look in the commit messages for the SHA1 located between the >><< in commit messages and use that to mark those commits as "moved", effectively ignoring them and allowing only the on grafted changes to be considered.
 
 ## Setup
-Make sure you've got all of the requirements:
+Make sure you've got all of the requirements. From the repo-tools directory:
 ```
-pip install -r requirements.txt
+uv sync
 ```
 
 Create a configuration file, which should look something like this:
@@ -72,7 +72,7 @@ Looking at all of the commits of large repositories can be slow, and can cause s
 ## Usage
 
 ```
-Usage: gitgraft.py [OPTIONS] CONF
+Usage: uv run python gitgraft.py [OPTIONS] CONF
 
   Creates a "best-guess" copy of commits across two unrelated (no consistent
   history) github repositories
