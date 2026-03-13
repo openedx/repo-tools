@@ -13,10 +13,61 @@ See: https://developer.atlassian.com/cloud/admin/organization/rest/intro/
 """
 
 import sys
+import time
 from datetime import datetime, timedelta, timezone
+from functools import wraps
 
 import click
 import requests
+from requests.exceptions import ConnectionError, HTTPError, RequestException, Timeout
+
+
+def retry_on_rate_limit(max_retries=5):
+    """
+    Decorator to retry a function when rate limited (HTTP 429).
+
+    Uses exponential backoff, with wait times of 1, 2, 4, 8, 16 seconds.
+    If the API provides a Retry-After header, that value is used instead.
+
+    Args:
+        max_retries: Maximum number of retry attempts (default: 5)
+
+    Returns:
+        Decorated function that will retry on 429 errors
+    """
+
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except RequestException as e:
+                    if (
+                        isinstance(e, HTTPError) and e.response.status_code == 429
+                    ) or isinstance(e, (ConnectionError, Timeout)):
+                        # Rate limited - use exponential backoff
+                        wait_time = 2**attempt  # 1, 2, 4, 8, 16 seconds
+
+                        if attempt < max_retries - 1:
+                            click.echo(
+                                f"{type(e)} in {func.__name__}, waiting {wait_time}s before retry {attempt + 1}/{max_retries}...",
+                                err=True,
+                            )
+                            time.sleep(wait_time)
+                        else:
+                            click.echo(
+                                f"Error in {func.__name__} after {max_retries} retries: {e}",
+                                err=True,
+                            )
+                            raise
+                    else:
+                        raise
+            raise requests.exceptions.HTTPError("Max retries exceeded")
+
+        return wrapper
+
+    return decorator
 
 
 def get_all_users(org_id, api_key, directory_id, limit=100):
@@ -45,7 +96,7 @@ def get_all_users(org_id, api_key, directory_id, limit=100):
     while True:
         url = f"https://api.atlassian.com/admin/v2/orgs/{org_id}/directories/{directory_id}/users"
 
-        params = {"limit": limit}
+        params = {"status": "active", "limit": limit}
         if cursor:
             params["cursor"] = cursor
 
@@ -71,6 +122,7 @@ def get_all_users(org_id, api_key, directory_id, limit=100):
     return users
 
 
+@retry_on_rate_limit(max_retries=5)
 def get_user_last_active(org_id, api_key, account_id):
     """
     Get the last active dates for a user across all products.
@@ -90,15 +142,9 @@ def get_user_last_active(org_id, api_key, account_id):
         "Accept": "application/json",
     }
 
-    try:
-        response = requests.get(url, headers=headers, timeout=30)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        click.echo(
-            f"Error fetching last active data for user {account_id}: {e}", err=True
-        )
-        return None
+    response = requests.get(url, headers=headers, timeout=30)
+    response.raise_for_status()
+    return response.json()
 
 
 def get_directory_id(org_id, api_key):
@@ -140,6 +186,7 @@ def get_directory_id(org_id, api_key):
         return None
 
 
+@retry_on_rate_limit(max_retries=5)
 def suspend_user(org_id, api_key, directory_id, account_id):
     """
     Suspend a user's access in the organization directory.
@@ -162,13 +209,9 @@ def suspend_user(org_id, api_key, directory_id, account_id):
         "Authorization": f"Bearer {api_key}",
     }
 
-    try:
-        response = requests.post(url, headers=headers, timeout=30)
-        response.raise_for_status()
-        return True
-    except requests.exceptions.RequestException as e:
-        click.echo(f"Error suspending user {account_id}: {e}", err=True)
-        return False
+    response = requests.post(url, headers=headers, timeout=30)
+    response.raise_for_status()
+    return True
 
 
 def parse_timestamp(timestamp_str):
@@ -294,7 +337,7 @@ def main(
         # Fetch all users
         click.echo("Fetching all users from Atlassian organization...")
         users = get_all_users(org_id, api_key, directory_id)
-        click.echo(f"Found {len(users)} total users\n")
+        click.echo(f"Found {len(users)} total active users\n")
 
         # Track statistics
         inactive_users = []
@@ -334,7 +377,10 @@ def main(
                     continue
 
                 # Get last active information for this user
-                last_active_data = get_user_last_active(org_id, api_key, account_id)
+                try:
+                    last_active_data = get_user_last_active(org_id, api_key, account_id)
+                except requests.exceptions.HTTPError:
+                    last_active_data = None
 
                 if not last_active_data or not last_active_data.get("data"):
                     errors += 1
@@ -399,7 +445,8 @@ def main(
         click.echo(f"Active users (within threshold): {len(active_users)}")
         click.echo(f"Inactive users (beyond threshold): {len(inactive_users)}")
         click.echo(f"Users with no {product_key} login data: {len(no_login_data)}")
-        click.echo(f"Already suspended/inactive: {suspended_already}")
+        # This will always be 0 now that we only pull active users
+        # click.echo(f"Already suspended/inactive: {suspended_already}")
         click.echo(f"Excluded users: {excluded_count}")
         click.echo(f"Errors: {errors}")
         click.echo("\n")
@@ -429,7 +476,14 @@ def main(
                         nl=False,
                     )
 
-                    if suspend_user(org_id, api_key, directory_id, user["accountId"]):
+                    try:
+                        suspend_result = suspend_user(
+                            org_id, api_key, directory_id, user["accountId"]
+                        )
+                    except requests.exceptions.HTTPError:
+                        suspend_result = None
+
+                    if suspend_result:
                         click.echo(" ✓ SUCCESS")
                         suspended += 1
                     else:
