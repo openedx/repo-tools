@@ -6,12 +6,14 @@ import logging
 import re
 import os
 import time
+import tomllib
 from ast import literal_eval
 
 import click
 import requests
 from git import Git, Repo
-from github import Github, GithubObject, InputGitAuthor, InputGitTreeElement
+
+from github import Github, GithubException, GithubObject, InputGitAuthor, InputGitTreeElement
 from packaging.version import Version
 
 
@@ -369,7 +371,7 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
 
         if load_content.status_code == 200:
             txt = load_content.content.decode('utf-8')
-            valid_reqs, suspicious_reqs = self.compare_pr_differnce(txt)
+            valid_reqs, suspicious_reqs = self.compare_pr_differnce(pull_request, txt)
 
             self._add_comment_about_reqs(pull_request, "List of packages in the PR without any issue", valid_reqs)
 
@@ -403,13 +405,90 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
 
         return False
 
-    def compare_pr_differnce(self, txt):
-        """ Parse the content and extract packages for comparison. """
+    def _add_uv_packages(self, out_packages, packages, is_old):
+        my_key = "old_version" if is_old else "new_version"
+        other_key = "new_version" if is_old else "old_version"
+
+        for p in packages:
+            # Our own package won't have a version, and we don't want it anyway
+            if "version" not in p:
+                continue
+
+            if "resolution-markers" in p:
+                for rm in p["resolution-markers"]:
+                    package_id = f"{p['name']} - {rm}"
+                    if package_id in out_packages:
+                        out_packages[package_id][my_key] = p["version"]
+                    else:
+                        out_packages[package_id] = {
+                            my_key: p["version"],
+                            other_key: None,
+                        }
+            else:
+                if p["name"] in out_packages:
+                    out_packages[p["name"]][my_key] = p["version"]
+                else:
+                    out_packages[p["name"]] = {
+                        my_key: p["version"],
+                        other_key: None,
+                    }
+
+        return out_packages
+
+    def _parse_uv(self, pr):
+        """
+        When we no longer support old txt files we should change things to just use the uv output.
+        """
+        lock_file = "uv.lock"
+        changed = next((f for f in pr.get_files() if f.filename == lock_file), None)
+        if not changed:
+            print("File not changed in this PR")
+            return {}
+
+        new_content = self.repository.get_contents(
+            lock_file, ref=pr.head.sha
+        ).decoded_content.decode()
+
+        out_packages = {}
+
+        # Parse and compare old_content / new_content as needed
+        new = tomllib.loads(new_content)
+        self._add_uv_packages(out_packages, new["package"], is_old=False)
+
+        # There may not be a previous uv.lock to compare, in which case
+        # all packages are "new"
+        old_content = None
+        try:
+            old_content = self.repository.get_contents(
+                lock_file, ref=pr.base.sha
+            ).decoded_content.decode()
+        except GithubException as e:
+            if e.status != 404:
+                raise
+
+        if old_content:
+            old = tomllib.loads(old_content)
+            self._add_uv_packages(out_packages, old["package"], is_old=True)
+        else:
+            print("Old file doesn't exist, moving to uv?")
+
+        # Remove any unchanged packages, consolidate if possible
+        # TODO: Find a way to handle resolution markers to make the output
+        # less spammy.
+        reqs = []
+
+        for pid, versions in out_packages.items():
+            if versions["new_version"] == versions["old_version"]:
+                continue
+
+            versions["name"] = pid
+            reqs.append(versions)
+
+        return reqs
+
+    def _parse_reqs(self, txt)
         regex = re.compile(r"(?P<change>[\-\+])(?P<name>[\w][\w\-\[\]]+)==(?P<version>\d+\.\d+(\.\d+)?(\.[\w]+)?)")
         reqs = {}
-        if not txt:
-            return [], []
-
         # skipping zeroth index  as it will be empty
         files = txt.split("diff --git")[1:]
         for file in files:
@@ -429,17 +508,30 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
                         reqs[filename][groups['name']][keys[0]] = groups['version']
                     else:
                         reqs[filename][groups['name']] = {keys[0]: groups['version'], keys[1]: None}
+
         combined_reqs = []
-        for file, lst in reqs.items():
+        for _, lst in reqs.items():
             for name, versions in lst.items():
                 combined_reqs.append(
                     {"name": name, 'old_version': versions['old_version'], 'new_version': versions['new_version']}
                 )
 
-        unique_reqs = [dict(s) for s in set(frozenset(d.items()) for d in combined_reqs)]
+        return [dict(s) for s in set(frozenset(d.items()) for d in combined_reqs)]
+
+    def compare_pr_differnce(self, pull_request, txt):
+        """ Parse the content and extract packages for comparison. """
+
+        if not txt:
+            return [], []
+
+        if "uv.lock" in txt:
+            reqs = self._parse_uv(pull_request)
+        else:
+            reqs = self._parse_reqs(txt)
+
         valid_reqs = []
         suspicious_reqs = []
-        for req in unique_reqs:
+        for req in reqs:
             if req['new_version'] and req['old_version']:  # if both values exits then do version comparison
                 old_version = Version(req['old_version'])
                 new_version = Version(req['new_version'])
