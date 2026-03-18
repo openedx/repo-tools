@@ -4,6 +4,8 @@ import os
 from unittest import TestCase
 from unittest.mock import MagicMock, Mock, mock_open, patch
 
+from github import GithubException
+
 from edx_repo_tools.pull_request_creator import GitHubHelper, PullRequestCreator
 
 
@@ -744,3 +746,141 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
                     check_automerge_variable_value.return_value = False
                     GitHubHelper().verify_upgrade_packages(create_pr_mock)
                     assert not create_pr_mock.set_labels.called
+
+
+class GitHubHelperUvLockTestCase(TestCase):
+    """Test uv.lock file parsing methods in GitHubHelper."""
+
+    def setUp(self):
+        """Set up test fixtures."""
+        with patch.dict(
+            os.environ,
+            {"GITHUB_TOKEN": "test-token", "GITHUB_USER_EMAIL": "test@example.com"},
+        ):
+            with patch("edx_repo_tools.pull_request_creator.Github"):
+                self.helper = GitHubHelper()
+                self.helper.repository = Mock()
+
+    def test_parse_uv_basic_upgrade(self):
+        """Test parsing uv.lock with basic package upgrade."""
+        old_lock = """
+[[package]]
+name = "django"
+version = "3.2.0"
+"""
+        new_lock = """
+[[package]]
+name = "django"
+version = "3.2.5"
+"""
+
+        mock_pr = Mock()
+        mock_pr.head.sha = "new-sha"
+        mock_pr.base.sha = "old-sha"
+
+        mock_file = Mock()
+        mock_file.filename = "uv.lock"
+        mock_pr.get_files.return_value = [mock_file]
+
+        mock_new_content = Mock()
+        mock_new_content.decoded_content.decode.return_value = new_lock
+        mock_old_content = Mock()
+        mock_old_content.decoded_content.decode.return_value = old_lock
+
+        self.helper.repository.get_contents.side_effect = [
+            mock_new_content,
+            mock_old_content,
+        ]
+
+        reqs = self.helper._parse_uv(mock_pr)
+
+        assert len(reqs) == 1
+        assert reqs[0]["name"] == "django"
+        assert reqs[0]["old_version"] == "3.2.0"
+        assert reqs[0]["new_version"] == "3.2.5"
+
+    def test_parse_uv_no_old_lock(self):
+        """Test parsing uv.lock when old file doesn't exist (new migration)."""
+        new_lock = """
+[[package]]
+name = "django"
+version = "3.2.5"
+"""
+
+        mock_pr = Mock()
+        mock_pr.head.sha = "new-sha"
+        mock_pr.base.sha = "old-sha"
+
+        mock_file = Mock()
+        mock_file.filename = "uv.lock"
+        mock_pr.get_files.return_value = [mock_file]
+
+        mock_new_content = Mock()
+        mock_new_content.decoded_content.decode.return_value = new_lock
+
+        # Simulate 404 for old file
+        github_404 = GithubException(404, {"message": "Not Found"}, None)
+
+        self.helper.repository.get_contents.side_effect = [mock_new_content, github_404]
+
+        reqs = self.helper._parse_uv(mock_pr)
+
+        # All packages should be listed as new
+        assert len(reqs) == 1
+        assert reqs[0]["name"] == "django"
+        assert reqs[0]["old_version"] is None
+        assert reqs[0]["new_version"] == "3.2.5"
+
+    def test_parse_uv_not_in_pr(self):
+        """Test parsing when uv.lock is not in the PR files."""
+        mock_pr = Mock()
+        mock_file = Mock()
+        mock_file.filename = "requirements.txt"
+        mock_pr.get_files.return_value = [mock_file]
+
+        reqs = self.helper._parse_uv(mock_pr)
+
+        assert reqs == {}
+
+    def test_parse_uv_with_resolution_markers(self):
+        """Test parsing uv.lock with resolution markers."""
+        new_lock = """
+[[package]]
+name = "mypackage"
+version = "1.0.0"
+resolution-markers = ["python_version < '3.9'", "python_version >= '3.9'"]
+"""
+
+        mock_pr = Mock()
+        mock_pr.head.sha = "new-sha"
+        mock_pr.base.sha = "old-sha"
+
+        mock_file = Mock()
+        mock_file.filename = "uv.lock"
+        mock_pr.get_files.return_value = [mock_file]
+
+        mock_new_content = Mock()
+        mock_new_content.decoded_content.decode.return_value = new_lock
+
+        github_404 = GithubException(404, {"message": "Not Found"}, None)
+        self.helper.repository.get_contents.side_effect = [mock_new_content, github_404]
+
+        reqs = self.helper._parse_uv(mock_pr)
+
+        # Should create separate entries for each resolution marker
+        assert len(reqs) == 2
+
+    def test_add_uv_packages_without_version(self):
+        """Test _add_uv_packages skips packages without version (own package)."""
+        out_packages = {}
+        packages = [
+            {"name": "myproject"},  # No version field
+            {"name": "dependency", "version": "1.0.0"},
+        ]
+
+        result = self.helper._add_uv_packages(out_packages, packages, is_old=False)
+
+        # Should only have the dependency, not myproject
+        assert "myproject" not in result
+        assert "dependency" in result
+        assert result["dependency"]["new_version"] == "1.0.0"
