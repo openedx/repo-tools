@@ -4,11 +4,12 @@ import os
 from unittest import TestCase
 from unittest.mock import MagicMock, Mock, mock_open, patch
 
+from github import GithubException
+
 from edx_repo_tools.pull_request_creator import GitHubHelper, PullRequestCreator
 
 
 class HelpersTestCase(TestCase):
-
     def test_close_existing_pull_requests(self):
         """
         Make sure we close only PR's by the correct author.
@@ -50,15 +51,19 @@ class HelpersTestCase(TestCase):
         correct_pr_two.base.ref = "master"
 
         mock_repo = Mock()
-        mock_repo.get_pulls = MagicMock(return_value=[
-            incorrect_pr_one,
-            incorrect_pr_two,
-            incorrect_pr_three,
-            correct_pr_one,
-            correct_pr_two
-        ])
+        mock_repo.get_pulls = MagicMock(
+            return_value=[
+                incorrect_pr_one,
+                incorrect_pr_two,
+                incorrect_pr_three,
+                correct_pr_one,
+                correct_pr_two,
+            ]
+        )
 
-        deleted_pulls = GitHubHelper().close_existing_pull_requests(mock_repo, "fakeuser100", "John Smith")
+        deleted_pulls = GitHubHelper().close_existing_pull_requests(
+            mock_repo, "fakeuser100", "John Smith"
+        )
         assert deleted_pulls == [3, 4]
         assert not incorrect_pr_one.edit.called
         assert not incorrect_pr_two.edit.called
@@ -69,14 +74,18 @@ class HelpersTestCase(TestCase):
     def test_get_updated_files_list_no_change(self):
         git_instance = Mock()
         git_instance.ls_files = MagicMock(return_value="")
-        with patch('edx_repo_tools.pull_request_creator.Git', return_value=git_instance):
+        with patch(
+            "edx_repo_tools.pull_request_creator.Git", return_value=git_instance
+        ):
             result = GitHubHelper().get_updated_files_list("edx-platform")
             assert result == []
 
     def test_get_updated_files_list_with_changes(self):
         git_instance = Mock()
         git_instance.ls_files = MagicMock(return_value="file1\nfile2")
-        with patch('edx_repo_tools.pull_request_creator.Git', return_value=git_instance):
+        with patch(
+            "edx_repo_tools.pull_request_creator.Git", return_value=git_instance
+        ):
             result = GitHubHelper().get_updated_files_list("edx-platform")
             assert result == ["file1", "file2"]
 
@@ -88,20 +97,25 @@ class HelpersTestCase(TestCase):
         sha = "abc123"
         username = "fakeusername100"
 
-        return_sha = GitHubHelper().update_list_of_files(repo_mock, repo_root, file_path_list, commit_message, sha,
-                                                         username)
+        return_sha = GitHubHelper().update_list_of_files(
+            repo_mock, repo_root, file_path_list, commit_message, sha, username
+        )
         assert return_sha is None
         assert not repo_mock.create_git_tree.called
         assert not repo_mock.create_git_commit.called
 
-    @patch('edx_repo_tools.pull_request_creator.GitHubHelper.get_file_contents',
-           return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.InputGitAuthor',
-           return_value=Mock())
-    @patch('edx_repo_tools.pull_request_creator.InputGitTreeElement',
-           return_value=Mock())
+    @patch(
+        "edx_repo_tools.pull_request_creator.GitHubHelper.get_file_contents",
+        return_value=None,
+    )
+    @patch("edx_repo_tools.pull_request_creator.InputGitAuthor", return_value=Mock())
+    @patch(
+        "edx_repo_tools.pull_request_creator.InputGitTreeElement", return_value=Mock()
+    )
     # pylint: disable=unused-argument
-    def test_update_list_of_files_with_changes(self, get_file_contents_mock, author_mock, git_tree_mock):
+    def test_update_list_of_files_with_changes(
+        self, get_file_contents_mock, author_mock, git_tree_mock
+    ):
         repo_mock = Mock()
         repo_root = "../../edx-platform"
         file_path_list = ["path/to/file1", "path/to/file2"]
@@ -109,17 +123,23 @@ class HelpersTestCase(TestCase):
         sha = "abc123"
         username = "fakeusername100"
 
-        return_sha = GitHubHelper().update_list_of_files(repo_mock, repo_root, file_path_list, commit_message, sha,
-                                                         username)
+        return_sha = GitHubHelper().update_list_of_files(
+            repo_mock, repo_root, file_path_list, commit_message, sha, username
+        )
         assert repo_mock.create_git_tree.called
         assert repo_mock.create_git_commit.called
         assert return_sha is not None
+
     # pylint: enable=unused-argument
 
     def test_get_file_contents(self):
         with patch("builtins.open", mock_open(read_data="data")) as mock_file:
-            contents = GitHubHelper().get_file_contents("../../edx-platform", "path/to/file")
-            mock_file.assert_called_with("../../edx-platform/path/to/file", "r", encoding='utf-8')
+            contents = GitHubHelper().get_file_contents(
+                "../../edx-platform", "path/to/file"
+            )
+            mock_file.assert_called_with(
+                "../../edx-platform/path/to/file", "r", encoding="utf-8"
+            )
             assert contents == "data"
 
 
@@ -128,29 +148,75 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
     Test Case class for PR creator.
     """
 
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.close_existing_pull_requests',
-           return_value=[])
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_github_instance', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.repo_from_remote', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_updated_files_list', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_current_commit', return_value='1234567')
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.branch_exists', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.update_list_of_files', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_pull_request')
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_branch', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator._get_user',
-           return_value=Mock(name="fake name", login="fake login"))
-    @patch('edx_repo_tools.pull_request_creator.GitHubHelper.delete_branch', return_value=None)
-    def test_no_changes(self, delete_branch_mock, get_user_mock, create_branch_mock, create_pr_mock,
-                        update_files_mock, branch_exists_mock, current_commit_mock,
-                        modified_list_mock, repo_mock, authenticate_mock,
-                        close_existing_prs_mock):
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.close_existing_pull_requests",
+        return_value=[],
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_github_instance",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.repo_from_remote",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_updated_files_list",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_current_commit",
+        return_value="1234567",
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.branch_exists",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.update_list_of_files",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_pull_request"
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_branch",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator._get_user",
+        return_value=Mock(name="fake name", login="fake login"),
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.GitHubHelper.delete_branch",
+        return_value=None,
+    )
+    def test_no_changes(
+        self,
+        delete_branch_mock,
+        get_user_mock,
+        create_branch_mock,
+        create_pr_mock,
+        update_files_mock,
+        branch_exists_mock,
+        current_commit_mock,
+        modified_list_mock,
+        repo_mock,
+        authenticate_mock,
+        close_existing_prs_mock,
+    ):
         """
         Ensure a merge with no changes to db files will not result in any updates.
         """
-        pull_request_creator = PullRequestCreator('--repo_root=../../edx-platform', 'upgrade-branch', [],
-                                                  [], 'Upgrade python requirements', 'Update python requirements',
-                                                  'make upgrade PR')
+        pull_request_creator = PullRequestCreator(
+            "--repo_root=../../edx-platform",
+            "upgrade-branch",
+            [],
+            [],
+            "Upgrade python requirements",
+            "Update python requirements",
+            "make upgrade PR",
+        )
         pull_request_creator.create(True)
 
         assert authenticate_mock.called
@@ -161,31 +227,75 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
         assert not update_files_mock.called
         assert not create_pr_mock.called
 
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.close_existing_pull_requests',
-           return_value=[])
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_github_instance',
-           return_value=Mock())
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.repo_from_remote', return_value=Mock())
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_updated_files_list',
-           return_value=["requirements/edx/base.txt", "requirements/edx/coverage.txt"])
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_current_commit', return_value='1234567')
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.branch_exists', return_value=False)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.update_list_of_files', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_pull_request')
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_branch', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator._get_user',
-           return_value=Mock(name="fake name", login="fake login"))
-    @patch('edx_repo_tools.pull_request_creator.GitHubHelper.delete_branch', return_value=None)
-    def test_changes(self, delete_branch_mock, get_user_mock, create_branch_mock, create_pr_mock,
-                     update_files_mock, branch_exists_mock, current_commit_mock,
-                     modified_list_mock, repo_mock, authenticate_mock,
-                     close_existing_prs_mock):
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.close_existing_pull_requests",
+        return_value=[],
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_github_instance",
+        return_value=Mock(),
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.repo_from_remote",
+        return_value=Mock(),
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_updated_files_list",
+        return_value=["requirements/edx/base.txt", "requirements/edx/coverage.txt"],
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_current_commit",
+        return_value="1234567",
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.branch_exists",
+        return_value=False,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.update_list_of_files",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_pull_request"
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_branch",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator._get_user",
+        return_value=Mock(name="fake name", login="fake login"),
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.GitHubHelper.delete_branch",
+        return_value=None,
+    )
+    def test_changes(
+        self,
+        delete_branch_mock,
+        get_user_mock,
+        create_branch_mock,
+        create_pr_mock,
+        update_files_mock,
+        branch_exists_mock,
+        current_commit_mock,
+        modified_list_mock,
+        repo_mock,
+        authenticate_mock,
+        close_existing_prs_mock,
+    ):
         """
         Ensure a merge with no changes to db files will not result in any updates.
         """
-        pull_request_creator = PullRequestCreator('--repo_root=../../edx-platform', 'upgrade-branch', [],
-                                                  [], 'Upgrade python requirements', 'Update python requirements',
-                                                  'make upgrade PR')
+        pull_request_creator = PullRequestCreator(
+            "--repo_root=../../edx-platform",
+            "upgrade-branch",
+            [],
+            [],
+            "Upgrade python requirements",
+            "Update python requirements",
+            "make upgrade PR",
+        )
         pull_request_creator.create(True)
 
         assert branch_exists_mock.called
@@ -197,43 +307,82 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
 
         create_pr_mock.title = "Python Requirements Update"
         create_pr_mock.diff_url = "/"
-        create_pr_mock.repository.name = 'repo-health-data'
+        create_pr_mock.repository.name = "repo-health-data"
 
         basepath = os.path.dirname(__file__)
 
-        filepath = os.path.abspath(os.path.join(basepath, "pull_request_creator_test_data", "diff.txt"))
+        filepath = os.path.abspath(
+            os.path.join(basepath, "pull_request_creator_test_data", "diff.txt")
+        )
         with open(filepath, "r") as f:
-            content = f.read().encode('utf-8')
-            with patch('requests.get') as mock_request:
+            content = f.read().encode("utf-8")
+            with patch("requests.get") as mock_request:
                 mock_request.return_value.content = content
                 mock_request.return_value.status_code = 200
                 GitHubHelper().verify_upgrade_packages(create_pr_mock)
             assert create_pr_mock.create_issue_comment.called
             assert not delete_branch_mock.called
 
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator._get_user',
-           return_value=Mock(name="fake name", login="fake login"))
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_github_instance',
-           return_value=Mock())
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.repo_from_remote', return_value=Mock())
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_updated_files_list',
-           return_value=["requirements/edx/base.txt", "requirements/edx/coverage.txt"])
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_current_commit', return_value='1234567')
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator._get_user",
+        return_value=Mock(name="fake name", login="fake login"),
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_github_instance",
+        return_value=Mock(),
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.repo_from_remote",
+        return_value=Mock(),
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_updated_files_list",
+        return_value=["requirements/edx/base.txt", "requirements/edx/coverage.txt"],
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_current_commit",
+        return_value="1234567",
+    )
     # all above this unused params, no need to interact with those mocks
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.branch_exists', return_value=False)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.update_list_of_files', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_pull_request')
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_branch', return_value=None)
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.branch_exists",
+        return_value=False,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.update_list_of_files",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_pull_request"
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_branch",
+        return_value=None,
+    )
     @patch.dict(os.environ, {"GITHUB_OUTPUT": "/tmp/fake_github_output"})
     @patch("builtins.open", new_callable=mock_open)
-    def test_outputs_url_on_success(self,  mock_file, create_branch_mock, create_pr_mock,
-                                    update_files_mock, branch_exists_mock, *args):
+    def test_outputs_url_on_success(
+        self,
+        mock_file,
+        create_branch_mock,
+        create_pr_mock,
+        update_files_mock,
+        branch_exists_mock,
+        *args,
+    ):
         """
         Ensure that a successful run outputs the URL consumable by github actions
         """
-        pull_request_creator = PullRequestCreator('--repo_root=../../edx-platform', 'upgrade-branch', [],
-                                                  [], 'Upgrade python requirements', 'Update python requirements',
-                                                  'make upgrade PR', output_pr_url_for_github_action=True)
+        pull_request_creator = PullRequestCreator(
+            "--repo_root=../../edx-platform",
+            "upgrade-branch",
+            [],
+            [],
+            "Upgrade python requirements",
+            "Update python requirements",
+            "make upgrade PR",
+            output_pr_url_for_github_action=True,
+        )
         pull_request_creator.create(False)
 
         assert branch_exists_mock.called
@@ -243,36 +392,87 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
         self.assertEqual(update_files_mock.call_count, 1)
         assert create_pr_mock.called
 
-        mock_file.assert_called_once_with("/tmp/fake_github_output", "a", encoding="utf-8")
+        mock_file.assert_called_once_with(
+            "/tmp/fake_github_output", "a", encoding="utf-8"
+        )
         handle = mock_file()
-        all_writes = "".join(call_args[0][0] for call_args in handle.write.call_args_list)
+        all_writes = "".join(
+            call_args[0][0] for call_args in handle.write.call_args_list
+        )
 
-        assert "generated_pr=" in all_writes, f"Expected 'generated_pr=' in writes, but got: {all_writes}"
+        assert "generated_pr=" in all_writes, (
+            f"Expected 'generated_pr=' in writes, but got: {all_writes}"
+        )
 
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.close_existing_pull_requests',
-           return_value=[])
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_github_instance', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.repo_from_remote', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_updated_files_list',
-           return_value=["requirements/edx/base.txt", "requirements/edx/coverage.txt"])
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_current_commit', return_value='1234567')
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.branch_exists', return_value=True)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.update_list_of_files', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_pull_request')
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_branch', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator._get_user',
-           return_value=Mock(name="fake name", login="fake login"))
-    @patch('edx_repo_tools.pull_request_creator.GitHubHelper.delete_branch', return_value=None)
-    def test_branch_exists(self, delete_branch_mock, get_user_mock, create_branch_mock, create_pr_mock,
-                           update_files_mock, branch_exists_mock, current_commit_mock,
-                           modified_list_mock, repo_mock, authenticate_mock,
-                           close_existing_prs_mock):
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.close_existing_pull_requests",
+        return_value=[],
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_github_instance",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.repo_from_remote",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_updated_files_list",
+        return_value=["requirements/edx/base.txt", "requirements/edx/coverage.txt"],
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_current_commit",
+        return_value="1234567",
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.branch_exists",
+        return_value=True,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.update_list_of_files",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_pull_request"
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_branch",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator._get_user",
+        return_value=Mock(name="fake name", login="fake login"),
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.GitHubHelper.delete_branch",
+        return_value=None,
+    )
+    def test_branch_exists(
+        self,
+        delete_branch_mock,
+        get_user_mock,
+        create_branch_mock,
+        create_pr_mock,
+        update_files_mock,
+        branch_exists_mock,
+        current_commit_mock,
+        modified_list_mock,
+        repo_mock,
+        authenticate_mock,
+        close_existing_prs_mock,
+    ):
         """
         Ensure if a branch exists and delete_old_pull_requests is set to False, then there are no updates.
         """
-        pull_request_creator = PullRequestCreator('--repo_root=../../edx-platform', 'upgrade-branch', [],
-                                                  [], 'Upgrade python requirements', 'Update python requirements',
-                                                  'make upgrade PR')
+        pull_request_creator = PullRequestCreator(
+            "--repo_root=../../edx-platform",
+            "upgrade-branch",
+            [],
+            [],
+            "Upgrade python requirements",
+            "Update python requirements",
+            "make upgrade PR",
+        )
         pull_request_creator.create(False)
 
         assert branch_exists_mock.called
@@ -280,31 +480,73 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
         assert not create_pr_mock.called
         assert not delete_branch_mock.called
 
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.close_existing_pull_requests',
-           return_value=[])
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator._get_user',
-           return_value=Mock(name="fake name", login="fake login"))
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_github_instance',
-           return_value=Mock())
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.repo_from_remote', return_value=Mock())
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_updated_files_list',
-           return_value=["requirements/edx/base.txt", "requirements/edx/coverage.txt"])
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_current_commit', return_value='1234567')
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.close_existing_pull_requests",
+        return_value=[],
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator._get_user",
+        return_value=Mock(name="fake name", login="fake login"),
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_github_instance",
+        return_value=Mock(),
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.repo_from_remote",
+        return_value=Mock(),
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_updated_files_list",
+        return_value=["requirements/edx/base.txt", "requirements/edx/coverage.txt"],
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_current_commit",
+        return_value="1234567",
+    )
     # all above this unused params, no need to interact with those mocks
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.branch_exists', return_value=True)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.update_list_of_files', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_pull_request')
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_branch', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.GitHubHelper.delete_branch', return_value=None)
-    def test_branch_deletion(self, create_branch_mock, create_pr_mock,
-                             update_files_mock, branch_exists_mock, delete_branch_mock, *args):
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.branch_exists",
+        return_value=True,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.update_list_of_files",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_pull_request"
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_branch",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.GitHubHelper.delete_branch",
+        return_value=None,
+    )
+    def test_branch_deletion(
+        self,
+        create_branch_mock,
+        create_pr_mock,
+        update_files_mock,
+        branch_exists_mock,
+        delete_branch_mock,
+        *args,
+    ):
         """
         Ensure if a branch exists and delete_old_pull_requests is set, then branch is deleted
         before creating new PR.
         """
-        pull_request_creator = PullRequestCreator('--repo_root=../../edx-platform', 'upgrade-branch', [],
-                                                  [], 'Upgrade python requirements', 'Update python requirements',
-                                                  'make upgrade PR', output_pr_url_for_github_action=True)
+        pull_request_creator = PullRequestCreator(
+            "--repo_root=../../edx-platform",
+            "upgrade-branch",
+            [],
+            [],
+            "Upgrade python requirements",
+            "Update python requirements",
+            "make upgrade PR",
+            output_pr_url_for_github_action=True,
+        )
         pull_request_creator.create(True)
 
         assert branch_exists_mock.called
@@ -314,93 +556,165 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
         assert create_pr_mock.called
 
     def test_compare_upgrade_difference_with_major_changes(self):
+        pull_request = MagicMock()
         basepath = os.path.dirname(__file__)
-        filepath = os.path.abspath(os.path.join(basepath, "pull_request_creator_test_data", "diff.txt"))
+        filepath = os.path.abspath(
+            os.path.join(basepath, "pull_request_creator_test_data", "diff.txt")
+        )
         with open(filepath, "r") as f:
-            valid, suspicious = GitHubHelper().compare_pr_differnce(f.read())
+            valid, suspicious = GitHubHelper().compare_pr_differnce(
+                pull_request, f.read()
+            )
             assert sorted(
-                ['certifi', 'chardet', 'filelock', 'pip-tools', 'platformdirs', 'pylint', 'virtualenv']
-            ) == [g['name'] for g in valid]
+                [
+                    "certifi",
+                    "chardet",
+                    "filelock",
+                    "pip-tools",
+                    "platformdirs",
+                    "pylint",
+                    "virtualenv",
+                ]
+            ) == [g["name"] for g in valid]
 
             assert sorted(
-                ['cachetools', 'six', 'tox', 'pyproject-api', 'colorama', 'py', 'chardet', 'pyparsing', 'packaging']
-            ) == [g['name'] for g in suspicious]
+                [
+                    "cachetools",
+                    "six",
+                    "tox",
+                    "pyproject-api",
+                    "colorama",
+                    "py",
+                    "chardet",
+                    "pyparsing",
+                    "packaging",
+                ]
+            ) == [g["name"] for g in suspicious]
 
     def test_compare_upgrade_difference_with_minor_changes(self):
+        pull_request = MagicMock()
         basepath = os.path.dirname(__file__)
-        filepath = os.path.abspath(os.path.join(basepath, "pull_request_creator_test_data", "minor_diff.txt"))
+        filepath = os.path.abspath(
+            os.path.join(basepath, "pull_request_creator_test_data", "minor_diff.txt")
+        )
         with open(filepath, "r") as f:
-            valid, suspicious = GitHubHelper().compare_pr_differnce(f.read())
-            assert sorted(
-                ['packaging']
-            ) == [g['name'] for g in valid]
+            valid, suspicious = GitHubHelper().compare_pr_differnce(
+                pull_request, f.read()
+            )
+            assert sorted(["packaging"]) == [g["name"] for g in valid]
 
-            assert sorted(
-                []
-            ) == [g['name'] for g in suspicious]
+            assert sorted([]) == [g["name"] for g in suspicious]
 
     def test_check_automerge_variable_value(self):
-        with patch('requests.get') as mock_request:
+        with patch("requests.get") as mock_request:
             mock_request.return_value.status_code = 200
             mock_request.return_value.json.return_value = {
-                'name': 'ENABLE_AUTOMERGE_FOR_DEPENDENCIES_PRS', 'value': 'True',
-                'created_at': '2023-03-17T12:58:50Z', 'updated_at': '2023-03-17T13:01:12Z'
+                "name": "ENABLE_AUTOMERGE_FOR_DEPENDENCIES_PRS",
+                "value": "True",
+                "created_at": "2023-03-17T12:58:50Z",
+                "updated_at": "2023-03-17T13:01:12Z",
             }
             self.assertTrue(
                 GitHubHelper().check_automerge_variable_value(
-                    'https://foo/bar/testrepo/pulls/1'
+                    "https://foo/bar/testrepo/pulls/1"
                 )
             )
 
             # in case of false value of variable.
             mock_request.return_value.json.return_value = {
-                'name': 'ENABLE_AUTOMERGE_FOR_DEPENDENCIES_PRS', 'value': 'False',
-                'created_at': '2023-03-17T12:58:50Z', 'updated_at': '2023-03-17T13:01:12Z'
+                "name": "ENABLE_AUTOMERGE_FOR_DEPENDENCIES_PRS",
+                "value": "False",
+                "created_at": "2023-03-17T12:58:50Z",
+                "updated_at": "2023-03-17T13:01:12Z",
             }
             self.assertFalse(
                 GitHubHelper().check_automerge_variable_value(
-                    'https://foo/bar/testrepo/pulls/1'
+                    "https://foo/bar/testrepo/pulls/1"
                 )
             )
             # in case of no variable exists.
             mock_request.return_value.status_code = 404
             mock_request.return_value.json.return_value = {
-                'name': 'ENABLE_AUTOMERGE_FOR_DEPENDENCIES_PRS', 'value': 'False',
-                'created_at': '2023-03-17T12:58:50Z', 'updated_at': '2023-03-17T13:01:12Z'
+                "name": "ENABLE_AUTOMERGE_FOR_DEPENDENCIES_PRS",
+                "value": "False",
+                "created_at": "2023-03-17T12:58:50Z",
+                "updated_at": "2023-03-17T13:01:12Z",
             }
             self.assertFalse(
                 GitHubHelper().check_automerge_variable_value(
-                    'https://foo/bar/testrepo/pulls/1'
+                    "https://foo/bar/testrepo/pulls/1"
                 )
             )
 
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.close_existing_pull_requests',
-           return_value=[])
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_github_instance',
-           return_value=Mock())
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.repo_from_remote', return_value=Mock())
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_updated_files_list',
-           return_value=["requirements/edx/base.txt", "requirements/edx/coverage.txt"])
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_current_commit', return_value='1234567')
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.branch_exists', return_value=False)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.update_list_of_files', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_pull_request')
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_branch', return_value=None)
-    @patch('edx_repo_tools.pull_request_creator.PullRequestCreator._get_user',
-           return_value=Mock(name="fake name", login="fake login"))
-    @patch('edx_repo_tools.pull_request_creator.GitHubHelper.delete_branch', return_value=None)
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.close_existing_pull_requests",
+        return_value=[],
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_github_instance",
+        return_value=Mock(),
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.repo_from_remote",
+        return_value=Mock(),
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_updated_files_list",
+        return_value=["requirements/edx/base.txt", "requirements/edx/coverage.txt"],
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.get_current_commit",
+        return_value="1234567",
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.branch_exists",
+        return_value=False,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.update_list_of_files",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_pull_request"
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator.github_helper.create_branch",
+        return_value=None,
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.PullRequestCreator._get_user",
+        return_value=Mock(name="fake name", login="fake login"),
+    )
+    @patch(
+        "edx_repo_tools.pull_request_creator.GitHubHelper.delete_branch",
+        return_value=None,
+    )
     def test_changes_with_minor_versions_and_variable(
-        self, delete_branch_mock, get_user_mock, create_branch_mock, create_pr_mock,
-        update_files_mock, branch_exists_mock, current_commit_mock,
-        modified_list_mock, repo_mock, authenticate_mock,
-        close_existing_prs_mock
+        self,
+        delete_branch_mock,
+        get_user_mock,
+        create_branch_mock,
+        create_pr_mock,
+        update_files_mock,
+        branch_exists_mock,
+        current_commit_mock,
+        modified_list_mock,
+        repo_mock,
+        authenticate_mock,
+        close_existing_prs_mock,
     ):
         """
         Ensure a merge with no changes to db files will not result in any updates.
         """
-        pull_request_creator = PullRequestCreator('--repo_root=../../edx-platform', 'upgrade-branch', [],
-                                                  [], 'Upgrade python requirements', 'Update python requirements',
-                                                  'make upgrade PR')
+        pull_request_creator = PullRequestCreator(
+            "--repo_root=../../edx-platform",
+            "upgrade-branch",
+            [],
+            [],
+            "Upgrade python requirements",
+            "Update python requirements",
+            "make upgrade PR",
+        )
         pull_request_creator.create(True)
 
         assert branch_exists_mock.called
@@ -412,21 +726,161 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
 
         create_pr_mock.title = "chore: Upgrade Python requirements"
         create_pr_mock.diff_url = "/"
-        create_pr_mock.repository.name = 'xblock-lti-consumer'
+        create_pr_mock.repository.name = "xblock-lti-consumer"
 
         basepath = os.path.dirname(__file__)
 
-        filepath = os.path.abspath(os.path.join(basepath, "pull_request_creator_test_data", "minor_diff.txt"))
+        filepath = os.path.abspath(
+            os.path.join(basepath, "pull_request_creator_test_data", "minor_diff.txt")
+        )
         with open(filepath, "r") as f:
-            content = f.read().encode('utf-8')
-            with patch('requests.get') as mock_request:
+            content = f.read().encode("utf-8")
+            with patch("requests.get") as mock_request:
                 mock_request.return_value.content = content
                 mock_request.return_value.status_code = 200
 
                 # in case of `check_automerge_variable_value` false value label will not added.
                 with patch(
-                        'edx_repo_tools.pull_request_creator.GitHubHelper.check_automerge_variable_value'
+                    "edx_repo_tools.pull_request_creator.GitHubHelper.check_automerge_variable_value"
                 ) as check_automerge_variable_value:
                     check_automerge_variable_value.return_value = False
                     GitHubHelper().verify_upgrade_packages(create_pr_mock)
                     assert not create_pr_mock.set_labels.called
+
+
+class GitHubHelperUvLockTestCase(TestCase):
+    """Test uv.lock file parsing methods in GitHubHelper."""
+
+    def setUp(self):
+        """Set up test fixtures."""
+        with patch.dict(
+            os.environ,
+            {"GITHUB_TOKEN": "test-token", "GITHUB_USER_EMAIL": "test@example.com"},
+        ):
+            with patch("edx_repo_tools.pull_request_creator.Github"):
+                self.helper = GitHubHelper()
+                self.helper.repository = Mock()
+
+    def test_parse_uv_basic_upgrade(self):
+        """Test parsing uv.lock with basic package upgrade."""
+        old_lock = """
+[[package]]
+name = "django"
+version = "3.2.0"
+"""
+        new_lock = """
+[[package]]
+name = "django"
+version = "3.2.5"
+"""
+
+        mock_pr = Mock()
+        mock_pr.head.sha = "new-sha"
+        mock_pr.base.sha = "old-sha"
+
+        mock_file = Mock()
+        mock_file.filename = "uv.lock"
+        mock_pr.get_files.return_value = [mock_file]
+
+        mock_new_content = Mock()
+        mock_new_content.decoded_content.decode.return_value = new_lock
+        mock_old_content = Mock()
+        mock_old_content.decoded_content.decode.return_value = old_lock
+
+        self.helper.repository.get_contents.side_effect = [
+            mock_new_content,
+            mock_old_content,
+        ]
+
+        reqs = self.helper._parse_uv(mock_pr)
+
+        assert len(reqs) == 1
+        assert reqs[0]["name"] == "django"
+        assert reqs[0]["old_version"] == "3.2.0"
+        assert reqs[0]["new_version"] == "3.2.5"
+
+    def test_parse_uv_no_old_lock(self):
+        """Test parsing uv.lock when old file doesn't exist (new migration)."""
+        new_lock = """
+[[package]]
+name = "django"
+version = "3.2.5"
+"""
+
+        mock_pr = Mock()
+        mock_pr.head.sha = "new-sha"
+        mock_pr.base.sha = "old-sha"
+
+        mock_file = Mock()
+        mock_file.filename = "uv.lock"
+        mock_pr.get_files.return_value = [mock_file]
+
+        mock_new_content = Mock()
+        mock_new_content.decoded_content.decode.return_value = new_lock
+
+        # Simulate 404 for old file
+        github_404 = GithubException(404, {"message": "Not Found"}, None)
+
+        self.helper.repository.get_contents.side_effect = [mock_new_content, github_404]
+
+        reqs = self.helper._parse_uv(mock_pr)
+
+        # All packages should be listed as new
+        assert len(reqs) == 1
+        assert reqs[0]["name"] == "django"
+        assert reqs[0]["old_version"] is None
+        assert reqs[0]["new_version"] == "3.2.5"
+
+    def test_parse_uv_not_in_pr(self):
+        """Test parsing when uv.lock is not in the PR files."""
+        mock_pr = Mock()
+        mock_file = Mock()
+        mock_file.filename = "requirements.txt"
+        mock_pr.get_files.return_value = [mock_file]
+
+        reqs = self.helper._parse_uv(mock_pr)
+
+        assert reqs == {}
+
+    def test_parse_uv_with_resolution_markers(self):
+        """Test parsing uv.lock with resolution markers."""
+        new_lock = """
+[[package]]
+name = "mypackage"
+version = "1.0.0"
+resolution-markers = ["python_version < '3.9'", "python_version >= '3.9'"]
+"""
+
+        mock_pr = Mock()
+        mock_pr.head.sha = "new-sha"
+        mock_pr.base.sha = "old-sha"
+
+        mock_file = Mock()
+        mock_file.filename = "uv.lock"
+        mock_pr.get_files.return_value = [mock_file]
+
+        mock_new_content = Mock()
+        mock_new_content.decoded_content.decode.return_value = new_lock
+
+        github_404 = GithubException(404, {"message": "Not Found"}, None)
+        self.helper.repository.get_contents.side_effect = [mock_new_content, github_404]
+
+        reqs = self.helper._parse_uv(mock_pr)
+
+        # Should create separate entries for each resolution marker
+        assert len(reqs) == 2
+
+    def test_add_uv_packages_without_version(self):
+        """Test _add_uv_packages skips packages without version (own package)."""
+        out_packages = {}
+        packages = [
+            {"name": "myproject"},  # No version field
+            {"name": "dependency", "version": "1.0.0"},
+        ]
+
+        result = self.helper._add_uv_packages(out_packages, packages, is_old=False)
+
+        # Should only have the dependency, not myproject
+        assert "myproject" not in result
+        assert "dependency" in result
+        assert result["dependency"]["new_version"] == "1.0.0"
