@@ -7,11 +7,11 @@ import logging
 import os
 import re
 import time
+import tomllib
 from ast import literal_eval
 
 import click
 import requests
-import tomllib
 from git import Git, Repo
 from github import (
     Github,
@@ -325,6 +325,9 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
         Create a new pull request with the changes in head. And tag a list of teams
         for a review.
         """
+        # Store repository for use in other methods
+        self.repository = repository
+
         try:
             pull_request = repository.create_pull(
                 title=title, body=body, base=base, head=head, draft=draft
