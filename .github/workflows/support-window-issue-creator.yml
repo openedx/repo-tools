@@ -11,7 +11,7 @@ jobs:
       issues: write
     steps:
       - name: Create issue
-        uses: imjohnbo/issue-bot@v3
+        uses: imjohnbo/issue-bot@3188c6ce06249206709d3b1f274d0d4c5a521601 # v3.4.5
         with:
           assignees: "usamasadiq"
           close-previous: true
