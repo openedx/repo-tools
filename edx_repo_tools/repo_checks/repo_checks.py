@@ -1210,6 +1210,58 @@ class EnsureNoOutsideCollaborators(Check):
         return steps
 
 
+@Check.register
+class EnsureWorkflowsEnabled(Check):
+    """
+    Cron workflows and others can be automatically disabled by GitHub for various
+    reasons (e.g. inactivity on a forked repo). This check finds all disabled
+    workflows in a repo and re-enables them.
+
+    See: https://github.com/orgs/community/discussions/59547
+    """
+
+    def __init__(self, api: GhApi, org: str, repo: str):
+        super().__init__(api, org, repo)
+        self.disabled_workflows = []
+
+    def is_relevant(self) -> bool:
+        return (
+            not is_security_private_fork(self.api, self.org_name, self.repo_name)
+            and not is_empty(self.api, self.org_name, self.repo_name)
+        )
+
+    def check(self) -> tuple[bool, str]:
+        workflows = list(all_paged_items(
+            self.api.actions.list_repo_workflows,
+            owner=self.org_name,
+            repo=self.repo_name,
+        ))
+        self.disabled_workflows = [w for w in workflows if w.state != "active"]
+
+        if self.disabled_workflows:
+            names = [w.name for w in self.disabled_workflows]
+            return (
+                False,
+                f"Some workflows are disabled:\n\t\t" + "\n\t\t".join(names),
+            )
+        return (True, "All workflows are enabled.")
+
+    def dry_run(self):
+        return self.fix(dry_run=True)
+
+    def fix(self, dry_run=False):
+        steps = []
+        for workflow in self.disabled_workflows:
+            if not dry_run:
+                self.api.actions.enable_workflow(
+                    owner=self.org_name,
+                    repo=self.repo_name,
+                    workflow_id=workflow.id,
+                )
+            steps.append(f"Enabled workflow `{workflow.name}` (id: {workflow.id})")
+        return steps
+
+
 @click.command()
 @click.option(
     "--github-token",
