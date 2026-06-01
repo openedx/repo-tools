@@ -1231,12 +1231,11 @@ class EnsureWorkflowsEnabled(Check):
         )
 
     def check(self) -> tuple[bool, str]:
-        workflows = list(all_paged_items(
-            self.api.actions.list_repo_workflows,
+        response = self.api.actions.list_repo_workflows(
             owner=self.org_name,
             repo=self.repo_name,
-        ))
-        self.disabled_workflows = [w for w in workflows if w.state != "active"]
+        )
+        self.disabled_workflows = [w for w in response.workflows if w.state != "active"]
 
         if self.disabled_workflows:
             names = [w.name for w in self.disabled_workflows]
@@ -1244,7 +1243,8 @@ class EnsureWorkflowsEnabled(Check):
                 False,
                 f"Some workflows are disabled:\n\t\t" + "\n\t\t".join(names),
             )
-        return (True, "All workflows are enabled.")
+        names = [w.name for w in response.workflows]
+        return (True, "All workflows are enabled:\n\t\t" + "\n\t\t".join(names))
 
     def dry_run(self):
         return self.fix(dry_run=True)
