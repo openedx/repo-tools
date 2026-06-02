@@ -1214,11 +1214,17 @@ class EnsureNoOutsideCollaborators(Check):
 class EnsureWorkflowsEnabled(Check):
     """
     Cron workflows and others can be automatically disabled by GitHub for various
-    reasons (e.g. inactivity on a forked repo). This check finds all disabled
-    workflows in a repo and re-enables them.
+    reasons (e.g. inactivity on a forked repo). This check finds all workflows
+    disabled due to inactivity or fork status and re-enables them.
+
+    Only workflows with state `disabled_inactivity` or `disabled_fork` are
+    re-enabled. Workflows disabled manually (`disabled_manually`) are left
+    untouched to avoid overriding intentional admin decisions.
 
     See: https://github.com/orgs/community/discussions/59547
     """
+
+    DISABLED_STATES = {"disabled_inactivity", "disabled_fork"}
 
     def __init__(self, api: GhApi, org: str, repo: str):
         super().__init__(api, org, repo)
@@ -1234,8 +1240,11 @@ class EnsureWorkflowsEnabled(Check):
         response = self.api.actions.list_repo_workflows(
             owner=self.org_name,
             repo=self.repo_name,
+            per_page=100,
         )
-        self.disabled_workflows = [w for w in response.workflows if w.state != "active"]
+        self.disabled_workflows = [
+            w for w in response.workflows if w.state in self.DISABLED_STATES
+        ]
 
         if self.disabled_workflows:
             names = [w.name for w in self.disabled_workflows]
@@ -1243,8 +1252,11 @@ class EnsureWorkflowsEnabled(Check):
                 False,
                 f"Some workflows are disabled:\n\t\t" + "\n\t\t".join(names),
             )
-        names = [w.name for w in response.workflows]
-        return (True, "All workflows are enabled:\n\t\t" + "\n\t\t".join(names))
+        manually_disabled = [w for w in response.workflows if w.state == "disabled_manually"]
+        msg = f"All {response.total_count} workflows are enabled."
+        if manually_disabled:
+            msg = f"{response.total_count} workflows are enabled ({len(manually_disabled)} manually disabled)."
+        return (True, msg)
 
     def dry_run(self):
         return self.fix(dry_run=True)
@@ -1253,11 +1265,15 @@ class EnsureWorkflowsEnabled(Check):
         steps = []
         for workflow in self.disabled_workflows:
             if not dry_run:
-                self.api.actions.enable_workflow(
-                    owner=self.org_name,
-                    repo=self.repo_name,
-                    workflow_id=workflow.id,
-                )
+                try:
+                    self.api.actions.enable_workflow(
+                        owner=self.org_name,
+                        repo=self.repo_name,
+                        workflow_id=workflow.id,
+                    )
+                except HTTP4xxClientError as e:
+                    steps.append(f"Failed to enable workflow `{workflow.name}` (id: {workflow.id}): {e}")
+                    continue
             steps.append(f"Enabled workflow `{workflow.name}` (id: {workflow.id})")
         return steps
 
