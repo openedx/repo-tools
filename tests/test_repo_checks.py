@@ -108,12 +108,16 @@ def make_workflow(name, state, workflow_id=1):
 def make_workflows_api(workflows):
     """
     Make a mock API that returns the given workflows from list_repo_workflows.
+    Simulates pagination: page 1 returns the workflows, subsequent pages are empty.
     """
     api = MagicMock()
-    response = MagicMock()
-    response.workflows = workflows
-    response.total_count = len(workflows)
-    api.actions.list_repo_workflows.return_value = response
+
+    def side_effect(**kwargs):
+        response = MagicMock()
+        response.workflows = workflows if kwargs.get("page", 1) == 1 else []
+        return response
+
+    api.actions.list_repo_workflows.side_effect = side_effect
     return api
 
 

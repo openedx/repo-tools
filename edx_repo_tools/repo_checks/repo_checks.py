@@ -1225,6 +1225,9 @@ class EnsureWorkflowsEnabled(Check):
     """
 
     DISABLED_STATES = {"disabled_inactivity", "disabled_fork"}
+    # Preserve workflows that have been manually disabled to avoid overriding
+    # explicit administrative decisions.
+    DISABLED_MANUALLY_STATE = "disabled_manually"
 
     def __init__(self, api: GhApi, org: str, repo: str):
         super().__init__(api, org, repo)
@@ -1237,13 +1240,15 @@ class EnsureWorkflowsEnabled(Check):
         )
 
     def check(self) -> tuple[bool, str]:
-        response = self.api.actions.list_repo_workflows(
-            owner=self.org_name,
-            repo=self.repo_name,
-            per_page=100,
-        )
+        # list_repo_workflows returns {total_count, workflows} rather than a
+        # flat list, so all_paged_items cannot be used directly. We wrap it to
+        # extract just the workflows list, which all_paged_items expects.
+        def _list_workflows_page(**kwargs):
+            return self.api.actions.list_repo_workflows(**kwargs).workflows
+
+        all_workflows = list(all_paged_items(_list_workflows_page, owner=self.org_name, repo=self.repo_name))
         self.disabled_workflows = [
-            w for w in response.workflows if w.state in self.DISABLED_STATES
+            w for w in all_workflows if w.state in self.DISABLED_STATES
         ]
 
         if self.disabled_workflows:
@@ -1252,10 +1257,12 @@ class EnsureWorkflowsEnabled(Check):
                 False,
                 f"Some workflows are disabled:\n\t\t" + "\n\t\t".join(names),
             )
-        manually_disabled = [w for w in response.workflows if w.state == "disabled_manually"]
-        msg = f"All {response.total_count} workflows are enabled."
+        manually_disabled = [w for w in all_workflows if w.state == self.DISABLED_MANUALLY_STATE]
+        total = len(all_workflows)
+        enabled_count = total - len(manually_disabled)
+        msg = f"All {total} workflows are enabled."
         if manually_disabled:
-            msg = f"{response.total_count} workflows are enabled ({len(manually_disabled)} manually disabled)."
+            msg = f"{enabled_count} of {total} workflows are enabled ({len(manually_disabled)} manually disabled)."
         return (True, msg)
 
     def dry_run(self):
