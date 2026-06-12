@@ -1210,6 +1210,81 @@ class EnsureNoOutsideCollaborators(Check):
         return steps
 
 
+@Check.register
+class EnsureWorkflowsEnabled(Check):
+    """
+    Cron workflows and others can be automatically disabled by GitHub for various
+    reasons (e.g. inactivity on a forked repo). This check finds all workflows
+    disabled due to inactivity or fork status and re-enables them.
+
+    Only workflows with state `disabled_inactivity` or `disabled_fork` are
+    re-enabled. Workflows disabled manually (`disabled_manually`) are left
+    untouched to avoid overriding intentional admin decisions.
+
+    See: https://github.com/orgs/community/discussions/59547
+    """
+
+    DISABLED_STATES = {"disabled_inactivity", "disabled_fork"}
+    # Preserve workflows that have been manually disabled to avoid overriding
+    # explicit administrative decisions.
+    DISABLED_MANUALLY_STATE = "disabled_manually"
+
+    def __init__(self, api: GhApi, org: str, repo: str):
+        super().__init__(api, org, repo)
+        self.disabled_workflows = []
+
+    def is_relevant(self) -> bool:
+        return (
+            not is_security_private_fork(self.api, self.org_name, self.repo_name)
+            and not is_empty(self.api, self.org_name, self.repo_name)
+        )
+
+    def check(self) -> tuple[bool, str]:
+        # list_repo_workflows returns {total_count, workflows} rather than a
+        # flat list, so all_paged_items cannot be used directly. We wrap it to
+        # extract just the workflows list, which all_paged_items expects.
+        def _list_workflows_page(**kwargs):
+            return self.api.actions.list_repo_workflows(**kwargs).workflows
+
+        all_workflows = list(all_paged_items(_list_workflows_page, owner=self.org_name, repo=self.repo_name))
+        self.disabled_workflows = [
+            w for w in all_workflows if w.state in self.DISABLED_STATES
+        ]
+
+        if self.disabled_workflows:
+            names = [w.name for w in self.disabled_workflows]
+            return (
+                False,
+                f"Some workflows are disabled:\n\t\t" + "\n\t\t".join(names),
+            )
+        manually_disabled = [w for w in all_workflows if w.state == self.DISABLED_MANUALLY_STATE]
+        total = len(all_workflows)
+        enabled_count = total - len(manually_disabled)
+        msg = f"All {total} workflows are enabled."
+        if manually_disabled:
+            msg = f"{enabled_count} of {total} workflows are enabled ({len(manually_disabled)} manually disabled)."
+        return (True, msg)
+
+    def dry_run(self):
+        return self.fix(dry_run=True)
+
+    def fix(self, dry_run=False):
+        steps = []
+        for workflow in self.disabled_workflows:
+            if not dry_run:
+                try:
+                    self.api.actions.enable_workflow(
+                        owner=self.org_name,
+                        repo=self.repo_name,
+                        workflow_id=workflow.id,
+                    )
+                except HTTP4xxClientError as e:
+                    steps.append(f"Failed to enable workflow `{workflow.name}` (id: {workflow.id}): {e}")
+                    continue
+            steps.append(f"Enabled workflow `{workflow.name}` (id: {workflow.id})")
+        return steps
+
+
 @click.command()
 @click.option(
     "--github-token",

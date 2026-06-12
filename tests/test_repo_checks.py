@@ -7,6 +7,8 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
+from fastcore.net import HTTP4xxClientError
+
 from edx_repo_tools.repo_checks import repo_checks
 
 
@@ -90,3 +92,114 @@ class TestLabelsCheck:
         assert call_args == expected_call
         assert not api.issues.create_label.called
         assert api.issues.update_label.called
+
+
+def make_workflow(name, state, workflow_id=1):
+    """
+    Quickly make a basic workflow object to return via the API.
+    """
+    w = MagicMock()
+    w.name = name
+    w.state = state
+    w.id = workflow_id
+    return w
+
+
+def make_workflows_api(workflows):
+    """
+    Make a mock API that returns the given workflows from list_repo_workflows.
+    Simulates pagination: page 1 returns the workflows, subsequent pages are empty.
+    """
+    api = MagicMock()
+
+    def side_effect(**kwargs):
+        response = MagicMock()
+        response.workflows = workflows if kwargs.get("page", 1) == 1 else []
+        return response
+
+    api.actions.list_repo_workflows.side_effect = side_effect
+    return api
+
+
+class TestEnsureWorkflowsEnabled:
+    def test_check_all_active(self):
+        api = make_workflows_api([make_workflow("CI", "active"), make_workflow("Lint", "active")])
+        check_cls = repo_checks.EnsureWorkflowsEnabled(api, "test_org", "test_repo")
+        # Make sure that the check returns True when all workflows are active.
+        assert check_cls.check()[0] == True
+
+    def test_check_disabled_inactivity(self):
+        api = make_workflows_api([make_workflow("CI", "active"), make_workflow("Upgrade", "disabled_inactivity", 42)])
+        check_cls = repo_checks.EnsureWorkflowsEnabled(api, "test_org", "test_repo")
+        # The check should be false because a workflow is disabled due to inactivity.
+        assert check_cls.check()[0] == False
+
+    def test_check_disabled_fork(self):
+        api = make_workflows_api([make_workflow("Upgrade", "disabled_fork", 99)])
+        check_cls = repo_checks.EnsureWorkflowsEnabled(api, "test_org", "test_repo")
+        # The check should be false because a workflow is disabled due to fork status.
+        assert check_cls.check()[0] == False
+
+    def test_check_disabled_manually_ignored(self):
+        api = make_workflows_api([make_workflow("CI", "active"), make_workflow("Secret", "disabled_manually")])
+        check_cls = repo_checks.EnsureWorkflowsEnabled(api, "test_org", "test_repo")
+        # Manually disabled workflows should not be flagged.
+        assert check_cls.check()[0] == True
+
+    def test_fix_enables_disabled_workflows(self):
+        api = make_workflows_api([make_workflow("Upgrade", "disabled_inactivity", 42)])
+        check_cls = repo_checks.EnsureWorkflowsEnabled(api, "test_org", "test_repo")
+        check_cls.check()
+        steps = check_cls.fix()
+        # fix() should call enable_workflow with the correct arguments.
+        assert api.actions.enable_workflow.call_args == call(
+            owner="test_org",
+            repo="test_repo",
+            workflow_id=42,
+        )
+        assert len(steps) == 1
+        assert "Upgrade" in steps[0]
+
+    def test_dry_run_does_not_call_enable(self):
+        api = make_workflows_api([make_workflow("Upgrade", "disabled_inactivity", 42)])
+        check_cls = repo_checks.EnsureWorkflowsEnabled(api, "test_org", "test_repo")
+        check_cls.check()
+        check_cls.dry_run()
+        # dry_run() should not make any changes to GitHub.
+        assert not api.actions.enable_workflow.called
+
+    def test_is_relevant_false_for_security_fork(self):
+        api = MagicMock()
+        api.repos.get.return_value = MagicMock(private=True, default_branch="main")
+        check_cls = repo_checks.EnsureWorkflowsEnabled(api, "test_org", "test_repo-ghsa-1234-5678-9012")
+        assert check_cls.is_relevant() == False
+
+    @patch("edx_repo_tools.repo_checks.repo_checks.is_empty", return_value=True)
+    def test_is_relevant_false_for_empty_repo(self, _):
+        api = MagicMock()
+        api.repos.get.return_value = MagicMock(private=False, default_branch="main")
+        check_cls = repo_checks.EnsureWorkflowsEnabled(api, "test_org", "test_repo")
+        assert check_cls.is_relevant() == False
+
+    def test_is_relevant_true_for_normal_repo(self):
+        api = MagicMock()
+        api.repos.get.return_value = MagicMock(private=False, default_branch="main")
+        check_cls = repo_checks.EnsureWorkflowsEnabled(api, "test_org", "test_repo")
+        assert check_cls.is_relevant() == True
+
+    def test_fix_continues_on_api_error(self):
+        api = make_workflows_api([
+            make_workflow("Failing", "disabled_inactivity", 1),
+            make_workflow("Upgrade", "disabled_inactivity", 2),
+        ])
+        api.actions.enable_workflow.side_effect = [
+            HTTP4xxClientError("url", 422, "Unprocessable Entity", {}, None),
+            None,
+        ]
+        check_cls = repo_checks.EnsureWorkflowsEnabled(api, "test_org", "test_repo")
+        check_cls.check()
+        steps = check_cls.fix()
+        # fix() should attempt all workflows even if one fails.
+        assert api.actions.enable_workflow.call_count == 2
+        assert any("Failed" in s for s in steps)
+        assert any("Upgrade" in s for s in steps)
