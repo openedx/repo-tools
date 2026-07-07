@@ -2,6 +2,7 @@ name: Support Windows Issue Creater
 on:
   schedule:
     - cron: 0 0 1 */3 *
+  workflow_dispatch:
 
 jobs:
   create_issue:
