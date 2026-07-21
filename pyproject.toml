@@ -55,6 +55,7 @@ conventional_commits = [
     "pandas",
 ]
 find_dependencies = [
+    "packaging",
     "requests",
     "requirements-parser",
     "rich",
