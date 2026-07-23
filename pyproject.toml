@@ -147,6 +147,8 @@ constraint-dependencies = [
     # DO NOT EDIT - Use 'python sync_constraints.py' to update
     "Django<6.0",
     "elasticsearch<7.14.0",
+    "social-auth-app-django<6.0.0",
+    "social-auth-core<5.0.0",
     # Local constraint
     "greenlet>3.0.1",  # playwright and sqlalchemy requirements conflict for greenlet<=3.0.1
 ]
