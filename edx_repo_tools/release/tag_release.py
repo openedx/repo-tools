@@ -35,7 +35,7 @@ log = logging.getLogger(__name__)
 # Name used for fetching/storing GitHub OAuth tokens on disk
 TOKEN_NAME = "openedx-release"
 
-OPENEDX_ORGS = ['openedx']
+OPENEDX_ORGS = ["openedx"]
 
 
 # An object to act like a response (with a .text attribute) in the case that
@@ -45,6 +45,7 @@ FakeResponse = collections.namedtuple("FakeResponse", "text")
 
 class TagReleaseError(Exception):
     """Something went wrong..."""
+
     pass
 
 
@@ -55,26 +56,26 @@ def nice_tqdm(iterable, desc):
 def filter_repos(openedx_repo, catalog_repo):
     """
     Return the subset of the repos with catalog-info.yaml file if they have 'openedx.org/release' section otherwise
-    with openedx.yaml file. 
+    with openedx.yaml file.
 
     Arguments:
         openedx_repo (list of dictionaries): list of repos with data of openedx.yaml with `openedx-release` section.
-        catalog_repo (list of dictionaries): list of repos with data of catalog.yaml with 'openedx.org/release' section.  
+        catalog_repo (list of dictionaries): list of repos with data of catalog.yaml with 'openedx.org/release' section.
     """
     result_dict = {}
     for repo_key, openedx_data in openedx_repo.items():
         if repo_key in catalog_repo:
             result_dict[repo_key] = catalog_repo[repo_key]
         else:
-            result_dict[repo_key] = openedx_data 
+            result_dict[repo_key] = openedx_data
 
     for repo_key, catalog_data in catalog_repo.items():
         if repo_key not in result_dict:
             result_dict[repo_key] = catalog_data
 
-    return result_dict        
+    return result_dict
 
- 
+
 def openedx_repos_with_catalog_info(hub, orgs=None, branches=None):
     """
     Return a subset of the repos with catalog-info.yaml files: the repos
@@ -94,13 +95,16 @@ def openedx_repos_with_catalog_info(hub, orgs=None, branches=None):
     """
     orgs = orgs or OPENEDX_ORGS
     repos = {}
-    for repo, data in tqdm(iter_openedx_yaml('catalog-info.yaml', hub, orgs=orgs, branches=branches), desc='Find repos'):
-
-        if 'metadata' in data:
-            annotations = data['metadata'].get('annotations')
+    for repo, data in tqdm(
+        iter_openedx_yaml("catalog-info.yaml", hub, orgs=orgs, branches=branches),
+        desc="Find repos",
+    ):
+        if "metadata" in data:
+            annotations = data["metadata"].get("annotations")
             if annotations:
-                # Check if 'openedx.org/release' is present in annotations
-                if 'openedx.org/release' in annotations:
+                release = annotations.get("openedx.org/release")
+                # Check if 'openedx.org/release' has a release branch value.
+                if release and release != "null":
                     repo = repo.refresh()
                     repos[repo] = data
 
@@ -126,8 +130,11 @@ def openedx_release_repos(hub, orgs=None, branches=None):
     """
     orgs = orgs or OPENEDX_ORGS
     repos = {}
-    for repo, data in tqdm(iter_openedx_yaml('openedx.yaml', hub, orgs=orgs, branches=branches), desc='Find repos'):
-        if data.get('openedx-release'):            
+    for repo, data in tqdm(
+        iter_openedx_yaml("openedx.yaml", hub, orgs=orgs, branches=branches),
+        desc="Find repos",
+    ):
+        if data.get("openedx-release"):
             repo = repo.refresh()
             repos[repo] = data
 
@@ -139,9 +146,8 @@ def repo_matches(repo, pattern):
 
     True if either the name or the full_name of the repo matches.
     """
-    return (
-        fnmatch.fnmatch(repo.full_name, pattern) or
-        fnmatch.fnmatch(repo.name, pattern)
+    return fnmatch.fnmatch(repo.full_name, pattern) or fnmatch.fnmatch(
+        repo.name, pattern
     )
 
 
@@ -175,19 +181,22 @@ def trim_skipped_repos(repos, skip_repos):
         trimmed[repo] = data
     return trimmed
 
+
 def trim_dependent_repos(repos):
     """Remove dependent repos (an obsolete feature of this program).
 
     Repos with 'parent-repo' in their 'openedx-release' data are removed from
-    the `repos` dict.  A new dict of repos is returned.
+    the `repos` dict. Repos using catalog-info.yaml metadata are left alone.
+    A new dict of repos is returned.
 
     """
     trimmed = {}
 
     for r, data in repos.items():
-        if 'parent-repo' in data['openedx-release']:
+        openedx_release = data.get("openedx-release", {})
+        if "parent-repo" in openedx_release:
             msg = f"Repo {r} is dependent: you can remove openedx-release from its openedx.yaml file"
-            click.secho(msg, fg='yellow')
+            click.secho(msg, fg="yellow")
         else:
             trimmed[r] = data
 
@@ -207,7 +216,8 @@ def trim_indecisive_repos(repos):
     """
     trimmed = {}
     for repo, repo_data in repos.items():
-        maybe = repo_data["openedx-release"].get("maybe")
+        openedx_release = repo_data.get("openedx-release", {})
+        maybe = openedx_release.get("maybe")
         if maybe:
             click.secho(f"*** {repo} has openedx-release 'maybe', skipped", fg="red")
         else:
@@ -235,9 +245,11 @@ def override_repo_refs(repos, override_ref=None, overrides=None):
             local_override = overrides.get(repo.full_name, override_ref)
             if local_override:
                 if "metadata" in repo_data:
-                    repo_data["metadata"]["annotations"]["openedx.org/release"] = local_override
+                    repo_data["metadata"]["annotations"]["openedx.org/release"] = (
+                        local_override
+                    )
                 elif "openedx-release" in repo_data:
-                    repo_data["openedx-release"]["ref"] = local_override    
+                    repo_data["openedx-release"]["ref"] = local_override
     return repos
 
 
@@ -277,17 +289,17 @@ def commit_ref_info(repos, skip_invalid=False):
 
     """
     ref_info = {}
-    for repo, repo_data in nice_tqdm(repos.items(), desc='Find commits'):
+    for repo, repo_data in nice_tqdm(repos.items(), desc="Find commits"):
         # are we specifying a ref?
 
-        if 'metadata' in repo_data:
-            annotations = repo_data['metadata'].get('annotations', {})
-            ref = annotations.get('openedx.org/release')
-         
+        if "metadata" in repo_data:
+            annotations = repo_data["metadata"].get("annotations", {})
+            ref = annotations.get("openedx.org/release")
+
         # Check if 'openedx-release' is present in repo_data and get the ref
         # This check will be remove once we will just support catalog_info.yaml and remove openedx.yaml
-        elif 'openedx-release' in repo_data:
-            ref = repo_data['openedx-release'].get('ref')
+        elif "openedx-release" in repo_data:
+            ref = repo_data["openedx-release"].get("ref")
 
         if ref:
             try:
@@ -295,8 +307,7 @@ def commit_ref_info(repos, skip_invalid=False):
             except (GitHubError, ValueError):
                 if skip_invalid:
                     msg = "Invalid ref {ref} in repo {repo}".format(
-                        ref=ref,
-                        repo=repo.full_name
+                        ref=ref, repo=repo.full_name
                     )
                     log.error(msg)
                     continue
@@ -334,7 +345,7 @@ def get_latest_commit_for_ref(repo, ref):
         }
 
     try:
-        tag = repo.ref(f'tags/{ref}')
+        tag = repo.ref(f"tags/{ref}")
     except TypeError as err:
         # GitHub unfortunately returns a list of partial matches if you ask for
         # a ref that doesn't exist.  This means the code in github3 that
@@ -380,7 +391,6 @@ def get_latest_commit_for_ref(repo, ref):
     raise ValueError(f"No commit for {ref} in {repo.full_name}")
 
 
-
 def get_ref_for_repos(repos, ref, use_tag=True):
     """
     Returns a dictionary with a key-value pairing for each repo in the given
@@ -403,7 +413,7 @@ def get_ref_for_repos(repos, ref, use_tag=True):
             name=ref,
         )
     return_value = {}
-    for repo in nice_tqdm(repos, desc='Get refs'):
+    for repo in nice_tqdm(repos, desc="Get refs"):
         try:
             ref_obj = repo.ref(ref)
         except NotFoundError:
@@ -443,16 +453,20 @@ def todo_list(ref_info):
 
     entries = []
     for repo, commit_info in ref_info.items():
-        when = datetime.datetime.strptime(commit_info['committer']['date'], "%Y-%m-%dT%H:%M:%SZ")
-        entries.append("{repo}: {ref} ({type}) {sha}\n  {when:%Y-%m-%d} {who}: {msg}".format(
-            repo=repo,
-            ref=commit_info['ref'],
-            type=commit_info['ref_type'],
-            sha=commit_info['sha'][0:7],
-            msg=commit_info["message"].splitlines()[0],
-            when=when,
-            who=commit_info['committer']['name'],
-        ))
+        when = datetime.datetime.strptime(
+            commit_info["committer"]["date"], "%Y-%m-%dT%H:%M:%SZ"
+        )
+        entries.append(
+            "{repo}: {ref} ({type}) {sha}\n  {when:%Y-%m-%d} {who}: {msg}".format(
+                repo=repo,
+                ref=commit_info["ref"],
+                type=commit_info["ref_type"],
+                sha=commit_info["sha"][0:7],
+                msg=commit_info["message"].splitlines()[0],
+                when=when,
+                who=commit_info["committer"]["name"],
+            )
+        )
     return "\n".join(sorted(entries))
 
 
@@ -499,15 +513,17 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
         try:
             dry_echo(
                 dry,
-                'Creating ref {} with sha {} in repo {}'.format(
-                    ref, commit_info['sha'], repo.full_name
+                "Creating ref {} with sha {} in repo {}".format(
+                    ref, commit_info["sha"], repo.full_name
                 ),
-                fg='green'
+                fg="green",
             )
             if not dry:
-                created_ref = repo.create_ref(ref=ref, sha=commit_info['sha'])
+                created_ref = repo.create_ref(ref=ref, sha=commit_info["sha"])
                 if created_ref is None:
-                    failed_resp = FakeResponse(text="Something went terribly wrong, not sure what")
+                    failed_resp = FakeResponse(
+                        text="Something went terribly wrong, not sure what"
+                    )
                     failed_repo = repo
                     break
                 succeeded.append((repo, created_ref))
@@ -544,14 +560,14 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
             try:
                 dry_echo(
                     dry,
-                    'Deleting ref {} from repo {}'.format(
+                    "Deleting ref {} from repo {}".format(
                         created_ref.ref, repo.full_name
                     ),
-                    fg='red'
+                    fg="red",
                 )
                 if not dry:
                     created_ref.delete()
-            except GitHubError as exc:
+            except GitHubError:
                 rollback_failures.append(repo.full_name)
 
         if rollback_failures:
@@ -564,7 +580,7 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
                 ref=ref,
                 failed_repo=failed_repo.full_name,
                 orig_err=original_err_msg,
-                rollback_failures=", ".join(rollback_failures)
+                rollback_failures=", ".join(rollback_failures),
             )
             err = TagReleaseError(msg)
             err.response = failed_resp
@@ -592,7 +608,7 @@ def create_ref_for_repos(ref_info, ref, use_tag=True, rollback_on_fail=True, dry
             ref=ref,
             failed_repo=failed_repo.full_name,
             orig_err=original_err_msg,
-            tagged_repos=", ".join(repo.full_name for repo, _ in succeeded)
+            tagged_repos=", ".join(repo.full_name for repo, _ in succeeded),
         )
         err = TagReleaseError(msg)
         err.response = failed_resp
@@ -625,10 +641,10 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
         True if any repos had the ref removed, False if no repos were modified.
 
     """
-    if ref.startswith('refs/'):
-        ref = ref[len('refs/'):]
+    if ref.startswith("refs/"):
+        ref = ref[len("refs/") :]
 
-    if not (ref.startswith("heads/") or ref.startswith('tags/')):
+    if not (ref.startswith("heads/") or ref.startswith("tags/")):
         ref = "{type}/{ref}".format(
             type="tags" if use_tag else "heads",
             ref=ref,
@@ -646,10 +662,8 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
 
             dry_echo(
                 dry,
-                'Deleting ref {} from repo {}'.format(
-                    ref_obj.ref, repo.full_name
-                ),
-                fg='red'
+                "Deleting ref {} from repo {}".format(ref_obj.ref, repo.full_name),
+                fg="red",
             )
             if not dry:
                 ref_obj.delete()
@@ -659,9 +673,7 @@ def remove_ref_for_repos(repos, ref, use_tag=True, dry=True):
             failures[repo.full_name] = err
 
     if failures:
-        msg = (
-            "Failed to remove the ref from the following repos: {repos}"
-        ).format(
+        msg = ("Failed to remove the ref from the following repos: {repos}").format(
             repos=", ".join(failures.keys())
         )
         err = TagReleaseError(msg)
@@ -683,7 +695,7 @@ def archived_repos(repos):
 
     """
     archived = []
-    for repo in nice_tqdm(repos, desc='Check for archived repos'):
+    for repo in nice_tqdm(repos, desc="Check for archived repos"):
         repo = repo.refresh()
         if repo.archived:
             archived.append(repo)
@@ -698,9 +710,15 @@ def ensure_writable(repos):
         repos: a list of Repository objects.
     """
     while repos:
-        click.secho("The following repos need to be unarchived to continue:", fg='red', bold=True)
+        click.secho(
+            "The following repos need to be unarchived to continue:",
+            fg="red",
+            bold=True,
+        )
         for repo in repos:
-            click.echo(f"  {repo.full_name}: https://github.com/{repo.full_name}/settings")
+            click.echo(
+                f"  {repo.full_name}: https://github.com/{repo.full_name}/settings"
+            )
         while not click.confirm("Are they all unarchived?"):
             pass
         repos = archived_repos(repos)
@@ -709,72 +727,119 @@ def ensure_writable(repos):
 
 @click.command()
 @click.argument(
-    'ref', metavar="REF",
+    "ref",
+    metavar="REF",
 )
 @click.option(
-    '--tag/--branch', "use_tag", is_flag=True, default=True,
-    help="Whether to create branches or tags in the repo. Defaults to using tags."
+    "--tag/--branch",
+    "use_tag",
+    is_flag=True,
+    default=True,
+    help="Whether to create branches or tags in the repo. Defaults to using tags.",
 )
 @click.option(
-    '--override-ref', metavar="REF",
+    "--override-ref",
+    metavar="REF",
     help="A reference to use that overrides the references from the "
-         "openedx.yaml file in *ALL* repos. This might be a release candidate "
-         "branch, for example."
+    "openedx.yaml file in *ALL* repos. This might be a release candidate "
+    "branch, for example.",
 )
 @click.option(
-    '--override', 'overrides',
-    nargs=2, metavar="REPO REF",
+    "--override",
+    "overrides",
+    nargs=2,
+    metavar="REPO REF",
     multiple=True,
     help="Override a reference for a specific repo. The repo must be "
-         "specified using the full name of the repo, like 'edx/edx-platform'. "
-         "This option can be provided multiple times."
+    "specified using the full name of the repo, like 'edx/edx-platform'. "
+    "This option can be provided multiple times.",
 )
 @click.option(
-    '-y', '--yes', 'interactive', is_flag=True, default=True, flag_value=False,
-    help="non-interactive mode: answer yes to all questions"
+    "-y",
+    "--yes",
+    "interactive",
+    is_flag=True,
+    default=True,
+    flag_value=False,
+    help="non-interactive mode: answer yes to all questions",
 )
 @click.option(
-    '-q', '--quiet', is_flag=True, default=False,
-    help="don't print any unnecessary output"
+    "-q",
+    "--quiet",
+    is_flag=True,
+    default=False,
+    help="don't print any unnecessary output",
 )
 @click.option(
-    '-R', '--reverse', is_flag=True, default=False,
-    help="delete ref instead of creating it"
+    "-R",
+    "--reverse",
+    is_flag=True,
+    default=False,
+    help="delete ref instead of creating it",
 )
 @click.option(
-    '--skip-invalid', is_flag=True, default=False,
+    "--skip-invalid",
+    is_flag=True,
+    default=False,
     help="if the openedx.yaml file points to an invalid repo, skip it "
-         "instead of throwing an error"
+    "instead of throwing an error",
 )
 @click.option(
-    '--input-repos', help="Path to load the list of `openedx.yaml` repositories from. Only use if no `openedx.yaml` files have changed."
+    "--input-repos",
+    help="Path to load the list of `openedx.yaml` repositories from. Only use if no `openedx.yaml` files have changed.",
 )
 @click.option(
-    '--output-repos', help="Path to save the list of `openedx.yaml` repositories for a later usage."
+    "--output-repos",
+    help="Path to save the list of `openedx.yaml` repositories for a later usage.",
 )
 @click.option(
-    '--include-repo', 'included_repos', multiple=True,
-    help="Specify patterns of repos that should be included."
+    "--include-repo",
+    "included_repos",
+    multiple=True,
+    help="Specify patterns of repos that should be included.",
 )
 @click.option(
-    '--skip-repo', 'skip_repos', multiple=True,
-    help="Specify patterns of repos that should be ignored in spite of having an openedx.yaml file."
+    "--skip-repo",
+    "skip_repos",
+    multiple=True,
+    help="Specify patterns of repos that should be ignored in spite of having an openedx.yaml file.",
 )
 @click.option(
-    '--search-branch', 'branches', multiple=True,
+    "--search-branch",
+    "branches",
+    multiple=True,
     help="Specify a branch to search for the openedx.yaml file. If specified "
-         "multiple times, the first openedx.yaml file found will be used.",
+    "multiple times, the first openedx.yaml file found will be used.",
 )
 @click.option(
-    '--org', 'orgs', multiple=True, default=OPENEDX_ORGS, show_default=True,
+    "--org",
+    "orgs",
+    multiple=True,
+    default=OPENEDX_ORGS,
+    show_default=True,
     help="Specify a GitHub organization to search for openedx release data. "
-         "May be specified multiple times.",
+    "May be specified multiple times.",
 )
 @dry
 @pass_github
-def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
-         reverse, skip_invalid, input_repos, output_repos, included_repos,
-         skip_repos, dry, orgs, branches):
+def main(
+    hub,
+    ref,
+    use_tag,
+    override_ref,
+    overrides,
+    interactive,
+    quiet,
+    reverse,
+    skip_invalid,
+    input_repos,
+    output_repos,
+    included_repos,
+    skip_repos,
+    dry,
+    orgs,
+    branches,
+):
     """
     Create/remove tags & branches on GitHub repos for Open edX releases.
 
@@ -807,21 +872,29 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
                 for r in json.load(f)
             }
     else:
-        repos = filter_repos(openedx_release_repos(hub, orgs, branches), openedx_repos_with_catalog_info(hub, orgs, branches))
-                
+        repos = filter_repos(
+            openedx_release_repos(hub, orgs, branches),
+            openedx_repos_with_catalog_info(hub, orgs, branches),
+        )
+
         if output_repos:
             with open(output_repos, "w") as f:
-                dumped = [{"repo": repo.as_dict(), "data": data} for repo, data in repos.items()]
+                dumped = [
+                    {"repo": repo.as_dict(), "data": data}
+                    for repo, data in repos.items()
+                ]
                 json.dump(dumped, f, indent=2, sort_keys=True)
     if not repos:
-        raise ValueError("No repos marked for openedx-release neither in openedx.yaml nor catalog_info.yaml files!")
+        raise ValueError(
+            "No repos marked for openedx-release neither in openedx.yaml nor catalog_info.yaml files!"
+        )
 
     if included_repos:
         repos = include_only_repos(repos, included_repos)
-    if 'openedx-release' in repos:    
+    if skip_repos:
         repos = trim_skipped_repos(repos, skip_repos)
-        repos = trim_dependent_repos(repos)
-        repos = trim_indecisive_repos(repos)
+    repos = trim_dependent_repos(repos)
+    repos = trim_indecisive_repos(repos)
     repos = override_repo_refs(
         repos,
         override_ref=override_ref,
@@ -831,14 +904,19 @@ def main(hub, ref, use_tag, override_ref, overrides, interactive, quiet,
     archived = archived_repos(repos.keys())
     if archived:
         if dry:
-            dry_echo(dry, "Will need to unarchive these repos: {}".format(
-                ", ".join(repo.full_name for repo in archived)
-                ))
+            dry_echo(
+                dry,
+                "Will need to unarchive these repos: {}".format(
+                    ", ".join(repo.full_name for repo in archived)
+                ),
+            )
         else:
             ensure_writable(archived)
 
     try:
-        ret = do_the_work(repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry)
+        ret = do_the_work(
+            repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, dry
+        )
     finally:
         for repo in archived:
             dry_echo(dry, f"Re-archiving {repo.full_name}")
@@ -861,9 +939,7 @@ def do_the_work(repos, ref, use_tag, reverse, skip_invalid, interactive, quiet, 
 
     if reverse:
         if not existing_refs:
-            msg = (
-                "Ref {ref} is not present in any repos, cannot remove it"
-            ).format(
+            msg = ("Ref {ref} is not present in any repos, cannot remove it").format(
                 ref=ref,
             )
             click.echo(msg)

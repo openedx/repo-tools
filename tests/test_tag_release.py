@@ -7,11 +7,14 @@ from github3.exceptions import NotFoundError
 from github3.repos.repo import Repository
 from unittest.mock import Mock
 import pytest
+import yaml
 
 from edx_repo_tools.release.tag_release import (
     get_ref_for_repos, commit_ref_info,
     create_ref_for_repos, remove_ref_for_repos, override_repo_refs,
-    TagReleaseError
+    openedx_repos_with_catalog_info,
+    repo_matches, trim_dependent_repos, trim_indecisive_repos,
+    trim_skipped_repos, TagReleaseError
 )
 
 ALREADY_EXISTS = GitHubError(Mock(status_code=422, json=Mock(return_value={"message": "Reference already exists"})))
@@ -38,6 +41,8 @@ def mock_repository(name, has_refs=False):
 
     """
     repo = Mock(spec=Repository, name=name, full_name=name)
+    repo.name = name.split("/")[-1]
+    repo.full_name = name
     if not has_refs:
         repo.ref.side_effect = FakeNotFoundError
     return repo
@@ -67,6 +72,101 @@ def find_repo(repos, name):
 def find_repo_data(repos, name):
     """Find the value in `repos` associated with Repository(`name`)"""
     return find_repo_item(repos, name)[1]
+
+
+def test_repo_matches_full_name_wildcard():
+    repo = mock_repository('openedx/openedx-platform-ghsa-g266-6v7f-j465')
+
+    assert repo_matches(repo, 'openedx/openedx-platform-*')
+
+
+def test_repo_matches_name_wildcard():
+    repo = mock_repository('openedx/openedx-platform-ghsa-g266-6v7f-j465')
+
+    assert repo_matches(repo, 'openedx-platform-*')
+
+
+@pytest.mark.parametrize(
+    'release_annotation_yaml, expected_included',
+    [
+        ('null', False),
+        ('""', False),
+        ('"master"', True),
+        ('"main"', True),
+    ],
+)
+def test_openedx_repos_with_catalog_info_release_annotation_values(
+    monkeypatch, release_annotation_yaml, expected_included,
+):
+    repo = mock_repository('openedx/repo')
+    repo.refresh.return_value = repo
+    catalog_data = yaml.safe_load(f'''
+metadata:
+  annotations:
+    openedx.org/arch-interest-groups: ""
+    openedx.org/release: {release_annotation_yaml}
+''')
+    monkeypatch.setattr(
+        'edx_repo_tools.release.tag_release.iter_openedx_yaml',
+        Mock(return_value=[(repo, catalog_data)]),
+    )
+
+    result = openedx_repos_with_catalog_info(Mock())
+
+    if expected_included:
+        assert result == {repo: catalog_data}
+    else:
+        assert result == {}
+
+
+def test_openedx_repos_with_catalog_info(monkeypatch):
+    included_repo = mock_repository('openedx/included')
+    included_repo.refresh.return_value = included_repo
+    no_metadata_repo = mock_repository('openedx/no-metadata')
+    no_annotations_repo = mock_repository('openedx/no-annotations')
+    no_release_annotation_repo = mock_repository('openedx/no-release-annotation')
+    catalog_data = {
+        'metadata': {
+            'annotations': {
+                'openedx.org/release': 'master',
+            },
+        },
+    }
+
+    hub = Mock()
+    iter_openedx_yaml = Mock(return_value=[
+        (included_repo, catalog_data),
+        (no_metadata_repo, {}),
+        (no_annotations_repo, {'metadata': {}}),
+        (no_release_annotation_repo, {'metadata': {'annotations': {'other': 'value'}}}),
+    ])
+    monkeypatch.setattr(
+        'edx_repo_tools.release.tag_release.iter_openedx_yaml',
+        iter_openedx_yaml,
+    )
+
+    result = openedx_repos_with_catalog_info(
+        hub, orgs=['openedx'], branches=['main'],
+    )
+
+    assert result == {included_repo: catalog_data}
+    iter_openedx_yaml.assert_called_once_with(
+        'catalog-info.yaml', hub, orgs=['openedx'], branches=['main'],
+    )
+
+
+def test_openedx_repos_with_catalog_info_uses_default_orgs(monkeypatch):
+    hub = Mock()
+    iter_openedx_yaml = Mock(return_value=[])
+    monkeypatch.setattr(
+        'edx_repo_tools.release.tag_release.iter_openedx_yaml',
+        iter_openedx_yaml,
+    )
+
+    assert openedx_repos_with_catalog_info(hub) == {}
+    iter_openedx_yaml.assert_called_once_with(
+        'catalog-info.yaml', hub, orgs=['openedx'], branches=None,
+    )
 
 
 @pytest.fixture
@@ -147,6 +247,31 @@ def expected_commits():
         }
     }
     return commits
+
+
+def test_trim_skipped_repos_wildcard(expected_repos):
+    result = trim_skipped_repos(expected_repos, ['edx/edx-*'])
+
+    assert find_repo(result, 'edx/edx-platform') is None
+    assert find_repo(result, 'edx/edx-package') is None
+    assert find_repo(result, 'edx/configuration') is not None
+    assert find_repo(result, 'edx/XBlock') is not None
+
+
+def test_trim_dependent_repos_keeps_catalog_info_repos(expected_repos):
+    result = trim_dependent_repos(expected_repos)
+
+    assert find_repo(result, 'edx/edx-package') is not None
+    assert find_repo(result, 'edx/XBlock') is None
+
+
+def test_trim_indecisive_repos_keeps_catalog_info_repos(expected_repos):
+    find_repo_data(expected_repos, 'edx/configuration')['openedx-release']['maybe'] = True
+
+    result = trim_indecisive_repos(expected_repos)
+
+    assert find_repo(result, 'edx/edx-package') is not None
+    assert find_repo(result, 'edx/configuration') is None
 
 
 def test_get_ref_for_repos():

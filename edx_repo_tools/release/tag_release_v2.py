@@ -1,3 +1,4 @@
+import fnmatch
 import json
 import logging
 from dataclasses import dataclass
@@ -33,7 +34,7 @@ class CommitInfo:
 @click.option("--input-plan", type=click.Path(), help="Load repo plan from JSON instead of scanning repos")
 @click.option("--output-plan", type=click.Path(), help="Save discovered repo plan to JSON")
 @click.option("--repos", multiple=True, help="Explicit list of repos (full names)")
-@click.option("--skip-repo", multiple=True, help="Skip repos matching these full names")
+@click.option("--skip-repo", multiple=True, help="Skip repos matching these name or full-name patterns")
 @pass_github
 def main(hub, ref, org, search_branches, dry, use_tag, reverse, skip_invalid, input_plan, output_plan, repos, skip_repo):
     """Create or delete release tags or branches for Open edX repositories."""
@@ -83,9 +84,24 @@ def load_repos(hub, org, search_branches, input_plan, output_plan, repos, skip_r
                 ], f, indent=2)
 
     if skip_repo:
-        repos = [(repo, ref_name) for repo, ref_name in repos if repo.full_name not in skip_repo]
+        repos = [
+            (repo, ref_name)
+            for repo, ref_name in repos
+            if not any(repo_matches(repo, pattern) for pattern in skip_repo)
+        ]
 
     return repos
+
+
+def repo_matches(repo, pattern):
+    """Match a repo against a filename pattern.
+
+    True if either the name or the full_name of the repo matches.
+    """
+    return (
+        fnmatch.fnmatch(repo.full_name, pattern) or
+        fnmatch.fnmatch(repo.name, pattern)
+    )
 
 
 def find_repos(hub, orgs, branches):
