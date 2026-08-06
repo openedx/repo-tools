@@ -10,7 +10,6 @@ import requirements
 import sys
 import tomllib
 from pathlib import Path
-from packaging.requirements import Requirement
 import requests
 
 
@@ -45,40 +44,6 @@ def urls_in_orgs(urls, orgs):
     )
 
 
-def _dependency_group_names(group, all_groups, seen=None):
-    """
-    Yield package names from a [dependency-groups] entry, resolving any
-    {include-group = "..."} references to the group they point at.
-    """
-    if seen is None:
-        seen = set()
-    for item in group:
-        if isinstance(item, str):
-            yield Requirement(item).name
-        elif isinstance(item, dict) and "include-group" in item:
-            included = item["include-group"]
-            if included in seen:
-                continue
-            seen.add(included)
-            yield from _dependency_group_names(all_groups.get(included, []), all_groups, seen)
-
-
-def _names_from_pyproject_toml(data):
-    """
-    Yield package names declared in a pyproject.toml's [project.dependencies],
-    [project.optional-dependencies], and [dependency-groups].
-    """
-    project = data.get("project", {})
-    for dep in project.get("dependencies", []):
-        yield Requirement(dep).name
-    for extra_deps in project.get("optional-dependencies", {}).values():
-        for dep in extra_deps:
-            yield Requirement(dep).name
-    all_groups = data.get("dependency-groups", {})
-    for group in all_groups.values():
-        yield from _dependency_group_names(group, all_groups)
-
-
 def _names_from_uv_lock(data):
     """
     Yield package names from a uv.lock's fully-resolved [[package]] list.
@@ -94,13 +59,16 @@ def _names_from_uv_lock(data):
 def iter_requirement_names(path):
     """
     Yield package names declared in `path`, which may be a pip-compile style
-    requirements.txt, a pyproject.toml, or a uv.lock.
+    requirements.txt or a uv.lock. Both represent a fully-resolved
+    direct+transitive dependency closure. A pyproject.toml is deliberately
+    not supported here: [project.dependencies]/[dependency-groups] only list
+    direct dependencies, so scanning it would silently miss transitive ones
+    and misleadingly suggest this tool resolves dependencies, which it does
+    not.
     """
     path = Path(path)
     if path.name == "uv.lock":
         yield from _names_from_uv_lock(tomllib.loads(path.read_text()))
-    elif path.name == "pyproject.toml":
-        yield from _names_from_pyproject_toml(tomllib.loads(path.read_text()))
     else:
         with open(path) as freq:
             for req in requirements.parse(freq):
@@ -114,7 +82,7 @@ def iter_requirement_names(path):
     required=True,
     help="The absolute file paths to locate Python dependencies "
         "within a particular repository. Accepts pip-compile style "
-        "requirements.txt files, pyproject.toml, or uv.lock. You can "
+        "requirements.txt files or uv.lock. You can "
         "provide this option multiple times to include multiple files.",
 )
 @click.option(

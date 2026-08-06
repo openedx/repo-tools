@@ -541,7 +541,6 @@ conventional-commits = [
     { name = "pandas" },
 ]
 find-dependencies = [
-    { name = "packaging" },
     { name = "requests" },
     { name = "requirements-parser" },
     { name = "rich" },
@@ -590,7 +589,6 @@ requires-dist = [
     { name = "lockfile" },
     { name = "matplotlib", marker = "extra == 'conventional-commits'" },
     { name = "more-itertools" },
-    { name = "packaging", marker = "extra == 'find-dependencies'" },
     { name = "packaging", marker = "extra == 'pull-request-creator'" },
     { name = "pandas", marker = "extra == 'conventional-commits'" },
     { name = "path-py" },
