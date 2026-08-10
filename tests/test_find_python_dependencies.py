@@ -64,3 +64,39 @@ def test_main_flags_second_party_dependency_from_uv_lock(tmp_path):
         ) as mock_exit:
             main.callback(directories=[str(uv_lock)], ignore_paths=[])
             mock_exit.assert_called_once_with(1)
+
+
+def test_main_respects_ignore_for_uv_lock(tmp_path):
+    uv_lock = tmp_path / "uv.lock"
+    uv_lock.write_text(
+        """
+        version = 1
+
+        [[package]]
+        name = "edx-sga"
+        version = "0.1"
+
+        [[package]]
+        name = "django"
+        version = "4.2.1"
+        """
+    )
+
+    def fake_request_package_info_url(package):
+        return {
+            "edx-sga": "https://github.com/mitodl/edx-sga",
+            "django": "https://github.com/django/django",
+        }.get(package)
+
+    with patch(
+        "edx_repo_tools.find_dependencies.find_python_dependencies.request_package_info_url",
+        side_effect=fake_request_package_info_url,
+    ):
+        with patch(
+            "edx_repo_tools.find_dependencies.find_python_dependencies.exit"
+        ) as mock_exit:
+            main.callback(
+                directories=[str(uv_lock)],
+                ignore_paths=["https://github.com/mitodl/edx-sga"],
+            )
+            mock_exit.assert_not_called()
