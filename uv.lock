@@ -34,19 +34,6 @@ wheels = [
 ]
 
 [[package]]
-name = "anyio"
-version = "4.14.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "idna" },
-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/61/cc/a381afa6efea9f496eff839d4a6a1aed3bfafc7b3ab4b0d1b243a12573dd/anyio-4.14.2.tar.gz", hash = "sha256:cfa139f3ed1a23ee8f88a145ddb5ac7605b8bbfd8592baacd7ce3d8bb4313c7f", size = 260176, upload-time = "2026-07-12T20:29:07.082Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/da/35/f2287558c17e29fafc8ef3daf819bb9834061cfa43bff8014f7df7f63bdc/anyio-4.14.2-py3-none-any.whl", hash = "sha256:9f505dda5ac9f0c8309b5e8bd445a8c2bf7246f3ce950121e45ea15bc41d1494", size = 125813, upload-time = "2026-07-12T20:29:05.763Z" },
-]
-
-[[package]]
 name = "appdirs"
 version = "1.4.4"
 source = { registry = "https://pypi.org/simple" }
@@ -650,19 +637,6 @@ wheels = [
 ]
 
 [[package]]
-name = "fastspec"
-version = "0.1.4"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "fastcore" },
-    { name = "httpx" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/32/ba/46d68462382256bcaaebf4b3b738f0b802faf8bd701cf44e25a940559750/fastspec-0.1.4.tar.gz", hash = "sha256:32107e0773c62576a4fb82dd81dc7bc6c0cb06a6433401737d68112194bcc5fd", size = 25445, upload-time = "2026-08-02T10:55:54.414Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/58/8d/acba283402fb33c5eb599957742a0fd9bc5dc33d043a082579e6e47e38a1/fastspec-0.1.4-py3-none-any.whl", hash = "sha256:fe30c484aed9daf7d1b46b9a2a0abdd1573c6393dad6e7975f0390c4c5180666", size = 24171, upload-time = "2026-08-02T10:55:53.072Z" },
-]
-
-[[package]]
 name = "filelock"
 version = "3.32.2"
 source = { registry = "https://pypi.org/simple" }
@@ -726,15 +700,14 @@ wheels = [
 
 [[package]]
 name = "ghapi"
-version = "2.0.5"
+version = "1.0.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fastcore" },
-    { name = "fastspec" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3b/e8/6fecb7a39285f86849e444a57272e0ae154e6a4fc2d50f168315e188f729/ghapi-2.0.5.tar.gz", hash = "sha256:51fe5c4f51f68de322755948823ce8f3b7218363bd9f54f726e6cd56b12444c0", size = 175527, upload-time = "2026-07-31T02:48:44.843Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/62/09/1b88f97e8599cda096d42dac830bb2e28ddf202d71843f61bda52bbe99ce/ghapi-1.0.13.tar.gz", hash = "sha256:fb46f5e101efa33bd12a0ae7694de761eec5be1de90f48847699f1e00128f928", size = 72914, upload-time = "2026-02-28T02:21:01.892Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e5/18/97fdf3ce5f86e4d6b711404fd9e0616250cbe4a6b4ab1d7039920f1c1bdc/ghapi-2.0.5-py3-none-any.whl", hash = "sha256:25a0e06d4f0097321d463e5da46f1032ac199742c4f47173a6765be7da0079f9", size = 174728, upload-time = "2026-07-31T02:48:43.232Z" },
+    { url = "https://files.pythonhosted.org/packages/67/ac/e1960ec21cfd5a0fd9b329822c04d0b5f91abb688c3b1acd7e8ff3390432/ghapi-1.0.13-py3-none-any.whl", hash = "sha256:49d7e336e5664e4d4f92b1d442dfe80f31ecccbee4370bd1d271bd63a1ccf18e", size = 71409, upload-time = "2026-02-28T02:21:00.457Z" },
 ]
 
 [[package]]
@@ -841,43 +814,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/5a/d8/8cba31036a4caae448087ba5d150660ab03b4a0f54d9150f6495a3be7262/greenlet-3.5.4-cp315-cp315t-musllinux_1_2_x86_64.whl", hash = "sha256:60e0bc961d367df506660e9ac0177a76bc6d81305300704b0977d1634f76efe2", size = 1701012, upload-time = "2026-07-22T11:51:23.17Z" },
     { url = "https://files.pythonhosted.org/packages/e3/cd/3f77a4cce3bae631b08eb52f53a82a976669600337e21dfdba811cb50267/greenlet-3.5.4-cp315-cp315t-win_amd64.whl", hash = "sha256:f680e549edb3eaf21eea4e7fe101e15ec180c74b7879ab46adc080f22d4015d2", size = 251977, upload-time = "2026-07-22T11:41:38.125Z" },
     { url = "https://files.pythonhosted.org/packages/93/e8/65e8707d00fe2a49bf12f609a9b2b39ba6dd23c2810eacad877c4fc94bfe/greenlet-3.5.4-cp315-cp315t-win_arm64.whl", hash = "sha256:08fc36de8442d5c3e95b044550dbea9bf144d31ec0cc58e36fb241cb6ef6a994", size = 250538, upload-time = "2026-07-22T11:40:17.985Z" },
-]
-
-[[package]]
-name = "h11"
-version = "0.16.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/01/ee/02a2c011bdab74c6fb3c75474d40b3052059d95df7e73351460c8588d963/h11-0.16.0.tar.gz", hash = "sha256:4e35b956cf45792e4caa5885e69fba00bdbc6ffafbfa020300e549b208ee5ff1", size = 101250, upload-time = "2025-04-24T03:35:25.427Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl", hash = "sha256:63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86", size = 37515, upload-time = "2025-04-24T03:35:24.344Z" },
-]
-
-[[package]]
-name = "httpcore"
-version = "1.0.9"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "certifi" },
-    { name = "h11" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/06/94/82699a10bca87a5556c9c59b5963f2d039dbd239f25bc2a63907a05a14cb/httpcore-1.0.9.tar.gz", hash = "sha256:6e34463af53fd2ab5d807f399a9b45ea31c3dfa2276f15a2c3f00afff6e176e8", size = 85484, upload-time = "2025-04-24T22:06:22.219Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/7e/f5/f66802a942d491edb555dd61e3a9961140fd64c90bce1eafd741609d334d/httpcore-1.0.9-py3-none-any.whl", hash = "sha256:2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55", size = 78784, upload-time = "2025-04-24T22:06:20.566Z" },
-]
-
-[[package]]
-name = "httpx"
-version = "0.28.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "anyio" },
-    { name = "certifi" },
-    { name = "httpcore" },
-    { name = "idna" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b1/df/48c586a5fe32a0f01324ee087459e112ebb7224f646c0b5023f5e79e9956/httpx-0.28.1.tar.gz", hash = "sha256:75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc", size = 141406, upload-time = "2024-12-06T15:37:23.222Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl", hash = "sha256:d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad", size = 73517, upload-time = "2024-12-06T15:37:21.509Z" },
 ]
 
 [[package]]
