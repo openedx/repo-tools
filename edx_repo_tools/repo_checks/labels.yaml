@@ -34,6 +34,26 @@
   color: "FFF991"  # Axim yellow
   description: "Reviewing this will help onboard devs from an Axim mission-aligned organization (MAO)."
 
+- name: "MVP"
+  color: "49c90d" # bright green
+  description: "Required for an MVP release of this feature"
+
+- name: "Phase 1"
+  color: "8e0dc9" # bright purple
+  description: "Required for a Phase 1 release of this feature"
+
+- name: "Phase 2"
+  color: "c90d49" # dark strawberry
+  description: "Required for a Phase 2 release of this feature"
+
+- name: "Phase 3"
+  color: "0d49c9" # pretty blue
+  description: "Required for a Phase 3 release of this feature"
+
+- name: "Phase 4"
+  color: "0dc98e" # minty green
+  description: "Required for a Phase 4 release of this feature"
+
 ### LABELS USED TO TRACK NAMED RELEASE DELIVERIES
 
 - name: "redwood"
@@ -63,6 +83,14 @@
 - name: "xylon"
   color: "8b4513" # brown, for trees
   description: "Released in Xylon"
+
+- name: "yucca"
+  color: "75978F" # grey-green
+  description: "Released in Yucca"
+
+- name: "zapote"
+  color: "c58900" # brownish orange
+  description: "Released in Zapote"
 
 ### LABELS INDICATING HOW ISSUES CAN BE ENAGAGED WITH.
 
