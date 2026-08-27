@@ -23,16 +23,11 @@ import click
 import requests
 import yaml
 
-# Pylint doesn't believe that fastcore.net exports these error classes...
-# pylint: disable=no-name-in-module
-from fastcore.net import (
-    HTTP4xxClientError,
-    HTTP404NotFoundError,
-    HTTP409ConflictError,
-)
-
-# pylint: enable=no-name-in-module
-from ghapi.all import GhApi, paged
+# ghapi 2.x consolidates all of the various HTTP error subclasses that
+# ghapi 1.x raised (HTTP404NotFoundError, HTTP4xxClientError, etc.) into a
+# single `APIError` with a `status_code` attribute.
+from fastspec.errors import APIError
+from ghapi.all import GhApi, sync_paged
 
 HAS_GHSA_SUFFIX = re.compile(r".*?-ghsa-\w{4}-\w{4}-\w{4}$")
 
@@ -43,7 +38,7 @@ def all_paged_items(func, *args, **kwargs):
     """
     Get all items from a GhApi function returning paged results.
     """
-    return chain.from_iterable(paged(func, *args, per_page=100, **kwargs))
+    return chain.from_iterable(sync_paged(func, *args, per_page=100, **kwargs))
 
 
 def is_security_private_fork(api, org, repo):
@@ -79,8 +74,8 @@ def is_empty(api, org, repo):
             repo,
             f"heads/{default_branch}",
         )
-    except HTTP409ConflictError as err:
-        if "Git Repository is empty." in str(err):
+    except APIError as err:
+        if err.status_code == 409 and "Git Repository is empty." in str(err):
             return True
         raise
     return False
@@ -432,12 +427,12 @@ class Workflows(Check):
                     file_path,
                     dot_github_default_branch,
                 )
-            except HTTP4xxClientError as err:
+            except APIError as err:
                 click.echo(
                     f"File: https://github.com/{self.org_name}/"
                     f".github/blob/{dot_github_default_branch}/{file_path}"
                 )
-                click.echo(err.fp.read().decode("utf-8"))
+                click.echo(str(err))
                 raise
 
         # Get the content of the repo specific file.
@@ -453,8 +448,8 @@ class Workflows(Check):
                     file_path,
                     branch_name,
                 )
-            except HTTP4xxClientError as err:
-                if err.status == 404:
+            except APIError as err:
+                if err.status_code == 404:
                     files_that_are_missing.append(file)
 
         # Compare the two.
@@ -485,8 +480,8 @@ class Workflows(Check):
             self.api.git.get_ref(
                 self.org_name, self.repo_name, f"heads/{self.branch_name}"
             )
-        except HTTP4xxClientError as err:
-            if err.status == 404:
+        except APIError as err:
+            if err.status_code == 404:
                 branch_exists = False
             else:
                 raise  # For any other unexpected errors.
@@ -697,8 +692,8 @@ class Labels(Check):
                         color=label["color"],
                         description=label["description"],
                     )
-                except HTTP4xxClientError as err:
-                    click.echo(err.fp.read().decode("utf-8"))
+                except APIError as err:
+                    click.echo(str(err))
                     raise
             steps.append(f"Created {label=}.")
 
@@ -714,8 +709,8 @@ class Labels(Check):
                         description=new_label["description"],
                         new_name=new_label["name"],
                     )
-                except HTTP4xxClientError as err:
-                    click.echo(err.fp.read().decode("utf-8"))
+                except APIError as err:
+                    click.echo(str(err))
                     raise
             steps.append(f"Fixed {current_label=} to {new_label=}")
 
@@ -796,8 +791,8 @@ class TeamAccess(Check):
             return [
                 f"Added {self.permission} access for {self.team} to {self.repo_name}."
             ]
-        except HTTP4xxClientError as err:
-            click.echo(err.fp.read().decode("utf-8"))
+        except APIError as err:
+            click.echo(str(err))
             raise
 
 
@@ -890,8 +885,10 @@ class EnforceCLA(Check):
                 self.org_name, self.repo_name, default_branch
             )
             self.has_a_branch_protection_rule = True
-        except HTTP404NotFoundError:
-            return (False, "No branch protection rule.")
+        except APIError as err:
+            if err.status_code == 404:
+                return (False, "No branch protection rule.")
+            raise
 
         if "required_status_checks" not in branch_protection:
             return (False, "No required status checks in place.")
@@ -1002,11 +999,11 @@ class EnforceCLA(Check):
                 if not dry_run:
                     self._update_branch_protection(params)
                 # self.api.repos.update_branch_protection(**params)
-        except HTTP4xxClientError as err:
+        except APIError as err:
             # Print the steps before raising the existing exception so we have
             # some more context on what might have happened.
             click.echo("\n".join(steps))
-            click.echo(err.fp.read().decode("utf-8"))
+            click.echo(str(err))
             raise
         except requests.HTTPError as err:
             # Print the steps before raising the existing exception so we have
@@ -1334,7 +1331,9 @@ def main(org, dry_run, _github_token, check_names, repos, start_at):
     Entry point for command-line invocation.
     """
     # pylint: disable=too-many-locals,too-many-branches
-    api = GhApi()
+    # ghapi 2.x clients are async by default; `sync=True` gives us a
+    # blocking client so the rest of this script can stay synchronous.
+    api = GhApi(sync=True)
     if not repos:
         repos = [
             repo.name
@@ -1385,15 +1384,15 @@ def main(org, dry_run, _github_token, check_names, repos, start_at):
                     try:
                         steps = check.dry_run()
                         steps_color = "yellow"
-                    except HTTP4xxClientError as err:
-                        click.echo(err.fp.read().decode("utf-8"))
+                    except APIError as err:
+                        click.echo(str(err))
                         raise
                 else:
                     try:
                         steps = check.fix()
                         steps_color = "green"
-                    except HTTP4xxClientError as err:
-                        click.echo(err.fp.read().decode("utf-8"))
+                    except APIError as err:
+                        click.echo(str(err))
                         raise
 
                 if steps:
