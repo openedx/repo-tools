@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
-from fastcore.net import HTTP4xxClientError
+from fastspec.errors import APIError
 
 from edx_repo_tools.repo_checks import repo_checks
 
@@ -193,7 +193,7 @@ class TestEnsureWorkflowsEnabled:
             make_workflow("Upgrade", "disabled_inactivity", 2),
         ])
         api.actions.enable_workflow.side_effect = [
-            HTTP4xxClientError("url", 422, "Unprocessable Entity", {}, None),
+            APIError("Unprocessable Entity"),
             None,
         ]
         check_cls = repo_checks.EnsureWorkflowsEnabled(api, "test_org", "test_repo")

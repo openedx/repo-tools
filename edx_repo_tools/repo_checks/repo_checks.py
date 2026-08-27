@@ -23,9 +23,6 @@ import click
 import requests
 import yaml
 
-# ghapi 2.x consolidates all of the various HTTP error subclasses that
-# ghapi 1.x raised (HTTP404NotFoundError, HTTP4xxClientError, etc.) into a
-# single `APIError` with a `status_code` attribute.
 from fastspec.errors import APIError
 from ghapi.all import GhApi, sync_paged
 
@@ -1275,8 +1272,8 @@ class EnsureWorkflowsEnabled(Check):
                         repo=self.repo_name,
                         workflow_id=workflow.id,
                     )
-                except HTTP4xxClientError as e:
-                    steps.append(f"Failed to enable workflow `{workflow.name}` (id: {workflow.id}): {e}")
+                except APIError as err:
+                    steps.append(f"Failed to enable workflow `{workflow.name}` (id: {workflow.id}): {err}")
                     continue
             steps.append(f"Enabled workflow `{workflow.name}` (id: {workflow.id})")
         return steps
