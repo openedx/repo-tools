@@ -23,4 +23,4 @@ elasticsearch<7.14.0
 # edx-drf-extensions<=10.6.0. (Newer versions require a POST instead of a GET.)
 # Tracking issue: https://github.com/openedx/edx-drf-extensions/issues/561
 social-auth-app-django<6.0.0
-social-auth-core<5.0.0
+social-auth-core<6.0.0
