@@ -515,11 +515,9 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
         """
         Return the contents of ``path`` at ``ref`` as a string.
 
-        The contents API only carries the body of files up to 1MB. Larger files
-        come back with ``encoding: "none"`` and an empty body, which makes
-        ``decoded_content`` raise ``AssertionError: unsupported encoding: none``.
-        Read those through the git blobs API instead, which serves base64 up to
-        100MB.
+        The contents API carries file bodies only up to 1MB; anything larger
+        comes back with ``encoding: "none"`` and an empty body. Those are read
+        through the git blobs API instead, which serves base64 up to 100MB.
         """
         contents = self.repository.get_contents(path, ref=ref)
 
