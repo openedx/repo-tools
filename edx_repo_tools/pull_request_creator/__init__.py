@@ -515,21 +515,20 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
         """
         Return the contents of ``path`` at ``ref`` as a string.
 
-        The contents API carries file bodies only up to 1MB; anything larger
-        comes back with ``encoding: "none"`` and an empty body. Those are read
-        through the git blobs API instead, which serves base64 up to 100MB.
+        Reads the file through the git blobs API, which serves files of any
+        size up to 100MB. Raises a 404 ``GithubException`` when the path is not
+        in the tree at that ref.
         """
-        contents = self.repository.get_contents(path, ref=ref)
+        directory, _, filename = path.rpartition("/")
+        tree = self.repository.get_git_tree(f"{ref}:{directory}" if directory else ref)
 
-        if contents.encoding == "base64":
-            return contents.decoded_content.decode()
+        entry = next((e for e in tree.tree if e.path == filename), None)
+        if entry is None:
+            raise GithubException(
+                404, {"message": f"{path} not found at {ref}"}, None
+            )
 
-        logger.info(
-            "%s is %s bytes, too large for the contents API. Reading it as a git blob.",
-            path,
-            contents.size,
-        )
-        blob = self.repository.get_git_blob(contents.sha)
+        blob = self.repository.get_git_blob(entry.sha)
         return base64.b64decode(blob.content).decode()
 
     def _parse_uv(self, pr):
