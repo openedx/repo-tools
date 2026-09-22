@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring
 
+import base64
 import os
 from unittest import TestCase
 from unittest.mock import MagicMock, Mock, mock_open, patch
@@ -782,9 +783,9 @@ version = "3.2.5"
         mock_file.filename = "uv.lock"
         mock_pr.get_files.return_value = [mock_file]
 
-        mock_new_content = Mock()
+        mock_new_content = Mock(encoding="base64")
         mock_new_content.decoded_content.decode.return_value = new_lock
-        mock_old_content = Mock()
+        mock_old_content = Mock(encoding="base64")
         mock_old_content.decoded_content.decode.return_value = old_lock
 
         self.helper.repository.get_contents.side_effect = [
@@ -815,7 +816,7 @@ version = "3.2.5"
         mock_file.filename = "uv.lock"
         mock_pr.get_files.return_value = [mock_file]
 
-        mock_new_content = Mock()
+        mock_new_content = Mock(encoding="base64")
         mock_new_content.decoded_content.decode.return_value = new_lock
 
         # Simulate 404 for old file
@@ -859,7 +860,7 @@ resolution-markers = ["python_version < '3.9'", "python_version >= '3.9'"]
         mock_file.filename = "uv.lock"
         mock_pr.get_files.return_value = [mock_file]
 
-        mock_new_content = Mock()
+        mock_new_content = Mock(encoding="base64")
         mock_new_content.decoded_content.decode.return_value = new_lock
 
         github_404 = GithubException(404, {"message": "Not Found"}, None)
@@ -869,6 +870,49 @@ resolution-markers = ["python_version < '3.9'", "python_version >= '3.9'"]
 
         # Should create separate entries for each resolution marker
         assert len(reqs) == 2
+
+    def test_parse_uv_lock_too_large_for_contents_api(self):
+        """Test parsing a uv.lock that is over the contents API's 1MB limit."""
+        old_lock = """
+[[package]]
+name = "django"
+version = "3.2.0"
+"""
+        new_lock = """
+[[package]]
+name = "django"
+version = "3.2.5"
+"""
+
+        mock_pr = Mock()
+        mock_pr.head.sha = "new-sha"
+        mock_pr.base.sha = "old-sha"
+
+        mock_file = Mock()
+        mock_file.filename = "uv.lock"
+        mock_pr.get_files.return_value = [mock_file]
+
+        # Over 1MB the contents API returns an empty body with no encoding, and
+        # the file has to be read from the git blobs API by its blob sha.
+        oversized_new = Mock(encoding="none", sha="new-blob", size=1089565, content="")
+        oversized_old = Mock(encoding="none", sha="old-blob", size=1043933, content="")
+        self.helper.repository.get_contents.side_effect = [
+            oversized_new,
+            oversized_old,
+        ]
+
+        blobs = {
+            "new-blob": Mock(content=base64.b64encode(new_lock.encode()).decode()),
+            "old-blob": Mock(content=base64.b64encode(old_lock.encode()).decode()),
+        }
+        self.helper.repository.get_git_blob.side_effect = lambda sha: blobs[sha]
+
+        reqs = self.helper._parse_uv(mock_pr)
+
+        assert len(reqs) == 1
+        assert reqs[0]["name"] == "django"
+        assert reqs[0]["old_version"] == "3.2.0"
+        assert reqs[0]["new_version"] == "3.2.5"
 
     def test_add_uv_packages_without_version(self):
         """Test _add_uv_packages skips packages without version (own package)."""

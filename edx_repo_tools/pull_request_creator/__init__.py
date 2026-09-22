@@ -3,6 +3,7 @@ Class helps create GitHub Pull requests
 """
 
 # pylint: disable=missing-class-docstring,missing-function-docstring,attribute-defined-outside-init
+import base64
 import logging
 import os
 import re
@@ -510,6 +511,29 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
 
         return out_packages
 
+    def _get_file_contents(self, path, ref):
+        """
+        Return the contents of ``path`` at ``ref`` as a string.
+
+        The contents API only carries the body of files up to 1MB. Larger files
+        come back with ``encoding: "none"`` and an empty body, which makes
+        ``decoded_content`` raise ``AssertionError: unsupported encoding: none``.
+        Read those through the git blobs API instead, which serves base64 up to
+        100MB.
+        """
+        contents = self.repository.get_contents(path, ref=ref)
+
+        if contents.encoding == "base64":
+            return contents.decoded_content.decode()
+
+        logger.info(
+            "%s is %s bytes, too large for the contents API. Reading it as a git blob.",
+            path,
+            contents.size,
+        )
+        blob = self.repository.get_git_blob(contents.sha)
+        return base64.b64decode(blob.content).decode()
+
     def _parse_uv(self, pr):
         """
         When we no longer support old txt files we should change things to just use the uv output.
@@ -520,9 +544,7 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
             print("File not changed in this PR")
             return {}
 
-        new_content = self.repository.get_contents(
-            lock_file, ref=pr.head.sha
-        ).decoded_content.decode()
+        new_content = self._get_file_contents(lock_file, pr.head.sha)
 
         out_packages = {}
 
@@ -534,9 +556,7 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
         # all packages are "new"
         old_content = None
         try:
-            old_content = self.repository.get_contents(
-                lock_file, ref=pr.base.sha
-            ).decoded_content.decode()
+            old_content = self._get_file_contents(lock_file, pr.base.sha)
         except GithubException as e:
             if e.status != 404:
                 raise
