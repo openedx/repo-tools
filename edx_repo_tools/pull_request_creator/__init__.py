@@ -519,10 +519,9 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
         size up to 100MB. Raises a 404 ``GithubException`` when the path is not
         in the tree at that ref.
         """
-        directory, _, filename = path.rpartition("/")
-        tree = self.repository.get_git_tree(f"{ref}:{directory}" if directory else ref)
+        tree = self.repository.get_git_tree(ref, recursive=True)
 
-        entry = next((e for e in tree.tree if e.path == filename), None)
+        entry = next((e for e in tree.tree if e.path == path), None)
         if entry is None:
             raise GithubException(
                 404, {"message": f"{path} not found at {ref}"}, None

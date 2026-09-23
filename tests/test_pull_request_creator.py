@@ -765,22 +765,21 @@ class GitHubHelperUvLockTestCase(TestCase):
     def _mock_repo_files(self, files):
         """
         Wire up the git tree and blob APIs so that every (ref, path) key in
-        ``files`` reads back its value. A ref with no entry in ``files`` has no
-        tree; a path missing from a ref that does is missing from its tree.
+        ``files`` reads back its value from a single recursive tree per ref. A
+        ref with no entry in ``files`` has no tree; a path missing from a ref
+        that does is missing from its tree.
         """
         trees = {}
         blobs = {}
 
         for (ref, path), contents in files.items():
-            directory, _, filename = path.rpartition("/")
-            tree_ref = f"{ref}:{directory}" if directory else ref
-            blob_sha = f"{tree_ref}/{filename}"
-            trees.setdefault(tree_ref, []).append(Mock(path=filename, sha=blob_sha))
+            blob_sha = f"{ref}/{path}"
+            trees.setdefault(ref, []).append(Mock(path=path, sha=blob_sha))
             blobs[blob_sha] = Mock(
                 content=base64.b64encode(contents.encode()).decode()
             )
 
-        def get_git_tree(ref):
+        def get_git_tree(ref, recursive=None):
             if ref not in trees:
                 raise GithubException(404, {"message": "Not Found"}, None)
             return Mock(tree=trees[ref])
@@ -902,7 +901,7 @@ resolution-markers = ["python_version < '3.9'", "python_version >= '3.9'"]
 
         assert contents == "version = 1\n"
         self.helper.repository.get_git_tree.assert_called_once_with(
-            "some-sha:requirements/edx-sandbox"
+            "some-sha", recursive=True
         )
 
     def test_get_file_contents_missing_file(self):
