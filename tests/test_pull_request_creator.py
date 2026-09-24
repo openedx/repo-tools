@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring
 
+import base64
 import os
 from unittest import TestCase
 from unittest.mock import MagicMock, Mock, mock_open, patch
@@ -761,6 +762,32 @@ class GitHubHelperUvLockTestCase(TestCase):
                 self.helper = GitHubHelper()
                 self.helper.repository = Mock()
 
+    def _mock_repo_files(self, files):
+        """
+        Wire up the git tree and blob APIs so that every (ref, path) key in
+        ``files`` reads back its value. A ref with no entry in ``files`` has no
+        tree; a path missing from a ref that does is missing from its tree.
+        """
+        trees = {}
+        blobs = {}
+
+        for (ref, path), contents in files.items():
+            directory, _, filename = path.rpartition("/")
+            tree_ref = f"{ref}:{directory}" if directory else ref
+            blob_sha = f"{tree_ref}/{filename}"
+            trees.setdefault(tree_ref, []).append(Mock(path=filename, sha=blob_sha))
+            blobs[blob_sha] = Mock(
+                content=base64.b64encode(contents.encode()).decode()
+            )
+
+        def get_git_tree(ref):
+            if ref not in trees:
+                raise GithubException(404, {"message": "Not Found"}, None)
+            return Mock(tree=trees[ref])
+
+        self.helper.repository.get_git_tree.side_effect = get_git_tree
+        self.helper.repository.get_git_blob.side_effect = lambda sha: blobs[sha]
+
     def test_parse_uv_basic_upgrade(self):
         """Test parsing uv.lock with basic package upgrade."""
         old_lock = """
@@ -782,15 +809,12 @@ version = "3.2.5"
         mock_file.filename = "uv.lock"
         mock_pr.get_files.return_value = [mock_file]
 
-        mock_new_content = Mock()
-        mock_new_content.decoded_content.decode.return_value = new_lock
-        mock_old_content = Mock()
-        mock_old_content.decoded_content.decode.return_value = old_lock
-
-        self.helper.repository.get_contents.side_effect = [
-            mock_new_content,
-            mock_old_content,
-        ]
+        self._mock_repo_files(
+            {
+                ("new-sha", "uv.lock"): new_lock,
+                ("old-sha", "uv.lock"): old_lock,
+            }
+        )
 
         reqs = self.helper._parse_uv(mock_pr)
 
@@ -815,13 +839,13 @@ version = "3.2.5"
         mock_file.filename = "uv.lock"
         mock_pr.get_files.return_value = [mock_file]
 
-        mock_new_content = Mock()
-        mock_new_content.decoded_content.decode.return_value = new_lock
-
-        # Simulate 404 for old file
-        github_404 = GithubException(404, {"message": "Not Found"}, None)
-
-        self.helper.repository.get_contents.side_effect = [mock_new_content, github_404]
+        # The base ref has a tree, it just has no uv.lock in it yet.
+        self._mock_repo_files(
+            {
+                ("new-sha", "uv.lock"): new_lock,
+                ("old-sha", "requirements.txt"): "django==3.2.0\n",
+            }
+        )
 
         reqs = self.helper._parse_uv(mock_pr)
 
@@ -859,16 +883,36 @@ resolution-markers = ["python_version < '3.9'", "python_version >= '3.9'"]
         mock_file.filename = "uv.lock"
         mock_pr.get_files.return_value = [mock_file]
 
-        mock_new_content = Mock()
-        mock_new_content.decoded_content.decode.return_value = new_lock
-
-        github_404 = GithubException(404, {"message": "Not Found"}, None)
-        self.helper.repository.get_contents.side_effect = [mock_new_content, github_404]
+        self._mock_repo_files({("new-sha", "uv.lock"): new_lock})
 
         reqs = self.helper._parse_uv(mock_pr)
 
         # Should create separate entries for each resolution marker
         assert len(reqs) == 2
+
+    def test_get_file_contents_in_a_subdirectory(self):
+        """Test reading a file that isn't at the root of the repository."""
+        self._mock_repo_files(
+            {("some-sha", "requirements/edx-sandbox/uv.lock"): "version = 1\n"}
+        )
+
+        contents = self.helper._get_file_contents(
+            "requirements/edx-sandbox/uv.lock", "some-sha"
+        )
+
+        assert contents == "version = 1\n"
+        self.helper.repository.get_git_tree.assert_called_once_with(
+            "some-sha:requirements/edx-sandbox"
+        )
+
+    def test_get_file_contents_missing_file(self):
+        """Test reading a file that isn't in the tree at that ref."""
+        self._mock_repo_files({("some-sha", "requirements.txt"): "django==3.2.0\n"})
+
+        with self.assertRaises(GithubException) as raised:
+            self.helper._get_file_contents("uv.lock", "some-sha")
+
+        assert raised.exception.status == 404
 
     def test_add_uv_packages_without_version(self):
         """Test _add_uv_packages skips packages without version (own package)."""

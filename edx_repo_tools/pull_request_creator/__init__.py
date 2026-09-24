@@ -3,6 +3,7 @@ Class helps create GitHub Pull requests
 """
 
 # pylint: disable=missing-class-docstring,missing-function-docstring,attribute-defined-outside-init
+import base64
 import logging
 import os
 import re
@@ -510,6 +511,26 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
 
         return out_packages
 
+    def _get_file_contents(self, path, ref):
+        """
+        Return the contents of ``path`` at ``ref`` as a string.
+
+        Reads the file through the git blobs API, which serves files of any
+        size up to 100MB. Raises a 404 ``GithubException`` when the path is not
+        in the tree at that ref.
+        """
+        directory, _, filename = path.rpartition("/")
+        tree = self.repository.get_git_tree(f"{ref}:{directory}" if directory else ref)
+
+        entry = next((e for e in tree.tree if e.path == filename), None)
+        if entry is None:
+            raise GithubException(
+                404, {"message": f"{path} not found at {ref}"}, None
+            )
+
+        blob = self.repository.get_git_blob(entry.sha)
+        return base64.b64decode(blob.content).decode()
+
     def _parse_uv(self, pr):
         """
         When we no longer support old txt files we should change things to just use the uv output.
@@ -520,9 +541,7 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
             print("File not changed in this PR")
             return {}
 
-        new_content = self.repository.get_contents(
-            lock_file, ref=pr.head.sha
-        ).decoded_content.decode()
+        new_content = self._get_file_contents(lock_file, pr.head.sha)
 
         out_packages = {}
 
@@ -534,9 +553,7 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
         # all packages are "new"
         old_content = None
         try:
-            old_content = self.repository.get_contents(
-                lock_file, ref=pr.base.sha
-            ).decoded_content.decode()
+            old_content = self._get_file_contents(lock_file, pr.base.sha)
         except GithubException as e:
             if e.status != 404:
                 raise
