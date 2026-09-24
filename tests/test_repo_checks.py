@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
-from fastspec.errors import APIError
+from ghapi.all import APIError
 
 from edx_repo_tools.repo_checks import repo_checks
 
