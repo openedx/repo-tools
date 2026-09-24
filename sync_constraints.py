@@ -54,6 +54,11 @@ def parse_constraints(content):
         if not line or line.startswith("#"):
             continue
 
+        if "#" in line:
+            print("Stripping inline comment for dependency:")
+            print(line)
+            line = line.split("#")[0]
+
         # Parse constraint (e.g., "Django<6.0" or "pip<26.0")
         # Keep the constraint as-is
         constraints.append(line)
