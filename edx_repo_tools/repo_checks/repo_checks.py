@@ -23,8 +23,7 @@ import click
 import requests
 import yaml
 
-from fastspec.errors import APIError
-from ghapi.all import GhApi, sync_paged
+from ghapi.all import APIError, GhApi, sync_paged
 
 HAS_GHSA_SUFFIX = re.compile(r".*?-ghsa-\w{4}-\w{4}-\w{4}$")
 
