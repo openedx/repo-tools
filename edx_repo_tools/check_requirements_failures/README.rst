@@ -12,7 +12,8 @@ regular schedule. This tool helps identify repositories where these workflows
 may be failing or stalled by checking:
 
 1. The failure rate of the last 10 workflow runs
-2. When the last "chore: Upgrade Python requirements" PR was merged
+2. When the last "chore: Upgrade Python requirements" PR was merged into the
+   repository's default branch (merges into other branches are ignored)
 3. The date and version of the last release
 
 This information helps maintainers identify repositories that may need attention.
