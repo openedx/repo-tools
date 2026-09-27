@@ -133,9 +133,21 @@ def get_workflow_run_stats(org, repo):
     }
 
 
+def get_default_branch(org, repo):
+    """
+    Get the repository's default branch name, or None if it cannot be read.
+    """
+    result = run_gh_command(["repo", "view", f"{org}/{repo}", "--json", "defaultBranchRef"])
+    return ((result or {}).get("defaultBranchRef") or {}).get("name")
+
+
 def get_last_requirements_pr(org, repo):
     """
-    Get the last merged PR with title "chore: Upgrade Python requirements".
+    Get the last PR with title "chore: Upgrade Python requirements" merged into
+    the default branch.
+
+    Merges into other branches are ignored: a requirements PR merged into a
+    feature branch does not mean the repository's requirements were upgraded.
 
     Args:
         org: GitHub organization name
@@ -144,23 +156,24 @@ def get_last_requirements_pr(org, repo):
     Returns:
         dict: Dictionary with 'date', 'pr_number', and 'url' keys, or None if not found
     """
-    # Search for merged PRs with the specific title
-    result = run_gh_command(
-        [
-            "pr",
-            "list",
-            "--repo",
-            f"{org}/{repo}",
-            "--state",
-            "merged",
-            "--search",
-            "chore: Upgrade Python requirements in:title",
-            "--limit",
-            "1",
-            "--json",
-            "number,title,mergedAt,url",
-        ]
-    )
+    command = [
+        "pr",
+        "list",
+        "--repo",
+        f"{org}/{repo}",
+        "--state",
+        "merged",
+        "--search",
+        "chore: Upgrade Python requirements in:title",
+        "--limit",
+        "1",
+        "--json",
+        "number,title,mergedAt,url",
+    ]
+    default_branch = get_default_branch(org, repo)
+    if default_branch:
+        command += ["--base", default_branch]
+    result = run_gh_command(command)
 
     if result and len(result) > 0:
         pr = result[0]
