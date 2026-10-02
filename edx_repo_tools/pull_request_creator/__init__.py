@@ -628,7 +628,15 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
         if not txt:
             return [], []
 
-        if "uv.lock" in txt:
+        # A diff can mention "uv.lock" without changing that file, e.g. a
+        # vendored file whose header references "uv.lock" after its source
+        # repo migrates to uv. Check the PR's actual changed files, not just
+        # the diff text.
+        uv_lock_changed = "uv.lock" in txt and any(
+            f.filename == "uv.lock" for f in pull_request.get_files()
+        )
+
+        if uv_lock_changed:
             reqs = self._parse_uv(pull_request)
         else:
             reqs = self._parse_reqs(txt)
