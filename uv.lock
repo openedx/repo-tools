@@ -664,6 +664,7 @@ repo-checks = [
 [package.dev-dependencies]
 dev = [
     { name = "edx-lint" },
+    { name = "httpx2" },
     { name = "pytest" },
     { name = "pytest-mock" },
     { name = "responses" },
@@ -717,6 +718,7 @@ provides-extras = ["audit-gh-users", "conventional-commits", "find-dependencies"
 [package.metadata.requires-dev]
 dev = [
     { name = "edx-lint" },
+    { name = "httpx2" },
     { name = "pytest" },
     { name = "pytest-mock" },
     { name = "responses" },

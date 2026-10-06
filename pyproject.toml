@@ -136,6 +136,8 @@ include = ["edx_repo_tools*"]
 [dependency-groups]
 dev = [
     "edx-lint",
+    # ghapi's HTTP client; tests/test_audit_users.py mocks it directly.
+    "httpx2",
     "pytest",
     "pytest-mock",
     "responses",
