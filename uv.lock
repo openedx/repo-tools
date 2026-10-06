@@ -682,7 +682,7 @@ requires-dist = [
     { name = "click", marker = "extra == 'confluence-inactive-users'" },
     { name = "click", marker = "extra == 'repo-checks'" },
     { name = "dataset", marker = "extra == 'conventional-commits'" },
-    { name = "ghapi", marker = "extra == 'audit-gh-users'" },
+    { name = "ghapi", marker = "extra == 'audit-gh-users'", specifier = ">=2" },
     { name = "ghapi", marker = "extra == 'repo-checks'", specifier = ">=2" },
     { name = "github3-py" },
     { name = "gitpython" },

@@ -46,7 +46,7 @@ dependencies = [
 [project.optional-dependencies]
 audit_gh_users = [
     "click",
-    "ghapi",
+    "ghapi>=2",
 ]
 conventional_commits = [
     "alembic",

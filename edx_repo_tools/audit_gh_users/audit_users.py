@@ -9,7 +9,7 @@ import csv
 import io
 from itertools import chain
 import click
-from ghapi.all import GhApi, paged
+from ghapi.all import GhApi, sync_paged
 import requests
 
 
@@ -43,13 +43,13 @@ def main(org, _github_token, csv_repo, csv_path):
     """
     Entry point for command-line invocation.
     """
-    api = GhApi()
+    api = GhApi(token=_github_token, sync=True)
 
     # Get all github users in the org.
     current_org_users = [
         member.login
         for member in chain.from_iterable(
-            paged(api.orgs.list_members, org, per_page=100)
+            sync_paged(api.orgs.list_members, org, per_page=100)
         )
     ]
 
