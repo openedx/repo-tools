@@ -7,10 +7,30 @@ See the README for more info.
 import base64
 import csv
 import io
+from fnmatch import fnmatchcase
 from itertools import chain
 import click
 from ghapi.all import GhApi, sync_paged
 import requests
+
+# Users missing from the CSV are only worth investigating if they are on a team
+# that doesn't match one of these patterns. Add team names, or shell-style
+# wildcards like "wg-*", here to stop them from being flagged.
+IGNORED_TEAMS = (
+    "openedx-triage",
+    "interest-performance",
+    "edunext-website",
+    "openedx-product-managers",
+    "bot-*",
+    "wg-*",
+)
+
+
+def _is_ignored_team(name):
+    """
+    Return True if the team name matches one of IGNORED_TEAMS.
+    """
+    return any(fnmatchcase(name, pattern) for pattern in IGNORED_TEAMS)
 
 
 @click.command()
@@ -65,7 +85,7 @@ def main(org, _github_token, csv_repo, csv_path):
     # Find all the people that are in the org but not in sales force.
     extra_org_users = set(current_org_users) - set(csv_github_users)
 
-    # Find users who are in multiple teams or a single non-triage team
+    # Find users who are on at least one team that isn't in IGNORED_TEAMS.
     # Using the GraphQL API because there is no good GitHub rest API for this.
     extra_org_users_not_triage = []
     for user in extra_org_users:
@@ -83,13 +103,11 @@ def main(org, _github_token, csv_repo, csv_path):
 
         result = r.json()
         team_data = result['data']['organization']['teams']
-        if team_data['totalCount'] > 1:
-            team_list = []
-            for team in team_data['nodes']:
-                team_list.append(team['name'])
+        team_list = [team['name'] for team in team_data['nodes']]
+        # Teams past the first page aren't visible, so assume they're relevant.
+        has_unseen_teams = team_data['totalCount'] > len(team_list)
+        if has_unseen_teams or any(not _is_ignored_team(name) for name in team_list):
             extra_org_users_not_triage.append(f"{user} - teams: {team_list}")
-        elif team_data['totalCount'] == 1 and team_data['nodes'][0]['name'] != 'openedx-triage':
-            extra_org_users_not_triage.append(f"{user} - teams: ['{team_data['nodes'][0]['name']}']")
 
     # List the users we need to investigate
     print("\n" + "Users to investigate (first 10 teams listed):")
