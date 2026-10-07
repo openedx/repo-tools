@@ -664,6 +664,7 @@ repo-checks = [
 [package.dev-dependencies]
 dev = [
     { name = "edx-lint" },
+    { name = "httpx2" },
     { name = "pytest" },
     { name = "pytest-mock" },
     { name = "responses" },
@@ -682,7 +683,7 @@ requires-dist = [
     { name = "click", marker = "extra == 'confluence-inactive-users'" },
     { name = "click", marker = "extra == 'repo-checks'" },
     { name = "dataset", marker = "extra == 'conventional-commits'" },
-    { name = "ghapi", marker = "extra == 'audit-gh-users'" },
+    { name = "ghapi", marker = "extra == 'audit-gh-users'", specifier = ">=2" },
     { name = "ghapi", marker = "extra == 'repo-checks'", specifier = ">=2" },
     { name = "github3-py" },
     { name = "gitpython" },
@@ -717,6 +718,7 @@ provides-extras = ["audit-gh-users", "conventional-commits", "find-dependencies"
 [package.metadata.requires-dev]
 dev = [
     { name = "edx-lint" },
+    { name = "httpx2" },
     { name = "pytest" },
     { name = "pytest-mock" },
     { name = "responses" },
