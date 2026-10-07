@@ -87,10 +87,10 @@ def main(org, _github_token, csv_repo, csv_path):
 
     # Find users who are on at least one team that isn't in IGNORED_TEAMS.
     # Using the GraphQL API because there is no good GitHub rest API for this.
-    extra_org_users_not_triage = []
+    non_ignored_team_users = []
     for user in extra_org_users:
         json = { 'query' : f"""{{
-                    organization(login:"openedx"){{
+                    organization(login:"{org}"){{
                         teams(userLogins:"{user}",first:10) {{
                             nodes {{name}}
                             totalCount
@@ -99,7 +99,9 @@ def main(org, _github_token, csv_repo, csv_path):
                 }}"""}
         headers = {'Authorization': f'token {_github_token}'}
 
-        r = requests.post(url='https://api.github.com/graphql', json=json, headers=headers)
+        r = requests.post(
+            url="https://api.github.com/graphql", json=json, headers=headers, timeout=30
+        )
 
         result = r.json()
         team_data = result['data']['organization']['teams']
@@ -107,11 +109,11 @@ def main(org, _github_token, csv_repo, csv_path):
         # Teams past the first page aren't visible, so assume they're relevant.
         has_unseen_teams = team_data['totalCount'] > len(team_list)
         if has_unseen_teams or any(not _is_ignored_team(name) for name in team_list):
-            extra_org_users_not_triage.append(f"{user} - teams: {team_list}")
+            non_ignored_team_users.append(f"{user} - teams: {team_list}")
 
     # List the users we need to investigate
     print("\n" + "Users to investigate (first 10 teams listed):")
-    print("\n" + "\n".join(sorted(extra_org_users_not_triage)))
+    print("\n" + "\n".join(sorted(non_ignored_team_users)))
 
 
 if __name__ == "__main__":
