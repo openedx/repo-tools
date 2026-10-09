@@ -606,6 +606,58 @@ class UpgradePythonRequirementsPullRequestTestCase(TestCase):
 
             assert sorted([]) == [g["name"] for g in suspicious]
 
+    def test_compare_upgrade_difference_uv_lock_mentioned_but_not_changed(self):
+        """
+        A plain pip-tools diff can contain the literal text "uv.lock" without
+        uv.lock itself being one of the changed files -- e.g. a vendored
+        requirements file whose header references "pyproject.toml / uv.lock"
+        after the repo it's copied from migrates to uv. This must still be
+        parsed as a pip-tools diff, not misrouted to the uv.lock parser.
+        """
+        pull_request = MagicMock()
+        pull_request.get_files.return_value = [Mock(filename="requirements/base.txt")]
+        txt = (
+            "diff --git a/requirements/base.txt b/requirements/base.txt\n"
+            "index e94bd48..132b72b 100644\n"
+            "--- a/requirements/base.txt\n"
+            "+++ b/requirements/base.txt\n"
+            "@@ -1,3 +1,4 @@\n"
+            "+# Source of truth: pyproject.toml / uv.lock.\n"
+            "-packaging==21.3\n"
+            "+packaging==21.6\n"
+        )
+
+        with patch.object(GitHubHelper, "_parse_uv") as mock_parse_uv:
+            valid, suspicious = GitHubHelper().compare_pr_differnce(pull_request, txt)
+
+        mock_parse_uv.assert_not_called()
+        assert [g["name"] for g in valid] == ["packaging"]
+        assert suspicious == []
+
+    def test_compare_upgrade_difference_uv_lock_actually_changed(self):
+        """
+        When uv.lock really is one of the PR's changed files, route to the uv
+        parser -- a real uv.lock diff's own "diff --git a/uv.lock b/uv.lock"
+        header also contains the substring "uv.lock", so this must not be
+        confused with the false-positive case above.
+        """
+        pull_request = MagicMock()
+        pull_request.get_files.return_value = [Mock(filename="uv.lock")]
+        txt = "diff --git a/uv.lock b/uv.lock\nindex 111..222 100644\n"
+
+        with patch.object(
+            GitHubHelper,
+            "_parse_uv",
+            return_value=[
+                {"name": "django", "old_version": "3.2.0", "new_version": "3.2.5"}
+            ],
+        ) as mock_parse_uv, patch.object(GitHubHelper, "_parse_reqs") as mock_parse_reqs:
+            valid, suspicious = GitHubHelper().compare_pr_differnce(pull_request, txt)
+
+        mock_parse_uv.assert_called_once_with(pull_request)
+        mock_parse_reqs.assert_not_called()
+        assert [g["name"] for g in valid] == ["django"]
+
     def test_check_automerge_variable_value(self):
         with patch("requests.get") as mock_request:
             mock_request.return_value.status_code = 200
