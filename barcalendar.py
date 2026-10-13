@@ -406,9 +406,9 @@ CURRENT = {
     "Open edX": parse_version_name(versions['OPENEDX_COMMON_VERSION']),
     "Python": "3.11",
     "Django": "5.2",
-    "Ubuntu": "24.04",
+    "Ubuntu": "22.04",
     "Node": "24",
-    "React": "16",
+    "React": "18",
     "Mongo": parse_version_number(versions['DOCKER_IMAGE_MONGODB']),
     "MySQL": parse_version_number(versions['DOCKER_IMAGE_MYSQL']),
     "Elasticsearch": "7.17",
@@ -550,7 +550,7 @@ ubuntu_nicks = {                        # https://wiki.ubuntu.com/Releases
     #'16.04': 'Xenial Xerus',
     #'18.04': 'Bionic Beaver',
     #'20.04': 'Focal Fossa',
-    #'22.04': 'Jammy Jellyfish',
+    '22.04': 'Jammy Jellyfish',
     '24.04': 'Noble Numbat',
     '25.04': "Plucky Puffin",
 }
@@ -589,6 +589,7 @@ node_releases = [
     #('20', 2023, 4, 2026, 4),
     ('22', 2024, 4, 2027, 4),
     ('24', 2025, 5, 2028, 4),
+    ('26', 2026, 5, 2029, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
     eyear, emonth = validate_version_date("NodeJS", name, eyear, emonth)
@@ -661,7 +662,7 @@ mysql_releases = [
     # ('8.0', 2018, 4, 2026, 4),
     # ('8.1', 2023, 6, 2023, 10),
     ('8.4', 2024, 4, 2032, 4),
-    ('9.4', 2025, 7, 3000, 1),
+    ('9.7', 2026, 4, 2034, 4),
 ]
 for name, syear, smonth, eyear, emonth in mysql_releases:
     eyear, emonth = validate_version_date("MySQL", name, eyear, emonth)
@@ -689,7 +690,7 @@ es_releases = [
     # ('7.13', 2021, 5, 2022, 11),
     ('7.17', 2022, 2, 2026, 1),
     ('8.17', 2024, 12, 2027, 7),
-    ('9.0', 2025, 4, 2028, 10),
+    ('9.0', 2025, 4, 2027, 10),   # End of Maintenance Term; End of Support is TBD pending 10.0
 ]
 for name, syear, smonth, eyear, emonth in es_releases:
     eyear, emonth = validate_version_date("elasticsearch", name, eyear, emonth)
@@ -703,16 +704,15 @@ for name, syear, smonth, eyear, emonth in es_releases:
 cal.gap_line()
 
 # Redis
-cal.section_note("https://docs.redis.com/latest/rs/administering/product-lifecycle/#endoflife-schedule")
-# https://endoflife.date/redis
+cal.section_note("https://endoflife.date/redis")
 redis_releases = [
     # ('6.0', 2020, 5, 2023, 8),
     # ('6.2', 2021, 8, 2024, 8),
     # ('7.0', 2022, 4, 2024, 7),
     # ('7.2', 2023, 8, 2024, 8),
     ('7.4', 2024, 7, 2026, 11),
-    ('8.0', 2025, 5, 3000, 1),
-    ('8.2', 2025, 4, 3000, 1),
+    ('8.0', 2025, 5, 2026, 2),
+    ('8.2', 2025, 8, 2026, 5),
 ]
 for name, syear, smonth, eyear, emonth in redis_releases:
     eyear, emonth = validate_version_date("Redis", name, eyear, emonth)
