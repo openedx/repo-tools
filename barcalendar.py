@@ -404,7 +404,7 @@ versions = get_defaults_from_tutor()
 # The current versions of everything.  Use the same strings as the keys in the various sections below.
 CURRENT = {
     "Open edX": parse_version_name(versions['OPENEDX_COMMON_VERSION']),
-    "Python": "3.11",
+    "Python": "3.12",
     "Django": "5.2",
     "Ubuntu": "24.04",
     "Node": "24",
@@ -445,7 +445,7 @@ names = [
     ("Sumac", 2024, 12),
     ("Teak", 2025, 6),
     ("Ulmo", 2025, 12),
-    ("Verawood", 2026, 6),
+    ("Verawood", 2026, 7),
     ]
 # https://www.treenames.net/common_tree_names.html
 future = list("WXYZ")
@@ -532,7 +532,7 @@ python_releases = [
     #('3.10', 2021, 10, 2026, 10),       # https://www.python.org/dev/peps/pep-0619/
     ('3.11', 2022, 10, 2027, 10),       # https://peps.python.org/pep-0664/
     ('3.12', 2023, 10, 2028, 10),       # https://peps.python.org/pep-0693/
-    ('3.14', 2025, 10, 2030, 10),       # https://peps.python.org/pep-0693/
+    ('3.14', 2025, 10, 2030, 10),       # https://peps.python.org/pep-0745/
 ]
 for name, syear, smonth, eyear, emonth in python_releases:
     eyear, emonth = validate_version_date("Python", name, eyear, emonth)
@@ -553,6 +553,7 @@ ubuntu_nicks = {                        # https://wiki.ubuntu.com/Releases
     #'22.04': 'Jammy Jellyfish',
     '24.04': 'Noble Numbat',
     '25.04': "Plucky Puffin",
+    '26.04': 'Resolute Raccoon',
 }
 
 for year, month in itertools.product(range(START_YEAR % 100, END_YEAR % 100), [4, 10]):
@@ -589,6 +590,7 @@ node_releases = [
     #('20', 2023, 4, 2026, 4),
     ('22', 2024, 4, 2027, 4),
     ('24', 2025, 5, 2028, 4),
+    ('26', 2026, 5, 2029, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
     eyear, emonth = validate_version_date("NodeJS", name, eyear, emonth)
@@ -611,7 +613,7 @@ react_releases = [
     # leave the active suppport date in a comment here for reference.
     # (Version, Start_Year, Start_Month, End_Year, End_Month)
     # ('15', 2016, 4, 2020, 10),   # Released April 2016, EOL October 2020
-    # ('16', 2017, 9, 2020, 10),   # Released September 2017, EOL October 2020
+    ('16', 2017, 9, 3000, 1),   # Released September 2017, active support ended October 2020
     # ('17', 2020, 10, 2022, 3),   # Released October 2020, EOL March 2022
     ('18', 2022, 3, 3000, 1),   # Released March 2022, EOL December 2024
     ('19', 2024, 12, 3000, 1),   # Released December 2024, current major version
@@ -641,6 +643,7 @@ mongo_releases = [
     # ('5.0', 2021, 7, 2024, 10),
     ('7.0', 2023, 8, 2027, 8),
     ('8.0', 2024, 10, 2029, 10),
+    ('9.0', 2026, 9, 2031, 10),
 ]
 for name, syear, smonth, eyear, emonth in mongo_releases:
     eyear, emonth = validate_version_date("mongo", name, eyear, emonth)
@@ -661,7 +664,7 @@ mysql_releases = [
     # ('8.0', 2018, 4, 2026, 4),
     # ('8.1', 2023, 6, 2023, 10),
     ('8.4', 2024, 4, 2032, 4),
-    ('9.4', 2025, 7, 3000, 1),
+    ('9.7', 2026, 4, 2034, 4),
 ]
 for name, syear, smonth, eyear, emonth in mysql_releases:
     eyear, emonth = validate_version_date("MySQL", name, eyear, emonth)
@@ -688,8 +691,8 @@ es_releases = [
     # ('7.12', 2021, 3, 2022, 9),
     # ('7.13', 2021, 5, 2022, 11),
     ('7.17', 2022, 2, 2026, 1),
-    ('8.17', 2024, 12, 2027, 7),
-    ('9.0', 2025, 4, 2028, 10),
+    ('8.19', 2025, 7, 2027, 7),
+    ('9.5', 2026, 8, 3000, 1),
 ]
 for name, syear, smonth, eyear, emonth in es_releases:
     eyear, emonth = validate_version_date("elasticsearch", name, eyear, emonth)
@@ -703,16 +706,15 @@ for name, syear, smonth, eyear, emonth in es_releases:
 cal.gap_line()
 
 # Redis
-cal.section_note("https://docs.redis.com/latest/rs/administering/product-lifecycle/#endoflife-schedule")
-# https://endoflife.date/redis
+cal.section_note("https://endoflife.date/redis")
 redis_releases = [
     # ('6.0', 2020, 5, 2023, 8),
     # ('6.2', 2021, 8, 2024, 8),
     # ('7.0', 2022, 4, 2024, 7),
     # ('7.2', 2023, 8, 2024, 8),
-    ('7.4', 2024, 7, 2026, 11),
-    ('8.0', 2025, 5, 3000, 1),
-    ('8.2', 2025, 4, 3000, 1),
+    ('7.4', 2024, 7, 2029, 12),
+    ('8.0', 2025, 5, 2026, 12),
+    ('8.2', 2025, 8, 2030, 9),
 ]
 for name, syear, smonth, eyear, emonth in redis_releases:
     eyear, emonth = validate_version_date("Redis", name, eyear, emonth)
