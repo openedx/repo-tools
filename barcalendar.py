@@ -404,11 +404,11 @@ versions = get_defaults_from_tutor()
 # The current versions of everything.  Use the same strings as the keys in the various sections below.
 CURRENT = {
     "Open edX": parse_version_name(versions['OPENEDX_COMMON_VERSION']),
-    "Python": "3.11",
+    "Python": "3.12",
     "Django": "5.2",
     "Ubuntu": "24.04",
     "Node": "24",
-    "React": "16",
+    "React": "18",
     "Mongo": parse_version_number(versions['DOCKER_IMAGE_MONGODB']),
     "MySQL": parse_version_number(versions['DOCKER_IMAGE_MYSQL']),
     "Elasticsearch": "7.17",
@@ -446,9 +446,13 @@ names = [
     ("Teak", 2025, 6),
     ("Ulmo", 2025, 12),
     ("Verawood", 2026, 6),
+    ("Willow", 2026, 12),
+    ("Xylon", 2027, 6),
+    ("Yucca", 2027, 12),
+    ("Zebrawood", 2028, 6),
     ]
 # https://www.treenames.net/common_tree_names.html
-future = list("WXYZ")
+future = list("")
 target_length = 6 # months per release
 
 releases = list(itertools.chain(names, [(name, None, None) for name in future]))
@@ -533,6 +537,7 @@ python_releases = [
     ('3.11', 2022, 10, 2027, 10),       # https://peps.python.org/pep-0664/
     ('3.12', 2023, 10, 2028, 10),       # https://peps.python.org/pep-0693/
     ('3.14', 2025, 10, 2030, 10),       # https://peps.python.org/pep-0693/
+    ('3.15', 2026, 10, 2031, 10),       # https://peps.python.org/pep-0693/
 ]
 for name, syear, smonth, eyear, emonth in python_releases:
     eyear, emonth = validate_version_date("Python", name, eyear, emonth)
@@ -553,6 +558,8 @@ ubuntu_nicks = {                        # https://wiki.ubuntu.com/Releases
     #'22.04': 'Jammy Jellyfish',
     '24.04': 'Noble Numbat',
     '25.04': "Plucky Puffin",
+    '26.04': "Resolute Raccoon",
+    '26.10': "Stonking Stingray",
 }
 
 for year, month in itertools.product(range(START_YEAR % 100, END_YEAR % 100), [4, 10]):
@@ -587,8 +594,9 @@ node_releases = [
     #('16', 2021, 4, 2023, 9),     # https://nodejs.org/en/blog/announcements/nodejs16-eol/
     #('18', 2022, 4, 2025, 4),
     #('20', 2023, 4, 2026, 4),
-    ('22', 2024, 4, 2027, 4),
+    #('22', 2024, 4, 2027, 4),
     ('24', 2025, 5, 2028, 4),
+    ('26', 2026, 5, 2029, 4),
 ]
 for name, syear, smonth, eyear, emonth in node_releases:
     eyear, emonth = validate_version_date("NodeJS", name, eyear, emonth)
@@ -641,6 +649,7 @@ mongo_releases = [
     # ('5.0', 2021, 7, 2024, 10),
     ('7.0', 2023, 8, 2027, 8),
     ('8.0', 2024, 10, 2029, 10),
+    ('9.0', 2026, 9, 2031, 10),
 ]
 for name, syear, smonth, eyear, emonth in mongo_releases:
     eyear, emonth = validate_version_date("mongo", name, eyear, emonth)
@@ -661,7 +670,8 @@ mysql_releases = [
     # ('8.0', 2018, 4, 2026, 4),
     # ('8.1', 2023, 6, 2023, 10),
     ('8.4', 2024, 4, 2032, 4),
-    ('9.4', 2025, 7, 3000, 1),
+    ('9.7', 2026, 4, 2034, 4),
+    ('26.10', 2026, 4, 3000, 4),
 ]
 for name, syear, smonth, eyear, emonth in mysql_releases:
     eyear, emonth = validate_version_date("MySQL", name, eyear, emonth)
@@ -712,7 +722,8 @@ redis_releases = [
     # ('7.2', 2023, 8, 2024, 8),
     ('7.4', 2024, 7, 2026, 11),
     ('8.0', 2025, 5, 3000, 1),
-    ('8.2', 2025, 4, 3000, 1),
+    ('8.2', 2025, 4, 2030, 9),
+    ('8.10', 2026, 7, 3000, 1),
 ]
 for name, syear, smonth, eyear, emonth in redis_releases:
     eyear, emonth = validate_version_date("Redis", name, eyear, emonth)
