@@ -447,6 +447,11 @@ class Workflows(Check):
             except APIError as err:
                 if err.status_code == 404:
                     files_that_are_missing.append(file)
+                else:
+                    # Anything else (rate limit, 5xx, ...) is a real failure;
+                    # swallowing it leaves the file out of both collections
+                    # and causes a KeyError in the comparison below.
+                    raise
 
         # Compare the two.
         files_that_differ = []
