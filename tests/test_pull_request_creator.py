@@ -788,6 +788,29 @@ class GitHubHelperUvLockTestCase(TestCase):
         self.helper.repository.get_git_tree.side_effect = get_git_tree
         self.helper.repository.get_git_blob.side_effect = lambda sha: blobs[sha]
 
+    def _parse_locks(self, new_lock, old_lock=None):
+        """
+        Run ``_parse_uv`` on a PR whose head has ``new_lock`` as its uv.lock
+        and whose base has ``old_lock``, or no uv.lock at all when that is None.
+        """
+        mock_pr = Mock()
+        mock_pr.head.sha = "new-sha"
+        mock_pr.base.sha = "old-sha"
+
+        mock_file = Mock()
+        mock_file.filename = "uv.lock"
+        mock_pr.get_files.return_value = [mock_file]
+
+        files = {("new-sha", "uv.lock"): new_lock}
+        if old_lock is None:
+            # The base ref has a tree, it just has no uv.lock in it yet.
+            files[("old-sha", "requirements.txt")] = "django==3.2.0\n"
+        else:
+            files[("old-sha", "uv.lock")] = old_lock
+        self._mock_repo_files(files)
+
+        return self.helper._parse_uv(mock_pr)
+
     def test_parse_uv_basic_upgrade(self):
         """Test parsing uv.lock with basic package upgrade."""
         old_lock = """
@@ -801,27 +824,11 @@ name = "django"
 version = "3.2.5"
 """
 
-        mock_pr = Mock()
-        mock_pr.head.sha = "new-sha"
-        mock_pr.base.sha = "old-sha"
+        reqs = self._parse_locks(new_lock, old_lock)
 
-        mock_file = Mock()
-        mock_file.filename = "uv.lock"
-        mock_pr.get_files.return_value = [mock_file]
-
-        self._mock_repo_files(
-            {
-                ("new-sha", "uv.lock"): new_lock,
-                ("old-sha", "uv.lock"): old_lock,
-            }
-        )
-
-        reqs = self.helper._parse_uv(mock_pr)
-
-        assert len(reqs) == 1
-        assert reqs[0]["name"] == "django"
-        assert reqs[0]["old_version"] == "3.2.0"
-        assert reqs[0]["new_version"] == "3.2.5"
+        assert reqs == [
+            {"name": "django", "old_version": "3.2.0", "new_version": "3.2.5"}
+        ]
 
     def test_parse_uv_no_old_lock(self):
         """Test parsing uv.lock when old file doesn't exist (new migration)."""
@@ -831,29 +838,12 @@ name = "django"
 version = "3.2.5"
 """
 
-        mock_pr = Mock()
-        mock_pr.head.sha = "new-sha"
-        mock_pr.base.sha = "old-sha"
-
-        mock_file = Mock()
-        mock_file.filename = "uv.lock"
-        mock_pr.get_files.return_value = [mock_file]
-
-        # The base ref has a tree, it just has no uv.lock in it yet.
-        self._mock_repo_files(
-            {
-                ("new-sha", "uv.lock"): new_lock,
-                ("old-sha", "requirements.txt"): "django==3.2.0\n",
-            }
-        )
-
-        reqs = self.helper._parse_uv(mock_pr)
+        reqs = self._parse_locks(new_lock)
 
         # All packages should be listed as new
-        assert len(reqs) == 1
-        assert reqs[0]["name"] == "django"
-        assert reqs[0]["old_version"] is None
-        assert reqs[0]["new_version"] == "3.2.5"
+        assert reqs == [
+            {"name": "django", "old_version": None, "new_version": "3.2.5"}
+        ]
 
     def test_parse_uv_not_in_pr(self):
         """Test parsing when uv.lock is not in the PR files."""
@@ -875,20 +865,90 @@ version = "1.0.0"
 resolution-markers = ["python_version < '3.9'", "python_version >= '3.9'"]
 """
 
-        mock_pr = Mock()
-        mock_pr.head.sha = "new-sha"
-        mock_pr.base.sha = "old-sha"
+        reqs = self._parse_locks(new_lock)
 
-        mock_file = Mock()
-        mock_file.filename = "uv.lock"
-        mock_pr.get_files.return_value = [mock_file]
+        # One package, one row, however many markers it resolves under.
+        assert reqs == [
+            {"name": "mypackage", "old_version": None, "new_version": "1.0.0"}
+        ]
 
-        self._mock_repo_files({("new-sha", "uv.lock"): new_lock})
+    def test_parse_uv_multiple_versions_of_one_package(self):
+        """
+        A lock can hold several versions of one package when dependency
+        groups resolve differently (a Django 4.2 / 5.2 tox matrix, say).
+        Upgrading one of them must read as an upgrade of that one, not as a
+        downgrade to the other.
 
-        reqs = self.helper._parse_uv(mock_pr)
+        Trimmed from openedx/edx-submissions#395, where the bot reported
+        django 5.2.17 -> 4.2.30 [DOWNGRADE] for what was 5.2.17 -> 5.2.19.
+        """
+        old_lock = """
+[[package]]
+name = "django"
+version = "4.2.30"
 
-        # Should create separate entries for each resolution marker
-        assert len(reqs) == 2
+[[package]]
+name = "django"
+version = "5.2.17"
+
+[[package]]
+name = "sphinx"
+version = "9.1.0"
+"""
+        new_lock = """
+[[package]]
+name = "django"
+version = "4.2.30"
+
+[[package]]
+name = "django"
+version = "5.2.19"
+resolution-markers = [
+    "extra == 'group-15-edx-submissions-test'",
+    "extra != 'group-15-edx-submissions-test'",
+]
+
+[[package]]
+name = "sphinx"
+version = "9.1.1"
+resolution-markers = ["python_full_version < '3.13'"]
+
+[[package]]
+name = "sphinx"
+version = "9.2.0"
+resolution-markers = ["python_full_version >= '3.13'"]
+"""
+
+        reqs = self._parse_locks(new_lock, old_lock)
+
+        assert reqs == [
+            {"name": "django", "old_version": "5.2.17", "new_version": "5.2.19"},
+            {"name": "sphinx", "old_version": "9.1.0", "new_version": "9.1.1"},
+            {"name": "sphinx", "old_version": None, "new_version": "9.2.0"},
+        ]
+
+    def test_parse_uv_version_dropped(self):
+        """Dropping one of two versions of a package reads as a removal."""
+        old_lock = """
+[[package]]
+name = "django"
+version = "4.2.30"
+
+[[package]]
+name = "django"
+version = "5.2.17"
+"""
+        new_lock = """
+[[package]]
+name = "django"
+version = "5.2.17"
+"""
+
+        reqs = self._parse_locks(new_lock, old_lock)
+
+        assert reqs == [
+            {"name": "django", "old_version": "4.2.30", "new_version": None}
+        ]
 
     def test_get_file_contents_in_a_subdirectory(self):
         """Test reading a file that isn't at the root of the repository."""
@@ -914,17 +974,13 @@ resolution-markers = ["python_version < '3.9'", "python_version >= '3.9'"]
 
         assert raised.exception.status == 404
 
-    def test_add_uv_packages_without_version(self):
-        """Test _add_uv_packages skips packages without version (own package)."""
-        out_packages = {}
+    def test_uv_lock_versions_skips_own_package(self):
+        """The project's own package has no version and is left out."""
         packages = [
             {"name": "myproject"},  # No version field
             {"name": "dependency", "version": "1.0.0"},
         ]
 
-        result = self.helper._add_uv_packages(out_packages, packages, is_old=False)
+        versions = self.helper._uv_lock_versions(packages)
 
-        # Should only have the dependency, not myproject
-        assert "myproject" not in result
-        assert "dependency" in result
-        assert result["dependency"]["new_version"] == "1.0.0"
+        assert versions == {"dependency": {"1.0.0"}}
