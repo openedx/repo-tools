@@ -10,6 +10,7 @@ import re
 import time
 import tomllib
 from ast import literal_eval
+from itertools import zip_longest
 
 import click
 import requests
@@ -481,35 +482,59 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
 
         return False
 
-    def _add_uv_packages(self, out_packages, packages, is_old):
-        my_key = "old_version" if is_old else "new_version"
-        other_key = "new_version" if is_old else "old_version"
+    def _uv_lock_versions(self, packages):
+        """
+        Map each package name in a uv.lock to the set of versions it is locked at.
+
+        A uv.lock can hold several ``[[package]]`` entries for one name when
+        different dependency groups or Python versions resolve it differently,
+        for example a tox matrix that locks both Django 4.2 and 5.2. Each entry
+        may carry ``resolution-markers`` saying when it applies. The markers do
+        not matter for deciding whether a version went up or down, so they are
+        ignored.
+        """
+        versions = {}
 
         for p in packages:
             # Our own package won't have a version, and we don't want it anyway
             if "version" not in p:
                 continue
 
-            if "resolution-markers" in p:
-                for rm in p["resolution-markers"]:
-                    package_id = f"{p['name']} - {rm}"
-                    if package_id in out_packages:
-                        out_packages[package_id][my_key] = p["version"]
-                    else:
-                        out_packages[package_id] = {
-                            my_key: p["version"],
-                            other_key: None,
-                        }
-            else:
-                if p["name"] in out_packages:
-                    out_packages[p["name"]][my_key] = p["version"]
-                else:
-                    out_packages[p["name"]] = {
-                        my_key: p["version"],
-                        other_key: None,
-                    }
+            if p["name"] not in versions:
+                versions[p["name"]] = set()
+            versions[p["name"]].add(p["version"])
 
-        return out_packages
+        return versions
+
+    def _diff_uv_versions(self, name, old_versions, new_versions):
+        """
+        Pair one package's versions across the old and new lock files.
+
+        A version present in both locks is unchanged and is left out. The
+        versions only in one lock are sorted and paired off, lowest with
+        lowest, so upgrading one of two locked versions reads as an upgrade
+        of that one rather than as a downgrade to the other. A version left
+        over on one side has no partner, which is how an addition or a
+        removal is reported.
+
+        The pairing is only right when the same number of versions change on
+        each side. If a lock drops one version and bumps another in the same
+        change, the lowest leftover on each side are paired even though they
+        are not the same fork. Both rows still go to manual review, so the
+        auto-merge decision is unaffected; only the row reads wrong.
+        """
+        # ``-`` is set difference: the versions in one lock but not the other.
+        # A version in both locks drops out of both lists, which is how an
+        # unchanged version is skipped.
+        old_only = sorted(old_versions - new_versions, key=Version)
+        new_only = sorted(new_versions - old_versions, key=Version)
+
+        # zip_longest pads the shorter list with None, so a leftover version
+        # comes out with no old_version (added) or no new_version (removed).
+        return [
+            {"name": name, "old_version": old_v, "new_version": new_v}
+            for old_v, new_v in zip_longest(old_only, new_only)
+        ]
 
     def _get_file_contents(self, path, ref):
         """
@@ -542,39 +567,32 @@ class GitHubHelper:  # pylint: disable=missing-class-docstring
             return {}
 
         new_content = self._get_file_contents(lock_file, pr.head.sha)
-
-        out_packages = {}
-
-        # Parse and compare old_content / new_content as needed
-        new = tomllib.loads(new_content)
-        self._add_uv_packages(out_packages, new["package"], is_old=False)
+        new_versions = self._uv_lock_versions(tomllib.loads(new_content)["package"])
 
         # There may not be a previous uv.lock to compare, in which case
         # all packages are "new"
-        old_content = None
+        old_versions = {}
         try:
             old_content = self._get_file_contents(lock_file, pr.base.sha)
+            old_versions = self._uv_lock_versions(tomllib.loads(old_content)["package"])
         except GithubException as e:
             if e.status != 404:
                 raise
-
-        if old_content:
-            old = tomllib.loads(old_content)
-            self._add_uv_packages(out_packages, old["package"], is_old=True)
-        else:
             print("Old file doesn't exist, moving to uv?")
 
-        # Remove any unchanged packages, consolidate if possible
-        # TODO: Find a way to handle resolution markers to make the output
-        # less spammy.
         reqs = []
-
-        for pid, versions in out_packages.items():
-            if versions["new_version"] == versions["old_version"]:
-                continue
-
-            versions["name"] = pid
-            reqs.append(versions)
+        # ``|`` on the two key views is a set union: every package name that
+        # appears in either lock, each once. Sorted so the report is stable.
+        for name in sorted(old_versions.keys() | new_versions.keys()):
+            # A package only in one lock has no entry in the other dict, so
+            # ``.get`` with an empty set stands in for "no versions there".
+            reqs.extend(
+                self._diff_uv_versions(
+                    name,
+                    old_versions.get(name, set()),
+                    new_versions.get(name, set()),
+                )
+            )
 
         return reqs
 
